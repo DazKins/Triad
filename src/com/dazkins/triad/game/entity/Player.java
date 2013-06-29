@@ -31,6 +31,6 @@ public class Player extends Entity {
 	}
 	
 	public void render(Bitmap b, Camera cam) {
-		Art.mainSpriteSheet.renderSprite(3, 0, b, (int) (x - 8 - cam.getX()), (int) (y - 16 - cam.getY()));
+		Art.mainSpriteSheet.renderSprite(2, 0, b, (int) (x - 8 - cam.getX()), (int) (y - 16 - cam.getY()));
 	}
 }

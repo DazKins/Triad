@@ -56,7 +56,9 @@ public class Bitmap {
 			int xPixel = x - xp;
 			for (int y = y0; y < y1; y++) {
 				int yPixel = y - yp;
-				pixels[x + y * width] = b.pixels[xPixel + yPixel * b.width];
+				int c = b.pixels[xPixel + yPixel * b.width];
+				if(c != 0xFFFF00FF)
+					pixels[x + y * width] = c;
 			}
 		}
 	}
