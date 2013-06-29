@@ -4,7 +4,8 @@ import java.awt.Canvas;
 
 import javax.swing.JFrame;
 
-public class Triad extends Canvas {
+public class Triad extends Canvas implements Runnable {
+	private boolean running;
 	private final String title = "Triad Pre-Alpha";
 	private final int WIDTH = 1280;
 	private final int HEIGHT = 720;
@@ -20,8 +21,19 @@ public class Triad extends Canvas {
 		
 		mc.start();
 	}
+	
+	private void stop() {
+		running = false;
+	}
 
 	private void start() {
-		
+		running = true;
+		new Thread(this).start();
+	}
+
+	public void run() {
+		while(running) {
+			System.out.println("test");
+		}
 	}
 }
