@@ -5,28 +5,26 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 import javax.swing.JFrame;
 
-import com.dazkins.triad.file.DatabaseFile;
 import com.dazkins.triad.game.Game;
-import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Art;
 import com.dazkins.triad.gfx.Bitmap;
+import com.dazkins.triad.input.InputHandler;
 
 public class Triad extends Canvas implements Runnable {
 	private boolean running;
 	private final String title = "Triad Pre-Alpha";
-	private final int WIDTH = 640;
-	private final int HEIGHT = 360;
-	private final int SCALE = 2;
+	private final int WIDTH = 320;
+	private final int HEIGHT = 180;
+	private final int SCALE = 3;
 	
 	private BufferedImage screenImage;
 	private Bitmap screenBitmap;
 
 	private Game game;
-	private DatabaseFile dbf;
+	private InputHandler input;
 	
 	public static void main(String args[]) {
 		Triad mc = new Triad();
@@ -50,10 +48,13 @@ public class Triad extends Canvas implements Runnable {
 		
 		if(!Art.init())
 			System.out.println("Failed to initialize art!");
-		game = new Game();
+		input = new InputHandler();
+		game = new Game(input);
 		
 		screenImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		screenBitmap = new Bitmap(screenImage);
+		
+		addKeyListener(input);
 	}
 	
 	private void stop() {

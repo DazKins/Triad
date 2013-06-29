@@ -1,18 +1,23 @@
 package com.dazkins.triad.game;
 
-import com.dazkins.triad.gfx.Art;
+import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Bitmap;
+import com.dazkins.triad.input.InputHandler;
 
 public class Game {
-	public Game() {
-		
+	private World world;
+	private InputHandler input;
+	
+	public Game(InputHandler i) {
+		world = new World();
+		input = i;
 	}
 	
 	public void tick() {
-		
+		world.tick();
 	}
 	
 	public void render(Bitmap b) {
-		Art.mainSpriteSheet.renderSprite(0, 0, b, 0, 0);
+		world.render(b);
 	}
 }

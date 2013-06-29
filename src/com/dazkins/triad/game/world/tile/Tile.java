@@ -1,17 +1,17 @@
 package com.dazkins.triad.game.world.tile;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import com.dazkins.triad.file.DatabaseFile;
+import com.dazkins.triad.gfx.Art;
+import com.dazkins.triad.gfx.Bitmap;
 
 public class Tile {
+	public static final int tileSize = 16;
 	private byte id;
 	private String name;
 	private int tx, ty;
-	private Tile[] tiles = new Tile[256];
+	public static Tile[] tiles = new Tile[256];
 
 	static {
 		loadTileDatabase("res/data/tile.db");
@@ -24,8 +24,8 @@ public class Tile {
 		id = i;
 	}
 
-	public void render() {
-
+	public void render(Bitmap b, int x, int y) {
+		Art.mainSpriteSheet.renderSprite(tx, ty, b, x, y);
 	}
 
 	private static void loadTileDatabase(String path) {
@@ -42,6 +42,7 @@ public class Tile {
 			int tex = (Integer) dbs.tags.get(i).get("TX");
 			int tey = (Integer) dbs.tags.get(i).get("TY");
 			Tile t = new Tile(id, s, tex, tey);
+			tiles[id] = t;
 		}
 	}
 }
