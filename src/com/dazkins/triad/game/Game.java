@@ -22,6 +22,7 @@ public class Game {
 	}
 	
 	public void render(Bitmap b) {
+		int hi;
 		world.render(b);
 	}
 }
