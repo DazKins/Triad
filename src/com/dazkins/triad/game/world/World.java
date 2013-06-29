@@ -6,6 +6,7 @@ import java.util.List;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Bitmap;
+import com.dazkins.triad.gfx.Camera;
 
 public class World {
 	private final int MWIDTH = 40;
@@ -30,15 +31,15 @@ public class World {
 		entities[x + y * MWIDTH].add(e);
 	}
 	
-	public void render(Bitmap b) {
+	public void render(Bitmap b, Camera cam) {
 		for (int y = 0; y < MHEIGHT; y++) {
 			for (int x = 0; x < MWIDTH; x++) {
-				Tile.tiles[tiles[x + y * MWIDTH]].render(b, x * Tile.tileSize, y * Tile.tileSize);
+				Tile.tiles[tiles[x + y * MWIDTH]].render(b, (int) (x * Tile.tileSize - cam.getX()), (int)(y * Tile.tileSize - cam.getY()));
 			}
 			for (int x = 0; x < MWIDTH; x++) {
 				ArrayList<Entity> list = entities[x + y * MWIDTH];
 				for (int i = 0; i < list.size(); i++) {
-					list.get(i).render(b);
+					list.get(i).render(b, cam);
 				}
  			}
 		}

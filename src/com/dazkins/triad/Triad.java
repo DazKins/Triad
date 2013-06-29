@@ -3,6 +3,7 @@ package com.dazkins.triad;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
@@ -30,6 +31,7 @@ public class Triad extends Canvas implements Runnable {
 		Triad mc = new Triad();
 		JFrame frame = new JFrame(mc.title);
 		
+		frame.setLocation(new Point(100, 100));
 		frame.setSize(new Dimension(mc.WIDTH, mc.HEIGHT));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(mc);
