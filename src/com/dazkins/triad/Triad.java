@@ -5,10 +5,13 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 
+import com.dazkins.triad.file.DatabaseFile;
 import com.dazkins.triad.game.Game;
+import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Art;
 import com.dazkins.triad.gfx.Bitmap;
 
@@ -23,6 +26,7 @@ public class Triad extends Canvas implements Runnable {
 	private Bitmap screenBitmap;
 
 	private Game game;
+	private DatabaseFile dbf;
 	
 	public static void main(String args[]) {
 		Triad mc = new Triad();
