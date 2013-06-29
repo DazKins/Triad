@@ -1,7 +1,6 @@
 package com.dazkins.triad.game.entity;
 
 import com.dazkins.triad.gfx.Bitmap;
-import com.dazkins.triad.gfx.Camera;
 
 public abstract class Entity {
 	protected float x, y;
@@ -34,5 +33,5 @@ public abstract class Entity {
 	
 	public abstract void tick();
 	
-	public abstract void render(Bitmap b, Camera cam);
+	public abstract void render(Bitmap b);
 }
