@@ -16,8 +16,8 @@ import com.dazkins.triad.input.InputHandler;
 public class Triad extends Canvas implements Runnable {
 	private boolean running;
 	private final String title = "Triad Pre-Alpha";
-	private final int WIDTH = 320;
-	private final int HEIGHT = 180;
+	public final int WIDTH = 320;
+	public final int HEIGHT = 180;
 	private final int SCALE = 4;
 	
 	private BufferedImage screenImage;
@@ -49,7 +49,7 @@ public class Triad extends Canvas implements Runnable {
 		if(!Art.init())
 			System.out.println("Failed to initialize art!");
 		input = new InputHandler();
-		game = new Game(input);
+		game = new Game(this, input);
 		
 		screenImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		screenBitmap = new Bitmap(screenImage);

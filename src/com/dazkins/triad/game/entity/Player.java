@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 
 import com.dazkins.triad.gfx.Art;
 import com.dazkins.triad.gfx.Bitmap;
+import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.input.InputHandler;
 
 public class Player extends Entity {
@@ -29,7 +30,7 @@ public class Player extends Entity {
 		move(xa, ya);
 	}
 	
-	public void render(Bitmap b) {
-		Art.mainSpriteSheet.renderSprite(3, 0, b, (int) x - 8, (int) y - 16);
+	public void render(Bitmap b, Camera cam) {
+		Art.mainSpriteSheet.renderSprite(3, 0, b, (int) (x - 8 - cam.getX()), (int) (y - 16 - cam.getY()));
 	}
 }
