@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
+import com.dazkins.triad.game.Game;
+import com.dazkins.triad.gfx.Art;
 import com.dazkins.triad.gfx.Bitmap;
 
 public class Triad extends Canvas implements Runnable {
@@ -19,7 +21,8 @@ public class Triad extends Canvas implements Runnable {
 	
 	private BufferedImage screenImage;
 	private Bitmap screenBitmap;
-	private Bitmap testBitmap;
+
+	private Game game;
 	
 	public static void main(String args[]) {
 		Triad mc = new Triad();
@@ -41,9 +44,12 @@ public class Triad extends Canvas implements Runnable {
 		setMinimumSize(size);
 		setMaximumSize(size);
 		
+		if(!Art.init())
+			System.out.println("Failed to initialize art!");
+		game = new Game();
+		
 		screenImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		screenBitmap = new Bitmap(screenImage);
-		testBitmap = new Bitmap(100, 100, 0x0000FF);
 	}
 	
 	private void stop() {
@@ -94,6 +100,8 @@ public class Triad extends Canvas implements Runnable {
 		
 		Graphics g = bs.getDrawGraphics();
 		
+		game.render(screenBitmap);
+		
 		g.drawImage(screenImage, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
 		
 		g.dispose();
@@ -101,6 +109,6 @@ public class Triad extends Canvas implements Runnable {
 	}
 
 	private void tick() {
-		
+		game.tick();
 	}
 }

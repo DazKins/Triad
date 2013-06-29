@@ -2,12 +2,19 @@ package com.dazkins.triad.gfx;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Bitmap {
 	private int width, height;
 	private int[] pixels;
 
+	public Bitmap(int w, int h, int[] p) {
+		width = w;
+		height = h;
+		pixels = Arrays.copyOf(p, p.length);
+	}
+	
 	public Bitmap(int w, int h, int c) {
 		width = w;
 		height = h;
