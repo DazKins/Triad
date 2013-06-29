@@ -18,7 +18,7 @@ public class Triad extends Canvas implements Runnable {
 	private final String title = "Triad Pre-Alpha";
 	private final int WIDTH = 320;
 	private final int HEIGHT = 180;
-	private final int SCALE = 3;
+	private final int SCALE = 4;
 	
 	private BufferedImage screenImage;
 	private Bitmap screenBitmap;
