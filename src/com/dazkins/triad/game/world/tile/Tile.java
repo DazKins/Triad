@@ -25,7 +25,7 @@ public class Tile {
 	}
 
 	public void render(Bitmap b, int x, int y) {
-		Art.mainSpriteSheet.renderSprite(tx, ty, b, x, y);
+		Art.spriteSheet.renderSprite(tx, ty, b, x, y);
 	}
 
 	private static void loadTileDatabase(String path) {

@@ -5,6 +5,7 @@ import com.dazkins.triad.gfx.Camera;
 
 public abstract class Entity {
 	protected float x, y;
+	protected long lifeTicks;
 	
 	public float getX() {
 		return x;
@@ -32,7 +33,9 @@ public abstract class Entity {
 		y += ya;
 	}
 	
-	public abstract void tick();
+	public void tick() {
+		lifeTicks++;
+	}
 	
 	public abstract void render(Bitmap b, Camera cam);
 }

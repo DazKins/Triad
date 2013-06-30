@@ -9,13 +9,25 @@ import com.dazkins.triad.input.InputHandler;
 
 public class Player extends Entity {
 	private InputHandler input;
+	private int health;
 	
 	public Player(float x, float y, InputHandler input) {
 		super(x, y);
 		this.input = input;
+		health = 20;
+	}
+	
+	public int getMaxHealth() {
+		return 200;
+	}
+	
+	public int getHealth() {
+		return (int) ((lifeTicks / 3) % getMaxHealth());
 	}
 
 	public void tick() {
+		super.tick();
+		
 		float xa = 0, ya = 0;
 		
 		if (input.isKeyDown(KeyEvent.VK_W))
@@ -31,6 +43,6 @@ public class Player extends Entity {
 	}
 	
 	public void render(Bitmap b, Camera cam) {
-		Art.mainSpriteSheet.renderSprite(2, 0, b, ((int) x - 8 - (int) cam.getX()), ((int) y - 16 - (int)cam.getY()));
+		Art.spriteSheet.renderSprite(2, 0, b, ((int) x - 8 - (int) cam.getX()), ((int) y - 16 - (int)cam.getY()));
 	}
 }

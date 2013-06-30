@@ -43,11 +43,11 @@ public class Bitmap {
 		}
 	}
 	
-	protected int getPixel(int x, int y) {
+	public int getPixel(int x, int y) {
 		return pixels[x + y * width];
 	}
 	
-	protected void setPixel(int x, int y, int c) {
+	public void setPixel(int x, int y, int c) {
 		pixels[x + y * width] = c;
 	}
 

@@ -20,7 +20,7 @@ public class Camera {
 		this.w = w;
 		this.h = h;
 	}
-	
+
 	public void setBounds(float minX, float minY, float maxX, float maxY) {
 		this.maxX = maxX;
 		this.maxY = maxY;
@@ -65,5 +65,21 @@ public class Camera {
 
 	public void setY(float y) {
 		this.y = y;
+	}
+	
+	public float getW() {
+		return w;
+	}
+
+	public void setW(float w) {
+		this.w = w;
+	}
+
+	public float getH() {
+		return h;
+	}
+
+	public void setH(float h) {
+		this.h = h;
 	}
 }

@@ -8,8 +8,8 @@ import com.dazkins.triad.gfx.bitmap.Bitmap;
 import com.dazkins.triad.gfx.Camera;
 
 public class World {
-	public final int MWIDTH = 40;
-	public final int MHEIGHT = 40;
+	public final int MWIDTH = 400;
+	public final int MHEIGHT = 400;
 	private byte[] tiles;
 	private ArrayList<Entity>[] entities = new ArrayList[MWIDTH * MHEIGHT];
 	
@@ -31,11 +31,16 @@ public class World {
 	}
 	
 	public void render(Bitmap b, Camera cam) {
-		for (int y = 0; y < MHEIGHT; y++) {
-			for (int x = 0; x < MWIDTH; x++) {
+		int camx0 = (int) cam.getX() >> 4;
+		int camy0 = (int) cam.getY() >> 4;
+		int camx1 = camx0 + ((int) cam.getW() >> 4);
+		int camy1 = camy0 + ((int) cam.getH() >> 4);
+		
+		for (int y = camy0; y < camy1 + 2; y++) {
+			for (int x = camx0; x < camx1 + 2; x++) {
 				Tile.tiles[tiles[x + y * MWIDTH]].render(b, (int) (x * Tile.tileSize - cam.getX()), (int) (y * Tile.tileSize - cam.getY()));
 			}
-			for (int x = 0; x < MWIDTH; x++) {
+			for (int x = camx0; x < camx1; x++) {
 				ArrayList<Entity> list = entities[x + y * MWIDTH];
 				for (int i = 0; i < list.size(); i++) {
 					list.get(i).render(b, cam);
