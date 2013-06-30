@@ -1,4 +1,4 @@
-package com.dazkins.triad.gfx;
+package com.dazkins.triad.gfx.bitmap;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -6,15 +6,21 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Bitmap {
-	private int width, height;
-	private int[] pixels;
+	protected int width, height;
+	protected int[] pixels;
+
+	public Bitmap(int w, int h) {
+		width = w;
+		height = h;
+		pixels = new int[w * h];
+	}
 
 	public Bitmap(int w, int h, int[] p) {
 		width = w;
 		height = h;
 		pixels = Arrays.copyOf(p, p.length);
 	}
-	
+
 	public Bitmap(int w, int h, int c) {
 		width = w;
 		height = h;
@@ -36,6 +42,14 @@ public class Bitmap {
 			pixels[i] = r.nextInt(0xFFFFFF);
 		}
 	}
+	
+	protected int getPixel(int x, int y) {
+		return pixels[x + y * width];
+	}
+	
+	protected void setPixel(int x, int y, int c) {
+		pixels[x + y * width] = c;
+	}
 
 	public void blit(Bitmap b, int xp, int yp) {
 		int x0 = xp;
@@ -51,15 +65,15 @@ public class Bitmap {
 			x1 = width;
 		if (y1 > height)
 			y1 = height;
-		
+
 		for (int x = x0; x < x1; x++) {
 			int xPixel = x - xp;
 			for (int y = y0; y < y1; y++) {
 				int yPixel = y - yp;
-				int c = b.pixels[xPixel + yPixel * b.width];
-				if(c != 0xFFFF00FF)
-					pixels[x + y * width] = c;
+				int c = b.getPixel(xPixel, yPixel);
+				if (c != 0xFFFF00FF)
+					setPixel(x, y, c);
 			}
 		}
 	}
- }
+}

@@ -10,15 +10,15 @@ import javax.swing.JFrame;
 
 import com.dazkins.triad.game.Game;
 import com.dazkins.triad.gfx.Art;
-import com.dazkins.triad.gfx.Bitmap;
+import com.dazkins.triad.gfx.bitmap.Bitmap;
 import com.dazkins.triad.input.InputHandler;
 
 public class Triad extends Canvas implements Runnable {
 	private boolean running;
 	private final String title = "Triad Pre-Alpha";
-	public final int WIDTH = 320;
+	public final int WIDTH = 360;
 	public final int HEIGHT = 180;
-	private final int SCALE = 4;
+	private final int SCALE = 3;
 	
 	private BufferedImage screenImage;
 	private Bitmap screenBitmap;
@@ -30,7 +30,7 @@ public class Triad extends Canvas implements Runnable {
 		Triad mc = new Triad();
 		JFrame frame = new JFrame(mc.title);
 		
-		frame.setSize(new Dimension(mc.WIDTH, mc.HEIGHT));
+		frame.setSize(new Dimension(mc.WIDTH * mc.SCALE, mc.HEIGHT * mc.SCALE));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(mc);
 		frame.setResizable(false);

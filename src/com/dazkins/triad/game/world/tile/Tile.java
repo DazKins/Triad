@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.dazkins.triad.file.DatabaseFile;
 import com.dazkins.triad.gfx.Art;
-import com.dazkins.triad.gfx.Bitmap;
+import com.dazkins.triad.gfx.bitmap.Bitmap;
 
 public class Tile {
 	public static final int tileSize = 16;

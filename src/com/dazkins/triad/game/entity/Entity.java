@@ -1,6 +1,6 @@
 package com.dazkins.triad.game.entity;
 
-import com.dazkins.triad.gfx.Bitmap;
+import com.dazkins.triad.gfx.bitmap.Bitmap;
 import com.dazkins.triad.gfx.Camera;
 
 public abstract class Entity {

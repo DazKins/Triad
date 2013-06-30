@@ -31,14 +31,14 @@ public class Camera {
 	public void lockCameraToEntity(Entity e) {
 		if (x != e.getX() - w / 2 || y != e.getY() - h / 2) {
 			float xa, ya;
-			float opp = (x + w / 2) - e.getX();
-			float adj = (y + h / 2) - e.getY();
+			float opp = e.getX() - (x + w / 2);
+			float adj = e.getY() - (y + h / 2);
 			float len = (float) Math.sqrt(opp * opp + adj * adj);
-			xa = opp / len;
-			ya = adj / len;
+			xa = (int) opp / len;
+			ya = (int) adj / len;
 			
-			x += xa;
-			y += ya;
+			x += xa * len * 0.05f;
+			y += ya * len * 0.05f;
 		}
 		
 		if (x < minX) 

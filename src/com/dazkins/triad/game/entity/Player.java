@@ -3,7 +3,7 @@ package com.dazkins.triad.game.entity;
 import java.awt.event.KeyEvent;
 
 import com.dazkins.triad.gfx.Art;
-import com.dazkins.triad.gfx.Bitmap;
+import com.dazkins.triad.gfx.bitmap.Bitmap;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.input.InputHandler;
 
@@ -31,6 +31,6 @@ public class Player extends Entity {
 	}
 	
 	public void render(Bitmap b, Camera cam) {
-		Art.mainSpriteSheet.renderSprite(2, 0, b, (int) (x - 8 - cam.getX()), (int) (y - 16 - cam.getY()));
+		Art.mainSpriteSheet.renderSprite(2, 0, b, ((int) x - 8 - (int) cam.getX()), ((int) y - 16 - (int)cam.getY()));
 	}
 }

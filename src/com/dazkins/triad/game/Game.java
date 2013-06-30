@@ -3,7 +3,7 @@ package com.dazkins.triad.game;
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.Player;
 import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.gfx.Bitmap;
+import com.dazkins.triad.gfx.bitmap.Bitmap;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.input.InputHandler;
 

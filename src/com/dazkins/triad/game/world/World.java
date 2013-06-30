@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.world.tile.Tile;
-import com.dazkins.triad.gfx.Bitmap;
+import com.dazkins.triad.gfx.bitmap.Bitmap;
 import com.dazkins.triad.gfx.Camera;
 
 public class World {

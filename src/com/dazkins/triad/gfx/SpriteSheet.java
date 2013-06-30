@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import com.dazkins.triad.gfx.bitmap.Bitmap;
+
 public class SpriteSheet {
 	private Bitmap[][] sprites;
 	
