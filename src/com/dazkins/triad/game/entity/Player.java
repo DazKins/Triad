@@ -43,6 +43,6 @@ public class Player extends Entity {
 	}
 	
 	public void render(Bitmap b, Camera cam) {
-		Art.spriteSheet.renderSprite(2, 0, b, ((int) x - 8 - (int) cam.getX()), ((int) y - 16 - (int)cam.getY()));
+		Art.spriteSheet.renderSprite(((int) (lifeTicks / 10) % 3) + 2, 0, b, ((int) x - 8 - (int) cam.getX()), ((int) y - 16 - (int)cam.getY()));
 	}
 }
