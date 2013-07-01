@@ -1,7 +1,7 @@
 package com.dazkins.triad.game.gui;
 
 import com.dazkins.triad.Triad;
-import com.dazkins.triad.game.entity.Player;
+import com.dazkins.triad.game.entity.mob.Player;
 import com.dazkins.triad.gfx.Art;
 import com.dazkins.triad.gfx.bitmap.Bitmap;
 import com.dazkins.triad.input.InputHandler;

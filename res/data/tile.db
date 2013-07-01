@@ -1,2 +1,2 @@
-[ID] 1 [TX] 0 [TY] 0 [COL] false [NAME] grass
-[ID] 2 [TX] 1 [TY] 0 [COL] false [NAME] stone
+[ID] 1 [TX] 0 [TY] 0 [NAME] "grass"
+[ID] 2 [TX] 1 [TY] 0 [NAME] "stone"

@@ -1,28 +1,24 @@
-package com.dazkins.triad.game.entity;
+package com.dazkins.triad.game.entity.mob;
 
 import java.awt.event.KeyEvent;
 
+import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.gfx.Art;
 import com.dazkins.triad.gfx.bitmap.Bitmap;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.input.InputHandler;
 
-public class Player extends Entity {
+public class Player extends Mob {
 	private InputHandler input;
-	private int health;
 	
 	public Player(float x, float y, InputHandler input) {
-		super(x, y);
+		super(x, y, 0, 20);
 		this.input = input;
-		health = 20;
+		System.out.println(name);
 	}
 	
 	public int getMaxHealth() {
-		return 200;
-	}
-	
-	public int getHealth() {
-		return (int) ((lifeTicks / 3) % getMaxHealth());
+		return 20;
 	}
 
 	public void tick() {
@@ -43,6 +39,6 @@ public class Player extends Entity {
 	}
 	
 	public void render(Bitmap b, Camera cam) {
-		Art.spriteSheet.renderSprite(((int) (lifeTicks / 10) % 3) + 2, 0, b, ((int) x - 8 - (int) cam.getX()), ((int) y - 16 - (int)cam.getY()));
+		Art.spriteSheet.renderSprite(((int) (lifeTicks / 10) % 2) + 3, 0, b, ((int) x - 8 - (int) cam.getX()), ((int) y - 16 - (int)cam.getY()));
 	}
 }

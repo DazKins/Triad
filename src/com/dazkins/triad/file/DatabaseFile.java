@@ -20,17 +20,10 @@ public class DatabaseFile {
 	}
 
 	private static String dataType(String s) {
-		boolean numerical = true;
-		char[] chars = s.toCharArray();
-		for (int i = 0; i < chars.length; i++) {
-			if (!((int) chars[i] >= (int) '0' && (int) chars[i] <= (int) '9')) {
-				numerical = false;
-			}
-		}
-		if (numerical)
-			return "int";
-		else
+		if (s.startsWith("\""))
 			return "string";
+		else
+			return "int";
 	}
 
 	public void loadDatabaseFile() throws IOException {
@@ -51,8 +44,9 @@ public class DatabaseFile {
 					String dt = dataType(nodeValue);
 					if(dt == "int")
 						map.put(tag, Integer.parseInt(nodeValue));
-					else if(dt == "string")
-						map.put(tag, nodeValue);
+					else if(dt == "string") {
+						map.put(tag, nodeValue.replace("\"", ""));
+					}
 				}
 			}
 			tags.add(map);

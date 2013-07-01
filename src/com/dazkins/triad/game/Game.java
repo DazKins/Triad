@@ -1,7 +1,7 @@
 package com.dazkins.triad.game;
 
 import com.dazkins.triad.Triad;
-import com.dazkins.triad.game.entity.Player;
+import com.dazkins.triad.game.entity.mob.Player;
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.PlayerGui;
 import com.dazkins.triad.game.world.World;

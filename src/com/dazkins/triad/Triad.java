@@ -16,8 +16,8 @@ import com.dazkins.triad.input.InputHandler;
 public class Triad extends Canvas implements Runnable {
 	private boolean running;
 	private final String title = "Triad Pre-Alpha";
-	public final int WIDTH = 360;
-	public final int HEIGHT = 180;
+	public final int WIDTH = 460;
+	public final int HEIGHT = 280;
 	private final int SCALE = 3;
 	
 	private BufferedImage screenImage;
