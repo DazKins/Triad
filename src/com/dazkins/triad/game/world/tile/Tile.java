@@ -11,17 +11,19 @@ public class Tile {
 	private byte id;
 	private String name;
 	private int tx, ty;
+	private boolean col;
 	public static Tile[] tiles = new Tile[256];
 
 	static {
 		loadTileDatabase("res/data/tile.db");
 	}
 
-	public Tile(byte i, String s, int tex, int tey) {
+	public Tile(byte i, String s, int tex, int tey, boolean c) {
 		name = s;
 		tx = tex;
 		ty = tey;
 		id = i;
+		col = c;
 	}
 
 	public void render(Bitmap b, int x, int y) {
@@ -41,7 +43,8 @@ public class Tile {
 			String s = (String) dbs.tags.get(i).get("NAME");
 			int tex = (Integer) dbs.tags.get(i).get("TX");
 			int tey = (Integer) dbs.tags.get(i).get("TY");
-			Tile t = new Tile(id, s, tex, tey);
+			boolean col = (Boolean) dbs.tags.get(i).get("COL");
+			Tile t = new Tile(id, s, tex, tey, col);
 			tiles[id] = t;
 		}
 	}

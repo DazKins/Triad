@@ -22,6 +22,8 @@ public class DatabaseFile {
 	private static String dataType(String s) {
 		if (s.startsWith("\""))
 			return "string";
+		else if (s.startsWith("$"))
+			return "bool";
 		else
 			return "int";
 	}
@@ -42,11 +44,12 @@ public class DatabaseFile {
 					String tag = node.replace("[", "").replace("]", "");
 					String nodeValue = nodes[u + 1];
 					String dt = dataType(nodeValue);
-					if(dt == "int")
+					if (dt == "int")
 						map.put(tag, Integer.parseInt(nodeValue));
-					else if(dt == "string") {
+					else if (dt == "string")
 						map.put(tag, nodeValue.replace("\"", ""));
-					}
+					else if (dt == "bool")
+						map.put(tag, Boolean.parseBoolean(nodeValue.replace("$", "")));
 				}
 			}
 			tags.add(map);

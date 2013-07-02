@@ -49,6 +49,11 @@ public class World {
 		}
 	}
 	
+	public Tile getTile(int x, int y) {
+		if (x < 0 || y < 0 || x > MWIDTH || y > MHEIGHT) return null;
+		return Tile.tiles[tiles[x + y * MWIDTH]];
+	}
+	
 	public void tick() {
 		for (int i = 0; i < entities.length; i++) {
 			ArrayList<Entity> list = entities[i];

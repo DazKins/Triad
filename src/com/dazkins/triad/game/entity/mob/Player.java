@@ -2,19 +2,19 @@ package com.dazkins.triad.game.entity.mob;
 
 import java.awt.event.KeyEvent;
 
-import com.dazkins.triad.game.entity.mob.Mob;
+import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Art;
-import com.dazkins.triad.gfx.bitmap.Bitmap;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.bitmap.Bitmap;
 import com.dazkins.triad.input.InputHandler;
+import com.dazkins.triad.math.AABB;
 
 public class Player extends Mob {
 	private InputHandler input;
 	
-	public Player(float x, float y, InputHandler input) {
-		super(x, y, 0, 20);
+	public Player(World w, float x, float y, InputHandler input) {
+		super(w, x, y, 0, 20);
 		this.input = input;
-		System.out.println(name);
 	}
 	
 	public int getMaxHealth() {
@@ -40,5 +40,9 @@ public class Player extends Mob {
 	
 	public void render(Bitmap b, Camera cam) {
 		Art.spriteSheet.renderSprite(((int) (lifeTicks / 10) % 2) + 3, 0, b, ((int) x - 8 - (int) cam.getX()), ((int) y - 16 - (int)cam.getY()));
+	}
+
+	public AABB getAABB() {
+		return new AABB(x, y - 16, x + 16, y);
 	}
 }

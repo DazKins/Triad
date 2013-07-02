@@ -1,2 +1,2 @@
-[ID] 1 [TX] 0 [TY] 0 [NAME] "grass"
-[ID] 2 [TX] 1 [TY] 0 [NAME] "stone"
+[ID] 1 [TX] 0 [TY] 0 [COL] $true [NAME] "grass"
+[ID] 2 [TX] 1 [TY] 0 [COL] $true [NAME] "stone"

@@ -4,21 +4,23 @@ import java.io.IOException;
 import java.util.Random;
 
 import com.dazkins.triad.file.DatabaseFile;
+import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.bitmap.Bitmap;
+import com.dazkins.triad.math.AABB;
 
 public abstract class Entity {
+	protected static DatabaseFile entityDatabase;
 	private static Random rand;
 	
 	protected float x, y;
 	protected long lifeTicks;
 	protected String name;
+	protected World world;
 	
-	protected int globalID;
+	protected int globalID; // TODO: Implement working solution to generating globalID
 	protected int individualID;
 	protected int databaseFileReference;
-	
-	protected static DatabaseFile entityDatabase;
 	
 	static {
 		rand = new Random();
@@ -30,9 +32,10 @@ public abstract class Entity {
 		}
 	}
 
-	public Entity(float x, float y, int dfr) {
+	public Entity(World w, float x, float y, int dfr) {
 		this.x = x;
 		this.y = y;
+		this.world = w;
 		individualID = rand.nextInt();
 		loadEntityData(dfr);
 	}
@@ -69,4 +72,6 @@ public abstract class Entity {
 	}
 	
 	public abstract void render(Bitmap b, Camera cam);
+	
+	public abstract AABB getAABB();
 }

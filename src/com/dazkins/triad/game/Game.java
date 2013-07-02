@@ -20,7 +20,7 @@ public class Game {
 	public Game(Triad triad, InputHandler i) {
 		world = new World();
 		input = i;
-		player = new Player(0, 16, input);
+		player = new Player(world, 0, 16, input);
 		world.addEntity(player);
 		this.triad = triad;
 		cam = new Camera(input, 0, 0, triad.WIDTH, triad.HEIGHT);
