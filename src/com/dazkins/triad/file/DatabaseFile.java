@@ -54,5 +54,6 @@ public class DatabaseFile {
 			}
 			tags.add(map);
 		}
+		fr.close();
 	}
 }

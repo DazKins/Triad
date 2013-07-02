@@ -32,10 +32,12 @@ public class Tile {
 
 	private static void loadTileDatabase(String path) {
 		DatabaseFile dbs = null;
+		
 		try {
 			dbs = new DatabaseFile(path);
 		} catch (IOException e) {
 			e.printStackTrace();
+			return;
 		}
 
 		for (int i = 0; i < dbs.tags.size(); i++) {
