@@ -43,6 +43,6 @@ public class Player extends Mob {
 	}
 
 	public AABB getAABB() {
-		return new AABB(x, y - 16, x + 16, y);
+		return new AABB(x -8, y - 3, x + 8, y);
 	}
 }

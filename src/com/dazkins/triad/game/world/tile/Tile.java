@@ -3,10 +3,14 @@ package com.dazkins.triad.game.world.tile;
 import java.io.IOException;
 
 import com.dazkins.triad.file.DatabaseFile;
+import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Art;
 import com.dazkins.triad.gfx.bitmap.Bitmap;
+import com.dazkins.triad.math.AABB;
 
 public class Tile {
+	private static DatabaseFile dbs = null;
+	
 	public static final int tileSize = 16;
 	private byte id;
 	private String name;
@@ -24,6 +28,18 @@ public class Tile {
 		ty = tey;
 		id = i;
 		col = c;
+	}
+	
+	public AABB getAABB(World w, int x, int y) {
+		int x0 = ((Integer) dbs.tags.get(id - 1).get("AABB.x0")) + (x << 4);
+		int y0 = ((Integer) dbs.tags.get(id - 1).get("AABB.y0")) + (y << 4);
+		int x1 = ((Integer) dbs.tags.get(id - 1).get("AABB.x1")) + (x << 4);
+		int y1 = ((Integer) dbs.tags.get(id - 1).get("AABB.y1")) + (y << 4);
+		return new AABB(x0, y0, x1, y1);
+	}
+	
+	public boolean isCollidable() {
+		return col;
 	}
 
 	public void render(Bitmap b, int x, int y) {
@@ -49,5 +65,9 @@ public class Tile {
 			Tile t = new Tile(id, s, tex, tey, col);
 			tiles[id] = t;
 		}
+	}
+	
+	public String toString() {
+		return name;
 	}
 }

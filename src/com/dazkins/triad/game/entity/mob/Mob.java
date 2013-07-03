@@ -37,8 +37,18 @@ public abstract class Mob extends Entity {
 		
 		for (int x = x0; x < x1; x++) {
 			for (int y = y0; y < y1; y++) {
-				
+				if (world.getTile(x, y).isCollidable()) {
+					AABB taabb = world.getTile(x, y).getAABB(world, x, y);
+					if (aabb.shifted(xa, 0).intersects(taabb)) {
+						xa = 0;
+					}
+					if (aabb.shifted(0, ya).intersects(taabb)) {
+						ya = 0;
+					}
+				}
 			}
 		}
+		
+		super.move(xa, ya);
 	}
 }

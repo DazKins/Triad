@@ -16,7 +16,7 @@ public class World {
 	public World() {
 		tiles = new byte[MWIDTH * MHEIGHT];
 		for (int i = 0; i < tiles.length; i++) {
-			tiles[i] = 1;
+			tiles[i] = (byte) ((i + 3) % 17 == 0 ? 2 : 1);
 		}
 		for (int i = 0; i < entities.length; i++) {
 			entities[i] = new ArrayList<Entity>();

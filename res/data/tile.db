@@ -1,2 +1,2 @@
-[ID] 1 [TX] 0 [TY] 0 [COL] $true [NAME] "grass"
-[ID] 2 [TX] 1 [TY] 0 [COL] $true [NAME] "stone"
+[ID] 1 [TX] 0 [TY] 0 [COL] $false [NAME] "grass" [AABB.x0] 0 [AABB.y0] 0 [AABB.x1] 16 [AABB.y1] 16 
+[ID] 2 [TX] 1 [TY] 0 [COL] $true [NAME] "stone" [AABB.x0] 0 [AABB.y0] 0 [AABB.x1] 16 [AABB.y1] 16 
