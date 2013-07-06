@@ -1,6 +1,8 @@
 package com.dazkins.triad.game.world.tile;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.dazkins.triad.file.DatabaseFile;
 import com.dazkins.triad.game.world.World;
@@ -47,7 +49,7 @@ public class Tile {
 	}
 
 	private static void loadTileDatabase(String path) {
-		DatabaseFile dbs = null;
+		dbs = null;
 		
 		try {
 			dbs = new DatabaseFile(path);

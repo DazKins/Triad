@@ -1,17 +1,49 @@
 package com.dazkins.triad.game.world;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import com.dazkins.triad.file.DatabaseFile;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.world.tile.Tile;
-import com.dazkins.triad.gfx.bitmap.Bitmap;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.bitmap.Bitmap;
 
 public class World {
-	public final int MWIDTH = 400;
-	public final int MHEIGHT = 400;
+	private static DatabaseFile globalWorldDatabase = null;
+	
+	public DatabaseFile worldDB;
+	public int MWIDTH = 400;
+	public int MHEIGHT = 400;
 	private byte[] tiles;
 	private ArrayList<Entity>[] entities = new ArrayList[MWIDTH * MHEIGHT];
+	
+	static {
+		loadWorldDatabase();
+	}
+	
+	private static void loadWorldDatabase() {
+		try {
+			globalWorldDatabase = new DatabaseFile("res/data/worlds.db");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for (int i = 0; i < globalWorldDatabase.tags.size(); i++) {
+			loadWorldFromFile("res/data/worlds/" + (String) globalWorldDatabase.tags.get(i).get("PATH"), (Integer) globalWorldDatabase.tags.get(i).get("INDEX"));
+		}
+	}
+	
+	public static World loadWorldFromFile(String p, int i) {
+		World w = new World();
+		try {
+			w.worldDB = new DatabaseFile(p);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		w.MHEIGHT = (int) w.worldDB.tags.get(0).get("HEIGHT");
+		w.MWIDTH = (int) w.worldDB.tags.get(0).get("WIDTH");
+		return w;
+	}
 	
 	public World() {
 		tiles = new byte[MWIDTH * MHEIGHT];

@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import sun.misc.BASE64Decoder;
+
 public class DatabaseFile {
 	public List<Map<String, Object>> tags = new ArrayList<Map<String, Object>>();;
 	private String path;
@@ -28,12 +30,19 @@ public class DatabaseFile {
 			return "int";
 	}
 
+	@SuppressWarnings("resource")
 	public void loadDatabaseFile() throws IOException {
 		File f = new File(path);
 		FileReader fr = new FileReader(f);
 		char[] chars = new char[(int) f.length()];
 		fr.read(chars);
 		String content = new String(chars);
+		if (!content.startsWith("enc ")) {
+			throw new RuntimeException("File not correctly encrypted, please use the provided encrypter!");
+		}
+		content = content.replace("enc ", "");
+		BASE64Decoder be = new BASE64Decoder();
+		content = new String(be.decodeBuffer(content));
 		String[] lines = content.split(System.getProperty("line.separator"));
 		for (int i = 0; i < lines.length; i++) {
 			Map<String, Object> map = new HashMap<String, Object>();
