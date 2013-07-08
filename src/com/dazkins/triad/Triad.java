@@ -8,10 +8,10 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
-import com.dazkins.triad.game.Game;
+import com.dazkins.triad.game.GameState;
+import com.dazkins.triad.game.GameStatePlaying;
 import com.dazkins.triad.gfx.Art;
 import com.dazkins.triad.gfx.bitmap.Bitmap;
-import com.dazkins.triad.input.InputHandler;
 
 public class Triad extends Canvas implements Runnable {
 	private boolean running;
@@ -23,8 +23,7 @@ public class Triad extends Canvas implements Runnable {
 	private BufferedImage screenImage;
 	private Bitmap screenBitmap;
 
-	private Game game;
-	private InputHandler input;
+	private GameState currentState;
 	
 	public static void main(String args[]) {
 		Triad mc = new Triad();
@@ -48,13 +47,11 @@ public class Triad extends Canvas implements Runnable {
 		
 		if(!Art.init())
 			System.out.println("Failed to initialize art!");
-		input = new InputHandler();
-		game = new Game(this, input);
+		currentState = new GameStatePlaying();
+		currentState.init(this);
 		
 		screenImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		screenBitmap = new Bitmap(screenImage);
-		
-		addKeyListener(input);
 	}
 	
 	private void stop() {
@@ -105,7 +102,7 @@ public class Triad extends Canvas implements Runnable {
 		
 		Graphics g = bs.getDrawGraphics();
 		
-		game.render(screenBitmap);
+		currentState.render(screenBitmap);
 		
 		g.drawImage(screenImage, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
 		
@@ -114,6 +111,6 @@ public class Triad extends Canvas implements Runnable {
 	}
 
 	private void tick() {
-		game.tick();
+		currentState.tick();
 	}
 }

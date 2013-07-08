@@ -22,7 +22,6 @@ public abstract class MainFile {
 		s = s.replace("enc ", "");
 		BASE64Decoder be = new BASE64Decoder();
 		s = new String(be.decodeBuffer(s));
-		System.out.println(s);
 		return s;
 	}
 	
