@@ -6,6 +6,7 @@ import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.PlayerGui;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.bitmap.Bitmap;
 import com.dazkins.triad.input.InputHandler;
 
@@ -37,5 +38,6 @@ public class Game {
 	public void render(Bitmap b) {
 		world.render(b, cam);
 		gui.render(b);
+		Font.drawString(b, "Testing 1337", 0, 0);
 	}
 }
