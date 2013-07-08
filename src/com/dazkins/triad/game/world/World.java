@@ -2,6 +2,8 @@ package com.dazkins.triad.game.world;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import com.dazkins.triad.file.DatabaseFile;
 import com.dazkins.triad.game.entity.Entity;
@@ -36,7 +38,7 @@ public class World {
 	public static World loadWorldFromFile(String p, int i) {
 		World w = new World();
 		try {
-			w.worldDB = new DatabaseFile(p);
+			w.worldDB = new DatabaseFile(p + "_metadata.db");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -74,6 +76,16 @@ public class World {
 			}
 			for (int x = camx0; x < camx1; x++) {
 				ArrayList<Entity> list = entities[x + y * MWIDTH];
+				Collections.sort(list, new Comparator<Entity>() {
+					public int compare(Entity e0, Entity e1) {
+						if (e1.getY() < e0.getY())
+							return 1;
+						if (e1.getY() > e0.getY())
+							return -1;
+						return 0;
+					}
+					
+				});
 				for (int i = 0; i < list.size(); i++) {
 					list.get(i).render(b, cam);
 				}
@@ -99,11 +111,18 @@ public class World {
 				int x1 = (int) e.getX() >> 4;
 				int y1 = (int) e.getY() >> 4;
 				
+				if (x1 < 0) 
+					x1 = 0;
+				if (x1 > MWIDTH)
+					x1 = MWIDTH;
+				if (y1 < 0)
+					y1 = 0;
+				if (y1 > MHEIGHT)
+					y1 = MHEIGHT;
+				
 				if(x0 != x1 || y0 != y1) {
-					if (x1 > 0 && y1 > 0 && x1 < MWIDTH && y1 < MHEIGHT) {
-						list.remove(e);
-						entities[x1 + y1 * MWIDTH].add(e);
-					}
+					list.remove(e);
+					entities[x1 + y1 * MWIDTH].add(e);
 				}
 			}
 		}
