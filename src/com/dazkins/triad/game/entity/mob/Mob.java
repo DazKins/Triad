@@ -7,8 +7,8 @@ import com.dazkins.triad.math.AABB;
 public abstract class Mob extends Entity {
 	protected int health;
 	
-	public Mob(World w, float x, float y, int dfr, int h) {
-		super(w, x, y, dfr);
+	public Mob(World w, float x, float y, String s, int h) {
+		super(w, x, y, s);
 		health = h;
 	}
 	

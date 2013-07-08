@@ -13,7 +13,7 @@ public class Player extends Mob {
 	private InputHandler input;
 	
 	public Player(World w, float x, float y, InputHandler input) {
-		super(w, x, y, 0, 20);
+		super(w, x, y, "player", 20);
 		this.input = input;
 	}
 	

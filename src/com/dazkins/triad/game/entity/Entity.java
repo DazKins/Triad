@@ -10,8 +10,7 @@ import com.dazkins.triad.gfx.bitmap.Bitmap;
 import com.dazkins.triad.math.AABB;
 
 public abstract class Entity {
-	protected static DatabaseFile entityDatabase;
-	private static Random rand;
+	private static Random rand = new Random();
 	
 	protected float x, y;
 	protected long lifeTicks;
@@ -20,30 +19,20 @@ public abstract class Entity {
 	
 	protected int globalID; // TODO: Implement working solution to generating globalID
 	protected int individualID;
-	protected int databaseFileReference;
 	
-	static {
-		rand = new Random();
-		
-		try {
-			entityDatabase = new DatabaseFile("res/data/entities.db");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	protected DatabaseFile database;
 
-	public Entity(World w, float x, float y, int dfr) {
+	public Entity(World w, float x, float y, String s) {
 		this.x = x;
 		this.y = y;
 		this.world = w;
 		individualID = rand.nextInt();
-		loadEntityData(dfr);
-	}
-	
-	protected void loadEntityData(int dfr) {
-		if (dfr == -1)
-			return;
-		name = (String) entityDatabase.tags.get(dfr).get("NAME");
+		try {
+			database = new DatabaseFile("res/data/entities/entity_" + s + ".db");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		name = (String) database.tags.get(0).get("NAME");
 	}
 	
 	public float getX() {
