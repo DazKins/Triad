@@ -16,6 +16,7 @@ public abstract class Entity {
 	private static Map<Integer, Class> globalIDEntityMap = new HashMap<Integer, Class>();
 	
 	protected float x, y;
+	protected float xa, ya;
 	protected long lifeTicks;
 	protected String name;
 	protected World world;

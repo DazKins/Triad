@@ -25,22 +25,23 @@ public class Player extends Mob {
 	public void tick() {
 		super.tick();
 		
-		float xa = 0, ya = 0;
-		
 		if (input.isKeyDown(KeyEvent.VK_W))
-			ya -= 1;
+			ya = -1;
 		if (input.isKeyDown(KeyEvent.VK_A))
-			xa -= 1;
+			xa = -1;
 		if (input.isKeyDown(KeyEvent.VK_S))
-			ya += 1;
+			ya = 1;
 		if (input.isKeyDown(KeyEvent.VK_D))
-			xa += 1;
+			xa = 1;
+		
+		xa *= 0.85;
+		ya *= 0.85;
 		
 		move(xa, ya);
 	}
 	
 	public void render(Bitmap b, Camera cam) {
-		Art.spriteSheet.renderSprite(((int) (lifeTicks / 10) % 2) + 3, 0, b, ((int) x - 8 - (int) cam.getX()), ((int) y - 16 - (int)cam.getY()));
+		Art.spriteSheet.renderSprite(((int) (lifeTicks / 10) % 2) + 3, 0, b, (int) (x - 8 - cam.getX()), (int) (y - 16 - cam.getY()));
 		Font.drawString(b, name, (int) (x - ((name.length() * 8) / 2) - cam.getX()), (int) (y - 24 - cam.getY()));
 	}
 

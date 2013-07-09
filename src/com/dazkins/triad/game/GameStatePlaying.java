@@ -8,7 +8,7 @@ import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.bitmap.Bitmap;
 import com.dazkins.triad.input.InputHandler;
-
+ 
 public class GameStatePlaying implements GameState {
 	private Triad triad;
 	private World world;
@@ -33,6 +33,7 @@ public class GameStatePlaying implements GameState {
 	public void tick() {
 		world.tick();
 		cam.lockCameraToEntity(player);
+		gui.tick();
 	}
 	
 	public void render(Bitmap b) {

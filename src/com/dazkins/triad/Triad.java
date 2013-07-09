@@ -16,8 +16,8 @@ import com.dazkins.triad.gfx.bitmap.Bitmap;
 public class Triad extends Canvas implements Runnable {
 	private boolean running;
 	private final String title = "Triad Pre-Alpha";
-	public final int WIDTH = 460;
-	public final int HEIGHT = 280;
+	public final int WIDTH = 424;
+	public final int HEIGHT = 240;
 	private final int SCALE = 3;
 	
 	private BufferedImage screenImage;
