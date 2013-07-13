@@ -1,57 +1,52 @@
 package com.dazkins.triad;
 
-import java.awt.Canvas;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
-
-import javax.swing.JFrame;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.GameState;
 import com.dazkins.triad.game.GameStatePlaying;
-import com.dazkins.triad.gfx.Art;
-import com.dazkins.triad.gfx.bitmap.Bitmap;
+import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.gfx.GLRenderer;
 
-public class Triad extends Canvas implements Runnable {
+public class Triad {
 	private boolean running;
 	private final String title = "Triad Pre-Alpha";
-	public final int WIDTH = 424;
-	public final int HEIGHT = 240;
-	private final int SCALE = 3;
-	
-	private BufferedImage screenImage;
-	private Bitmap screenBitmap;
+	public final int WIDTH = 1280;
+	public final int HEIGHT = 720;
 
 	private GameState currentState;
 	
 	public static void main(String args[]) {
 		Triad mc = new Triad();
-		JFrame frame = new JFrame(mc.title);
-		
-		frame.setSize(new Dimension(mc.WIDTH * mc.SCALE, mc.HEIGHT * mc.SCALE));
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(mc);
-		frame.setResizable(false);
-		frame.setVisible(true);
-		frame.pack();
-		
 		mc.start();
 	}
 	
 	public Triad() {
-		Dimension size = new Dimension(WIDTH * SCALE, HEIGHT * SCALE);
-		setPreferredSize(size);
-		setMinimumSize(size);
-		setMaximumSize(size);
 		
-		if(!Art.init())
-			System.out.println("Failed to initialize art!");
 		currentState = new GameStatePlaying();
 		currentState.init(this);
 		
-		screenImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-		screenBitmap = new Bitmap(screenImage);
+		try {
+			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
+			Display.setResizable(false);
+			Display.create();
+		} catch (LWJGLException e) {
+			e.printStackTrace();
+		}
+		
+		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
+		GL11.glLoadIdentity();
+		GL11.glOrtho(0, WIDTH, 0, HEIGHT, -1.0f, 1.0f);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		
+		if(!Image.init())
+			System.out.println("Failed to initialize art!");
+//		GL11.glBindTexture(GL11.GL_TEXTURE_2D, Image.spriteSheet.texID);
 	}
 	
 	private void stop() {
@@ -60,7 +55,7 @@ public class Triad extends Canvas implements Runnable {
 
 	private void start() {
 		running = true;
-		new Thread(this).start();
+		this.run();
 	}
 
 	public void run() {
@@ -93,24 +88,17 @@ public class Triad extends Canvas implements Runnable {
 	}
 
 	private void render() {
-		BufferStrategy bs = getBufferStrategy();
-		
-		if (bs == null) {
-			createBufferStrategy(3);
-			return;
-		}
-		
-		Graphics g = bs.getDrawGraphics();
-		
-		currentState.render(screenBitmap);
-		
-		g.drawImage(screenImage, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
-		
-		g.dispose();
-		bs.show();
+		GLRenderer t = GLRenderer.instance;
+		t.open();
+		currentState.render(t);
+		t.draw();
+		Display.update();
 	}
 
 	private void tick() {
 		currentState.tick();
+		
+		if(Display.isCloseRequested())
+			stop();
 	}
 }

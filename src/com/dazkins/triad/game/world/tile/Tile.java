@@ -6,14 +6,14 @@ import java.util.Map;
 
 import com.dazkins.triad.file.DatabaseFile;
 import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.gfx.Art;
-import com.dazkins.triad.gfx.bitmap.Bitmap;
+import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.gfx.GLRenderer;
 import com.dazkins.triad.math.AABB;
 
 public class Tile {
 	private static DatabaseFile dbs = null;
+	public static final int tileSize = 32;
 	
-	public static final int tileSize = 16;
 	private byte id;
 	private String name;
 	private int tx, ty;
@@ -33,10 +33,10 @@ public class Tile {
 	}
 	
 	public AABB getAABB(World w, int x, int y) {
-		int x0 = ((Integer) dbs.tags.get(id - 1).get("AABB.x0")) + (x << 4);
-		int y0 = ((Integer) dbs.tags.get(id - 1).get("AABB.y0")) + (y << 4);
-		int x1 = ((Integer) dbs.tags.get(id - 1).get("AABB.x1")) + (x << 4);
-		int y1 = ((Integer) dbs.tags.get(id - 1).get("AABB.y1")) + (y << 4);
+		int x0 = ((Integer) dbs.tags.get(id - 1).get("AABB.x0")) + (x * tileSize);
+		int y0 = ((Integer) dbs.tags.get(id - 1).get("AABB.y0")) + (y * tileSize);
+		int x1 = ((Integer) dbs.tags.get(id - 1).get("AABB.x1")) + (x * tileSize);
+		int y1 = ((Integer) dbs.tags.get(id - 1).get("AABB.y1")) + (y * tileSize);
 		return new AABB(x0, y0, x1, y1);
 	}
 	
@@ -44,8 +44,8 @@ public class Tile {
 		return col;
 	}
 
-	public void render(Bitmap b, int x, int y) {
-		Art.spriteSheet.renderSprite(tx, ty, b, x, y);
+	public void render(GLRenderer t, int x, int y) {
+		Image.spriteSheet.renderSprite(t, tx * 16, ty * 16, 16, 16, x, y, tileSize, tileSize);
 	}
 
 	private static void loadTileDatabase(String path) {

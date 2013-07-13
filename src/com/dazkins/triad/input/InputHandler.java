@@ -3,20 +3,28 @@ package com.dazkins.triad.input;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class InputHandler implements KeyListener {
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
+public class InputHandler  {
 	private boolean[] keys = new boolean[65536];
+	private int mouseX, mouseY;
 	
-	public void keyPressed(KeyEvent e) {
-		keys[e.getKeyCode()] = true;
+	public boolean isKeyDown(int k) {
+		return keys[k];
 	}
-
-	public void keyReleased(KeyEvent e) {
-		keys[e.getKeyCode()] = false;
-	}
-
-	public void keyTyped(KeyEvent e) {}
 	
-	public boolean isKeyDown(int key) {
-		return keys[key];
+	public void tick() {
+		while(Keyboard.next()) {
+			if(Keyboard.getEventKeyState()) {
+				keys[Keyboard.getEventKey()] = true;
+
+			} else {
+				keys[Keyboard.getEventKey()] = false;
+			}
+		}
+		
+		mouseX = Mouse.getX();
+		mouseY = Mouse.getY();
 	}
 }
