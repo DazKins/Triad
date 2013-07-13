@@ -28,19 +28,19 @@ public class Image {
 		return true;
 	}
 	
-	public void renderSprite(GLRenderer t, int sx ,int sy, int sw, int sh, int xp, int yp, int w, int h) {
+	public void renderSprite(GLRenderer t, int sx ,int sy, int sw, int sh, int xp, int yp, int w, int h, float a) {
 		float tx0 = (float) sx / (float) width;
 		float ty0 = (float) sy / (float) height;
 		float tx1 = tx0 + ((float) sw / (float) width);
 		float ty1 = ty0 + ((float) sh / (float) height);
 		t.bindTexture(texID);
-		t.addVertex(xp, yp);
+		t.addVertex(xp, yp, 1.0f, 1.0f, 1.0f, a);
 		t.addVertexUV(tx0, ty1);
-		t.addVertex(xp + w, yp);
+		t.addVertex(xp + w, yp, 1.0f, 1.0f, 1.0f, a);
 		t.addVertexUV(tx1, ty1);
-		t.addVertex(xp + w, yp + h);
+		t.addVertex(xp + w, yp + h, 1.0f, 1.0f, 1.0f, a);
 		t.addVertexUV(tx1, ty0);
-		t.addVertex(xp, yp + h);
+		t.addVertex(xp, yp + h, 1.0f, 1.0f, 1.0f, a);
 		t.addVertexUV(tx0, ty0);
 	}
 	

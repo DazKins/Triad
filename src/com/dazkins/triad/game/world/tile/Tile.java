@@ -45,7 +45,7 @@ public class Tile {
 	}
 
 	public void render(GLRenderer t, int x, int y) {
-		Image.spriteSheet.renderSprite(t, tx * 16, ty * 16, 16, 16, x, y, tileSize, tileSize);
+		Image.spriteSheet.renderSprite(t, tx * 16, ty * 16, 16, 16, x, y, tileSize, tileSize, 1.0f);
 	}
 
 	private static void loadTileDatabase(String path) {

@@ -18,9 +18,12 @@ public class PlayerGui extends Gui {
 	public void tick() {
 
 	}
+	
+	int ticks = 0;
 
 	public void render(GLRenderer g) {
-		super.renderGuiBox(g, 0, triad.HEIGHT - 48, triad.WIDTH, 48);
-		super.renderStatusBar(100, 100, 0xFF0000, 32, (float) player.getHealth() / (float) player.getMaxHealth());
+		ticks++;
+		super.renderGuiBox(g, 0, 0, triad.WIDTH, 130);
+		super.renderStatusBar(g, 100, 100, 0xFF0000, 32, (float) player.getHealth() / (float) player.getMaxHealth());
 	}
 }

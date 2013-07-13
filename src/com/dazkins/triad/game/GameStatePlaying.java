@@ -22,7 +22,7 @@ public class GameStatePlaying implements GameState {
 		
 		world = new World();
 		input = new InputHandler();
-		player = new Player(world, 100, 100, input);
+		player = new Player(world, 0, 0, input);
 		world.addEntity(player);
 		cam = new Camera(input, 0, 0, triad.WIDTH, triad.HEIGHT);
 		cam.setBounds(0, 0, world.MWIDTH << 4, world.MHEIGHT << 4);

@@ -9,7 +9,7 @@ public class Font {
 		for (int x = 0; x < lower.length(); x++) {
 			int sx = letters.contains("" + lower.charAt(x)) || lower.charAt(x) == ' ' ? letters.indexOf(lower.charAt(x)) : 43;
 			if (sx >= 0)
-				Image.fontSheet.renderSprite(g, sx * 8, 0, 8, 8, x * 8 + xp, yp, 8, 8);
+				Image.fontSheet.renderSprite(g, sx * 8, 0, 8, 8, x * 8 + xp, yp, 8, 8, 1.0f);
 		}
 	}
 }
