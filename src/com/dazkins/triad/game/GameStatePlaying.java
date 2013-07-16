@@ -4,9 +4,10 @@ import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.mob.Player;
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.PlayerGui;
+import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
-import com.dazkins.triad.gfx.GLRenderer;
 import com.dazkins.triad.input.InputHandler;
  
 public class GameStatePlaying implements GameState {
@@ -23,9 +24,9 @@ public class GameStatePlaying implements GameState {
 		world = new World();
 		input = new InputHandler();
 		player = new Player(world, 0, 0, input);
-		world.addEntity(player);
+//		world.addEntity(player);
 		cam = new Camera(input, 0, 0, triad.WIDTH, triad.HEIGHT);
-		cam.setBounds(0, 0, world.MWIDTH << 4, world.MHEIGHT << 4);
+		cam.setBounds(0, 0, world.nChunksX * Chunk.chunkW * Tile.tileSize, world.nChunksY * Chunk.chunkH * Tile.tileSize);
 		gui = new PlayerGui(triad, input, player);
 	}
 	
@@ -36,8 +37,8 @@ public class GameStatePlaying implements GameState {
 		input.tick();
 	}
 	
-	public void render(GLRenderer g) {
-		world.render(g, cam);
-		gui.render(g);
+	public void render() {
+		world.render(cam);
+		gui.render();
 	}
 }

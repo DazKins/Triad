@@ -1,13 +1,11 @@
 package com.dazkins.triad.game.world.tile;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.dazkins.triad.file.DatabaseFile;
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
-import com.dazkins.triad.gfx.GLRenderer;
 import com.dazkins.triad.math.AABB;
 
 public class Tile {
@@ -44,8 +42,8 @@ public class Tile {
 		return col;
 	}
 
-	public void render(GLRenderer t, int x, int y) {
-		Image.spriteSheet.renderSprite(t, tx * 16, ty * 16, 16, 16, x, y, tileSize, tileSize, 1.0f);
+	public void render(BufferObject b, int x, int y) {
+		Image.spriteSheet.renderSprite(b, tx * 16, ty * 16, 16, 16, x, y, tileSize, tileSize, 1.0f);
 	}
 
 	private static void loadTileDatabase(String path) {
@@ -67,6 +65,10 @@ public class Tile {
 			Tile t = new Tile(id, s, tex, tey, col);
 			tiles[id] = t;
 		}
+	}
+	
+	public byte getID() {
+		return this.id;
 	}
 	
 	public String toString() {

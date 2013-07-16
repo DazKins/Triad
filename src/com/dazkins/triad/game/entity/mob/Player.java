@@ -6,7 +6,6 @@ import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Font;
-import com.dazkins.triad.gfx.GLRenderer;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
 
@@ -40,9 +39,9 @@ public class Player extends Mob {
 		move(xa, ya);
 	}
 	
-	public void render(GLRenderer g, Camera cam) {
-		Image.spriteSheet.renderSprite(g, (((int) (lifeTicks / 10) % 2) + 3) * 16, 0, 16, 16, (int) (x - 16 - cam.getX()), (int) (y - 32 - cam.getY()), 32, 32, 1.0f);
-		Font.drawString(g, name, (int) (x - ((name.length() * 8) / 2) - cam.getX()), (int) (y - cam.getY()));
+	public void render(Camera cam) {
+//		Image.spriteSheet.renderSprite((((int) (lifeTicks / 10) % 2) + 3) * 16, 0, 16, 16, (int) (x - 16 - cam.getX()), (int) (y - 32 - cam.getY()), 32, 32, 1.0f);
+		Font.drawString(name, (int) (x - ((name.length() * 8) / 2) - cam.getX()), (int) (y - cam.getY()));
 	}
 
 	public AABB getAABB() {

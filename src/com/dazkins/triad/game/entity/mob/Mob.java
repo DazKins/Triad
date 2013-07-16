@@ -31,10 +31,10 @@ public abstract class Mob extends Entity {
 			x0 = 0;
 		if (y0 < 0)
 			y0 = 0;
-		if (x1 > world.MWIDTH)
-			x1 = world.MWIDTH;
-		if (y1 > world.MHEIGHT)
-			y1 = world.MHEIGHT;
+//		if (x1 > world.MWIDTH)
+//			x1 = world.MWIDTH;
+//		if (y1 > world.MHEIGHT)
+//			y1 = world.MHEIGHT;
 		
 		for (int x = x0; x < x1; x++) {
 			for (int y = y0; y < y1; y++) {

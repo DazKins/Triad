@@ -7,8 +7,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.GameState;
 import com.dazkins.triad.game.GameStatePlaying;
+import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
-import com.dazkins.triad.gfx.GLRenderer;
 
 public class Triad {
 	private boolean running;
@@ -20,14 +20,10 @@ public class Triad {
 	
 	public static void main(String args[]) {
 		Triad mc = new Triad();
-		mc.start();
+		mc.close();
 	}
 	
 	public Triad() {
-		
-		currentState = new GameStatePlaying();
-		currentState.init(this);
-		
 		try {
 			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 			Display.setResizable(false);
@@ -46,14 +42,17 @@ public class Triad {
 		
 		if(!Image.init())
 			System.out.println("Failed to initialize art!");
-//		GL11.glBindTexture(GL11.GL_TEXTURE_2D, Image.spriteSheet.texID);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, Image.spriteSheet.texID);
+		
+		currentState = new GameStatePlaying();
+		currentState.init(this);
 	}
 	
-	private void stop() {
+	private void open() {
 		running = false;
 	}
 
-	private void start() {
+	private void close() {
 		running = true;
 		this.run();
 	}
@@ -86,12 +85,9 @@ public class Triad {
 			}
 		}
 	}
-
+	
 	private void render() {
-		GLRenderer t = GLRenderer.instance;
-		t.open();
-		currentState.render(t);
-		t.draw();
+		currentState.render();
 		Display.update();
 	}
 
@@ -99,6 +95,6 @@ public class Triad {
 		currentState.tick();
 		
 		if(Display.isCloseRequested())
-			stop();
+			open();
 	}
 }

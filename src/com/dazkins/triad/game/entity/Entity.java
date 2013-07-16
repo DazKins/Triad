@@ -8,7 +8,6 @@ import java.util.Random;
 import com.dazkins.triad.file.DatabaseFile;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
-import com.dazkins.triad.gfx.GLRenderer;
 import com.dazkins.triad.math.AABB;
 
 public abstract class Entity {
@@ -68,7 +67,7 @@ public abstract class Entity {
 		lifeTicks++;
 	}
 	
-	public abstract void render(GLRenderer t, Camera cam);
+	public abstract void render(Camera cam);
 	
 	public abstract AABB getAABB();
 }
