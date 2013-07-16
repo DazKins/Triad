@@ -3,12 +3,14 @@ package com.dazkins.triad.game.world;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Renderer;
+import com.dazkins.triad.math.AABB;
 
 public class Chunk implements Renderer {
 	public static int chunkW = 16, chunkH = 16;
 	
 	private int chunkX, chunkY;
 	private byte[] tiles;
+	private boolean generated;
 	
 	private BufferObject model;
 	
@@ -18,10 +20,8 @@ public class Chunk implements Renderer {
 		
 		tiles = new byte[chunkW * chunkH];
 		for (int i = 0; i < tiles.length; i++) {
-			tiles[i] = 1;
+			tiles[i] = (byte) (i % 7 != 0 ? 1 : 2);
 		}
-		
-		this.generate();
 	}
 	
 	public void setTile(Tile t, int x, int y) {
@@ -45,6 +45,15 @@ public class Chunk implements Renderer {
 			}
 		}
 		model.stop();
+		generated = true;
+	}
+	
+	public AABB getBounds() {
+		return new AABB(chunkX, chunkY, chunkX + (chunkW * Tile.tileSize), chunkY + (chunkH * Tile.tileSize));
+	}
+	
+	public boolean isGenerated() {
+		return generated;
 	}
 	
 	public void tick() {

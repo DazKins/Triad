@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.input.InputHandler;
+import com.dazkins.triad.math.AABB;
 
 public class Camera {
 	private InputHandler input;
@@ -19,6 +20,10 @@ public class Camera {
 		this.input = input;
 		this.w = w;
 		this.h = h;
+	}
+	
+	public AABB getViewportBounds() {
+		return new AABB(x, y, x + w, y + h);
 	}
 
 	public void setBounds(float minX, float minY, float maxX, float maxY) {

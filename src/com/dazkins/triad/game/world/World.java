@@ -14,8 +14,8 @@ public class World {
 	private static DatabaseFile globalWorldDatabase = null;
 
 	public DatabaseFile worldDB;
-	public int nChunksX = 25;
-	public int nChunksY = 25;
+	public int nChunksX = 10;
+	public int nChunksY = 10;
 	private Chunk[] chunks;
 
 	static {
@@ -51,7 +51,13 @@ public class World {
 
 	public void render(Camera cam) {
 		for (int i = 0; i < chunks.length; i++) {
-			chunks[i].render();
+			if (chunks[i].getBounds().intersects(cam.getViewportBounds())) {
+				if (chunks[i].isGenerated()) {
+					chunks[i].render();
+				} else{
+					chunks[i].generate();
+				}
+			}
 		}
 	}
 	
