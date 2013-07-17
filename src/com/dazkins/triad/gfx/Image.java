@@ -29,6 +29,7 @@ public class Image {
 	}
 
 	public void renderSprite(BufferObject model, int sx, int sy, int sw, int sh, int xp, int yp, int w, int h, float a, float z) {
+		model.setTexture(texID);
 		float tx0 = (float) sx / (float) width;
 		float ty0 = (float) sy / (float) height;
 		float tx1 = tx0 + ((float) sw / (float) width);

@@ -44,14 +44,9 @@ public class Triad {
 		
 		if(!Image.init())
 			System.out.println("Failed to initialize art!");
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, Image.spriteSheet.texID);
 		
 		currentState = new GameStatePlaying();
 		currentState.init(this);
-		
-		bo.start();
-		Image.spriteSheet.renderSprite(bo, 32, 0, 16, 16, 100, 100, 32, 32, 1.0f, 5f);
-		bo.stop();
 	}
 	
 	private void open() {
@@ -94,7 +89,6 @@ public class Triad {
 	
 	private void render() {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-		bo.render();
 		currentState.render();
 		Display.update();
 	}
