@@ -1,8 +1,5 @@
 package com.dazkins.triad.gfx;
 
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +34,6 @@ public class BufferObject {
 		compileVBO();
 		generateVBO();
 		closeVBO();
-		System.gc();
 	}
 
 	private void compileVBO() {
@@ -54,16 +50,31 @@ public class BufferObject {
 	private void closeVBO() {
 		rawBuffer = null;
 		dataBuffer = null;
+		System.gc();
+	}
+	
+	public void addVertexWithUV(float x, float y, float z, float u, float v) {
+		if(!editing)
+			throw new RuntimeException("Buffer object not editable!");
+		
+		rawBuffer[vertexCount * 5] = x;
+		rawBuffer[vertexCount * 5 + 1] = y;
+		rawBuffer[vertexCount * 5 + 2] = z;
+		rawBuffer[vertexCount * 5 + 3] = u;
+		rawBuffer[vertexCount * 5 + 4] = v;
+		
+		vertexCount++;
 	}
 	
 	public void addVertexWithUV(float x, float y, float u, float v) {
 		if(!editing)
 			throw new RuntimeException("Buffer object not editable!");
 		
-		rawBuffer[vertexCount * 4] = x;
-		rawBuffer[vertexCount * 4 + 1] = y;
-		rawBuffer[vertexCount * 4 + 2] = u;
-		rawBuffer[vertexCount * 4 + 3] = v;
+		rawBuffer[vertexCount * 5] = x;
+		rawBuffer[vertexCount * 5 + 1] = y;
+		rawBuffer[vertexCount * 5 + 2] = 0.0f;
+		rawBuffer[vertexCount * 5 + 3] = u;
+		rawBuffer[vertexCount * 5 + 4] = v;
 		
 		vertexCount++;
 	}
@@ -73,10 +84,10 @@ public class BufferObject {
 		GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 		
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
-		GL11.glVertexPointer(2, GL11.GL_FLOAT, 16, 0);
-		GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 16, 8);
+		GL11.glVertexPointer(3, GL11.GL_FLOAT, 20, 0);
+		GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 20, 4 * 3);
 		GL11.glDrawArrays(GL11.GL_QUADS, 0, vertexCount);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
 		GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 		GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);

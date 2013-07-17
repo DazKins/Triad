@@ -37,7 +37,7 @@ public class Chunk implements Renderer {
 	}
 	
 	public void generate() {
-		model = new BufferObject(16 * 16 * 4 * 4);
+		model = new BufferObject(16 * 16 * 4 * 5);
 		model.start();
 		for (int x = 0; x < chunkW; x++) {
 			for (int y = 0; y < chunkH; y++) {
