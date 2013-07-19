@@ -22,6 +22,8 @@ public class BufferObject {
 	private boolean editing;
 	private boolean hasTexture;
 	
+	private float xOffset, yOffset;
+	
 	public BufferObject(int size) {
 		rawBuffer = new float[size];
 		dataBuffer = BufferUtils.createFloatBuffer(size);
@@ -60,8 +62,8 @@ public class BufferObject {
 		if(!editing)
 			throw new RuntimeException("Buffer object not editable!");
 		
-		rawBuffer[vertexCount * 5] = x;
-		rawBuffer[vertexCount * 5 + 1] = y;
+		rawBuffer[vertexCount * 5] = x + xOffset;
+		rawBuffer[vertexCount * 5 + 1] = y + yOffset;
 		rawBuffer[vertexCount * 5 + 2] = z;
 		rawBuffer[vertexCount * 5 + 3] = u;
 		rawBuffer[vertexCount * 5 + 4] = v;
@@ -73,8 +75,8 @@ public class BufferObject {
 		if(!editing)
 			throw new RuntimeException("Buffer object not editable!");
 		
-		rawBuffer[vertexCount * 5] = x;
-		rawBuffer[vertexCount * 5 + 1] = y;
+		rawBuffer[vertexCount * 5] = x + xOffset;
+		rawBuffer[vertexCount * 5 + 1] = y + yOffset;
 		rawBuffer[vertexCount * 5 + 2] = 0.0f;
 		rawBuffer[vertexCount * 5 + 3] = u;
 		rawBuffer[vertexCount * 5 + 4] = v;
@@ -93,6 +95,11 @@ public class BufferObject {
 		else if(!hasTexture && t != texID) {
 			throw new RuntimeException("Only one texture per buffer is supported!");
 		}
+	}
+	
+	public void setOffset(float x, float y) {
+		this.xOffset = x;
+		this.yOffset = y;
 	}
 	
 	public void render() {

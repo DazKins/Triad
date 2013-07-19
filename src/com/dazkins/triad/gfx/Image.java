@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 public class Image {
 	public static Image spriteSheet;
@@ -28,16 +29,26 @@ public class Image {
 		return true;
 	}
 
-	public void renderSprite(BufferObject model, int sx, int sy, int sw, int sh, int xp, int yp, int w, int h, float a, float z) {
+	public void renderSprite(BufferObject model, int sx, int sy, int sw, int sh, float xp, float yp, float w, float h, float a, float z) {
 		model.setTexture(texID);
-		float tx0 = (float) sx / (float) width;
-		float ty0 = (float) sy / (float) height;
-		float tx1 = tx0 + ((float) sw / (float) width);
-		float ty1 = ty0 + ((float) sh / (float) height);
-		model.addVertexWithUV(xp, yp, z, tx0, ty0);
-		model.addVertexWithUV(xp + w, yp, z, tx1, ty0);
-		model.addVertexWithUV(xp + w, yp + h, z, tx1, ty1);
-		model.addVertexWithUV(xp, yp + h, z, tx0, ty1);
+		
+		float tx0 = (float) ((float)sx) / (float) width;
+		float ty0 = (float) ((float)sy) / (float) height;
+		float tx1 = tx0 + ((float) ((float)sw) / (float) width);
+		float ty1 = ty0 + ((float) ((float)sh) / (float) height);
+		
+		float xDiff = 0.01f / width;
+		float yDiff = 0.01f / height;
+		
+		tx0 += xDiff;
+		ty0 += yDiff;
+		tx1 -= xDiff;
+		ty1 -= yDiff;
+		
+		model.addVertexWithUV(xp, yp, z, tx0, ty1);
+		model.addVertexWithUV(xp, yp + h, z, tx0, ty0);
+		model.addVertexWithUV(xp + w, yp + h, z, tx1, ty0);
+		model.addVertexWithUV(xp + w, yp, z, tx1, ty1);
 	}
 
 	public Image(String path) throws IOException {

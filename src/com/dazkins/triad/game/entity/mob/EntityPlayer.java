@@ -3,16 +3,14 @@ package com.dazkins.triad.game.entity.mob;
 import org.lwjgl.input.Keyboard;
 
 import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.gfx.Image;
-import com.dazkins.triad.gfx.Camera;
-import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.gfx.model.ModelPlayer;;
 
-public class Player extends Mob {
+public class EntityPlayer extends Mob {
 	private InputHandler input;
 	
-	public Player(World w, float x, float y, InputHandler input) {
+	public EntityPlayer(World w, float x, float y, InputHandler input) {
 		super(w, x, y, "player", 1000);
 		this.input = input;
 	}
@@ -38,13 +36,12 @@ public class Player extends Mob {
 		
 		move(xa, ya);
 	}
-	
-	public void render(Camera cam) {
-//		Image.spriteSheet.renderSprite((((int) (lifeTicks / 10) % 2) + 3) * 16, 0, 16, 16, (int) (x - 16 - cam.getX()), (int) (y - 32 - cam.getY()), 32, 32, 1.0f);
-		Font.drawString(name, (int) (x - ((name.length() * 8) / 2) - cam.getX()), (int) (y - cam.getY()));
-	}
 
 	public AABB getAABB() {
-		return new AABB(x - 8, y - 32, x + 8, y - 26);
+		return new AABB(x, y, x + 32, y + 32);
+	}
+	
+	public void render() {
+		((ModelPlayer)this.getModel()).render(this);
 	}
 }

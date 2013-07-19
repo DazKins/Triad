@@ -9,6 +9,7 @@ import com.dazkins.triad.game.GameState;
 import com.dazkins.triad.game.GameStatePlaying;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.gfx.model.Model;
 
 public class Triad {
 	private boolean running;
@@ -44,6 +45,8 @@ public class Triad {
 		
 		if(!Image.init())
 			System.out.println("Failed to initialize art!");
+		
+		Model.loadModels();
 		
 		currentState = new GameStatePlaying();
 		currentState.init(this);

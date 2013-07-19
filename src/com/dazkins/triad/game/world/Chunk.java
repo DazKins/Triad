@@ -2,10 +2,10 @@ package com.dazkins.triad.game.world;
 
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
-import com.dazkins.triad.gfx.Renderer;
+import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.math.AABB;
 
-public class Chunk implements Renderer {
+public class Chunk {
 	public static int chunkW = 16, chunkH = 16;
 	
 	private int chunkX, chunkY;
@@ -62,9 +62,5 @@ public class Chunk implements Renderer {
 	
 	public void render() {
 		model.render();
-	}
-
-	public int getRenderPass() {
-		return 0;
 	}
 }

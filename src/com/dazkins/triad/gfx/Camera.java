@@ -2,6 +2,8 @@ package com.dazkins.triad.gfx;
 
 import java.awt.event.KeyEvent;
 
+import org.lwjgl.opengl.GL11;
+
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
@@ -20,6 +22,10 @@ public class Camera {
 		this.input = input;
 		this.w = w;
 		this.h = h;
+	}
+	
+	public void attachTranslation() {
+		GL11.glTranslatef(-x, -y, 0);
 	}
 	
 	public AABB getViewportBounds() {

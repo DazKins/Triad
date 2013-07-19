@@ -7,7 +7,7 @@ import java.util.Random;
 
 import com.dazkins.triad.file.DatabaseFile;
 import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.math.AABB;
 
 public abstract class Entity {
@@ -16,7 +16,7 @@ public abstract class Entity {
 	
 	protected float x, y;
 	protected float xa, ya;
-	protected long lifeTicks;
+	public long lifeTicks;
 	protected String name;
 	protected World world;
 	
@@ -42,6 +42,12 @@ public abstract class Entity {
 		}
 	}
 	
+	public abstract void render();
+	
+	protected Model getModel() {
+		return Model.entityModelMap.get(this.getClass());
+	}
+	
 	public float getX() {
 		return x;
 	}
@@ -58,6 +64,14 @@ public abstract class Entity {
 		this.y = y;
 	}
 	
+	public float getXA() {
+		return xa;
+	}
+	
+	public float getYA() {
+		return ya;
+	}
+	
 	public void move(float xa, float ya) {
 		x += xa;
 		y += ya;
@@ -66,8 +80,6 @@ public abstract class Entity {
 	public void tick() {
 		lifeTicks++;
 	}
-	
-	public abstract void render(Camera cam);
 	
 	public abstract AABB getAABB();
 }

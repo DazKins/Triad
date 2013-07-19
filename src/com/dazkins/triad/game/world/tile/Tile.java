@@ -21,6 +21,10 @@ public class Tile {
 	static {
 		loadTileDatabase("res/data/tile.db");
 	}
+	
+	public static float yPosToDepth(float y) {
+		return -((y / tileSize) * 0.01f);
+	}
 
 	public Tile(byte i, String s, int tex, int tey, boolean c) {
 		name = s;
@@ -43,7 +47,7 @@ public class Tile {
 	}
 
 	public void render(BufferObject b, int x, int y) {
-		Image.spriteSheet.renderSprite(b, tx * 16, ty * 16, 16, 16, x, y, tileSize, tileSize, 1.0f, -1f);
+		Image.spriteSheet.renderSprite(b, tx * 16, ty * 16, 16, 16, (float)x, (float)y, (float)tileSize, (float)tileSize, 1.0f, yPosToDepth(y) - 0.01f);
 	}
 
 	private static void loadTileDatabase(String path) {
