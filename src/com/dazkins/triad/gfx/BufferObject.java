@@ -1,17 +1,14 @@
 package com.dazkins.triad.gfx;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Vector;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 
 public class BufferObject {
+	private boolean useVBO;
+	
 	private float[] rawBuffer;
 	private FloatBuffer dataBuffer;
 	
