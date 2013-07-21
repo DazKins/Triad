@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 
 public class BufferObject {
-	private boolean useVBO;
+	private static boolean useVBO = false;
 	
 	private float[] rawBuffer;
 	private FloatBuffer dataBuffer;
@@ -22,20 +22,32 @@ public class BufferObject {
 	private float xOffset, yOffset;
 	
 	public BufferObject(int size) {
-		rawBuffer = new float[size];
-		dataBuffer = BufferUtils.createFloatBuffer(size);
+		if (useVBO) {
+			rawBuffer = new float[size];
+			dataBuffer = BufferUtils.createFloatBuffer(size);
+		} else {
+			ID = GL11.glGenLists(1);
+		}
 	}
 	
 	public void start() {
-		vertexCount = 0;
+		if (useVBO) 
+			vertexCount = 0;
+		else {
+			GL11.glNewList(ID, GL11.GL_COMPILE);
+		}
 		editing = true;
 	}
 	
 	public void stop() {
 		editing = false;
-		compileVBO();
-		generateVBO();
-		closeVBO();
+		if (useVBO) {
+			compileVBO();
+			generateVBO();
+			closeVBO();
+		} else {
+			GL11.glEndList();
+		}
 	}
 
 	private void compileVBO() {
@@ -59,26 +71,36 @@ public class BufferObject {
 		if(!editing)
 			throw new RuntimeException("Buffer object not editable!");
 		
-		rawBuffer[vertexCount * 5] = x + xOffset;
-		rawBuffer[vertexCount * 5 + 1] = y + yOffset;
-		rawBuffer[vertexCount * 5 + 2] = z;
-		rawBuffer[vertexCount * 5 + 3] = u;
-		rawBuffer[vertexCount * 5 + 4] = v;
-		
-		vertexCount++;
+		if (useVBO) {
+			rawBuffer[vertexCount * 5] = x + xOffset;
+			rawBuffer[vertexCount * 5 + 1] = y + yOffset;
+			rawBuffer[vertexCount * 5 + 2] = z;
+			rawBuffer[vertexCount * 5 + 3] = u;
+			rawBuffer[vertexCount * 5 + 4] = v;
+			
+			vertexCount++;
+		} else {
+			GL11.glVertex3f(x + xOffset, y + yOffset, z);
+			GL11.glTexCoord2f(u, v);
+		}
 	}
 	
 	public void addVertexWithUV(float x, float y, float u, float v) {
 		if(!editing)
 			throw new RuntimeException("Buffer object not editable!");
 		
-		rawBuffer[vertexCount * 5] = x + xOffset;
-		rawBuffer[vertexCount * 5 + 1] = y + yOffset;
-		rawBuffer[vertexCount * 5 + 2] = 0.0f;
-		rawBuffer[vertexCount * 5 + 3] = u;
-		rawBuffer[vertexCount * 5 + 4] = v;
-		
-		vertexCount++;
+		if (useVBO) {
+			rawBuffer[vertexCount * 5] = x + xOffset;
+			rawBuffer[vertexCount * 5 + 1] = y + yOffset;
+			rawBuffer[vertexCount * 5 + 2] = 0.0f;
+			rawBuffer[vertexCount * 5 + 3] = u;
+			rawBuffer[vertexCount * 5 + 4] = v;
+			
+			vertexCount++;
+		} else {
+			GL11.glVertex3f(x + xOffset, y + yOffset, 0.0f);
+			GL11.glTexCoord2f(u, v);
+		}
 	}
 	
 	public void setTexture(int t) {
@@ -106,16 +128,20 @@ public class BufferObject {
 		if(GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) != texID)
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, ID);
 		
-		GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-		GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-		
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
-		GL11.glVertexPointer(3, GL11.GL_FLOAT, 20, 0);
-		GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 20, 4 * 3);
-		GL11.glDrawArrays(GL11.GL_QUADS, 0, vertexCount);
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-
-		GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-		GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+		if (useVBO) {
+			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+			GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+			
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
+			GL11.glVertexPointer(3, GL11.GL_FLOAT, 20, 0);
+			GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 20, 4 * 3);
+			GL11.glDrawArrays(GL11.GL_QUADS, 0, vertexCount);
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+	
+			GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+		} else {
+			GL11.glCallList(ID);
+		}
 	}
 }

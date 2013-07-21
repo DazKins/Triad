@@ -23,8 +23,7 @@ public class Triad {
 		Triad mc = new Triad();
 		mc.close();
 	}
-
-	BufferObject bo = new BufferObject(6590);
+	
 	public Triad() {
 		try {
 			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
