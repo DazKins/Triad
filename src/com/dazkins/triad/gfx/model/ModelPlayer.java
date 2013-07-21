@@ -9,7 +9,6 @@ public class ModelPlayer extends Model {
 	private Quad leftArm;
 	
 	public ModelPlayer() {
-		super(10);
 		head = new Quad(18, 14, 2 * 16, 0, 9, 7, 1.0f, 0);
 		quads.add(head);
 		body = new Quad(18, 18, 2 * 16, 7, 9, 9, 1.0f, 0);

@@ -26,7 +26,7 @@ public class Model {
 		offsetY = y;
 	}
 	
-	public Model(int size) {
+	public Model() {
 		quads = new ArrayList();
 	}
 	

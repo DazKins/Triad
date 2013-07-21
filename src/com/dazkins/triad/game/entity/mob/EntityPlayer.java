@@ -35,6 +35,8 @@ public class EntityPlayer extends Mob {
 		ya *= 0.85;
 		
 		move(xa, ya);
+		
+		System.out.println(this.getFacing());
 	}
 
 	public AABB getAABB() {

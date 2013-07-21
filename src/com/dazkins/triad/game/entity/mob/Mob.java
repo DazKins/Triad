@@ -19,6 +19,8 @@ public abstract class Mob extends Entity {
 		return health;
 	}
 	
+	
+	
 	public void move(float xa, float ya) {
 		AABB aabb = this.getAABB();
 		

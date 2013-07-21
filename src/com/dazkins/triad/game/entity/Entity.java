@@ -42,6 +42,23 @@ public abstract class Entity {
 		}
 	}
 	
+	public Facing getFacing() {
+		float absXA = Math.abs(xa);
+		float absYA = Math.abs(ya);
+		
+		if (absXA > absYA) {
+			if (xa < 0)
+				return Facing.LEFT;
+			else
+				return Facing.RIGHT;
+		} else {
+			if (ya < 0)
+				return Facing.DOWN;
+			else
+				return Facing.UP;
+		}
+	}
+	
 	public abstract void render();
 	
 	protected Model getModel() {
