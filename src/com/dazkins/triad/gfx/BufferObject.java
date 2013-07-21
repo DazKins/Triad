@@ -82,8 +82,8 @@ public class BufferObject {
 
 			vertexCount++;
 		} else {
-			GL11.glVertex3f(x + xOffset, y + yOffset, z);
 			GL11.glTexCoord2f(u, v);
+			GL11.glVertex3f(x + xOffset, y + yOffset, z);
 		}
 	}
 
@@ -112,8 +112,9 @@ public class BufferObject {
 		if (editing)
 			throw new RuntimeException("Buffer is still being edited!");
 
-		if (GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) != texID)
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, ID);
+		if (GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) != texID) {
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
+		}
 
 		if (useVBO) {
 			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
