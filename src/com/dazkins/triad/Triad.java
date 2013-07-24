@@ -36,7 +36,7 @@ public class Triad {
 		try {
 			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 			Display.setResizable(true);
-			Display.setTitle("Triad");
+			Display.setTitle(title);
 			Display.setIcon(this.loadIcon("/art/icon.png"));
 			Display.create();
 		} catch (LWJGLException e) {
@@ -149,8 +149,8 @@ public class Triad {
 	private void resyncOpenGL() {
 		WIDTH = Display.getWidth();
 		HEIGHT = Display.getHeight();
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glOrtho(0, WIDTH, 0, HEIGHT, -10.0f, 10.0f);
 		GL11.glViewport(0, 0, WIDTH, HEIGHT);
 	}
