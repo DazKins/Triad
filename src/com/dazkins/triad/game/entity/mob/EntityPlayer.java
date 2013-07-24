@@ -23,20 +23,18 @@ public class EntityPlayer extends Mob {
 		super.tick();
 		
 		if (input.isKeyDown(Keyboard.KEY_W))
-			ya = 2;
+			ya = getMovementSpeed();
 		if (input.isKeyDown(Keyboard.KEY_A))
-			xa = -2;
+			xa = -getMovementSpeed();
 		if (input.isKeyDown(Keyboard.KEY_S))
-			ya = -2;
+			ya = -getMovementSpeed();
 		if (input.isKeyDown(Keyboard.KEY_D))
-			xa = 2;
+			xa = getMovementSpeed();
 		
 		xa *= 0.85;
 		ya *= 0.85;
 		
 		move(xa, ya);
-		
-		System.out.println(this.getFacing());
 	}
 
 	public AABB getAABB() {
@@ -45,5 +43,9 @@ public class EntityPlayer extends Mob {
 	
 	public void render() {
 		((ModelPlayer)this.getModel()).render(this);
+	}
+
+	public float getMovementSpeed() {
+		return 2;
 	}
 }

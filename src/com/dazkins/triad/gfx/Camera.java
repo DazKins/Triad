@@ -1,27 +1,25 @@
 package com.dazkins.triad.gfx;
 
-import java.awt.event.KeyEvent;
-
 import org.lwjgl.opengl.GL11;
 
+import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
 
 public class Camera {
+	private Triad triad;
 	private InputHandler input;
 	private float x, y;
-	private float w, h;
 	
 	private float minX, minY;
 	private float maxX, maxY;
 	
-	public Camera(InputHandler input,float x, float y, float w, float h) {
+	public Camera(InputHandler i, Triad t, int x, int y) {
+		this.triad = t;
+		this.input = input;
 		this.x = x;
 		this.y = y;
-		this.input = input;
-		this.w = w;
-		this.h = h;
 	}
 	
 	public void attachTranslation() {
@@ -29,7 +27,7 @@ public class Camera {
 	}
 	
 	public AABB getViewportBounds() {
-		return new AABB(x, y, x + w, y + h);
+		return new AABB(x, y, x + triad.WIDTH, y + triad.HEIGHT);
 	}
 
 	public void setBounds(float minX, float minY, float maxX, float maxY) {
@@ -40,26 +38,31 @@ public class Camera {
 	}
 	
 	public void lockCameraToEntity(Entity e) {
-		if (x != e.getX() - w / 2 || y != e.getY() - h / 2) {
-			float xa, ya;
-			float opp = e.getX() - (x + w / 2);
-			float adj = e.getY() - (y + h / 2);
-			float len = (float) Math.sqrt(opp * opp + adj * adj);
-			xa = (int) opp / len;
-			ya = (int) adj / len;
-			
-			x += xa * len * 0.05f;
-			y += ya * len * 0.05f;
+		if (!triad.wasRescaled()) { 
+			if (x != e.getX() - triad.WIDTH / 2 || y != e.getY() - triad.HEIGHT / 2) {
+				float xa, ya;
+				float opp = e.getX() - (x + triad.WIDTH / 2);
+				float adj = e.getY() - (y + triad.HEIGHT / 2);
+				float len = (float) Math.sqrt(opp * opp + adj * adj);
+				xa = (int) opp / len;
+				ya = (int) adj / len;
+				
+				x += xa * len * 0.05f;
+				y += ya * len * 0.05f;
+			}
+		} else {
+			x = e.getX() - triad.WIDTH / 2;
+			y = e.getY() - triad.HEIGHT / 2;
 		}
 		
 		if (x < minX) 
 			x = minX;
 		if (y < minY)
 			y = minY;
-		if (x + w > maxX)
-			x = maxX - w;
-		if (y + h > maxY)
-			y = maxY - h;
+		if (x + triad.WIDTH > maxX)
+			x = maxX - triad.WIDTH;
+		if (y + triad.HEIGHT > maxY)
+			y = maxY - triad.HEIGHT;
 	}
 
 	public float getX() {
@@ -79,18 +82,10 @@ public class Camera {
 	}
 	
 	public float getW() {
-		return w;
-	}
-
-	public void setW(float w) {
-		this.w = w;
+		return triad.WIDTH;
 	}
 
 	public float getH() {
-		return h;
-	}
-
-	public void setH(float h) {
-		this.h = h;
+		return triad.HEIGHT;
 	}
 }

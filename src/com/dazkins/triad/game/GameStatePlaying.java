@@ -26,7 +26,7 @@ public class GameStatePlaying implements GameState {
 		world = new World();
 		input = new InputHandler();
 		player = new EntityPlayer(world, 0, 0, input);
-		cam = new Camera(input, 0, 0, triad.WIDTH, triad.HEIGHT);
+		cam = new Camera(input, triad, 0, 0);
 		cam.setBounds(0, 0, world.nChunksX * Chunk.chunkW * Tile.tileSize, world.nChunksY * Chunk.chunkH * Tile.tileSize);
 		gui = new PlayerGui(triad, input, player);
 	}

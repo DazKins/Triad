@@ -13,13 +13,13 @@ public abstract class Mob extends Entity {
 		health = h;
 	}
 	
+	public abstract float getMovementSpeed();
+	
 	public abstract int getMaxHealth();
 	
 	public int getHealth() {
 		return health;
 	}
-	
-	
 	
 	public void move(float xa, float ya) {
 		AABB aabb = this.getAABB();
