@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 
 public class BufferObject {
-	private static boolean useVBO = false;
+private static boolean useVBO = false;
 
 	private float[] rawBuffer;
 	private FloatBuffer dataBuffer;

@@ -15,6 +15,8 @@ public class Model {
 	
 	protected List quads;
 	
+	protected List quadSkips;
+	
 	private float offsetX, offsetY; 
 	
 	public static void loadModels() {
@@ -26,15 +28,21 @@ public class Model {
 		offsetY = y;
 	}
 	
+	public void skipRender(Quad quad) {
+		quadSkips.add(quads.indexOf(quad));
+	}
+	
 	public Model() {
 		quads = new ArrayList();
+		quadSkips = new ArrayList();
 	}
 	
 	public void render() {
 		GL11.glPushMatrix();
 		GL11.glTranslatef(offsetX, offsetY, 0);
 		for (int i = 0; i < quads.size(); i++) {
-			((Quad) quads.get(i)).render();
+			if (!quadSkips.contains(i))
+				((Quad) quads.get(i)).render();
 		}
 		GL11.glPopMatrix();
 	}
