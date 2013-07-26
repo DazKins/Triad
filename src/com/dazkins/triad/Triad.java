@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.GameState;
 import com.dazkins.triad.game.GameStatePlaying;
+import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.model.Model;
 
@@ -52,8 +53,7 @@ public class Triad {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		
-		String version = GL11.glGetString(GL11.GL_VERSION);
-		System.out.println(version);
+		BufferObject.init();
 		
 		if(!Image.init())
 			System.out.println("Failed to initialize art!");

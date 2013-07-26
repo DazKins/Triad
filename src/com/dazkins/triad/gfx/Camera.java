@@ -49,13 +49,13 @@ public class Camera {
 				
 				x += xa * len * 0.05f;
 				y += ya * len * 0.05f;
-			}
+			}  
 		} else {
 			x = e.getX() - triad.WIDTH / 2;
 			y = e.getY() - triad.HEIGHT / 2;
 		}
 		
-		if (x < minX) 
+		if (x < minX)
 			x = minX;
 		if (y < minY)
 			y = minY;
@@ -63,7 +63,7 @@ public class Camera {
 			x = maxX - triad.WIDTH;
 		if (y + triad.HEIGHT > maxY)
 			y = maxY - triad.HEIGHT;
-	}
+	}  
 
 	public float getX() {
 		return x;

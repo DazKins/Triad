@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 
 public class BufferObject {
-private static boolean useVBO = false;
+	private static boolean useVBO;
 
 	private float[] rawBuffer;
 	private FloatBuffer dataBuffer;
@@ -20,6 +20,19 @@ private static boolean useVBO = false;
 	private boolean hasTexture;
 
 	private float xOffset, yOffset;
+	
+	public static void init() {
+		float version = Float.parseFloat(GL11.glGetString(GL11.GL_VERSION).substring(0, 3));
+		System.err.println("OpenGL version: " + version);
+		if (version <= 1.5) {
+			useVBO = false;
+			System.err.println("VBOs disabled");
+		}
+		else {
+			useVBO = true;
+			System.err.println("VBOs enabled");
+		}
+	}
 
 	public BufferObject(int size) {
 		if (useVBO) {

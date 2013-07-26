@@ -13,6 +13,6 @@ public class ModelPlayer extends Model {
 		
 	public void render(EntityPlayer p) {
 		setOffset(p.getX(), p.getY());
-//		super.render();
+		super.render();
 	}
 }
