@@ -18,6 +18,14 @@ public class Image {
 	private int width, height;
 	public int texID;
 
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
+	
 	public static boolean init() {
 		try {
 			spriteSheet = new Image("/art/spriteSheet.png");
@@ -28,31 +36,30 @@ public class Image {
 		}
 		return true;
 	}
-
-	public void renderSprite(BufferObject model, int sx, int sy, int sw, int sh, float xp, float yp, float w, float h, float a, float z) {
-		model.setTexture(texID);
-		
-		float tx0 = (float) ((float)sx) / (float) width;
-		float ty0 = (float) ((float)sy) / (float) height;
-		float tx1 = tx0 + ((float) ((float)sw) / (float) width);
-		float ty1 = ty0 + ((float) ((float)sh) / (float) height);
-		
-		float xDiff = 0.01f / width;
-		float yDiff = 0.01f / height;
-		
-		tx0 += xDiff;
-		ty0 += yDiff;
-		tx1 -= xDiff;
-		ty1 -= yDiff;
-		
-		model.addVertexWithUV(xp, yp, z, tx0, ty1);
-		model.addVertexWithUV(xp, yp + h, z, tx0, ty0);
-		model.addVertexWithUV(xp + w, yp + h, z, tx1, ty0);
-		model.addVertexWithUV(xp + w, yp, z, tx1, ty1);
+	
+	public void bindGLTexture() {
+		if (GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) != texID) {
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
+		}
 	}
 
 	public Image(String path) throws IOException {
 		loadSpriteSheet(path);
+	}
+	
+	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z) {
+		float marg = 0.000001f;
+		
+		float tx0 = ((tx + marg) / (float) width);
+		float ty0 = ((ty + marg) / (float) height);
+		float tx1 = ((tx + tw - marg) / (float) width);
+		float ty1 = ((ty + th - marg) / (float) height);
+		
+		bo.bindImage(this);
+		bo.addVertexWithUV(x, y, z, tx0, ty1);
+		bo.addVertexWithUV(x + w, y, z, tx1, ty1);
+		bo.addVertexWithUV(x + w, y + h, z, tx1, ty0);
+		bo.addVertexWithUV(x, y + h, z, tx0, ty0);
 	}
 
 	private void loadSpriteSheet(String path) throws IOException {

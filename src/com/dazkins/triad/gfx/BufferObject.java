@@ -14,7 +14,7 @@ public class BufferObject {
 
 	private int ID;
 	private int vertexCount;
-	private int texID;
+	private Image img;
 
 	private boolean editing;
 	private boolean hasTexture;
@@ -85,7 +85,9 @@ public class BufferObject {
 	public void addVertexWithUV(float x, float y, float z, float u, float v) {
 		if (!editing)
 			throw new RuntimeException("Buffer object not editable!");
-
+		if (!hasTexture)
+			throw new RuntimeException("Textures are not enabled in this current state!");
+		
 		if (useVBO) {
 			rawBuffer[vertexCount * 5] = x + xOffset;
 			rawBuffer[vertexCount * 5 + 1] = y + yOffset;
@@ -104,14 +106,14 @@ public class BufferObject {
 		addVertexWithUV(x, y, 0.0f, u, v);
 	}
 
-	public void setTexture(int t) {
+	public void bindImage(Image i) {
 		if (!editing)
 			throw new RuntimeException("Buffer object not editable!");
 
 		if (!hasTexture) {
 			this.hasTexture = true;
-			texID = t;
-		} else if (!hasTexture && t != texID) {
+			img = i;
+		} else if (!hasTexture && i != img) {
 			throw new RuntimeException("Only one texture per buffer is supported!");
 		}
 	}
@@ -124,10 +126,9 @@ public class BufferObject {
 	public void render() {
 		if (editing)
 			throw new RuntimeException("Buffer is still being edited!");
-
-		if (GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) != texID) {
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
-		}
+		
+		if (hasTexture);
+			img.bindGLTexture();
 
 		if (useVBO) {
 			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);

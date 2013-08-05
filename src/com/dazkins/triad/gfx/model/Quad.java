@@ -14,16 +14,34 @@ public class Quad {
 	private float offsetX, offsetY;
 
 	private float depth;
+	
+	private Image img;
+	
+	private float x, y;
+	private float w, h;
+	private int tx, ty;
+	private int tw, th;
 
-	public Quad(float w, float h, int tx, int ty, int tw, int th, float alpha, float z) {
-		model = new BufferObject(655360);
-		model.start();
-		Image.spriteSheet.renderSprite(model, tx, ty, tw, th, 0, 0, w, h, alpha, z);
-		model.stop();
+	public Quad(float x, float y, float w, float h, int tx, int ty, int tw, int th) {
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
+		this.tx = tx;
+		this.ty = ty;
+		this.tw = tw;
+		this.th = th;
 	}
 	
-	public float getRot() {
-		return rot;
+	public void init(Image i) {
+		img = i;
+	}
+	
+	public void generate() {
+		model = new BufferObject(20);
+		model.start();
+		img.renderSprite(model, x, y, w, h, tx, ty, tw, th, 0.0f);
+		model.stop();
 	}
 
 	public void setCenterOfRotation(float x, float y) {
@@ -35,13 +53,23 @@ public class Quad {
 		depth = z;
 	}
 
-	public void setRotation(float f) {
-		rot = f;
+	public void addRotation(float f) {
+		rot += f;
 	}
-
-	public void setOffset(float x, float y) {
-		offsetX = x;
-		offsetY = y;
+	
+	public float getRotation() {
+		return rot;
+	}
+	
+	public void addOffset(float x, float y) {
+		offsetX += x;
+		offsetY += y;
+	}
+	
+	public void resetProperties() {
+		offsetX = 0;
+		offsetY = 0;
+		rot = 0;
 	}
 
 	public void render() {

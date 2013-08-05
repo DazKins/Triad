@@ -7,22 +7,25 @@ import com.dazkins.triad.input.InputHandler;
 
 public class PlayerGui extends Gui {
 	private EntityPlayer player;
+	private GuiBox mainBox;
+	private GuiStatusBar statusBar;
 	
 	public PlayerGui(Triad t, InputHandler i, EntityPlayer player) {
 		super(t, i);
 		this.player = player;
-
+		mainBox = new GuiBox(0, 0, 400, 400);
+		statusBar = new GuiStatusBar(0, 0, 0xff0000, 64);
 	}
 
 	public void tick() {
-
+		statusBar.updateStatus((float) player.getHealth() / (float) player.getMaxHealth());
 	}
 	
 	int ticks = 0;
 
 	public void render() {
 		ticks++;
-		super.renderGuiBox(0, 0, triad.WIDTH, 130);
-		super.renderStatusBar(100, 100, 0xFF0000, 32, (float) player.getHealth() / (float) player.getMaxHealth());
+//		mainBox.render();
+		statusBar.render();
 	}
 }
