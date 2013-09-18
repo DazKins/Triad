@@ -1,8 +1,10 @@
 package com.dazkins.triad.game;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.Triad;
+import com.dazkins.triad.game.entity.EntityTorch;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.PlayerGui;
@@ -22,29 +24,41 @@ public class GameStatePlaying implements GameState {
 	
 	public void init(Triad triad) {
 		this.triad = triad;
-		
-		world = new World();
 		input = new InputHandler();
 		player = new EntityPlayer(world, 0, 0, input);
-		cam = new Camera(input, triad, 0, 0);
-		cam.setBounds(0, 0, world.nChunksX * Chunk.chunkW * Tile.tileSize, world.nChunksY * Chunk.chunkH * Tile.tileSize);
+		cam = new Camera(input, triad.viewport, 0, 0);
+		cam.lockZoom(0.7f, 1.3f);
 		gui = new PlayerGui(triad, input, player);
+		changeWorld("TestingMap");
+		world.addEntity(player);
 	}
+	
+	private int cooldown;
 	
 	public void tick() {
 		world.tick();
+		cam.tick();
 		cam.lockCameraToEntity(player);
 		gui.tick();
 		input.tick();
-		player.tick();
+		
+		if (input.isKeyDown(Keyboard.KEY_SPACE) && cooldown > 20) {
+			world.addEntity(new EntityTorch(world, player.getX(), player.getY()));
+			cooldown = 0;
+		}
+		cooldown++;
 	}
 	
 	public void render() {
 		GL11.glPushMatrix();
 		cam.attachTranslation();
 		world.render(cam);
-		player.render();
 		GL11.glPopMatrix();
 		gui.render();
+	}
+	
+	public void changeWorld(String newWorld) {
+		world = World.getWorldFromName(newWorld);
+		cam.setBounds(0, 0, world.info.getnChunksX() * Chunk.chunkW * Tile.tileSize, world.info.getnChunksY() * Chunk.chunkH * Tile.tileSize);
 	}
 }

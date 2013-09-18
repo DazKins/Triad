@@ -11,51 +11,53 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.PixelFormat;
 
 import com.dazkins.triad.game.GameState;
 import com.dazkins.triad.game.GameStatePlaying;
+import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.gfx.ViewportInfo;
 import com.dazkins.triad.gfx.model.Model;
 
 public class Triad {
 	private boolean running;
 	private final String title = "Triad Pre-Alpha";
-	public int WIDTH = 800;
-	public int HEIGHT = 450;
+	public ViewportInfo viewport = new ViewportInfo(0, 0, 800, 450);
 	
 	private boolean rescaled;
 
 	private GameState currentState;
 	
 	public static void main(String args[]) {
-		Triad mc = new Triad();
-		mc.open();
+		Triad triad = new Triad();
+		triad.start();
 	}
 	
 	public Triad() {
 		try {
-			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
-			Display.setResizable(true);
+			Display.setDisplayMode(new DisplayMode(viewport.getW(), viewport.getH()));
 			Display.setTitle(title);
-			Display.setIcon(this.loadIcon("/art/icon.png"));
-			Display.create();
+			Display.setIcon(loadIcon("/art/icon.png"));
+			Display.setResizable(true);
+			Display.create(new PixelFormat().withDepthBits(24));
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
 		
-		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glLoadIdentity();
-		GL11.glOrtho(0, WIDTH, 0, HEIGHT, -10.0f, 10.0f);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glCullFace(GL11.GL_BACK);
+		initOpenGL();
 		
+		initProg();
+	}
+	
+	private void initProg() {
 		BufferObject.init();
+		
+		Tile.initDatabase();
+		
+		World.init();
 		
 		if(!Image.init())
 			System.out.println("Failed to initialize art!");
@@ -66,15 +68,29 @@ public class Triad {
 		currentState.init(this);
 	}
 	
+	private void initOpenGL() {
+		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
+		GL11.glLoadIdentity();
+		GL11.glOrtho(0, viewport.getW(), 0, viewport.getH(), -10.0f, 10.0f);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glCullFace(GL11.GL_BACK);
+	}
+	
 	public boolean wasRescaled() {
 		return rescaled;
 	}
 	
-	private void close() {
+	private void stop() {
 		running = false;
+		Display.destroy();
 	}
 
-	private void open() {
+	private void start() {
 		running = true;
 		this.run();
 	}
@@ -87,17 +103,20 @@ public class Triad {
 		long lastTimer = System.currentTimeMillis();
 		double delta = 0;
 
-		while (running) {
+		mainLoop : while (running) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / nsPerTick;
 			lastTime = now;
 			while (delta >= 1) {
 				ticks++;
 				tick();
+				if(running == false)
+					break mainLoop;
 				delta -= 1;
 			}
 			frames++;
 			render();
+			checkWindow();
 
 			if (System.currentTimeMillis() - lastTimer > 1000) {
 				lastTimer += 1000;
@@ -108,12 +127,19 @@ public class Triad {
 		}
 	}
 	
+	private void checkWindow() {
+		if (Display.wasResized()) {
+			resyncOpenGL();
+			rescaled = true;
+		}
+	}
+	
 	private void render() {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
 		currentState.render();
 		
-		Display.update();
+		Display.update(true);
 	}
 	
 	private ByteBuffer[] loadIcon(String p) {
@@ -149,25 +175,21 @@ public class Triad {
 	}
 
 	private void resyncOpenGL() {
-		WIDTH = Display.getWidth();
-		HEIGHT = Display.getHeight();
+		viewport.setW(Display.getWidth());
+		viewport.setH(Display.getHeight());
 		GL11.glLoadIdentity();
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glOrtho(0, WIDTH, 0, HEIGHT, -10.0f, 10.0f);
-		GL11.glViewport(0, 0, WIDTH, HEIGHT);
+		GL11.glOrtho(0, viewport.getW(), 0, viewport.getH(), -10.0f, 10.0f);
+		GL11.glViewport(0, 0, viewport.getW(), viewport.getH());
 	}
 
 	private void tick() {
-		if (Display.wasResized()) {
-			resyncOpenGL();
-			rescaled = true;
-		}
-		
 		currentState.tick();
 		
-		if(Display.isCloseRequested())
-			close();
-		
 		rescaled = false;
+		
+		if(Display.isCloseRequested()) {
+			stop();
+		}
 	}
 }

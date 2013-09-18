@@ -38,7 +38,7 @@ public class Quad {
 	}
 	
 	public void generate() {
-		model = new BufferObject(20);
+		model = new BufferObject(32);
 		model.start();
 		img.renderSprite(model, x, y, w, h, tx, ty, tw, th, 0.0f);
 		model.stop();
@@ -47,10 +47,6 @@ public class Quad {
 	public void setCenterOfRotation(float x, float y) {
 		cRotX = x;
 		cRotY = y;
-	}
-
-	public void setDepth(float z) {
-		depth = z;
 	}
 
 	public void addRotation(float f) {

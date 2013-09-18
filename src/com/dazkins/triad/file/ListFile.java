@@ -1,22 +1,27 @@
 package com.dazkins.triad.file;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import sun.misc.BASE64Decoder;
-
 public class ListFile extends MainFile {
-	private String splitter;
+	private String splitter;	
+	private List<String> objs = new ArrayList<String>();
+	private int size;
 	
-	public List<Object> objs = new ArrayList<Object>();
-	
-	public ListFile(String p, String s) throws IOException {
-		path = p;
+	public ListFile(String path, String splitter) throws IOException {
+		super(path);
+		validateFileType(path, ".lt");
+		this.splitter = splitter;
 		loadFile();
-		splitter = s;
+	}
+	
+	public String getString(int index) {
+		return (String) (objs.get(index));
+	}
+	
+	public int getInt(int index) {
+		return Integer.parseInt(getString(index));
 	}
 	
 	private void loadFile() throws IOException {
@@ -24,7 +29,13 @@ public class ListFile extends MainFile {
 		content = super.decryptContents(content);
 		String[] data = content.split(splitter);
 		for (int i = 0; i < data.length; i++) {
-			objs.add(data[i]);
+			String s = data[i].replace(splitter, "");
+			objs.add(s);
 		}
+		size = data.length;
+	}
+
+	public int getSize() {
+		return size;
 	}
 }

@@ -1,15 +1,20 @@
 package com.dazkins.triad.game.world.tile;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.IOException;
+import java.awt.image.DataBufferInt;
 
-import com.dazkins.triad.file.DatabaseFile;
+import javax.swing.ImageIcon;
+
+import com.dazkins.triad.file.MultiLineDatabaseFile;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
 
 public class Tile {
-	private static DatabaseFile dbs = null;
+	private static MultiLineDatabaseFile dbs = null;
 	public static final int tileSize = 32;
 	
 	private byte id;
@@ -17,8 +22,8 @@ public class Tile {
 	private int tx, ty;
 	private boolean col;
 	public static Tile[] tiles = new Tile[256];
-
-	static {
+	
+	public static void initDatabase() {
 		loadTileDatabase("res/data/tile.db");
 	}
 	
@@ -35,10 +40,10 @@ public class Tile {
 	}
 	
 	public AABB getAABB(World w, int x, int y) {
-		int x0 = ((Integer) dbs.tags.get(id - 1).get("AABB.x0")) + (x * tileSize);
-		int y0 = ((Integer) dbs.tags.get(id - 1).get("AABB.y0")) + (y * tileSize);
-		int x1 = ((Integer) dbs.tags.get(id - 1).get("AABB.x1")) + (x * tileSize);
-		int y1 = ((Integer) dbs.tags.get(id - 1).get("AABB.y1")) + (y * tileSize);
+		int x0 = dbs.getInt("AABB.x0", id - 1);
+		int y0 = dbs.getInt("AABB.y0", id - 1);
+		int x1 = dbs.getInt("AABB.x1", id - 1);
+		int y1 = dbs.getInt("AABB.y1", id - 1);
 		return new AABB(x0, y0, x1, y1);
 	}
 	
@@ -51,24 +56,39 @@ public class Tile {
 	}
 
 	private static void loadTileDatabase(String path) {
-		dbs = null;
-		
 		try {
-			dbs = new DatabaseFile(path);
+			dbs = new MultiLineDatabaseFile(path);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
 		}
 
-		for (int i = 0; i < dbs.tags.size(); i++) {
-			byte id = ((Integer) dbs.tags.get(i).get("ID")).byteValue();
-			String s = (String) dbs.tags.get(i).get("NAME");
-			int tex = (Integer) dbs.tags.get(i).get("TX");
-			int tey = (Integer) dbs.tags.get(i).get("TY");
-			boolean col = (Boolean) dbs.tags.get(i).get("COL");
+		for (int i = 0; i < dbs.getLineCount(); i++) {
+			byte id = dbs.getByte("ID", i);
+			String s = dbs.getString("NAME", i);
+			int tex = dbs.getInt("TX", i);
+			int tey = dbs.getInt("TY", i);
+			boolean col = dbs.getBoolean("COL", i);
 			Tile t = new Tile(id, s, tex, tey, col);
 			tiles[id] = t;
 		}
+	}
+	
+	public static ImageIcon getTileImageIcon(int i, int scale) {
+		Tile t = tiles[i];
+		if (t != null) {
+			BufferedImage img = new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB);
+			int pixels[] = ((DataBufferInt)img.getRaster().getDataBuffer()).getData();
+			int oldPixels[] = Image.spriteSheet.getRawImage().getRGB(t.tx * 16, t.ty * 16, 16, 16, null, 0, 16);
+			for (int x = 0; x < 16; x++) {
+				for (int y = 0; y < 16; y++) {
+					pixels[x + y * 16] = oldPixels[x + y * 16];
+				}
+			}
+			java.awt.Image finalImg = img.getScaledInstance(scale, scale, 0);
+			return new ImageIcon(finalImg);
+		}
+		return null;
 	}
 	
 	public byte getID() {

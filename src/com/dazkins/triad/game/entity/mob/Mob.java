@@ -3,7 +3,6 @@ package com.dazkins.triad.game.entity.mob;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
-import com.dazkins.triad.math.AABB;
 
 public abstract class Mob extends Entity {
 	protected int health;
@@ -22,7 +21,7 @@ public abstract class Mob extends Entity {
 	}
 	
 	public void move(float xa, float ya) {
-		AABB aabb = this.getAABB();
+//		AABB aabb = this.getAABB();
 		
 		int x0 = ((int) x / Tile.tileSize) - 3;
 		int y0 = ((int) y / Tile.tileSize) - 3;

@@ -25,7 +25,7 @@ public class GuiStatusBar {
 		int len0 = len >> 3;
 		for (int x = 0; x < len0; x++) {
 			int sx = x == 0 ? 0 : (x == len0 - 1 ? 2 : 1);
-			Image.iconSheet.renderSprite(model, x * 8, this.y, 16, 16, sx * 8, 0, 8, 8, 0.0f);
+			Image.iconSheet.renderSprite(model, x * 8 + this.x, this.y, 16, 16, sx * 8, 0, 8, 8, 0.0f);
 		}
 		
 		model.stop();

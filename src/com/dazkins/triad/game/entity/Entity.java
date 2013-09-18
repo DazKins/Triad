@@ -5,14 +5,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import com.dazkins.triad.file.DatabaseFile;
+import com.dazkins.triad.file.SingleLineDatabaseFile;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.math.AABB;
 
 public abstract class Entity {
 	private static Random rand = new Random();
-	private static Map<Integer, Class> globalIDEntityMap = new HashMap<Integer, Class>();
+	private static Map<Integer, Class<? extends Entity>> globalIDEntityMap = new HashMap<Integer, Class<? extends Entity>>();
 	
 	protected float x, y;
 	protected float xa, ya;
@@ -20,10 +20,10 @@ public abstract class Entity {
 	protected String name;
 	protected World world;
 	
-	protected int globalID; // TODO: Implement working solution to generating globalID
+	protected int globalID; // TODO Implement working solution to generating globalID
 	protected int individualID;
 	
-	protected DatabaseFile database;
+	protected SingleLineDatabaseFile database;
 
 	public Entity(World w, float x, float y, String s) {
 		this.x = x;
@@ -31,12 +31,12 @@ public abstract class Entity {
 		this.world = w;
 		individualID = rand.nextInt();
 		try {
-			database = new DatabaseFile("res/data/entities/entity_" + s + ".db");
+			database = new SingleLineDatabaseFile("res/data/entities/entity_" + s + ".db");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		name = (String) database.tags.get(0).get("NAME");
-		globalID = (Integer) database.tags.get(0).get("ID");
+		name = database.getString("NAME");
+		globalID = database.getInt("ID");
 		if (!globalIDEntityMap.containsKey(globalID)) {
 			globalIDEntityMap.put(globalID, getClass());
 		}

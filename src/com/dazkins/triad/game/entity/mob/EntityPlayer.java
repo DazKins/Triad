@@ -2,10 +2,12 @@ package com.dazkins.triad.game.entity.mob;
 
 import org.lwjgl.input.Keyboard;
 
+import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.gfx.OpenGLHelper;
+import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
-import com.dazkins.triad.gfx.model.ModelHumanoid;;
 
 public class EntityPlayer extends Mob {
 	private InputHandler input;
@@ -43,6 +45,7 @@ public class EntityPlayer extends Mob {
 	
 	public void render() {
 		((ModelHumanoid)this.getModel()).render(this);
+		OpenGLHelper.renderReferencePoint(x, y);
 	}
 
 	public float getMovementSpeed() {

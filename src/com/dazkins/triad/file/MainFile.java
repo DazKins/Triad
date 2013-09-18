@@ -1,13 +1,32 @@
 package com.dazkins.triad.file;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import sun.misc.BASE64Decoder;
 
 public abstract class MainFile {
 	protected String path;
+	
+	public MainFile(String p) {
+		path = p;
+	}
+	
+	public void writeToFile(String c) {
+		try {
+			PrintWriter pr = new PrintWriter(new File(path));
+			decryptContents(c);
+			pr.write(c);
+			pr.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	protected static void validateFileType(String s, String ext) {
 		if (!s.endsWith(ext)) {
@@ -31,6 +50,7 @@ public abstract class MainFile {
 		FileReader fr = new FileReader(f);
 		char chars[] = new char[(int) f.length()];
 		fr.read(chars);
+		fr.close();
 		rValue = new String(chars);
 		return rValue;
 	}

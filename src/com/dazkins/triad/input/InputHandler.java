@@ -1,14 +1,13 @@
 package com.dazkins.triad.input;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 public class InputHandler  {
 	private boolean[] keys = new boolean[65536];
-	private int mouseX, mouseY;
+	public boolean mouse1;
+	public int mouseX, mouseY;
+	public int mWheel;
 	
 	public boolean isKeyDown(int k) {
 		return keys[k];
@@ -24,7 +23,10 @@ public class InputHandler  {
 			}
 		}
 		
+		mouse1 = Mouse.isButtonDown(0);
+		
 		mouseX = Mouse.getX();
 		mouseY = Mouse.getY();
+		mWheel = Mouse.getDWheel();
 	}
 }

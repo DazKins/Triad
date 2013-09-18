@@ -8,26 +8,32 @@ import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
 
 public class Camera {
-	private Triad triad;
-	private InputHandler input;
+	private ViewportInfo viewport;
 	private float x, y;
 	
 	private float minX, minY;
 	private float maxX, maxY;
 	
-	public Camera(InputHandler i, Triad t, int x, int y) {
-		this.triad = t;
-		this.input = input;
+	private float zoom = 1.0f;
+	
+	private InputHandler input;
+	
+	private float minZoom, maxZoom;
+	
+	public Camera(InputHandler i, ViewportInfo v, int x, int y) {
+		this.viewport = v;
+		this.input = i;
 		this.x = x;
 		this.y = y;
 	}
 	
 	public void attachTranslation() {
 		GL11.glTranslatef(-x, -y, 0);
+		GL11.glScalef(zoom, zoom, 1.0f);
 	}
 	
 	public AABB getViewportBounds() {
-		return new AABB(x, y, x + triad.WIDTH, y + triad.HEIGHT);
+		return new AABB(getX(), getY(), getX() + getW(), getY() + getH());
 	}
 
 	public void setBounds(float minX, float minY, float maxX, float maxY) {
@@ -37,36 +43,62 @@ public class Camera {
 		this.minY = minY;
 	}
 	
-	public void lockCameraToEntity(Entity e) {
-		if (!triad.wasRescaled()) { 
-			if (x != e.getX() - triad.WIDTH / 2 || y != e.getY() - triad.HEIGHT / 2) {
-				float xa, ya;
-				float opp = e.getX() - (x + triad.WIDTH / 2);
-				float adj = e.getY() - (y + triad.HEIGHT / 2);
-				float len = (float) Math.sqrt(opp * opp + adj * adj);
-				xa = (int) opp / len;
-				ya = (int) adj / len;
-				
-				x += xa * len * 0.05f;
-				y += ya * len * 0.05f;
-			}  
-		} else {
-			x = e.getX() - triad.WIDTH / 2;
-			y = e.getY() - triad.HEIGHT / 2;
+	public void moveWithKeys(float speed, int upKey, int downKey, int rightKey, int leftKey) {
+		float xa = 0;
+		float ya = 0;
+		
+		if (input.isKeyDown(upKey)) {
+			ya += speed;
+		}
+		if (input.isKeyDown(downKey)) {
+			ya -= speed;
+		}
+		if (input.isKeyDown(rightKey)) {
+			xa += speed;
+		}if (input.isKeyDown(leftKey)) {
+			xa -= speed;
 		}
 		
-		if (x < minX)
-			x = minX;
-		if (y < minY)
-			y = minY;
-		if (x + triad.WIDTH > maxX)
-			x = maxX - triad.WIDTH;
-		if (y + triad.HEIGHT > maxY)
-			y = maxY - triad.HEIGHT;
-	}  
+		x += xa;
+		y += ya;
+	}
+	
+	public void lockCameraToEntity(Entity e) {
+		x = (e.getX() - getW() / 2.0f) * zoom;
+		y = (e.getY() - getH() / 2.0f) * zoom;
+		
+		if (getX() + getW() > maxX)
+			x = (maxX - getW()) * zoom;
+		if (getY() + getH() > maxY)
+			y = (maxY - getH()) * zoom;
+		if (getX() < minX)
+			x = (minX) * zoom;
+		if (getY() < minY)
+			y = minY * zoom;
+	}
+	
+	public void tick() {
+		if(input.mWheel != 0) {
+			float zoa = (input.mWheel / 2400.0f) / 2.0f;
+			boolean canChange = ((zoa < 0) && zoom != minZoom) || ((zoa > 0) && zoom != maxZoom);
+			if (canChange) {
+				zoom += zoa;
+			}
+		}
+		
+		if (zoom < minZoom)
+			zoom = minZoom;
+		if (zoom > maxZoom)
+			zoom = maxZoom;
+	}
+	
+	public void lockZoom(float min, float max) {
+		this.minZoom = min;
+		this.maxZoom = max;
+	}
 
 	public float getX() {
-		return x;
+		return x / zoom;
 	}
 
 	public void setX(float x) {
@@ -74,7 +106,7 @@ public class Camera {
 	}
 
 	public float getY() {
-		return y;
+		return y / zoom;
 	}
 
 	public void setY(float y) {
@@ -82,10 +114,14 @@ public class Camera {
 	}
 	
 	public float getW() {
-		return triad.WIDTH;
+		return viewport.getW() / zoom;
 	}
 
 	public float getH() {
-		return triad.HEIGHT;
+		return viewport.getH() / zoom;
+	}
+	
+	public float getZoom() {
+		return zoom;
 	}
 }

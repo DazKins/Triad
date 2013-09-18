@@ -1,7 +1,5 @@
-package com.dazkins.triad.file;
+package com.dazkins.fileencryptor;
 
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -9,7 +7,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -70,6 +67,7 @@ public class FileEncrypter {
 		char chars[] = new char[(int)f.length()];
 		FileReader fr = new FileReader(f);
 		fr.read(chars);
+		fr.close();
 		String content = new String(chars);
 		content = content.replace("enc ", "");
 		
@@ -85,6 +83,7 @@ public class FileEncrypter {
 		char chars[] = new char[(int)f.length()];
 		FileReader fr = new FileReader(f);
 		fr.read(chars);
+		fr.close();
 		String content = new String(chars);
 		
 		BASE64Encoder be = new BASE64Encoder();

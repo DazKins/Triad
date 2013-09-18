@@ -8,15 +8,19 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 public class Image {
 	public static Image spriteSheet;
 	public static Image iconSheet;
 	public static Image fontSheet;
 
+	private BufferedImage img;
 	private int width, height;
 	public int texID;
+	
+	public BufferedImage getRawImage() {
+		return img;
+	}
 
 	public int getWidth() {
 		return width;
@@ -48,12 +52,12 @@ public class Image {
 	}
 	
 	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z) {
-		float marg = 0.000001f;
+		float offset = 0.01f;
 		
-		float tx0 = ((tx + marg) / (float) width);
-		float ty0 = ((ty + marg) / (float) height);
-		float tx1 = ((tx + tw - marg) / (float) width);
-		float ty1 = ((ty + th - marg) / (float) height);
+		float tx0 = ((tx + offset) / (float) width);
+		float ty0 = ((ty + offset) / (float) height);
+		float tx1 = ((tx + tw - offset) / (float) width);
+		float ty1 = ((ty + th - offset) / (float) height);
 		
 		bo.bindImage(this);
 		bo.addVertexWithUV(x, y, z, tx0, ty1);
@@ -63,8 +67,6 @@ public class Image {
 	}
 
 	private void loadSpriteSheet(String path) throws IOException {
-		BufferedImage img = null;
-
 		img = ImageIO.read(Image.class.getResource(path));
 
 		width = img.getWidth();

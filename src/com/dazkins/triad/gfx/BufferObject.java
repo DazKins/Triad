@@ -21,6 +21,8 @@ public class BufferObject {
 
 	private float xOffset, yOffset;
 	
+	private float brightness;
+	
 	public static void init() {
 		float version = Float.parseFloat(GL11.glGetString(GL11.GL_VERSION).substring(0, 3));
 		System.err.println("OpenGL version: " + version);
@@ -41,6 +43,11 @@ public class BufferObject {
 		} else {
 			ID = GL11.glGenLists(1);
 		}
+		brightness = 1.0f;
+	}
+	
+	public void setBrightness(float b) {
+		brightness = b;
 	}
 
 	public void start() {
@@ -89,15 +96,21 @@ public class BufferObject {
 			throw new RuntimeException("Textures are not enabled in this current state!");
 		
 		if (useVBO) {
-			rawBuffer[vertexCount * 5] = x + xOffset;
-			rawBuffer[vertexCount * 5 + 1] = y + yOffset;
-			rawBuffer[vertexCount * 5 + 2] = z;
-			rawBuffer[vertexCount * 5 + 3] = u;
-			rawBuffer[vertexCount * 5 + 4] = v;
+			rawBuffer[vertexCount * 8] = x + xOffset;
+			rawBuffer[vertexCount * 8 + 1] = y + yOffset;
+			rawBuffer[vertexCount * 8 + 2] = z;
+			
+			rawBuffer[vertexCount * 8 + 3] = brightness;
+			rawBuffer[vertexCount * 8 + 4] = brightness;
+			rawBuffer[vertexCount * 8 + 5] = brightness;
+			
+			rawBuffer[vertexCount * 8 + 6] = u;
+			rawBuffer[vertexCount * 8 + 7] = v;
 
 			vertexCount++;
 		} else {
 			GL11.glTexCoord2f(u, v);
+			GL11.glColor3f(brightness, brightness, brightness);
 			GL11.glVertex3f(x + xOffset, y + yOffset, z);
 		}
 	}
@@ -132,15 +145,18 @@ public class BufferObject {
 
 		if (useVBO) {
 			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+			GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
 			GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
-			GL11.glVertexPointer(3, GL11.GL_FLOAT, 20, 0);
-			GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 20, 4 * 3);
+			GL11.glVertexPointer(3, GL11.GL_FLOAT, 4 * 8, 0);
+			GL11.glColorPointer(3, GL11.GL_FLOAT, 4 * 8, 4 * 3);
+			GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 4 * 8, 4 * 6);
 			GL11.glDrawArrays(GL11.GL_QUADS, 0, vertexCount);
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
 			GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+			GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
 			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
 		} else {
 			GL11.glCallList(ID);
