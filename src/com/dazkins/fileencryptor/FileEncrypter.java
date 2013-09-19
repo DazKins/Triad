@@ -86,12 +86,17 @@ public class FileEncrypter {
 		fr.close();
 		String content = new String(chars);
 		
-		BASE64Encoder be = new BASE64Encoder();
-		String str = new String(be.encodeBuffer(content.getBytes()));
-		str = "enc " + str;
+		encryptString(content);
 		
 		PrintWriter pr = new PrintWriter(f);
-		pr.write(str);
+		pr.write(content);
 		pr.close();
+	}
+	
+	public static String encryptString(String s) {
+		BASE64Encoder be = new BASE64Encoder();
+		String str = new String(be.encodeBuffer(s.getBytes()));
+		str = "enc " + str;
+		return str;
 	}
 }

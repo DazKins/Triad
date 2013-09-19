@@ -1,5 +1,6 @@
 package com.dazkins.triad.file;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,12 @@ public class ListFile extends MainFile {
 		super(path);
 		validateFileType(path, ".lt");
 		this.splitter = splitter;
+		loadFile();
+	}
+	
+	public ListFile(File f) throws IOException { 
+		super(f.getPath());
+		validateFileType(path, ".lt");
 		loadFile();
 	}
 	

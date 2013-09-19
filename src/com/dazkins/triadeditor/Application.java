@@ -41,6 +41,16 @@ public class Application {
 
 	public void initControlPanel(ControlPanel cp) {
 		controlPanel = cp;
+		
+		controlPanel.addButton(new FunctionParser() {
+			public void func() {
+				try {
+					ApplicationUtil.requestWorldSave(world);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+		}, "Save", 300, 100, 100, 50);
 
 		JPanel p = new JPanel();
 		p.setLayout(new GridLayout(0, 3));
@@ -112,7 +122,7 @@ public class Application {
 		
 		if (input.isKeyDown(Keyboard.KEY_S)) {
 			try {
-				world.saveWorldToFile("res/testWorld.lt");
+				ApplicationUtil.requestWorldSave(world);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}

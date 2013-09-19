@@ -46,7 +46,11 @@ public class World {
 	}
 	
 	private static void assignWorldToDatabase(int i, World w) {
-		mapToIndex.put(w.info.getName(), i);
+		mapToIndex.put(w.info.name, i);
+	}
+	
+	public WorldInfo getInfo() {
+		return info;
 	}
 	
 	public static World loadWorldFromFile(String p) {
@@ -60,12 +64,13 @@ public class World {
 			e.printStackTrace();
 		}
 		
+		
 		rValue.info = new WorldInfo();
 		rValue.info.loadFromDatabase(metaDatabase);
 		
 		rValue.generate();
 		
-		int tw = rValue.info.getnChunksX() * Chunk.chunkW;
+		int tw = rValue.info.nChunksX * Chunk.chunkW;
 		
 		for (int i = 0; i < l.getSize(); i++) {
 			int t = l.getInt(i);
@@ -81,8 +86,8 @@ public class World {
 		File f = new File(path);
 		PrintWriter pr = new PrintWriter(f);
 		String output = "";
-		for (int x = 0; x < info.getnChunksX() * Chunk.chunkW; x++) {
-			for (int y = 0; y < info.getnChunksY() * Chunk.chunkH; y++) {
+		for (int x = 0; x < info.nChunksX * Chunk.chunkW; x++) {
+			for (int y = 0; y < info.nChunksY * Chunk.chunkH; y++) {
 				output += getTile(x, y).getID() + " ";
 			}
 		}
@@ -96,10 +101,10 @@ public class World {
 	}
 	
 	private void generate() {
-		chunks = new Chunk[info.getnChunksX() * info.getnChunksY()];
-		for (int x = 0; x < info.getnChunksX(); x++) {
-			for (int y = 0; y < info.getnChunksY(); y++) {
-				chunks[x + y * info.getnChunksX()] = new Chunk(this, x, y);
+		chunks = new Chunk[info.nChunksX * info.nChunksY];
+		for (int x = 0; x < info.nChunksX; x++) {
+			for (int y = 0; y < info.nChunksY; y++) {
+				chunks[x + y * info.nChunksX] = new Chunk(this, x, y);
 			}
 		}
 	}
@@ -111,12 +116,11 @@ public class World {
 		int cx = (int) ((e.getX() / (float)Tile.tileSize) / (float)Chunk.chunkW);
 		int cy = (int) ((e.getY() / (float)Tile.tileSize) / (float)Chunk.chunkH);
 		
-		if (cx >= 0 && cy >= 0 && cx < info.getnChunksX() && cy < info.getnChunksY())
-			chunks[cx + cy * info.getnChunksX()].addEntity(e);
+		if (cx >= 0 && cy >= 0 && cx < info.nChunksX && cy < info.nChunksY)
+			chunks[cx + cy * info.nChunksX].addEntity(e);
 	}
 
 	public void render(Camera cam) {
-		System.out.println(info.getnChunksX() * Chunk.chunkW * info.getnChunksY() * Chunk.chunkH);
 		for (int i = 0; i < chunks.length; i++) {
 			if (chunks[i].getBounds().intersects(cam.getViewportBounds())) {
 				if (!chunks[i].isGenerated()) {
@@ -136,37 +140,37 @@ public class World {
 	}
 	
 	public ArrayList<Entity> getChunkEntites(int cx, int cy) {
-		if (cx < 0 || cy < 0 || cx >= info.getnChunksX() || cy >= info.getnChunksY())
+		if (cx < 0 || cy < 0 || cx >= info.nChunksX || cy >= info.nChunksY)
 			return null;
-		return chunks[cx + cy * info.getnChunksX()].entities;
+		return chunks[cx + cy * info.nChunksX].entities;
 	}
 	
 	private boolean isValidTilePos(int x, int y) {
-		return (x >= 0 && x < info.getnChunksX() * Chunk.chunkW) && (y >= 0 && y < info.getnChunksY() * Chunk.chunkH);
+		return (x >= 0 && x < info.nChunksX * Chunk.chunkW) && (y >= 0 && y < info.nChunksY * Chunk.chunkH);
 	}
 	
 	public byte getTileBrightness(int x, int y) {
 		if (!isValidTilePos(x, y))
 			return 0;
-		return chunks[(x / Chunk.chunkW) + (y / Chunk.chunkH) * info.getnChunksX()].getTileBrightness(x % Chunk.chunkW, y % Chunk.chunkH);
+		return chunks[(x / Chunk.chunkW) + (y / Chunk.chunkH) * info.nChunksX].getTileBrightness(x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 	
 	public void setTileBrightness(byte b, int x, int y) {
 		if (!isValidTilePos(x, y))
 			return;
-		chunks[(x / Chunk.chunkW) + (y / Chunk.chunkH) * info.getnChunksX()].setTileBrightness(b, x % Chunk.chunkW, y % Chunk.chunkH);
+		chunks[(x / Chunk.chunkW) + (y / Chunk.chunkH) * info.nChunksX].setTileBrightness(b, x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 
 	public Tile getTile(int x, int y) {
 		if (!isValidTilePos(x, y))
 			return null;
-		return chunks[(x / Chunk.chunkW) + (y / Chunk.chunkH) * info.getnChunksX()].getTile(x % Chunk.chunkW, y % Chunk.chunkH);
+		return chunks[(x / Chunk.chunkW) + (y / Chunk.chunkH) * info.nChunksX].getTile(x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 	
 	public void setTile(Tile t, int x, int y) {
 		if (!isValidTilePos(x, y))
 			return;
-		chunks[(x / Chunk.chunkW) + (y / Chunk.chunkH) * info.getnChunksX()].setTile(t, x % Chunk.chunkW, y % Chunk.chunkH);
+		chunks[(x / Chunk.chunkW) + (y / Chunk.chunkH) * info.nChunksX].setTile(t, x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 
 	public void tick() {
