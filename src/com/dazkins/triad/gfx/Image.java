@@ -51,7 +51,7 @@ public class Image {
 		loadSpriteSheet(path);
 	}
 	
-	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z) {
+	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z, float b) {
 		float offset = 0.01f;
 		
 		float tx0 = ((tx + offset) / (float) width);
@@ -60,10 +60,16 @@ public class Image {
 		float ty1 = ((ty + th - offset) / (float) height);
 		
 		bo.bindImage(this);
-		bo.addVertexWithUV(x, y, z, tx0, ty1);
-		bo.addVertexWithUV(x + w, y, z, tx1, ty1);
-		bo.addVertexWithUV(x + w, y + h, z, tx1, ty0);
-		bo.addVertexWithUV(x, y + h, z, tx0, ty0);
+		bo.setDepth(z);
+		bo.setRGB(b, b, b);
+		bo.setUV(tx1, ty0);
+		bo.addVertex(x + w, y + h);
+		bo.setUV(tx0, ty0);
+		bo.addVertex(x, y + h);
+		bo.setUV(tx0, ty1);
+		bo.addVertex(x, y);
+		bo.setUV(tx1, ty1);
+		bo.addVertex(x + w, y);
 	}
 
 	private void loadSpriteSheet(String path) throws IOException {

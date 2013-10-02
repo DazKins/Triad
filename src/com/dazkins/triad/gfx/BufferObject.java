@@ -19,13 +19,10 @@ public class BufferObject {
 	private Image img;
 
 	private boolean editing;
-
-	private float xOffset, yOffset;
-	
-	private float brightness;
 	
 	private boolean useColors;
 	private boolean useTextures;
+	private boolean useDepth;
 	
 	//Store the temporary variables to be loaded into the VBO
 	private float x;
@@ -58,11 +55,6 @@ public class BufferObject {
 			if (ID == 0)
 				ID = GL11.glGenLists(1);
 		}
-		brightness = 1.0f;
-	}
-	
-	public void setBrightness(float b) {
-		brightness = b;
 	}
 
 	public void start() {
@@ -73,6 +65,9 @@ public class BufferObject {
 			GL11.glBegin(GL11.GL_QUADS);
 		}
 		editing = true;
+		useColors = false;
+		useTextures = false;
+		useDepth = false;
 	}
 
 	public void stop() {
@@ -103,36 +98,56 @@ public class BufferObject {
 		dataBuffer = null;
 //		System.gc();
 	}
-
-	public void addVertexWithUV(float x, float y, float z, float u, float v) {
-		if (!editing)
-			throw new RuntimeException("Buffer object not editable!");
+	
+	public void setRGB(float r, float g, float b) {
+		useColors = true;
+		this.r = r;
+		this.g = g;
+		this.b = b;
+	}
+	
+	public void setUV(float u, float v) {
 		if (!useTextures)
-			throw new RuntimeException("Textures are not enabled in this current state!");
-		
-		if (useVBO) {
-			rawBuffer[vertexCount * 8] = x + xOffset;
-			rawBuffer[vertexCount * 8 + 1] = y + yOffset;
-			rawBuffer[vertexCount * 8 + 2] = z;
-			
-			rawBuffer[vertexCount * 8 + 3] = brightness;
-			rawBuffer[vertexCount * 8 + 4] = brightness;
-			rawBuffer[vertexCount * 8 + 5] = brightness;
-			
-			rawBuffer[vertexCount * 8 + 6] = u;
-			rawBuffer[vertexCount * 8 + 7] = v;
+			System.err.println("WARNING! No image assigned at the time of this ");
+		this.u = u;
+		this.v = v;
+	}
+	
+	public void setDepth(float z) {
+		useDepth = true;
+		this.z = z;
+	}
 
-			vertexCount++;
-		} else {
-			GL11.glTexCoord2f(u, v);
-			GL11.glColor3f(brightness, brightness, brightness);
-			GL11.glVertex3f(x + xOffset, y + yOffset, z);
-		}
+	public void addVertex(float x, float y) {
+		this.x = x;
+		this.y = y;
+		loadVertexDataIntoArray();
+		vertexCount++;
 	}
 
 //	public void addVertexWithUV(float x, float y, float u, float v) {
 //		addVertexWithUV(x, y, 0.0f, u, v);
 //	}
+	
+	public void loadVertexDataIntoArray() {
+		if (useVBO) {
+			rawBuffer[vertexCount * 8] = x;
+			rawBuffer[vertexCount * 8 + 1] = y;
+			rawBuffer[vertexCount * 8 + 2] = z;
+			
+			rawBuffer[vertexCount * 8 + 3] = r;
+			rawBuffer[vertexCount * 8 + 4] = g;
+			rawBuffer[vertexCount * 8 + 5] = b;
+			
+			rawBuffer[vertexCount * 8 + 6] = u;
+			rawBuffer[vertexCount * 8 + 7] = v;
+		} else {
+			//TODO reconsider Display List loading
+			GL11.glColor3f(r, g, b);
+			GL11.glTexCoord2f(u, v);
+			GL11.glVertex3f(x, y, z);
+		}
+	}
 
 	public void bindImage(Image i) {
 		if (!editing)
@@ -146,11 +161,6 @@ public class BufferObject {
 		}
 	}
 
-	public void setOffset(float x, float y) {
-		this.xOffset = x;
-		this.yOffset = y;
-	}
-
 	public void render() {
 		if (editing)
 			throw new RuntimeException("Buffer is still being edited!");
@@ -160,18 +170,28 @@ public class BufferObject {
 
 		if (useVBO) {
 			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-			GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
-			GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+			if (useColors)
+				GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+			if (useTextures)
+				GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
-			GL11.glVertexPointer(3, GL11.GL_FLOAT, 4 * 8, 0);
-			GL11.glColorPointer(3, GL11.GL_FLOAT, 4 * 8, 4 * 3);
-			GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 4 * 8, 4 * 6);
+			if (useDepth)
+				GL11.glVertexPointer(3, GL11.GL_FLOAT, 4 * 8, 0);
+			else
+				GL11.glVertexPointer(2, GL11.GL_FLOAT, 4 * 8, 0);
+			if (useColors)
+				GL11.glColorPointer(3, GL11.GL_FLOAT, 4 * 8, 4 * 3);
+			if (useTextures)
+				GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 4 * 8, 4 * 6);
+			
 			GL11.glDrawArrays(GL11.GL_QUADS, 0, vertexCount);
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
-			GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-			GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+			if (useTextures)
+				GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+			if (useColors)
+				GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
 			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
 		} else {
 			GL11.glCallList(ID);

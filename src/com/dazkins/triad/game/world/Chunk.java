@@ -91,8 +91,7 @@ public class Chunk {
 			for (int y = 0; y < chunkH; y++) {
 				int tileIndex = tiles[x + y * chunkW];
 				if (tileIndex != 0) {
-					tilePlane.setBrightness((float) lightLevel[x + y * chunkW] / 14.0f);
-					Tile.tiles[tileIndex].render(tilePlane, x * Tile.tileSize + (chunkX * Tile.tileSize * chunkW), y * Tile.tileSize + (chunkY * Tile.tileSize * chunkH));
+					Tile.tiles[tileIndex].render(tilePlane, world, x * Tile.tileSize + (chunkX * Tile.tileSize * chunkW), y * Tile.tileSize + (chunkY * Tile.tileSize * chunkH));
 				}
 			}
 		}

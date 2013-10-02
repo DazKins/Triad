@@ -50,8 +50,11 @@ public class Tile {
 		return col;
 	}
 
-	public void render(BufferObject b, int x, int y) {
-		Image.spriteSheet.renderSprite(b, x, y, tileSize, tileSize, tx * 16, ty * 16, 16, 16, -0.5f);
+	public void render(BufferObject b, World w, int x, int y) {
+//		int t = w.getTileBrightness((int) (x / 32.0f), (int) (y / 32.0f));
+//		if (t < 8 || t > 14)
+//			System.out.println(t);
+		Image.spriteSheet.renderSprite(b, x, y, tileSize, tileSize, tx * 16, ty * 16, 16, 16, -0.5f, w.getTileBrightness((int) (x / 32.0f), (int) (y / 32.0f)) / 14.0f);
 	}
 
 	private static void loadTileDatabase(String path) {
