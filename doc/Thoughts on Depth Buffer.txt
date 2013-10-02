@@ -1,3 +1,5 @@
-z == 0 - 3 ? Gui Layers, buttons etc.
+z == > 0 ? Debug stuffs
 
-z == 3 - 10 ? World Tiles, Entities etc.
+z == 0 - -3 ? Gui Layers, buttons etc.
+
+z == -3 - -10 ? World Tiles, Entities etc.

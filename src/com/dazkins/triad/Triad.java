@@ -18,9 +18,11 @@ import com.dazkins.triad.game.GameStatePlaying;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
+import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.ViewportInfo;
 import com.dazkins.triad.gfx.model.Model;
+import com.dazkins.triad.util.TriadProfiler;
 
 public class Triad {
 	private boolean running;
@@ -66,6 +68,8 @@ public class Triad {
 		
 		currentState = new GameStatePlaying();
 		currentState.init(this);
+		
+		Font.initializeFont();
 	}
 	
 	private void initOpenGL() {
@@ -139,7 +143,7 @@ public class Triad {
 		
 		currentState.render();
 		
-		Display.update(true);
+		Display.update();
 	}
 	
 	private ByteBuffer[] loadIcon(String p) {

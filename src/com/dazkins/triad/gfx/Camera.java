@@ -2,7 +2,6 @@ package com.dazkins.triad.gfx;
 
 import org.lwjgl.opengl.GL11;
 
-import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;

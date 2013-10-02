@@ -2,17 +2,18 @@ package com.dazkins.triad.game.gui;
 
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
+import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.input.InputHandler;
 
 public class PlayerGui extends Gui {
 	private EntityPlayer player;
-//	private GuiBox mainBox;
+	private GuiBox mainBox;
 	private GuiStatusBar statusBar;
 	
 	public PlayerGui(Triad t, InputHandler i, EntityPlayer player) {
 		super(t, i);
 		this.player = player;
-//		mainBox = new GuiBox(0, 0, 1000, 400);
+		mainBox = new GuiBox(0, 0, 1000, 400);
 		statusBar = new GuiStatusBar(0, 0, 0xff0000, 1024);
 	}
 
@@ -26,5 +27,6 @@ public class PlayerGui extends Gui {
 		ticks++;
 //		mainBox.render();
 //		statusBar.render();
+		Font.drawStringWithShadow("lol test 1337", 200, 200);
 	}
 }

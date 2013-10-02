@@ -3,7 +3,6 @@ package com.dazkins.triad.game.world.tile;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.IOException;
-import java.awt.image.DataBufferInt;
 
 import javax.swing.ImageIcon;
 
@@ -40,10 +39,10 @@ public class Tile {
 	}
 	
 	public AABB getAABB(World w, int x, int y) {
-		int x0 = dbs.getInt("AABB.x0", id - 1);
-		int y0 = dbs.getInt("AABB.y0", id - 1);
-		int x1 = dbs.getInt("AABB.x1", id - 1);
-		int y1 = dbs.getInt("AABB.y1", id - 1);
+		int x0 = dbs.getInt("AABB.x0", id - 1) + x * Tile.tileSize;
+		int y0 = dbs.getInt("AABB.y0", id - 1) + y * Tile.tileSize;
+		int x1 = dbs.getInt("AABB.x1", id - 1) + x * Tile.tileSize;
+		int y1 = dbs.getInt("AABB.y1", id - 1) + y * Tile.tileSize;
 		return new AABB(x0, y0, x1, y1);
 	}
 	

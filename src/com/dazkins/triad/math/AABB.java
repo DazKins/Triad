@@ -36,25 +36,28 @@ public class AABB {
 		return true;
 	}
 	
-	public void renderBounds(float width, float r, float g, float b, float a) {
+	public void renderBounds(float width) {
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		
 		GL11.glLineWidth(width);
+		GL11.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 		GL11.glBegin(GL11.GL_LINES);
-			GL11.glColor4f(r, g, b, a);
-			
-			GL11.glVertex3f(x0, y0, 0);
-			GL11.glVertex3f(x1, y0, 0);
+			GL11.glVertex3f(x0, y0, 5.0f);
+			GL11.glVertex3f(x1, y0, 5.0f);
 
-			GL11.glVertex3f(x1, y0, 0);
-			GL11.glVertex3f(x1, y1, 0);
+			GL11.glVertex3f(x1, y0, 5.0f);
+			GL11.glVertex3f(x1, y1, 5.0f);
 			
-			GL11.glVertex3f(x1, y1, 0);
-			GL11.glVertex3f(x0, y1, 0);
+			GL11.glVertex3f(x1, y1, 5.0f);
+			GL11.glVertex3f(x0, y1, 5.0f);
 
-			GL11.glVertex3f(x0, y1, 0);
-			GL11.glVertex3f(x0, y0, 0);
-			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			GL11.glVertex3f(x0, y1, 5.0f);
+			GL11.glVertex3f(x0, y0, 5.0f);
 		GL11.glEnd();
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		GL11.glLineWidth(1);
+
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 	
 	public String toString() {

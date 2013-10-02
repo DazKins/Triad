@@ -74,30 +74,12 @@ public class World {
 		
 		for (int i = 0; i < l.getSize(); i++) {
 			int t = l.getInt(i);
-			int x = i % tw;
-			int y = i / tw;
+			int x = i / tw;
+			int y = i % tw;
 			rValue.setTile(Tile.tiles[t], x, y);
 		}
 		
 		return rValue;
-	}
-	
-	public void saveWorldToFile(String path) throws FileNotFoundException {
-		File f = new File(path);
-		PrintWriter pr = new PrintWriter(f);
-		String output = "";
-		for (int x = 0; x < info.nChunksX * Chunk.chunkW; x++) {
-			for (int y = 0; y < info.nChunksY * Chunk.chunkH; y++) {
-				output += getTile(x, y).getID() + " ";
-			}
-		}
-		pr.write(output);
-		pr.close();
-		
-		pr = null;
-		output = null;
-		f = null;
-		System.gc();
 	}
 	
 	private void generate() {
@@ -122,10 +104,10 @@ public class World {
 
 	public void render(Camera cam) {
 		for (int i = 0; i < chunks.length; i++) {
+			if (!chunks[i].isGenerated()) {
+				chunks[i].generate();
+			}
 			if (chunks[i].getBounds().intersects(cam.getViewportBounds())) {
-				if (!chunks[i].isGenerated()) {
-					chunks[i].generate();
-				} 
 				chunks[i].render();
 			}
 		}

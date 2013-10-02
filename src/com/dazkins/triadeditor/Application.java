@@ -9,8 +9,11 @@ import java.io.FileNotFoundException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -29,6 +32,7 @@ public class Application {
 	private ViewportInfo viewport;
 	
 	private int selectedTile;
+	private int brushSize = 1;
 	private boolean displayGrid;
 	
 	public Application(InputHandler i, ViewportInfo v) {
@@ -45,7 +49,7 @@ public class Application {
 		controlPanel.addButton(new FunctionParser() {
 			public void func() {
 				try {
-					ApplicationUtil.requestWorldSave(world);
+					ApplicationUtil.requestWorldSave(world, controlPanel.frame);
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -83,29 +87,57 @@ public class Application {
 		
 		JCheckBox jc = new JCheckBox("Display Grid");
 		controlPanel.frame.add(jc);
-		jc.setBounds(0, 450, 200, 50);
+		jc.setBounds(0, 450, 200, 19);
 		jc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				displayGrid = !displayGrid;
 			}
 		});
+		
+		final String[] options = new String[10];
+		for (int i = 0; i < options.length; i++) {
+			options[i] = i + "";
+		}
+		controlPanel.addButton(new FunctionParser() {
+			public void func() {
+				brushSize = Integer.parseInt((String) JOptionPane.showInputDialog(null, "Choose brush size", "Brush Size", JOptionPane.PLAIN_MESSAGE, null, options, options[0]));
+			}
+		}, "Change brush size", 0, 600, 200, 50);
+		
+		JLabel hl = new JLabel("hit");
+		controlPanel.frame.add(hl);
+		hl.setBounds(0, 400, 100, 100);
+		
+		JTextArea jt = new JTextArea();
+		controlPanel.frame.add(jt);
+		jt.setBounds(0, 300, 100, 100);
+		jt.setLineWrap(true);
 	}
 	
 	private void renderTileSelector() {
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		
-		int x = ((int) ((input.mouseX / cam.getZoom()) + cam.getX()) >> 5) << 5;
-		int y = ((int) ((input.mouseY / cam.getZoom()) + cam.getY()) >> 5) << 5;
-		
-		GL11.glBegin(GL11.GL_QUADS);
-			GL11.glColor4f(1, 0, 0, 0.5f);
-			GL11.glVertex3f(x, y, 5.0f);
-			GL11.glVertex3f(x + Tile.tileSize, y, 5.0f);
-			GL11.glVertex3f(x + Tile.tileSize, y + Tile.tileSize, 5.0f);
-			GL11.glVertex3f(x, y + Tile.tileSize, 5.0f);
-			GL11.glColor3f(1, 1, 1);
-		GL11.glEnd();
+		int mX = ((int) ((input.mouseX / cam.getZoom()) + cam.getX()) >> 5) << 5;
+		int mY = ((int) ((input.mouseY / cam.getZoom()) + cam.getY()) >> 5) << 5;
 
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glColor4f(1, 0, 0, 0.5f);
+		
+		for (int x = mX - brushSize * 32; x < mX + (brushSize + 1) * 32; x += 32) {
+			for (int y = mY - brushSize * 32; y < mY + (brushSize + 1) * 32; y += 32) {
+				float xD = Math.abs(mX - x) / 32.0f;
+				float yD = Math.abs(mY - y) / 32.0f;
+				float l = (float) Math.sqrt(xD * xD + yD * yD);
+				if (l <= brushSize) {
+					GL11.glVertex3f(x, y, 5.0f);
+					GL11.glVertex3f(x + Tile.tileSize, y, 5.0f);
+					GL11.glVertex3f(x + Tile.tileSize, y + Tile.tileSize, 5.0f);
+					GL11.glVertex3f(x, y + Tile.tileSize, 5.0f);
+				}
+			}
+		}
+		
+		GL11.glColor3f(1, 1, 1);
+		GL11.glEnd();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 	
@@ -115,16 +147,17 @@ public class Application {
 				Tile t = Tile.tiles[selectedTile];
 				int sx = (int) ((input.mouseX / cam.getZoom()) + cam.getX()) >> 5;
 				int sy = (int) ((input.mouseY / cam.getZoom()) + cam.getY()) >> 5;
-				if (t != null)
-					world.setTile(t, sx, sy);
-			}
-		}
-		
-		if (input.isKeyDown(Keyboard.KEY_S)) {
-			try {
-				ApplicationUtil.requestWorldSave(world);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				for (int x = sx - brushSize; x < sx + (brushSize + 1) ; x++) {
+					for (int y = sy - brushSize; y < sy + (brushSize + 1); y++) {
+						float xD = Math.abs(sx - x);
+						float yD = Math.abs(sy - y);
+						float l = (float) Math.sqrt(xD * xD + yD * yD);
+						if (l <= brushSize) {
+							if (t != null)
+								world.setTile(t, x, y);
+						}
+					}
+				}
 			}
 		}
 		

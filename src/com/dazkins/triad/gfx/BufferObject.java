@@ -6,6 +6,8 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 
+import com.dazkins.triad.util.TriadProfiler;
+
 public class BufferObject {
 	private static boolean useVBO;
 
@@ -17,11 +19,23 @@ public class BufferObject {
 	private Image img;
 
 	private boolean editing;
-	private boolean hasTexture;
 
 	private float xOffset, yOffset;
 	
 	private float brightness;
+	
+	private boolean useColors;
+	private boolean useTextures;
+	
+	//Store the temporary variables to be loaded into the VBO
+	private float x;
+	private float y;
+	private float z;
+	private float r;
+	private float g;
+	private float b;
+	private float u;
+	private float v;
 	
 	public static void init() {
 		float version = Float.parseFloat(GL11.glGetString(GL11.GL_VERSION).substring(0, 3));
@@ -41,7 +55,8 @@ public class BufferObject {
 			rawBuffer = new float[size];
 			dataBuffer = BufferUtils.createFloatBuffer(size);
 		} else {
-			ID = GL11.glGenLists(1);
+			if (ID == 0)
+				ID = GL11.glGenLists(1);
 		}
 		brightness = 1.0f;
 	}
@@ -86,13 +101,13 @@ public class BufferObject {
 	private void closeVBO() {
 		rawBuffer = null;
 		dataBuffer = null;
-		System.gc();
+//		System.gc();
 	}
 
 	public void addVertexWithUV(float x, float y, float z, float u, float v) {
 		if (!editing)
 			throw new RuntimeException("Buffer object not editable!");
-		if (!hasTexture)
+		if (!useTextures)
 			throw new RuntimeException("Textures are not enabled in this current state!");
 		
 		if (useVBO) {
@@ -115,18 +130,18 @@ public class BufferObject {
 		}
 	}
 
-	public void addVertexWithUV(float x, float y, float u, float v) {
-		addVertexWithUV(x, y, 0.0f, u, v);
-	}
+//	public void addVertexWithUV(float x, float y, float u, float v) {
+//		addVertexWithUV(x, y, 0.0f, u, v);
+//	}
 
 	public void bindImage(Image i) {
 		if (!editing)
 			throw new RuntimeException("Buffer object not editable!");
 
-		if (!hasTexture) {
-			this.hasTexture = true;
+		if (!useTextures) {
+			this.useTextures = true;
 			img = i;
-		} else if (!hasTexture && i != img) {
+		} else if (!useTextures && i != img) {
 			throw new RuntimeException("Only one texture per buffer is supported!");
 		}
 	}
@@ -140,7 +155,7 @@ public class BufferObject {
 		if (editing)
 			throw new RuntimeException("Buffer is still being edited!");
 		
-		if (hasTexture);
+		if (useTextures);
 			img.bindGLTexture();
 
 		if (useVBO) {

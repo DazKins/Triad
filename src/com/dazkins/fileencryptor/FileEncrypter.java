@@ -25,11 +25,11 @@ public class FileEncrypter {
         final JFileChooser jfc = new JFileChooser();
         jfc.setBounds(0, 0, 1280, 720);
         jfc.setControlButtonsAreShown(false);
-        jfc.setCurrentDirectory(new File("C:/dev/java/Triad/res"));
+        jfc.setCurrentDirectory(new File("C:/dev/Triad/Triad/res"));
         mainPanel.add(jfc);
 	    
 	    JButton btn0;
-        btn0 = new JButton("ENCRYPT");
+        btn0 = new JButton("Encrypt");
         btn0.setBounds(0, 0, 1000, 500);
         btn0.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -43,7 +43,7 @@ public class FileEncrypter {
         mainPanel.add(btn0);
         
         JButton btn1;
-        btn1 = new JButton("DECRYPT");
+        btn1 = new JButton("Decrypt");
         btn1.setBounds(0, 0, 1000, 500);
         btn1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -86,7 +86,7 @@ public class FileEncrypter {
 		fr.close();
 		String content = new String(chars);
 		
-		encryptString(content);
+		content = encryptString(content);
 		
 		PrintWriter pr = new PrintWriter(f);
 		pr.write(content);

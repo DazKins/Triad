@@ -6,7 +6,9 @@ import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
 
 public class Quad {
-	private BufferObject model;
+	private Model parent;
+	
+	private BufferObject bufferObject;
 
 	private float rot;
 	private float cRotX, cRotY;
@@ -21,6 +23,8 @@ public class Quad {
 	private float w, h;
 	private int tx, ty;
 	private int tw, th;
+	
+	private int renderLayer;
 
 	public Quad(float x, float y, float w, float h, int tx, int ty, int tw, int th) {
 		this.x = x;
@@ -33,15 +37,16 @@ public class Quad {
 		this.th = th;
 	}
 	
-	public void init(Image i) {
-		img = i;
+	public void init(Image i, Model m) {
+		this.img = i;
+		this.parent = m;
 	}
 	
 	public void generate() {
-		model = new BufferObject(32);
-		model.start();
-		img.renderSprite(model, x, y, w, h, tx, ty, tw, th, 0.0f);
-		model.stop();
+		bufferObject = new BufferObject(32);
+		bufferObject.start();
+		img.renderSprite(bufferObject, x, y, w, h, tx, ty, tw, th, 0.0f);
+		bufferObject.stop();
 	}
 
 	public void setCenterOfRotation(float x, float y) {
@@ -49,39 +54,47 @@ public class Quad {
 		cRotY = y;
 	}
 
-	public void addRotation(float f) {
-		rot += f;
+	public void setRotation(float f) {
+		rot = f;
 	}
 	
 	public float getRotation() {
 		return rot;
 	}
 	
-	public void addOffset(float x, float y) {
-		offsetX += x;
-		offsetY += y;
+	public float getOffsetX() {
+		return offsetX;
 	}
 	
-	public void resetProperties() {
-		offsetX = 0;
-		offsetY = 0;
-		rot = 0;
+	public float getOffsetY() {
+		return offsetY;
+	}
+	
+	public void setOffset(float x, float y) {
+		offsetX = x;
+		offsetY = y;
+	}
+	
+	public void setRenderLayer(int l) {
+		renderLayer = l;
+	}
+	
+	public int getRenderLayer() {
+		return renderLayer;
 	}
 
 	public void render() {
 		GL11.glPushMatrix();
 		
-		if (cRotX != 0 || cRotY != 0)
+		if ((cRotX != 0 || cRotY != 0) && rot != 0) {
 			GL11.glTranslatef(cRotX, cRotY, 0);
-
-		GL11.glRotatef(rot, 0, 0, 1);
-
-		if (cRotX != 0 || cRotY != 0)
+			GL11.glRotatef(rot, 0, 0, 1);
 			GL11.glTranslatef(-cRotX, -cRotY, 0);
+		}
 		
 		GL11.glTranslatef(offsetX, offsetY, depth);
 
-		model.render();
+		bufferObject.render();
 		GL11.glPopMatrix();
 	}
 }

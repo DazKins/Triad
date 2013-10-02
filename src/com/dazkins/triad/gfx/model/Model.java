@@ -44,14 +44,12 @@ public class Model {
 	
 	protected void addQuads(Quad[] q) {
 		for (int i = 0; i < q.length; i++) {
-			q[i].init(img);
-			q[i].generate();
-			quads.add(q[i]);
+			addQuad(q[i]);
 		}
 	}
 	
-	protected void addQuad(Quad q, int layer) {
-		q.init(img);
+	protected void addQuad(Quad q) {
+		q.init(img, this);
 		q.generate();
 		quads.add(q);
 	}
@@ -64,7 +62,7 @@ public class Model {
 		selectiveRendering = false;
 	}
 	
-	public void renderQuad(Quad quad) {
+	public void addQuadToRenderQeue(Quad quad) {
 		if (!selectiveRendering) {
 			System.err.println("Warning! Selective rendering is not enabled!");
 		}
@@ -83,17 +81,22 @@ public class Model {
 		if(selectiveRendering) {
 			for (int i = 0; i < quadRenders.size(); i++) {
 				Quad q = (Quad) quads.get(quadRenders.get(i));
-				q.render();
-				q.resetProperties();
+				renderQuad(q);
 			}
 		} else {
 			for (int i = 0; i < quads.size(); i++) {
 				Quad q = (Quad) quads.get(i);
-				q.render();
-				q.resetProperties();
+				renderQuad(q);
 			}
 		}
 		quadRenders.clear();
+		GL11.glPopMatrix();
+	}
+	
+	private void renderQuad(Quad q) {
+		GL11.glPushMatrix();
+		GL11.glTranslatef(0, 0, q.getRenderLayer());
+		q.render();
 		GL11.glPopMatrix();
 	}
 }

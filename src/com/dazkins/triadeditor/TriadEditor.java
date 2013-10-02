@@ -13,7 +13,6 @@ import com.dazkins.triad.gfx.ViewportInfo;
 import com.dazkins.triad.input.InputHandler;
 
 public class TriadEditor implements Runnable {
-	private static String TITLE = "Triad Editor";
 	private static int WIDTH = 1280;
 	private static int HEIGHT = 720;
 	
