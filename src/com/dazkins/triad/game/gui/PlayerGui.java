@@ -2,7 +2,6 @@ package com.dazkins.triad.game.gui;
 
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
-import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.input.InputHandler;
 
 public class PlayerGui extends Gui {
@@ -27,6 +26,5 @@ public class PlayerGui extends Gui {
 		ticks++;
 //		mainBox.render();
 //		statusBar.render();
-		Font.drawStringWithShadow("lol test 1337", 200, 200);
 	}
 }

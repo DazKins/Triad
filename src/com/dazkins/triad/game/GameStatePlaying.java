@@ -26,7 +26,7 @@ public class GameStatePlaying implements GameState {
 		this.triad = triad;
 		input = new InputHandler();
 		cam = new Camera(input, triad.viewport, 0, 0);
-		cam.lockZoom(0.7f, 1.3f);
+		cam.lockZoom(0.0001f, 500f);
 		changeWorld("TestingMap");
 		player = new EntityPlayer(world, 0, 0, input);
 		gui = new PlayerGui(triad, input, player);

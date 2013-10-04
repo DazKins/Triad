@@ -49,7 +49,7 @@ public class Model {
 	}
 	
 	protected void addQuad(Quad q) {
-		q.init(img, this);
+		q.init(img);
 		q.generate();
 		quads.add(q);
 	}
@@ -74,7 +74,7 @@ public class Model {
 		quadRenders = new ArrayList<Integer>();
 		img = i;
 	}
-	
+	 
 	public void render() {
 		GL11.glPushMatrix();
 		GL11.glTranslatef(offsetX, offsetY, depth);
@@ -94,9 +94,6 @@ public class Model {
 	}
 	
 	private void renderQuad(Quad q) {
-		GL11.glPushMatrix();
-		GL11.glTranslatef(0, 0, q.getRenderLayer());
 		q.render();
-		GL11.glPopMatrix();
 	}
 }

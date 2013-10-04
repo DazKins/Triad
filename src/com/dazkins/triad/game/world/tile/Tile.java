@@ -27,7 +27,7 @@ public class Tile {
 	}
 	
 	public static float yPosToDepth(float y) {
-		return -((y / tileSize) * 0.01f);
+		return -(y / tileSize) - 3;
 	}
 
 	public Tile(byte i, String s, int tex, int tey, boolean c) {
@@ -51,10 +51,7 @@ public class Tile {
 	}
 
 	public void render(BufferObject b, World w, int x, int y) {
-//		int t = w.getTileBrightness((int) (x / 32.0f), (int) (y / 32.0f));
-//		if (t < 8 || t > 14)
-//			System.out.println(t);
-		Image.spriteSheet.renderSprite(b, x, y, tileSize, tileSize, tx * 16, ty * 16, 16, 16, -0.5f, w.getTileBrightness((int) (x / 32.0f), (int) (y / 32.0f)) / 14.0f);
+		Image.spriteSheet.renderSprite(b, x, y, tileSize, tileSize, tx * 16, ty * 16, 16, 16, yPosToDepth(y), w.getTileBrightness((int) (x / 32.0f), (int) (y / 32.0f)) / 14.0f);
 	}
 
 	private static void loadTileDatabase(String path) {

@@ -3,6 +3,7 @@ package com.dazkins.triad.gfx.model;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.entity.mob.MovementState;
+import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Image;
 
 public class ModelHumanoid extends Model {
@@ -57,7 +58,7 @@ public class ModelHumanoid extends Model {
 		rightLeg[left].setRenderLayer(1);
 		rightLeg[right] = new Quad(-4, 0, 10, 18, 35, 8, 5, 9);
 		rightLeg[right].setCenterOfRotation(1, 18);
-		rightLeg[right].setRenderLayer(1);
+		rightLeg[right].setRenderLayer(3);
 		addQuads(rightLeg);
 		
 		
@@ -84,7 +85,7 @@ public class ModelHumanoid extends Model {
 		leftLeg[down].setRenderLayer(1);
 		leftLeg[left] = new Quad(-4, 0, 10, 18, 30, 17, 5, 9);
 		leftLeg[left].setCenterOfRotation(1, 18);
-		leftLeg[left].setRenderLayer(1);
+		leftLeg[left].setRenderLayer(3);
 		leftLeg[right] = new Quad(-4, 0, 10, 18, 35, 17, 5, 9);
 		leftLeg[right].setCenterOfRotation(1, 18);
 		leftLeg[right].setRenderLayer(1);
@@ -104,6 +105,7 @@ public class ModelHumanoid extends Model {
 		
 	public void render(Mob m) {
 		setOffset(m.getX(), m.getY());
+		setDepth(Tile.yPosToDepth(m.getY()));
 		
 		Facing f = m.getFacing();
 		int ordinal = f.ordinal();

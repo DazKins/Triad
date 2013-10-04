@@ -71,7 +71,7 @@ public class TriadEditor implements Runnable {
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GL11.glOrtho(0, WIDTH, 0, HEIGHT, -10.0f, 10.0f);
+		GL11.glOrtho(0, WIDTH, 0, HEIGHT, -1000.0f, 1000.0f);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

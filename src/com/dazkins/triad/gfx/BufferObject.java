@@ -6,8 +6,6 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 
-import com.dazkins.triad.util.TriadProfiler;
-
 public class BufferObject {
 	private static boolean useVBO;
 
@@ -99,6 +97,10 @@ public class BufferObject {
 //		System.gc();
 	}
 	
+	public void setBrightness(float b) {
+		setRGB(b, b, b);
+	}
+	
 	public void setRGB(float r, float g, float b) {
 		useColors = true;
 		this.r = r;
@@ -108,7 +110,7 @@ public class BufferObject {
 	
 	public void setUV(float u, float v) {
 		if (!useTextures)
-			System.err.println("WARNING! No image assigned at the time of this ");
+			System.err.println("WARNING! No image assigned");
 		this.u = u;
 		this.v = v;
 	}

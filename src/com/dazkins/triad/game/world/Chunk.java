@@ -10,7 +10,6 @@ import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
-import com.dazkins.triad.util.TriadProfiler;
 
 public class Chunk {
 	public static int chunkW = 16, chunkH = 16;

@@ -22,7 +22,6 @@ import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.ViewportInfo;
 import com.dazkins.triad.gfx.model.Model;
-import com.dazkins.triad.util.TriadProfiler;
 
 public class Triad {
 	private boolean running;
@@ -76,7 +75,7 @@ public class Triad {
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GL11.glOrtho(0, viewport.getW(), 0, viewport.getH(), -10.0f, 10.0f);
+		GL11.glOrtho(0, viewport.getW(), 0, viewport.getH(), -100.0f, 100.0f);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -183,7 +182,7 @@ public class Triad {
 		viewport.setH(Display.getHeight());
 		GL11.glLoadIdentity();
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glOrtho(0, viewport.getW(), 0, viewport.getH(), -10.0f, 10.0f);
+		GL11.glOrtho(0, viewport.getW(), 0, viewport.getH(), -1000.0f, 1000.0f);
 		GL11.glViewport(0, 0, viewport.getW(), viewport.getH());
 	}
 

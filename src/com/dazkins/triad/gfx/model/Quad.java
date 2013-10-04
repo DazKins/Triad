@@ -6,16 +6,12 @@ import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
 
 public class Quad {
-	private Model parent;
-	
 	private BufferObject bufferObject;
 
 	private float rot;
 	private float cRotX, cRotY;
 
 	private float offsetX, offsetY;
-
-	private float depth;
 	
 	private Image img;
 	
@@ -37,9 +33,8 @@ public class Quad {
 		this.th = th;
 	}
 	
-	public void init(Image i, Model m) {
+	public void init(Image i) {
 		this.img = i;
-		this.parent = m;
 	}
 	
 	public void generate() {
@@ -92,7 +87,7 @@ public class Quad {
 			GL11.glTranslatef(-cRotX, -cRotY, 0);
 		}
 		
-		GL11.glTranslatef(offsetX, offsetY, depth);
+		GL11.glTranslatef(offsetX, offsetY, renderLayer);
 
 		bufferObject.render();
 		GL11.glPopMatrix();

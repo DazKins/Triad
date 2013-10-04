@@ -48,6 +48,6 @@ public class EntityPlayer extends Mob {
 	}
 
 	public float getMovementSpeed() {
-		return 2;
+		return 10;
 	}
 }
