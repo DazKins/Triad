@@ -18,7 +18,7 @@ public class Tile {
 	
 	private byte id;
 	private String name;
-	private int tx, ty;
+	private int ty;
 	private boolean col;
 	public static Tile[] tiles = new Tile[256];
 	
@@ -30,9 +30,8 @@ public class Tile {
 		return -(y / tileSize) - 3;
 	}
 
-	public Tile(byte i, String s, int tex, int tey, boolean c) {
+	public Tile(byte i, String s, int tey, boolean c) {
 		name = s;
-		tx = tex;
 		ty = tey;
 		id = i;
 		col = c;
@@ -51,7 +50,7 @@ public class Tile {
 	}
 
 	public void render(BufferObject b, World w, int x, int y) {
-		Image.spriteSheet.renderSprite(b, x, y, tileSize, tileSize, tx * 16, ty * 16, 16, 16, yPosToDepth(y), w.getTileBrightness((int) (x / 32.0f), (int) (y / 32.0f)) / 14.0f);
+		Image.spriteSheet.renderSprite(b, x, y, tileSize, tileSize, 0, ty * 16, 16, 16, yPosToDepth(y), w.getTileBrightness((int) (x / 32.0f), (int) (y / 32.0f)) / 14.0f);
 	}
 
 	private static void loadTileDatabase(String path) {
@@ -65,10 +64,9 @@ public class Tile {
 		for (int i = 0; i < dbs.getLineCount(); i++) {
 			byte id = dbs.getByte("ID", i);
 			String s = dbs.getString("NAME", i);
-			int tex = dbs.getInt("TX", i);
 			int tey = dbs.getInt("TY", i);
 			boolean col = dbs.getBoolean("COL", i);
-			Tile t = new Tile(id, s, tex, tey, col);
+			Tile t = new Tile(id, s, tey, col);
 			tiles[id] = t;
 		}
 	}
@@ -78,7 +76,7 @@ public class Tile {
 		if (t != null) {
 			BufferedImage img = new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB);
 			int pixels[] = ((DataBufferInt)img.getRaster().getDataBuffer()).getData();
-			int oldPixels[] = Image.spriteSheet.getRawImage().getRGB(t.tx * 16, t.ty * 16, 16, 16, null, 0, 16);
+			int oldPixels[] = Image.spriteSheet.getRawImage().getRGB(0, t.ty * 16, 16, 16, null, 0, 16);
 			for (int x = 0; x < 16; x++) {
 				for (int y = 0; y < 16; y++) {
 					pixels[x + y * 16] = oldPixels[x + y * 16];

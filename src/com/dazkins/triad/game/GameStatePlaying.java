@@ -53,8 +53,8 @@ public class GameStatePlaying implements GameState {
 		GL11.glPushMatrix();
 		cam.attachTranslation();
 		world.render(cam);
+		world.renderGrid(cam);
 		GL11.glPopMatrix();
-		gui.render();
 	}
 	
 	public void changeWorld(String newWorld) {

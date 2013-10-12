@@ -39,11 +39,11 @@ public class Triad {
 	
 	public Triad() {
 		try {
+			Display.setResizable(true);
 			Display.setDisplayMode(new DisplayMode(viewport.getW(), viewport.getH()));
 			Display.setTitle(title);
 			Display.setIcon(loadIcon("/art/icon.png"));
-			Display.setResizable(true);
-			Display.create(new PixelFormat().withDepthBits(24));
+			Display.create();
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}

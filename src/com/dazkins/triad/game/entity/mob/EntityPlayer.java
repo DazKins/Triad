@@ -3,6 +3,7 @@ package com.dazkins.triad.game.entity.mob;
 import org.lwjgl.input.Keyboard;
 
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
@@ -43,8 +44,7 @@ public class EntityPlayer extends Mob {
 	
 	public void render() {
 		((ModelHumanoid)this.getModel()).render(this);
-//		OpenGLHelper.renderReferencePoint(x, y);
-//		getAABB().renderBounds(2);
+		Font.drawStringWithShadow(name, x - (name.length() * 16) / 2, y + 52);
 	}
 
 	public float getMovementSpeed() {
