@@ -20,13 +20,13 @@ import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
-import com.dazkins.triad.gfx.ViewportInfo;
+import com.dazkins.triad.gfx.WindowInfo;
 import com.dazkins.triad.gfx.model.Model;
 
 public class Triad {
 	private boolean running;
 	private final String title = "Triad Pre-Alpha";
-	public ViewportInfo viewport = new ViewportInfo(0, 0, 800, 450);
+	public WindowInfo winInfo = new WindowInfo(800, 450);
 	
 	private boolean rescaled;
 
@@ -40,7 +40,7 @@ public class Triad {
 	public Triad() {
 		try {
 			Display.setResizable(true);
-			Display.setDisplayMode(new DisplayMode(viewport.getW(), viewport.getH()));
+			Display.setDisplayMode(new DisplayMode(winInfo.getW(), winInfo.getH()));
 			Display.setTitle(title);
 			Display.setIcon(loadIcon("/art/icon.png"));
 			Display.create();
@@ -75,7 +75,7 @@ public class Triad {
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GL11.glOrtho(0, viewport.getW(), 0, viewport.getH(), -100.0f, 100.0f);
+		GL11.glOrtho(0, winInfo.getW(), 0, winInfo.getH(), -100.0f, 100.0f);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -178,12 +178,12 @@ public class Triad {
 	}
 
 	private void resyncOpenGL() {
-		viewport.setW(Display.getWidth());
-		viewport.setH(Display.getHeight());
+		winInfo.setW(Display.getWidth());
+		winInfo.setH(Display.getHeight());
 		GL11.glLoadIdentity();
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glOrtho(0, viewport.getW(), 0, viewport.getH(), -1000.0f, 1000.0f);
-		GL11.glViewport(0, 0, viewport.getW(), viewport.getH());
+		GL11.glOrtho(0, winInfo.getW(), 0, winInfo.getH(), -1000.0f, 1000.0f);
+		GL11.glViewport(0, 0, winInfo.getW(), winInfo.getH());
 	}
 
 	private void tick() {

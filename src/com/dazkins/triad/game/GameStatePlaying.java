@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.EntityTorch;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
+import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.PlayerGui;
 import com.dazkins.triad.game.world.Chunk;
@@ -25,12 +26,13 @@ public class GameStatePlaying implements GameState {
 	public void init(Triad triad) {
 		this.triad = triad;
 		input = new InputHandler();
-		cam = new Camera(input, triad.viewport, 0, 0);
+		cam = new Camera(input, triad.winInfo, 0, 0);
 		cam.lockZoom(0.0001f, 500f);
 		changeWorld("TestingMap");
 		player = new EntityPlayer(world, 0, 0, input);
-		gui = new PlayerGui(triad, input, player);
+		gui = new PlayerGui(triad, input, world, player);
 		world.addEntity(player);
+		world.addEntity(new EntityZombie(world, 100, 100));
 	}
 	
 	private int cooldown;
@@ -53,8 +55,8 @@ public class GameStatePlaying implements GameState {
 		GL11.glPushMatrix();
 		cam.attachTranslation();
 		world.render(cam);
-		world.renderGrid(cam);
 		GL11.glPopMatrix();
+		gui.render(cam);
 	}
 	
 	public void changeWorld(String newWorld) {

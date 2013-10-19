@@ -21,4 +21,8 @@ public class EntityTorch extends Entity implements LightEmitter {
 	public AABB getAABB() {
 		return null;
 	}
+
+	public void renderToPlayerGui() {
+		
+	}
 }

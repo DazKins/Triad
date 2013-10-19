@@ -11,6 +11,7 @@ import com.dazkins.triad.file.SingleLineDatabaseFile;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.math.AABB;
 
 public class World {
 	private static ArrayList<World> worlds;
@@ -116,6 +117,27 @@ public class World {
 				chunks[i].renderGrid();
 			}
 		}
+	}
+	
+	public ArrayList<Entity> getEntitiesInAABB(AABB b) {
+		ArrayList<Entity> rValue = new ArrayList<Entity>();
+		for (int i = 0; i < chunks.length; i++) {
+			if (chunks[i].getBounds().intersects(b)) {
+				ArrayList<Entity> cChunkEntities = chunks[i].entities;
+				for (int u = 0; u < cChunkEntities.size(); u++) {
+					Entity cEntity = cChunkEntities.get(u);
+					if (cEntity != null) {
+						AABB eB = cEntity.getAABB();
+						if (eB != null) {
+							if (cChunkEntities.get(u).getAABB().intersects(b)) {
+								rValue.add(cChunkEntities.get(u));
+							}
+						}
+					}
+				}
+			}
+		}
+		return rValue;
 	}
 	
 	public ArrayList<Entity> getChunkEntites(int cx, int cy) {

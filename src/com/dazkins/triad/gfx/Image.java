@@ -61,7 +61,8 @@ public class Image {
 		
 		bo.bindImage(this);
 		bo.setDepth(z);
-		bo.setBrightness(b);
+		if (b != 1)
+			bo.setBrightness(b);
 		bo.setUV(tx1, ty0);
 		bo.addVertex(x + w, y + h);
 		bo.setUV(tx0, ty0);

@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
-import com.dazkins.triad.gfx.ViewportInfo;
+import com.dazkins.triad.gfx.WindowInfo;
 import com.dazkins.triad.input.InputHandler;
 
 public class Application {
@@ -29,17 +29,17 @@ public class Application {
 	private World world;
 	private Camera cam;
 	private InputHandler input;
-	private ViewportInfo viewport;
+	private WindowInfo winInfo;
 	
 	private int selectedTile;
 	private int brushSize = 1;
 	private boolean displayGrid;
 	
-	public Application(InputHandler i, ViewportInfo v) {
+	public Application(InputHandler i, WindowInfo w) {
 		world = World.getWorldFromName("TestingMap");
 		input = i;
-		viewport = v;
-		cam = new Camera(i, viewport, 0, 0);
+		winInfo = w;
+		cam = new Camera(i, winInfo, 0, 0);
 		cam.lockZoom(0.7f, 1.3f);
 	}
 

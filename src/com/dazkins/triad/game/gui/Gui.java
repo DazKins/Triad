@@ -1,6 +1,7 @@
 package com.dazkins.triad.game.gui;
 
 import com.dazkins.triad.Triad;
+import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.input.InputHandler;
 
 public abstract class Gui {
@@ -14,5 +15,5 @@ public abstract class Gui {
 	
 	public abstract void tick();
 	
-	public abstract void render();
+	public abstract void render(Camera cam);
 }

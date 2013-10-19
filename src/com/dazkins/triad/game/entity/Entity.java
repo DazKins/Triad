@@ -32,13 +32,12 @@ public abstract class Entity {
 		individualID = rand.nextInt();
 		try {
 			database = new SingleLineDatabaseFile("res/data/entities/entity_" + s + ".db");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		name = database.getString("NAME");
-		globalID = database.getInt("ID");
-		if (!globalIDEntityMap.containsKey(globalID)) {
-			globalIDEntityMap.put(globalID, getClass());
+			name = database.getString("NAME");
+			globalID = database.getInt("ID");
+			if (!globalIDEntityMap.containsKey(globalID)) {
+				globalIDEntityMap.put(globalID, getClass());
+			}
+		} catch (Exception e) {
 		}
 	}
 	
@@ -58,6 +57,8 @@ public abstract class Entity {
 				return Facing.UP;
 		}
 	}
+	
+	public abstract void renderToPlayerGui();
 	
 	public abstract void render();
 	
@@ -96,6 +97,10 @@ public abstract class Entity {
 	
 	public void tick() {
 		lifeTicks++;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public abstract AABB getAABB();

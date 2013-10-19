@@ -7,7 +7,7 @@ import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
 
 public class Camera {
-	private ViewportInfo viewport;
+	private WindowInfo winInfo;
 	private float x, y;
 	
 	private float minX, minY;
@@ -19,8 +19,8 @@ public class Camera {
 	
 	private float minZoom, maxZoom;
 	
-	public Camera(InputHandler i, ViewportInfo v, int x, int y) {
-		this.viewport = v;
+	public Camera(InputHandler i, WindowInfo w, int x, int y) {
+		this.winInfo = w;
 		this.input = i;
 		this.x = x;
 		this.y = y;
@@ -113,11 +113,11 @@ public class Camera {
 	}
 	
 	public float getW() {
-		return viewport.getW() / zoom;
+		return winInfo.getW() / zoom;
 	}
 
 	public float getH() {
-		return viewport.getH() / zoom;
+		return winInfo.getH() / zoom;
 	}
 	
 	public float getZoom() {

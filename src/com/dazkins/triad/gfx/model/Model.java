@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
+import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.gfx.Image;
 
 public class Model {
@@ -28,6 +29,7 @@ public class Model {
 	public static void loadModels() {
 		try {
 			entityModelMap.put(EntityPlayer.class, new ModelHumanoid(new Image("/art/entities/player.png")));
+			entityModelMap.put(EntityZombie.class, new ModelHumanoid(new Image("/art/entities/zombie.png")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

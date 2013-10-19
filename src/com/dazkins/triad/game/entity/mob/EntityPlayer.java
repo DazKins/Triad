@@ -44,10 +44,13 @@ public class EntityPlayer extends Mob {
 	
 	public void render() {
 		((ModelHumanoid)this.getModel()).render(this);
-		Font.drawStringWithShadow(name, x - (name.length() * 16) / 2, y + 52);
 	}
 
 	public float getMovementSpeed() {
 		return 10;
+	}
+
+	public void renderToPlayerGui() {
+		Font.drawStringWithShadow(name, x - (name.length() * 16) / 2, y + 52);
 	}
 }
