@@ -87,7 +87,7 @@ public class Quad {
 			GL11.glTranslatef(-cRotX, -cRotY, 0);
 		}
 		
-		GL11.glTranslatef(offsetX, offsetY, renderLayer);
+		GL11.glTranslatef(offsetX, offsetY, renderLayer * 0.001f);
 
 		bufferObject.render();
 		GL11.glPopMatrix();

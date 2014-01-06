@@ -8,12 +8,12 @@ import com.dazkins.triad.math.AABB;
 
 public abstract class Mob extends Entity {
 	protected int health;
-	
+
 	public Mob(World w, float x, float y, String s, int h) {
 		super(w, x, y, s);
 		health = h;
 	}
-	
+
 	public MovementState getMovementState() {
 		float speedLen = 0.2f;
 		if (Math.abs(xa) > speedLen || Math.abs(ya) > speedLen)
@@ -21,23 +21,27 @@ public abstract class Mob extends Entity {
 		else
 			return MovementState.STATIONARY;
 	}
-	
+
 	public abstract float getMovementSpeed();
-	
+
 	public abstract int getMaxHealth();
-	
+
 	public int getHealth() {
 		return health;
 	}
-	
+
+	public void hurt(int damage) {
+		health -= damage;
+	}
+
 	public void move(float xa, float ya) {
 		AABB aabb = this.getAABB();
-		
+
 		int x0 = ((int) x / Tile.tileSize) - 3;
 		int y0 = ((int) y / Tile.tileSize) - 3;
 		int x1 = ((int) x / Tile.tileSize) + 3;
 		int y1 = ((int) y / Tile.tileSize) + 3;
-		
+
 		if (x0 < 0)
 			x0 = 0;
 		if (y0 < 0)
@@ -46,7 +50,7 @@ public abstract class Mob extends Entity {
 			x1 = world.info.nChunksX * Chunk.chunkW;
 		if (y1 > world.info.nChunksY * Chunk.chunkH)
 			y1 = world.info.nChunksY * Chunk.chunkH;
-		
+
 		for (int x = x0; x < x1; x++) {
 			for (int y = y0; y < y1; y++) {
 				if (world.getTile(x, y).isCollidable()) {
@@ -60,7 +64,15 @@ public abstract class Mob extends Entity {
 				}
 			}
 		}
-		
+
+		this.xa = xa;
+		this.ya = ya;
+
 		super.move(xa, ya);
+	}
+	
+	public void render(boolean debug) {
+		if (debug)
+			getAABB().renderBounds(1);
 	}
 }

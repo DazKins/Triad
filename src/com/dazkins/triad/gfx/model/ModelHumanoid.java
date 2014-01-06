@@ -1,5 +1,6 @@
 package com.dazkins.triad.gfx.model;
 
+import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.entity.mob.MovementState;
@@ -7,12 +8,12 @@ import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Image;
 
 public class ModelHumanoid extends Model {
-	private Quad head[] = new Quad[4];
-	private Quad rightArm[] = new Quad[4];
-	private Quad leftArm[] = new Quad[4];
-	private Quad body[] = new Quad[4];
-	private Quad leftLeg[] = new Quad[4];
-	private Quad rightLeg[] = new Quad[4];
+	protected Quad head[] = new Quad[4];
+	protected Quad rightArm[] = new Quad[4];
+	protected Quad leftArm[] = new Quad[4];
+	protected Quad body[] = new Quad[4];
+	protected Quad leftLeg[] = new Quad[4];
+	protected Quad rightLeg[] = new Quad[4];
 	
 	public ModelHumanoid(Image i) {
 		super(i);
@@ -103,14 +104,29 @@ public class ModelHumanoid extends Model {
 		addQuads(body);
 	}
 		
-	public void render(Mob m) {
-		setOffset(m.getX(), m.getY());
-		setDepth(Tile.yPosToDepth(m.getY()));
+	public void render(Entity e) {
+		setOffset(e.getX(), e.getY());
+		setDepth(Tile.yPosToDepth(e.getY()));
 		
-		Facing f = m.getFacing();
+		Facing f = e.getFacing();
 		int ordinal = f.ordinal();
 		
 		enableSelectiveRendering();
+		
+		addQuadToRenderQeue(head[ordinal]);
+		addQuadToRenderQeue(rightArm[ordinal]);
+		addQuadToRenderQeue(leftArm[ordinal]);
+		addQuadToRenderQeue(rightLeg[ordinal]);
+		addQuadToRenderQeue(leftLeg[ordinal]);
+		addQuadToRenderQeue(body[ordinal]);
+		
+		super.render();
+	}
+
+	public void updateAnimationState(Entity e) {
+		Mob m = (Mob) e;
+		Facing f = m.getFacing();
+		int ordinal = f.ordinal();
 		
 		Quad cHead = head[ordinal];
 		Quad cRightArm = rightArm[ordinal];
@@ -175,14 +191,5 @@ public class ModelHumanoid extends Model {
 					cLeftLeg.setOffset(0, cllo + 0.005f);
 			}
 		}
-		
-		addQuadToRenderQeue(cHead);
-		addQuadToRenderQeue(cRightArm);
-		addQuadToRenderQeue(cLeftArm);
-		addQuadToRenderQeue(cRightLeg);
-		addQuadToRenderQeue(cLeftLeg);
-		addQuadToRenderQeue(cBody);
-		
-		super.render();
 	}
 }

@@ -29,11 +29,8 @@ public class PlayerGui extends Gui {
 	public void tick() {
 		statusBar.updateStatus((player.lifeTicks % 60) / 60.0f);
 	}
-	
-	int ticks = 0;
 
 	public void render(Camera cam) {
-		ticks++;
 		GL11.glPushMatrix();
 		cam.attachTranslation();
 		ArrayList<Entity> entities = world.getEntitiesInAABB(cam.getViewportBounds());

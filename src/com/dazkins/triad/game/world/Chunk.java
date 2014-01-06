@@ -1,11 +1,13 @@
 package com.dazkins.triad.game.world;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.LightEmitter;
+import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
@@ -23,23 +25,42 @@ public class Chunk {
 	
 	private BufferObject tilePlane;
 	
+	public ArrayList<Entity>[] entitiesInTiles;
 	public ArrayList<Entity> entities;
-	private ArrayList<Entity> entitiesMarkedForRemoval;
 	
 	public Chunk(World w, int xp, int yp) {
 		this.chunkX = xp;
 		this.chunkY = yp;
 		this.world = w;
 		
+		entitiesInTiles = new ArrayList[chunkW * chunkH];
+		for (int i = 0; i < entitiesInTiles.length; i++) {
+			entitiesInTiles[i] = new ArrayList<Entity>();
+		}
+		
 		entities = new ArrayList<Entity>();
-		entitiesMarkedForRemoval = new ArrayList<Entity>();
 		
 		lightLevel = new byte[chunkW * chunkH];
 		tiles = new byte[chunkW * chunkH];
 	}
 	
+	public void sendAttackCommand(int damage, int x, int y) {
+		ArrayList<Entity> l = entitiesInTiles[x + y * chunkW];
+		for (Entity e : l) {
+			if (e instanceof Mob) {
+				Mob m = (Mob)e;
+				m.hurt(damage);
+			}
+		}
+	}
+	
 	public void addEntity(Entity e) {
+		int xx = ((int)e.getX() >> 5) - chunkX * chunkW;
+		int yy = ((int)e.getY() >> 5) - chunkY * chunkH;
+		
+		entitiesInTiles[xx + yy * chunkW].add(e);
 		entities.add(e);
+		
 		if (e instanceof LightEmitter) {
 			recalculateLighting();
 		}
@@ -81,6 +102,47 @@ public class Chunk {
 		return Tile.tiles[tiles[x + y * chunkW]];
 	}
 	
+	public ArrayList<Entity> getChunkEntities() {
+		return entities;
+	}
+	
+	public ArrayList<Entity> getEntitiesInTile(int x, int y) {
+		return entitiesInTiles[x + y * chunkW];
+	}
+	
+//	Unconfirmed whether or not this function works, just there if needed
+//	
+//	public ArrayList<Entity> getEntitiesInAABB(AABB b) {
+//		ArrayList<Entity> rValue = new ArrayList<Entity>();
+//		int x0 = ((int) b.getX0() >> 5) - chunkX;
+//		int y0 = ((int) b.getY0() >> 5) - chunkY;
+//		int x1 = ((int) b.getX1() >> 5) - chunkX;
+//		int y1 = ((int) b.getY1() >> 5) - chunkY;
+//		
+//		if (x0 < 0) x0 = 0;
+//		if (y0 < 0) y0 = 0;
+//		if (x1 > chunkW) x1 = chunkW;
+//		if (y1 > chunkH) y1 = chunkH;
+//		
+//		System.out.println(x0 + " " + y0 + " " + x1 + " " + y1);
+//		
+//		for (int x = x0; x < x1; x++) {
+//			for (int y = y0; y < y1; y++) {
+//				ArrayList<Entity> aabbEntities = new ArrayList<Entity>();
+//				ArrayList<Entity> entitiesInTile = getEntitiesInTile(x, y);
+//				for (int i = 0; i < entitiesInTile.size(); i++) {
+//					Entity e = entitiesInTile.get(i);
+//					if (e.getAABB().intersects(b)) {
+//						if (!aabbEntities.contains(e) && !rValue.contains(e))
+//							aabbEntities.add(e);
+//					}
+//				}
+//			}
+//		}
+//		
+//		return rValue;
+//	}
+	
 	public void generate() {
 		recalculateLighting();
 		tilePlane = new BufferObject(16 * 16 * 4 * 8);
@@ -105,42 +167,40 @@ public class Chunk {
 		ArrayList<Entity> tmpEntities = new ArrayList<Entity>();
 		for (int x = chunkX - 1; x <= chunkX + 1; x++) {
 			for (int y = chunkY - 1; y <= chunkY + 1; y++) {
-				ArrayList<Entity> tmp = world.getChunkEntites(x, y);
+				ArrayList<Entity> tmp = world.getEntitiesInChunk(x, y);
 				if (tmp != null) {
 					for (Object o : tmp)
 						tmpEntities.add((Entity) o);
 				}
 			}
 		}
-		for (Object o : tmpEntities) {
-			if (o instanceof Entity) {
-				Entity e = (Entity) o;
-				if (e instanceof LightEmitter) {
-					LightEmitter le = (LightEmitter) e;
-					
-					int xx = (int) (e.getX() / Tile.tileSize);
-					int yy = (int) (e.getY() / Tile.tileSize);
-					
-					int cx = xx - (chunkX * chunkW);
-					int cy = yy - (chunkY * chunkH);
+		for (Entity o : tmpEntities) {
+			Entity e = (Entity) o;
+			if (e instanceof LightEmitter) {
+				LightEmitter le = (LightEmitter) e;
+				
+				int xx = (int) (e.getX() / Tile.tileSize);
+				int yy = (int) (e.getY() / Tile.tileSize);
+				
+				int cx = xx - (chunkX * chunkW);
+				int cy = yy - (chunkY * chunkH);
 
-					byte l = le.getLightStrength();
-					
-					for (int x = cx - 13; x < cx + 14; x++) {
-						for (int y = cy - 13; y < cy + 14; y++) {
-							int dx = Math.abs(x - cx);
-							int dy = Math.abs(y - cy);
-							int dist = (int) Math.sqrt(dx * dx + dy * dy);
-							
-							int ccx = x + (chunkX * chunkW);
-							int ccy = y + (chunkY * chunkH);
-							
-							byte lightVal = (byte) (l - dist);
-							byte cLightVal = world.getTileBrightness(ccx, ccy);
-							
-							if (cLightVal < lightVal)
-								world.setTileBrightness((byte) (lightVal), ccx, ccy);
-						}
+				byte l = le.getLightStrength();
+				
+				for (int x = cx - 13; x < cx + 14; x++) {
+					for (int y = cy - 13; y < cy + 14; y++) {
+						int dx = Math.abs(x - cx);
+						int dy = Math.abs(y - cy);
+						int dist = (int) Math.sqrt(dx * dx + dy * dy);
+						
+						int ccx = x + (chunkX * chunkW);
+						int ccy = y + (chunkY * chunkH);
+						
+						byte lightVal = (byte) (l - dist);
+						byte cLightVal = world.getTileBrightness(ccx, ccy);
+						
+						if (cLightVal < lightVal)
+							world.setTileBrightness((byte) (lightVal), ccx, ccy);
 					}
 				}
 			}
@@ -156,29 +216,23 @@ public class Chunk {
 	}
 	
 	public void tick() {
-		for (Object o : entities) {
-			if (o instanceof Entity) {
-				Entity e = (Entity) o;
-				
-				e.tick();
-				
-				int xx = (int) (e.getX() / Tile.tileSize);
-				int yy = (int) (e.getY() / Tile.tileSize);
-				
-				if (xx < chunkX * chunkW || yy < chunkY * chunkH || xx > chunkX * chunkW + chunkW || yy > chunkY * chunkH + chunkH) {
-					entitiesMarkedForRemoval.add(e);
-					world.addEntity(e);
+		for (int x = 0; x < chunkW; x++) {
+			for (int y = 0; y < chunkH; y++) {
+				List<Entity> list = entitiesInTiles[x + y * chunkW];
+				for (int i = 0; i < list.size(); i++) {
+					Entity e = list.get(i);
+					e.tick();
+					
+					int xx = (int) e.getX() >> 5;
+					int yy = (int) e.getY() >> 5;
+					
+					if (xx != x || yy != y) {
+						entitiesInTiles[x + y * chunkW].remove(e);
+						world.addEntity(e);
+					}
 				}
 			}
 		}
-		for (Object o : entitiesMarkedForRemoval) {
-			if (o instanceof Entity) {
-				Entity e = (Entity) o;
-				entities.remove(e);
-			}
-		}
-		if (entitiesMarkedForRemoval.size() > 0)
-			entitiesMarkedForRemoval.clear();
 	}
 	
 	public void renderGrid() {
@@ -231,8 +285,8 @@ public class Chunk {
 	
 	public void render() {
 		tilePlane.render();
-		for (Object e : entities) {
-			((Entity)e).render();
+		for (Entity e : entities) {
+			e.render();
 		}
 	}
 }

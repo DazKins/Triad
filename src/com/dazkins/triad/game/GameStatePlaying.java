@@ -35,20 +35,12 @@ public class GameStatePlaying implements GameState {
 		world.addEntity(new EntityZombie(world, 100, 100));
 	}
 	
-	private int cooldown;
-	
 	public void tick() {
 		world.tick();
 		cam.tick();
 		cam.lockCameraToEntity(player);
 		gui.tick();
 		input.tick();
-		
-		if (input.isKeyDown(Keyboard.KEY_SPACE) && cooldown > 20) {
-			world.addEntity(new EntityTorch(world, player.getX(), player.getY()));
-			cooldown = 0;
-		}
-		cooldown++;
 	}
 	
 	public void render() {

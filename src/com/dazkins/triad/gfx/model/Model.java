@@ -13,7 +13,7 @@ import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.gfx.Image;
 
-public class Model {
+public abstract class Model {
 	public static Map<Class<? extends Entity>, Model> entityModelMap = new HashMap<Class<? extends Entity>, Model>();
 	
 	protected List<Quad> quads;
@@ -29,7 +29,7 @@ public class Model {
 	public static void loadModels() {
 		try {
 			entityModelMap.put(EntityPlayer.class, new ModelHumanoid(new Image("/art/entities/player.png")));
-			entityModelMap.put(EntityZombie.class, new ModelHumanoid(new Image("/art/entities/zombie.png")));
+			entityModelMap.put(EntityZombie.class, new ModelZombie(new Image("/art/entities/zombie.png")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -76,10 +76,14 @@ public class Model {
 		quadRenders = new ArrayList<Integer>();
 		img = i;
 	}
+	
+	public abstract void updateAnimationState(Entity e);
+	
+	public abstract void render(Entity e);
 	 
 	public void render() {
 		GL11.glPushMatrix();
-		GL11.glTranslatef(offsetX, offsetY, depth);
+		GL11.glTranslatef(offsetX, offsetY, depth + 1.0f);
 		if(selectiveRendering) {
 			for (int i = 0; i < quadRenders.size(); i++) {
 				Quad q = (Quad) quads.get(quadRenders.get(i));
