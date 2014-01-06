@@ -12,6 +12,7 @@ import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.util.TriadProfiler;
 
 public class Chunk {
 	public static int chunkW = 16, chunkH = 16;
@@ -59,7 +60,9 @@ public class Chunk {
 		int yy = ((int)e.getY() >> 5) - chunkY * chunkH;
 		
 		entitiesInTiles[xx + yy * chunkW].add(e);
-		entities.add(e);
+		
+		if (!entities.contains(e))
+			entities.add(e);
 		
 		if (e instanceof LightEmitter) {
 			recalculateLighting();
@@ -174,8 +177,7 @@ public class Chunk {
 				}
 			}
 		}
-		for (Entity o : tmpEntities) {
-			Entity e = (Entity) o;
+		for (Entity e : tmpEntities) {
 			if (e instanceof LightEmitter) {
 				LightEmitter le = (LightEmitter) e;
 				
@@ -218,16 +220,16 @@ public class Chunk {
 	public void tick() {
 		for (int x = 0; x < chunkW; x++) {
 			for (int y = 0; y < chunkH; y++) {
-				List<Entity> list = entitiesInTiles[x + y * chunkW];
+				ArrayList<Entity> list = entitiesInTiles[x + y * chunkW];
 				for (int i = 0; i < list.size(); i++) {
 					Entity e = list.get(i);
 					e.tick();
 					
-					int xx = (int) e.getX() >> 5;
-					int yy = (int) e.getY() >> 5;
+					int xx = ((int)e.getX() >> 5) - chunkX * chunkW;
+					int yy = ((int)e.getY() >> 5) - chunkY * chunkH;
 					
 					if (xx != x || yy != y) {
-						entitiesInTiles[x + y * chunkW].remove(e);
+						list.remove(e);
 						world.addEntity(e);
 					}
 				}

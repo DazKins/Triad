@@ -22,6 +22,7 @@ import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.WindowInfo;
 import com.dazkins.triad.gfx.model.Model;
+import com.dazkins.triad.util.TriadProfiler;
 
 public class Triad {
 	private boolean running;
@@ -112,13 +113,17 @@ public class Triad {
 			lastTime = now;
 			while (delta >= 1) {
 				ticks++;
+				TriadProfiler.instance.startStamp("game_tick");
 				tick();
+				TriadProfiler.instance.endStamp();
 				if(running == false)
 					break mainLoop;
 				delta -= 1;
 			}
 			frames++;
+			TriadProfiler.instance.startStamp("game_render");
 			render();
+			TriadProfiler.instance.endStamp();
 			checkWindow();
 
 			if (System.currentTimeMillis() - lastTimer > 1000) {

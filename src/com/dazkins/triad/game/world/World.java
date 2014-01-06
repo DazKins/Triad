@@ -15,6 +15,7 @@ import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.util.TriadProfiler;
 
 public class World {
 	private static ArrayList<World> worlds;

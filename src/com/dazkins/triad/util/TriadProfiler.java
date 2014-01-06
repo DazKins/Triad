@@ -28,11 +28,13 @@ public class TriadProfiler {
 	
 	public void startStamp(String name) {
 		if (enableProfiling) {
-			if (cName.length() > 0) {
+			if (cName != null) {
 				cName += ".";
+				cName += name;
+			} else {
+				cName = name;
 			}
 			
-			cName += name;
 			cTime = System.nanoTime();
 		}
 	}
@@ -42,6 +44,15 @@ public class TriadProfiler {
 			cTime = System.nanoTime() - cTime;
 			
 			timeStamps.put(cName, cTime);
+			
+//			int dotFromLeft = cName.length() - cName.lastIndexOf('.');
+			int dotIndex = cName.lastIndexOf('.');
+			if (dotIndex != -1)
+				cName = cName.substring(dotIndex + 1);
 		}
+	}
+	
+	public void output() {
+		System.out.println(cName + ": " + cTime);
 	}
 }
