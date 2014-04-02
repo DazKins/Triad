@@ -1,6 +1,8 @@
 package com.dazkins.triad.game.entity.mob;
 
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.inventory.EquipmentInventory;
+import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -8,10 +10,13 @@ import com.dazkins.triad.math.AABB;
 
 public abstract class Mob extends Entity {
 	protected int health;
+	protected Inventory inv;
+	protected EquipmentInventory eInv;
 
 	public Mob(World w, float x, float y, String s, int h) {
 		super(w, x, y, s);
 		health = h;
+		eInv = new EquipmentInventory();
 	}
 
 	public MovementState getMovementState() {
@@ -74,5 +79,13 @@ public abstract class Mob extends Entity {
 	public void render(boolean debug) {
 		if (debug)
 			getAABB().renderBounds(1);
+	}
+	
+	public Inventory getInventory() {
+		return inv;
+	}
+	
+	public EquipmentInventory getEquipmentInventory() {
+		return eInv;
 	}
 }

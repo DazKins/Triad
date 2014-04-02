@@ -5,7 +5,9 @@ import org.lwjgl.input.Mouse;
 
 public class InputHandler  {
 	private boolean[] keys = new boolean[65536];
+	private boolean[] justDownedKeys = new boolean[65536];
 	public boolean mouse1;
+	public boolean mouse1JustDown;
 	public int mouseX, mouseY;
 	public int mWheel;
 	
@@ -13,10 +15,20 @@ public class InputHandler  {
 		return keys[k];
 	}
 	
+	public boolean isKeyJustDown(int k) {
+		return justDownedKeys[k];
+	}
+	
 	public void tick() {
+		for (int i = 0; i < 65536; i++) {
+			justDownedKeys[i] = false;
+		}
+		mouse1JustDown = false;
+		
 		while(Keyboard.next()) {
 			if(Keyboard.getEventKeyState()) {
 				keys[Keyboard.getEventKey()] = true;
+				justDownedKeys[Keyboard.getEventKey()] = true;
 
 			} else {
 				keys[Keyboard.getEventKey()] = false;
@@ -24,6 +36,11 @@ public class InputHandler  {
 		}
 		
 		mouse1 = Mouse.isButtonDown(0);
+		
+		while(Mouse.next()) {
+			if (Mouse.getEventButtonState())
+				mouse1JustDown = Mouse.isButtonDown(0);
+		}
 		
 		mouseX = Mouse.getX();
 		mouseY = Mouse.getY();

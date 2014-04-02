@@ -1,8 +1,13 @@
 package com.dazkins.triad.game.entity.mob;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Facing;
+import com.dazkins.triad.game.inventory.EquipmentInventory;
+import com.dazkins.triad.game.inventory.Inventory;
+import com.dazkins.triad.game.inventory.item.ItemRegisterer;
+import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
@@ -16,8 +21,14 @@ public class EntityPlayer extends Mob {
 	private int attackCooldownCounter;
 	
 	public EntityPlayer(World w, float x, float y, InputHandler input) {
+		
 		super(w, x, y, "player", 1000);
 		this.input = input;
+		this.inv = new Inventory(10, 10);
+//		for (int i = 0; i < 100; i++)
+			inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testsword"), 1));
+			inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testdagger"), 1));
+		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testsword"), 1), EquipmentInventory.Type.HEAD.ordinal());
 	}
 	
 	public int getMaxHealth() {
@@ -41,18 +52,17 @@ public class EntityPlayer extends Mob {
 		}
 		
 		if (input.isKeyDown(Keyboard.KEY_SPACE) && attackCooldownCounter == 0) {
-//			int xx = (int) x >> 5;
-//			int yy = (int) y >> 5;
-//			if (this.getFacing() == Facing.UP)
-//				world.sendAttackCommand(10, xx, yy + 1);
-//			if (this.getFacing() == Facing.DOWN)
-//				world.sendAttackCommand(10, xx, yy - 1);
-//			if (this.getFacing() == Facing.LEFT)
-//				world.sendAttackCommand(10, xx - 1, yy);
-//			if (this.getFacing() == Facing.RIGHT)
-//				world.sendAttackCommand(10, xx + 1, yy);
+			int xx = (int) x >> 5;
+			int yy = (int) y >> 5;
+			if (this.getFacing() == Facing.UP)
+				world.sendAttackCommand(10, xx, yy + 1);
+			if (this.getFacing() == Facing.DOWN)
+				world.sendAttackCommand(10, xx, yy - 1);
+			if (this.getFacing() == Facing.LEFT)
+				world.sendAttackCommand(10, xx - 1, yy);
+			if (this.getFacing() == Facing.RIGHT)
+				world.sendAttackCommand(10, xx + 1, yy);
 			attackCooldownCounter = attackCooldown;
-//			System.out.println(world.getEntitiesInAABB(getAABB()));
 		}
 		
 		xa *= 0.85;
@@ -66,16 +76,17 @@ public class EntityPlayer extends Mob {
 	}
 	
 	public void render() {
-		super.render(true);
+		GL11.glColor3f(1.0f, 1.0f, 1.0f);
+		super.render(false);
 		((ModelHumanoid)this.getModel()).updateAnimationState(this);
 		((ModelHumanoid)this.getModel()).render(this);
 	}
 
 	public float getMovementSpeed() {
-		return 5;
+		return 2;
 	}
 
 	public void renderToPlayerGui() {
-		Font.drawStringWithShadow("X: " + ((int) x >> 5) + " Y: " + ((int) y >> 5), x - (name.length() * 16) / 2, y + 52);
+//		Font.drawStringWithShadow("X: " + ((int) x >> 5) + " Y: " + ((int) y >> 5), x - (name.length() * 16) / 2, y + 52);
 	}
 }

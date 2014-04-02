@@ -17,7 +17,7 @@ public class ListFile extends MainFile {
 		loadFile();
 	}
 	
-	public ListFile(File f) throws IOException { 
+	public ListFile(File f) throws IOException {
 		super(f.getPath());
 		validateFileType(path, ".lt");
 		loadFile();

@@ -34,7 +34,7 @@ public abstract class MainFile {
 		}
 	}
 	
-	protected static String decryptContents(String s) throws IOException {
+	public static String decryptContents(String s) throws IOException {
 		if (!s.startsWith("enc ")) {
 			throw new RuntimeException("File not correctly encrypted, please use the provided encrypter!");
 		}

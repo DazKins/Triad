@@ -39,7 +39,7 @@ public class MultiLineDatabaseFile extends MainFile {
 	public void loadDatabaseFile() throws IOException {
 		String content = super.loadFileContents(path);
 		content = super.decryptContents(content);
-		String[] lines = content.split(System.getProperty("line.separator"));
+		String[] lines = content.split("\\r?\\n");
 		lineCount = lines.length;
 		for (int i = 0; i < lines.length; i++) {
 			Map<String, String> map = new HashMap<String, String>();

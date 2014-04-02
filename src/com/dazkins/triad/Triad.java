@@ -15,6 +15,7 @@ import org.lwjgl.opengl.PixelFormat;
 
 import com.dazkins.triad.game.GameState;
 import com.dazkins.triad.game.GameStatePlaying;
+import com.dazkins.triad.game.inventory.item.ItemRegisterer;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
@@ -27,7 +28,7 @@ import com.dazkins.triad.util.TriadProfiler;
 public class Triad {
 	private boolean running;
 	private final String title = "Triad Pre-Alpha";
-	public WindowInfo winInfo = new WindowInfo(800, 450);
+	public WindowInfo winInfo = new WindowInfo(1280, 720);
 	
 	private boolean rescaled;
 
@@ -57,14 +58,16 @@ public class Triad {
 	private void initProg() {
 		BufferObject.init();
 		
+		if(!Image.init())
+			System.out.println("Failed to initialize art!");
+		
 		Tile.initDatabase();
 		
 		World.init();
 		
-		if(!Image.init())
-			System.out.println("Failed to initialize art!");
-		
 		Model.loadModels();
+		
+		ItemRegisterer.register();
 		
 		currentState = new GameStatePlaying();
 		currentState.init(this);
@@ -76,7 +79,7 @@ public class Triad {
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GL11.glOrtho(0, winInfo.getW(), 0, winInfo.getH(), -100.0f, 100.0f);
+		GL11.glOrtho(0, winInfo.getW(), 0, winInfo.getH(), -100f, 100f);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -113,17 +116,13 @@ public class Triad {
 			lastTime = now;
 			while (delta >= 1) {
 				ticks++;
-				TriadProfiler.instance.startStamp("game_tick");
 				tick();
-				TriadProfiler.instance.endStamp();
 				if(running == false)
 					break mainLoop;
 				delta -= 1;
 			}
 			frames++;
-			TriadProfiler.instance.startStamp("game_render");
 			render();
-			TriadProfiler.instance.endStamp();
 			checkWindow();
 
 			if (System.currentTimeMillis() - lastTimer > 1000) {

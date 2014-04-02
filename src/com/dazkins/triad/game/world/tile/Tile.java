@@ -15,17 +15,17 @@ import com.dazkins.triad.math.AABB;
 public class Tile {
 	private static MultiLineDatabaseFile dbs = null;
 	public static final int tileSize = 32;
-	
+
 	private byte id;
 	private String name;
 	private int ty;
 	private boolean col;
 	public static Tile[] tiles = new Tile[256];
-	
+
 	public static void initDatabase() {
 		loadTileDatabase("res/data/tile.db");
 	}
-	
+
 	public static float yPosToDepth(float y) {
 		return -(y / tileSize) - 3;
 	}
@@ -36,7 +36,7 @@ public class Tile {
 		id = i;
 		col = c;
 	}
-	
+
 	public AABB getAABB(World w, int x, int y) {
 		int x0 = dbs.getInt("AABB.x0", id - 1) + x * Tile.tileSize;
 		int y0 = dbs.getInt("AABB.y0", id - 1) + y * Tile.tileSize;
@@ -44,13 +44,13 @@ public class Tile {
 		int y1 = dbs.getInt("AABB.y1", id - 1) + y * Tile.tileSize;
 		return new AABB(x0, y0, x1, y1);
 	}
-	
+
 	public boolean isCollidable() {
 		return col;
 	}
 
 	public void render(BufferObject b, World w, int x, int y) {
-		Image.spriteSheet.renderSprite(b, x, y, tileSize, tileSize, 0, ty * 16, 16, 16, yPosToDepth(y), w.getTileBrightness((int) (x / 32.0f), (int) (y / 32.0f)) / 14.0f - 0.001f);
+		Image.spriteSheet.renderSprite(b, x, y, tileSize, tileSize, 0, ty * 16, 16, 16,yPosToDepth(y), w.getTileBrightness((int) (x / 32.0f),(int) (y / 32.0f)) / 14.0f - 0.001f);
 	}
 
 	private static void loadTileDatabase(String path) {
@@ -70,13 +70,16 @@ public class Tile {
 			tiles[id] = t;
 		}
 	}
-	
+
 	public static ImageIcon getTileImageIcon(int i, int scale) {
 		Tile t = tiles[i];
 		if (t != null) {
-			BufferedImage img = new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB);
-			int pixels[] = ((DataBufferInt)img.getRaster().getDataBuffer()).getData();
-			int oldPixels[] = Image.spriteSheet.getRawImage().getRGB(0, t.ty * 16, 16, 16, null, 0, 16);
+			BufferedImage img = new BufferedImage(16, 16,
+					BufferedImage.TYPE_INT_RGB);
+			int pixels[] = ((DataBufferInt) img.getRaster().getDataBuffer())
+					.getData();
+			int oldPixels[] = Image.spriteSheet.getRawImage().getRGB(0,
+					t.ty * 16, 16, 16, null, 0, 16);
 			for (int x = 0; x < 16; x++) {
 				for (int y = 0; y < 16; y++) {
 					pixels[x + y * 16] = oldPixels[x + y * 16];
@@ -87,11 +90,11 @@ public class Tile {
 		}
 		return null;
 	}
-	
+
 	public byte getID() {
 		return this.id;
 	}
-	
+
 	public String toString() {
 		return name;
 	}

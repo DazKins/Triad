@@ -12,31 +12,30 @@ public class EntityZombie extends Mob {
 	}
 
 	public float getMovementSpeed() {
-		return 2;
+		return 0.3f;
 	}
 
 	public int getMaxHealth() {
 		return 1000;
 	}
 	
-	float sxa;
+	float sxa = getMovementSpeed();
 	
 	public void tick() {
 		super.tick();
-//		
-//		if ((int) (Math.random() * 100) < 5) {
-//			sxa = -sxa;
-//		}
-//		
-//		move(sxa, 0);
+		
+		if (Math.random() * 100 > 99)
+			sxa = -sxa;
+		
+		move(sxa, 0);
 	}
 
 	public void renderToPlayerGui() {
-		Font.drawStringWithShadow("health: " + health, x - (name.length() * 16) / 2, y + 52);
+//		Font.drawStringWithShadow("health: " + health, x - (name.length() * 16) / 2, y + 52, 1.0f, 1.0f, 1.0f, 1, 1);
 	}
 
 	public void render() {
-		super.render(true);
+		super.render(false);
 		this.getModel().updateAnimationState(this);
 		this.getModel().render(this);
 	}

@@ -20,16 +20,17 @@ import com.dazkins.triad.util.TriadProfiler;
 public class World {
 	private static ArrayList<World> worlds;
 	private static Map<String, Integer> mapToIndex;
-	
+
 	private static MultiLineDatabaseFile globalWorldDatabase = null;
-	
+
 	private Chunk[] chunks;
-	
+
 	public WorldInfo info;
 
 	public static void init() {
 		try {
-			globalWorldDatabase = new MultiLineDatabaseFile("res/data/worlds.db");
+			globalWorldDatabase = new MultiLineDatabaseFile(
+					"res/data/worlds.db");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -42,48 +43,48 @@ public class World {
 			assignWorldToDatabase(i, w);
 		}
 	}
-	
+
 	public static World getWorldFromName(String n) {
 		return (World) (worlds.get((Integer) (mapToIndex.get(n))));
 	}
-	
+
 	private static void assignWorldToDatabase(int i, World w) {
 		mapToIndex.put(w.info.name, i);
 	}
-	
+
 	public WorldInfo getInfo() {
 		return info;
 	}
-	
+
 	public static World loadWorldFromFile(String p) {
 		World rValue = new World();
 		ListFile l = null;
 		SingleLineDatabaseFile metaDatabase = null;
 		try {
 			l = new ListFile("res/data/worlds/" + p + "_data.lt", " ");
-			metaDatabase = new SingleLineDatabaseFile("res/data/worlds/" + p + "_metadata.db");
+			metaDatabase = new SingleLineDatabaseFile("res/data/worlds/" + p
+					+ "_metadata.db");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
+
 		rValue.info = new WorldInfo();
 		rValue.info.loadFromDatabase(metaDatabase);
-		
+
 		rValue.generate();
-		
+
 		int tw = rValue.info.nChunksX * Chunk.chunkW;
-		
+
 		for (int i = 0; i < l.getSize(); i++) {
 			int t = l.getInt(i);
 			int x = i / tw;
 			int y = i % tw;
 			rValue.setTile(Tile.tiles[t], x, y);
 		}
-		
+
 		return rValue;
 	}
-	
+
 	private void generate() {
 		chunks = new Chunk[info.nChunksX * info.nChunksY];
 		for (int x = 0; x < info.nChunksX; x++) {
@@ -96,16 +97,16 @@ public class World {
 	public void addEntity(Entity e) {
 		if (e.getX() < 0 || e.getY() < 0)
 			return;
-		
+
 		int cx = (int) ((e.getX() / Tile.tileSize) / Chunk.chunkW);
 		int cy = (int) ((e.getY() / Tile.tileSize) / Chunk.chunkH);
-		
+
 		if (cx >= 0 && cy >= 0 && cx < info.nChunksX && cy < info.nChunksY)
 			chunks[cx + cy * info.nChunksX].addEntity(e);
 	}
 
 	public void render(Camera cam) {
-		GL11.glColor3f(1.0f,1.0f,1.0f);
+		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 		for (int i = 0; i < chunks.length; i++) {
 			if (!chunks[i].isGenerated()) {
 				chunks[i].generate();
@@ -115,7 +116,7 @@ public class World {
 			}
 		}
 	}
-	
+
 	public void renderGrid(Camera cam) {
 		for (int i = 0; i < chunks.length; i++) {
 			if (chunks[i].getBounds().intersects(cam.getViewportBounds())) {
@@ -123,7 +124,7 @@ public class World {
 			}
 		}
 	}
-	
+
 	public ArrayList<Entity> getEntitiesInAABB(AABB b) {
 		ArrayList<Entity> rValue = new ArrayList<Entity>();
 		for (int i = 0; i < chunks.length; i++) {
@@ -142,57 +143,62 @@ public class World {
 		}
 		return rValue;
 	}
-	
+
 	public Chunk getChunkFromWorldTileCoords(int x, int y) {
 		if (!isValidTilePos(x, y))
 			return null;
 		return chunks[(x / Chunk.chunkW) + (y / Chunk.chunkH) * info.nChunksX];
 	}
-	
+
 	public ArrayList<Entity> getEntitiesInChunk(int x, int y) {
 		if (x < 0 || y < 0 || x >= info.nChunksX || y >= info.nChunksY)
 			return null;
 		return chunks[x + y * info.nChunksY].getChunkEntities();
 	}
-	
+
 	public ArrayList<Entity> getEntitesInTile(int x, int y) {
 		if (x < 0 || y < 0 || x >= info.nChunksX || y >= info.nChunksY)
 			return null;
 		return getChunkFromWorldTileCoords(x, y).getEntitiesInTile(x % Chunk.chunkW, y % Chunk.chunkH);
 	}
-	
+
 	public void sendAttackCommand(int damage, int x, int y) {
 		if (!isValidTilePos(x, y))
 			return;
-		getChunkFromWorldTileCoords(x, y).sendAttackCommand(damage, x, y);
+		getChunkFromWorldTileCoords(x, y).sendAttackCommand(damage, x & 15, y & 15);
 	}
-	
+
 	private boolean isValidTilePos(int x, int y) {
-		return (x >= 0 && x < info.nChunksX * Chunk.chunkW) && (y >= 0 && y < info.nChunksY * Chunk.chunkH);
+		return (x >= 0 && x < info.nChunksX * Chunk.chunkW)
+				&& (y >= 0 && y < info.nChunksY * Chunk.chunkH);
 	}
-	
+
 	public byte getTileBrightness(int x, int y) {
 		if (!isValidTilePos(x, y))
 			return 0;
-		return getChunkFromWorldTileCoords(x, y).getTileBrightness(x % Chunk.chunkW, y % Chunk.chunkH);
+		return getChunkFromWorldTileCoords(x, y).getTileBrightness(
+				x % Chunk.chunkW, y % Chunk.chunkH);
 	}
-	
+
 	public void setTileBrightness(byte b, int x, int y) {
 		if (!isValidTilePos(x, y))
 			return;
-		getChunkFromWorldTileCoords(x, y).setTileBrightness(b, x % Chunk.chunkW, y % Chunk.chunkH);
+		getChunkFromWorldTileCoords(x, y).setTileBrightness(b,
+				x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 
 	public Tile getTile(int x, int y) {
 		if (!isValidTilePos(x, y))
 			return null;
-		return getChunkFromWorldTileCoords(x, y).getTile(x % Chunk.chunkW, y % Chunk.chunkH);
+		return getChunkFromWorldTileCoords(x, y).getTile(x % Chunk.chunkW,
+				y % Chunk.chunkH);
 	}
-	
+
 	public void setTile(Tile t, int x, int y) {
 		if (!isValidTilePos(x, y))
 			return;
-		getChunkFromWorldTileCoords(x, y).setTile(t, x % Chunk.chunkW, y % Chunk.chunkH);
+		getChunkFromWorldTileCoords(x, y).setTile(t, x % Chunk.chunkW,
+				y % Chunk.chunkH);
 	}
 
 	public void tick() {

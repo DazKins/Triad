@@ -13,11 +13,12 @@ public class Image {
 	public static Image spriteSheet;
 	public static Image iconSheet;
 	public static Image fontSheet;
+	public static Image itemSheet;
 
 	private BufferedImage img;
 	private int width, height;
 	public int texID;
-	
+
 	public BufferedImage getRawImage() {
 		return img;
 	}
@@ -25,22 +26,23 @@ public class Image {
 	public int getWidth() {
 		return width;
 	}
-	
+
 	public int getHeight() {
 		return height;
 	}
-	
+
 	public static boolean init() {
 		try {
 			spriteSheet = new Image("/art/spriteSheet.png");
 			iconSheet = new Image("/art/iconSheet.png");
 			fontSheet = new Image("/art/font.png");
+			itemSheet = new Image("/art/items.png");
 		} catch (IOException e) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	public void bindGLTexture() {
 		if (GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) != texID) {
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
@@ -50,18 +52,18 @@ public class Image {
 	public Image(String path) throws IOException {
 		loadSpriteSheet(path);
 	}
-	
+
 	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z, float b) {
 		float offset = 0.01f;
-		
+
 		float tx0 = ((tx + offset) / (float) width);
 		float ty0 = ((ty + offset) / (float) height);
 		float tx1 = ((tx + tw - offset) / (float) width);
 		float ty1 = ((ty + th - offset) / (float) height);
-		
+
 		bo.bindImage(this);
 		bo.setDepth(z);
-		if (b != 1)
+//		if (b != 1)
 			bo.setBrightness(b);
 		bo.setUV(tx1, ty0);
 		bo.addVertex(x + w, y + h);
@@ -105,9 +107,12 @@ public class Image {
 		b.flip();
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
 
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, b);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
+				GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER,
+				GL11.GL_NEAREST);
+		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height,
+				0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, b);
 
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 	}

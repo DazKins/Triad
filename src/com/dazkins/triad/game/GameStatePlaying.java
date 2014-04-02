@@ -8,20 +8,24 @@ import com.dazkins.triad.game.entity.EntityTorch;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.game.gui.Gui;
+import com.dazkins.triad.game.gui.GuiEquipMenu;
+import com.dazkins.triad.game.gui.GuiInventory;
 import com.dazkins.triad.game.gui.PlayerGui;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.input.InputHandler;
- 
+
 public class GameStatePlaying implements GameState {
 	private Triad triad;
 	private World world;
 	private InputHandler input;
 	private EntityPlayer player;
 	private Camera cam;
-	private Gui gui;
+	
+	private Gui currentlyDisplayedGui;
+	
 	
 	public void init(Triad triad) {
 		this.triad = triad;
@@ -30,16 +34,28 @@ public class GameStatePlaying implements GameState {
 		cam.lockZoom(0.0001f, 500f);
 		changeWorld("TestingMap");
 		player = new EntityPlayer(world, 0, 0, input);
-		gui = new PlayerGui(triad, input, world, player);
+		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
 		world.addEntity(player);
-		world.addEntity(new EntityZombie(world, 100, 100));
+		world.addEntity(new EntityZombie(world, 500, 500));
 	}
 	
 	public void tick() {
+		if (input.isKeyJustDown(Keyboard.KEY_I)) {
+			if (currentlyDisplayedGui instanceof GuiInventory)
+				currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
+			else
+				currentlyDisplayedGui = new GuiInventory(triad, input, player.getInventory());
+		}
+		if (input.isKeyJustDown(Keyboard.KEY_E)) {
+			if (currentlyDisplayedGui instanceof GuiEquipMenu)
+				currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
+			else
+				currentlyDisplayedGui = new GuiEquipMenu(triad, input, player.getEquipmentInventory());
+		}
 		world.tick();
 		cam.tick();
 		cam.lockCameraToEntity(player);
-		gui.tick();
+		currentlyDisplayedGui.tick();
 		input.tick();
 	}
 	
@@ -48,7 +64,7 @@ public class GameStatePlaying implements GameState {
 		cam.attachTranslation();
 		world.render(cam);
 		GL11.glPopMatrix();
-		gui.render(cam);
+		currentlyDisplayedGui.render(cam);
 	}
 	
 	public void changeWorld(String newWorld) {
