@@ -54,4 +54,8 @@ public class GuiEquipMenu extends Gui {
 		
 		inv.getItemStack(EquipmentInventory.Type.HEAD.ordinal()).getItemType().renderIcon(windowPosX + 200, windowPosY + windowHeight - 200, 3, 4);
 	}
+
+	public void onExit() {
+		
+	}
 }

@@ -19,4 +19,6 @@ public abstract class Gui {
 	public abstract void tick();
 	
 	public abstract void render(Camera cam);
+	
+	public abstract void onExit();
 }

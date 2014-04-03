@@ -42,15 +42,15 @@ public class GameStatePlaying implements GameState {
 	public void tick() {
 		if (input.isKeyJustDown(Keyboard.KEY_I)) {
 			if (currentlyDisplayedGui instanceof GuiInventory)
-				currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
+				changeGui(new PlayerGui(triad, input, world, player));
 			else
-				currentlyDisplayedGui = new GuiInventory(triad, input, player.getInventory());
+				changeGui(new GuiInventory(triad, input, player.getInventory()));
 		}
 		if (input.isKeyJustDown(Keyboard.KEY_E)) {
 			if (currentlyDisplayedGui instanceof GuiEquipMenu)
-				currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
+				changeGui(new PlayerGui(triad, input, world, player));
 			else
-				currentlyDisplayedGui = new GuiEquipMenu(triad, input, player.getEquipmentInventory());
+				changeGui(new GuiEquipMenu(triad, input, player.getEquipmentInventory()));
 		}
 		world.tick();
 		cam.tick();
@@ -70,5 +70,10 @@ public class GameStatePlaying implements GameState {
 	public void changeWorld(String newWorld) {
 		world = World.getWorldFromName(newWorld);
 		cam.setBounds(0, 0, world.info.nChunksX * Chunk.chunkW * Tile.tileSize, world.info.nChunksX * Chunk.chunkH * Tile.tileSize);
+	}
+	
+	private void changeGui(Gui g) {
+		currentlyDisplayedGui.onExit();
+		currentlyDisplayedGui = g;
 	}
 }

@@ -25,15 +25,17 @@ public class Inventory {
 	}
 	
 	public void addItemStack(ItemStack is) {
-		if (is.getItemType() != null) {
-			for (int i = 0; i < items.length; i++) {
-				if (items[i] == null) {
-					items[i] = is;
-					break;
+		if (is != null) {
+			if (is.getItemType() != null) {
+				for (int i = 0; i < items.length; i++) {
+					if (items[i] == null) {
+						items[i] = is;
+						break;
+					}
 				}
+			} else {
+				System.err.println("Item type added was null!");
 			}
-		} else {
-			System.err.println("Item type added was null!");
 		}
 	}
 	

@@ -26,8 +26,8 @@ public class EntityPlayer extends Mob {
 		this.input = input;
 		this.inv = new Inventory(10, 10);
 //		for (int i = 0; i < 100; i++)
-			inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testsword"), 1));
-			inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testdagger"), 1));
+			inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testsword"), 5));
+			inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testdagger"), 6));
 		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testsword"), 1), EquipmentInventory.Type.HEAD.ordinal());
 	}
 	

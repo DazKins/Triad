@@ -53,4 +53,8 @@ public class PlayerGui extends Gui {
 		}
 		GL11.glPopMatrix();
 	}
+
+	public void onExit() {
+		
+	}
 }

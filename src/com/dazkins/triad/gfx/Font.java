@@ -24,7 +24,7 @@ public class Font {
 	}
 
 	public static void drawString(String s, float xp, float yp, float r, float g, float b, int layer, int scale) {
-		float z = layer * 0.001f;
+		float z = layer * 0.1f;
 		String lower = s.toLowerCase();
 
 		for (int x = 0; x < lower.length(); x++) {
@@ -42,7 +42,7 @@ public class Font {
 	}
 
 	public static void drawStringWithShadow(String s, float xp, float yp, float r, float g, float b, int layer, int scale) {
-		float z = layer * 0.001f;
+		float z = layer * 0.1f;
 		String lower = s.toLowerCase();
 
 		for (int x = 0; x < lower.length(); x++) {
