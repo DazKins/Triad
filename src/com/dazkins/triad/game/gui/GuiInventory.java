@@ -97,7 +97,8 @@ public class GuiInventory extends Gui {
 				ItemStack i = inv.getItemStack(x, y);
 				if (i != null) {
 					i.getItemType().renderIcon(windowPosX +  x * (64 + gridSpacingX) + offsetX, windowPosY +  y * (64 + gridSpacingY) + offsetY, 0.2f, 2);
-					Font.drawString(i.getSize() + "", 45 + windowPosX +  x * (64 + gridSpacingX) + offsetX, windowPosY +  y * (64 + gridSpacingY) + offsetY + 3, 1.0f, 1.0f, 1.0f, 4, 1);
+					if (i.getSize() > 1)
+						Font.drawString(i.getSize() + "", 45 + windowPosX +  x * (64 + gridSpacingX) + offsetX, windowPosY +  y * (64 + gridSpacingY) + offsetY + 3, 1.0f, 1.0f, 1.0f, 4, 1);
 				}
 			}
 		}
@@ -107,12 +108,12 @@ public class GuiInventory extends Gui {
 		}
 		if (selectedItem != null) {
 			selectedItem.getItemType().renderIcon(input.mouseX - 32, input.mouseY - 32, 1, 2);
-			Font.drawString(selectedItem.getSize() + "", 45 + input.mouseX - 32, input.mouseY - 32 + 3, 1.0f, 1.0f, 1.0f, 20, 1);
+			if (selectedItem.getSize() > 1)
+				Font.drawString(selectedItem.getSize() + "", 45 + input.mouseX - 32, input.mouseY - 32 + 3, 1.0f, 1.0f, 1.0f, 20, 1);
 		}
 	}
 
 	public void onExit() {
-		System.out.println("hit");
 		inv.addItemStack(selectedItem);
 		selectedItem = null;
 	}

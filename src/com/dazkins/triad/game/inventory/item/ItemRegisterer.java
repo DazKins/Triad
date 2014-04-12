@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.dazkins.triad.file.MultiLineDatabaseFile;
+import com.dazkins.triad.game.inventory.item.ItemArmour.ItemArmourHead;
 
 public class ItemRegisterer {
 	private static MultiLineDatabaseFile mainDBS;
@@ -33,6 +34,9 @@ public class ItemRegisterer {
 			else if (type.equals(ItemWeapon.itemTypeIdentifier)) {
 				int damage = mainDBS.getInt("DAMAGE", i);
 				itemToAdd = new ItemWeapon(tx, ty, name, damage);
+			} else if (type.equals(ItemArmourHead.itemTypeIdentifier)) {
+				int armour = mainDBS.getInt("ARMOUR", i);
+				itemToAdd = new ItemArmourHead(tx, ty, name, armour);
 			} else {
 				System.out.println(type + " unknown item type!");
 				continue;
