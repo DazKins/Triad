@@ -11,8 +11,8 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.PixelFormat;
 
+import com.dazkins.triad.audio.SoundManager;
 import com.dazkins.triad.game.GameState;
 import com.dazkins.triad.game.GameStatePlaying;
 import com.dazkins.triad.game.inventory.item.ItemRegisterer;
@@ -23,7 +23,6 @@ import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.WindowInfo;
 import com.dazkins.triad.gfx.model.Model;
-import com.dazkins.triad.util.TriadProfiler;
 
 public class Triad {
 	private boolean running;
@@ -40,6 +39,9 @@ public class Triad {
 	}
 	
 	public Triad() {
+		SoundManager.registerSound("/audio/music/triad_theme.wav", "theme");
+		SoundManager.getAudio("theme").play();
+		
 		try {
 			Display.setResizable(true);
 			Display.setDisplayMode(new DisplayMode(winInfo.getW(), winInfo.getH()));
