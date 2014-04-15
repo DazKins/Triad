@@ -40,7 +40,7 @@ public class Triad {
 	
 	public Triad() {
 		SoundManager.registerSound("/audio/music/triad_theme.wav", "theme");
-		SoundManager.getAudio("theme").play();
+//		SoundManager.getAudio("theme").play();
 		
 		try {
 			Display.setResizable(true);

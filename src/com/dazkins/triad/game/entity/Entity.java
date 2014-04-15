@@ -1,12 +1,12 @@
 package com.dazkins.triad.game.entity;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import com.dazkins.triad.file.SingleLineDatabaseFile;
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.math.AABB;
 
@@ -58,7 +58,7 @@ public abstract class Entity {
 		}
 	}
 	
-	public abstract void renderToPlayerGui();
+	public abstract void renderToPlayerGui(Camera c);
 	
 	public abstract void render();
 	

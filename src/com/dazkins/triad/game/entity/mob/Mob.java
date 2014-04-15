@@ -1,22 +1,31 @@
 package com.dazkins.triad.game.entity.mob;
 
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.gui.GuiStatusBar;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
+import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.math.AABB;
 
 public abstract class Mob extends Entity {
 	protected int health;
 	protected Inventory inv;
 	protected EquipmentInventory eInv;
+	
+	//I don't really want graphical data stored in Entity classes
+	//This is just a temporary measure
+	protected GuiStatusBar healthBar;
 
 	public Mob(World w, float x, float y, String s, int h) {
 		super(w, x, y, s);
 		health = h;
 		eInv = new EquipmentInventory();
+		
+		healthBar = new GuiStatusBar(0, 0, 0xFF0000, 128);
 	}
 
 	public MovementState getMovementState() {
@@ -74,6 +83,12 @@ public abstract class Mob extends Entity {
 		this.ya = ya;
 
 		super.move(xa, ya);
+	}
+	
+	public void renderToPlayerGui(Camera c) {
+		healthBar.updateStatus((float) getHealth() / (float) getMaxHealth());
+		healthBar.render(x - (64 / c.getZoom()), y + 50, Tile.yPosToDepth(y), 1 / c.getZoom());
+		Font.drawString(name, x - ((8 / 1.5f) * 1/ c.getZoom()) * name.length(), y + 50 + (20 / (c.getZoom())), 1.0f, 1.0f, 1.0f, Tile.yPosToDepth(y), (1 / c.getZoom()) / 1.5f);
 	}
 	
 	public void render(boolean debug) {

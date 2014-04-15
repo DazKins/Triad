@@ -1,8 +1,7 @@
 package com.dazkins.triad.game.entity;
 
-import com.dazkins.triad.game.entity.Entity;
-import com.dazkins.triad.game.entity.LightEmitter;
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.math.AABB;
 
 public class EntityTorch extends Entity implements LightEmitter {
@@ -22,7 +21,7 @@ public class EntityTorch extends Entity implements LightEmitter {
 		return null;
 	}
 
-	public void renderToPlayerGui() {
+	public void renderToPlayerGui(Camera c) {
 		
 	}
 }

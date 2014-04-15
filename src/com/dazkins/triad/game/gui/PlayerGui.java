@@ -21,8 +21,6 @@ public class PlayerGui extends Gui {
 	private GuiBox mainBox;
 	private GuiStatusBar statusBar;
 	
-	private Map<Mob, GuiStatusBar> healthBarMap = new HashMap<Mob, GuiStatusBar>();
-	
 	public PlayerGui(Triad t, InputHandler i, World w, EntityPlayer player) {
 		super(t, i);
 		world = w;
@@ -43,12 +41,7 @@ public class PlayerGui extends Gui {
 			Entity e = entities.get(i);
 			if (e instanceof Mob) {
 				Mob m = (Mob) e;
-				m.renderToPlayerGui();
-				if (!healthBarMap.containsKey(m)) {
-					healthBarMap.put(m, new GuiStatusBar(0, 0, 0xFF0000, 200));
-				}
-				healthBarMap.get(m).updateStatus((float) m.getHealth() / (float) m.getMaxHealth());
-				healthBarMap.get(m).render(e.getX(), e.getY(), 0);
+				m.renderToPlayerGui(cam);
 			}
 		}
 		GL11.glPopMatrix();

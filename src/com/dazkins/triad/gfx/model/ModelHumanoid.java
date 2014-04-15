@@ -137,15 +137,15 @@ public class ModelHumanoid extends Model {
 		
 		if (m.getMovementState() == MovementState.MOVING) {
 			if (f == Facing.LEFT || f == Facing.RIGHT) {
-				cRightArm.setRotation((float) Math.cos(m.lifeTicks / 8.0f) * 50.0f);
-				cLeftArm.setRotation((float) -Math.cos(m.lifeTicks / 8.0f) * 50.0f);
-				cRightLeg.setRotation((float) Math.sin(m.lifeTicks / 10.0f) * 50.0f);
-				cLeftLeg.setRotation((float) -Math.sin(m.lifeTicks / 10.0f) * 50.0f);
+				cRightArm.setRotation((float) Math.cos(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 50.0f);
+				cLeftArm.setRotation((float) -Math.cos(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 50.0f);
+				cRightLeg.setRotation((float) Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 50.0f);
+				cLeftLeg.setRotation((float) -Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 50.0f);
 			} else {
-				cRightArm.setRotation((float) Math.cos(m.lifeTicks / 10.0f) * 15.0f);
-				cLeftArm.setRotation((float) -Math.sin(m.lifeTicks / 10.0f) * 15.0f);
-				cRightLeg.setOffset(0, (float) (Math.sin(m.lifeTicks / 5.0f) + 1.0f) * 3.0f);
-				cLeftLeg.setOffset(0, (float) (-Math.sin(m.lifeTicks / 5.0f) + 1.0f) * 3.0f);
+				cRightArm.setRotation((float) Math.cos(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 15.0f);
+				cLeftArm.setRotation((float) -Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 15.0f);
+				cRightLeg.setOffset(0, (float) (Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) + 1.0f) * 3.0f);
+				cLeftLeg.setOffset(0, (float) (-Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) + 1.0f) * 3.0f);
 			}
 		} else {
 			float crar = cRightArm.getRotation();

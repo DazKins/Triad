@@ -35,20 +35,21 @@ public class GuiStatusBar {
 		fill = perc * len;
 	}
 	
-	public void render(float xp, float yp, float zp) {
+	public void render(float xp, float yp, float zp, float scale) {
 		GL11.glPushMatrix();
 			GL11.glTranslatef(xp, yp, zp);
-			model.render();
+			GL11.glScalef(scale, scale, 1.0f);
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			GL11.glBegin(GL11.GL_QUADS);
 				GL11.glColor4ub((byte) ((col >> 16) & 0xFF), (byte) ((col >> 8) & 0xFF), (byte) ((col) & 0xFF), (byte) 255);
-				GL11.glVertex3f(x + 4, y + 4, 5.0f);
-				GL11.glVertex3f(x + 4 + fill, y + 4, 5.0f);
-				GL11.glVertex3f(x + 4 + fill, y + 12, 5.0f);
-				GL11.glVertex3f(x + 4, y + 12, 5.0f);
+				GL11.glVertex3f(x + 4, y + 4, 0);
+				GL11.glVertex3f(x + 4 + fill, y + 4, 0);
+				GL11.glVertex3f(x + 4 + fill, y + 12, 0);
+				GL11.glVertex3f(x + 4, y + 12, 0);
 				GL11.glColor4ub((byte)255, (byte)255, (byte)255, (byte)255);
 			GL11.glEnd();
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			model.render();
 		GL11.glPopMatrix();
 	}
 }

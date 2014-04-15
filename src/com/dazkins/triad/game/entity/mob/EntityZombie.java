@@ -30,10 +30,6 @@ public class EntityZombie extends Mob {
 		move(sxa, 0);
 	}
 
-	public void renderToPlayerGui() {
-//		Font.drawStringWithShadow("health: " + health, x - (name.length() * 16) / 2, y + 52, 1.0f, 1.0f, 1.0f, 1, 1);
-	}
-
 	public void render() {
 		super.render(false);
 		this.getModel().updateAnimationState(this);

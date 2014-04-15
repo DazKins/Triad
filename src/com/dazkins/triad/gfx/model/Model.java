@@ -83,7 +83,7 @@ public abstract class Model {
 	 
 	public void render() {
 		GL11.glPushMatrix();
-		GL11.glTranslatef(offsetX, offsetY, depth + 1.0f);
+		GL11.glTranslatef(offsetX, offsetY, depth);
 		if(selectiveRendering) {
 			for (int i = 0; i < quadRenders.size(); i++) {
 				Quad q = (Quad) quads.get(quadRenders.get(i));

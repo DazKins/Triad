@@ -50,7 +50,7 @@ public class Tile {
 	}
 
 	public void render(BufferObject b, World w, int x, int y) {
-		Image.spriteSheet.renderSprite(b, x, y, tileSize, tileSize, 0, ty * 16, 16, 16,yPosToDepth(y), w.getTileBrightness((int) (x / 32.0f),(int) (y / 32.0f)) / 14.0f - 0.001f);
+		Image.spriteSheet.renderSprite(b, x, y, tileSize, tileSize, 0, ty * 16, 16, 16, yPosToDepth(y) - 1.0f, w.getTileBrightness((int) (x / 32.0f),(int) (y / 32.0f)) / 14.0f - 0.001f);
 	}
 
 	private static void loadTileDatabase(String path) {

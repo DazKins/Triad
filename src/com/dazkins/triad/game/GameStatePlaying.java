@@ -35,8 +35,8 @@ public class GameStatePlaying implements GameState {
 		changeWorld("TestingMap");
 		player = new EntityPlayer(world, 0, 0, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
-		world.addEntity(player);
 		world.addEntity(new EntityZombie(world, 500, 500));
+		world.addEntity(player);
 	}
 	
 	public void tick() {

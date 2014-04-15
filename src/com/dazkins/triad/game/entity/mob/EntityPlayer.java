@@ -9,6 +9,8 @@ import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.ItemRegisterer;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.game.world.tile.Tile;
+import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.input.InputHandler;
@@ -65,8 +67,8 @@ public class EntityPlayer extends Mob {
 			attackCooldownCounter = attackCooldown;
 		}
 		
-		xa *= 0.85;
-		ya *= 0.85;
+		xa *= 0.75;
+		ya *= 0.75;
 		
 		move(xa, ya);
 	}
@@ -84,9 +86,5 @@ public class EntityPlayer extends Mob {
 
 	public float getMovementSpeed() {
 		return 2;
-	}
-
-	public void renderToPlayerGui() {
-//		Font.drawStringWithShadow("X: " + ((int) x >> 5) + " Y: " + ((int) y >> 5), x - (name.length() * 16) / 2, y + 52);
 	}
 }
