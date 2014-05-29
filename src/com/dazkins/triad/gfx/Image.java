@@ -1,8 +1,12 @@
 package com.dazkins.triad.gfx;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -10,14 +14,11 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 public class Image {
-	public static Image spriteSheet;
-	public static Image iconSheet;
-	public static Image fontSheet;
-	public static Image itemSheet;
-
 	private BufferedImage img;
 	private int width, height;
 	public int texID;
+	
+	private static Map<String, Image> nameToImage = new HashMap<String, Image>();
 
 	public BufferedImage getRawImage() {
 		return img;
@@ -33,14 +34,32 @@ public class Image {
 
 	public static boolean init() {
 		try {
-			spriteSheet = new Image("/art/spriteSheet.png");
-			iconSheet = new Image("/art/iconSheet.png");
-			fontSheet = new Image("/art/font.png");
-			itemSheet = new Image("/art/items.png");
+			String imageFolder = "/art";
+			File imageDir = null;
+			try {
+				imageDir = new File(Image.class.getResource(imageFolder).toURI());
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+			
+			File[] foundFiles = imageDir.listFiles();
+			System.out.println(imageDir.getAbsolutePath());
+			
+			for (int i = 0; i < foundFiles.length; i++) {
+				File f = foundFiles[i];
+				if (f.getAbsolutePath().endsWith(".png")) {
+					Image im = new Image(f);
+					nameToImage.put(f.getName().replace(".png", ""), im);
+				}
+			}
 		} catch (IOException e) {
 			return false;
 		}
 		return true;
+	}
+	
+	public static Image getImageFromName(String name) {
+		return nameToImage.get(name);
 	}
 
 	public void bindGLTexture() {
@@ -49,8 +68,8 @@ public class Image {
 		}
 	}
 
-	public Image(String path) throws IOException {
-		loadSpriteSheet(path);
+	public Image(File f) throws IOException {
+		loadSpriteSheet(f);
 	}
 
 	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z, float b) {
@@ -75,8 +94,8 @@ public class Image {
 		bo.addVertex(x + w, y);
 	}
 
-	private void loadSpriteSheet(String path) throws IOException {
-		img = ImageIO.read(Image.class.getResource(path));
+	private void loadSpriteSheet(File f) throws IOException {
+		img = ImageIO.read(f);
 
 		width = img.getWidth();
 		height = img.getHeight();

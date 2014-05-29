@@ -15,12 +15,13 @@ import com.dazkins.triad.math.AABB;
 public class Tile {
 	private static MultiLineDatabaseFile dbs = null;
 	public static final int tileSize = 32;
-
+	
 	private byte id;
 	private String name;
 	private int ty;
 	private boolean col;
 	public static Tile[] tiles = new Tile[256];
+	private int renderOrderPos;
 
 	public static void initDatabase() {
 		loadTileDatabase("res/data/tile.db");
@@ -30,11 +31,12 @@ public class Tile {
 		return -(y / tileSize) - 3;
 	}
 
-	public Tile(byte i, String s, int tey, boolean c) {
+	public Tile(byte i, String s, int tey, boolean c, int rop) {
 		name = s;
 		ty = tey;
 		id = i;
 		col = c;
+		renderOrderPos = rop;
 	}
 
 	public AABB getAABB(World w, int x, int y) {
@@ -48,9 +50,37 @@ public class Tile {
 	public boolean isCollidable() {
 		return col;
 	}
+	
+	private int getRenderOrderPos() {
+		return renderOrderPos;
+	}
 
 	public void render(BufferObject b, World w, int x, int y) {
-		Image.spriteSheet.renderSprite(b, x, y, tileSize, tileSize, 0, ty * 16, 16, 16, yPosToDepth(y) - 1.0f, w.getTileBrightness((int) (x / 32.0f),(int) (y / 32.0f)) / 14.0f - 0.001f);
+		byte x0 = 15;
+		
+		int xt = x / tileSize;
+		int yt = y / tileSize;
+		
+		Tile no = w.getTile(xt, yt + 1);
+		Tile ea = w.getTile(xt + 1, yt);
+		Tile so = w.getTile(xt, yt - 1);
+		Tile we = w.getTile(xt - 1, yt);
+		
+		if (no == null || no.getRenderOrderPos() < this.getRenderOrderPos())
+			x0 -= 1;
+		if (ea == null || ea.getRenderOrderPos() < this.getRenderOrderPos())
+			x0 -= 2;
+		if (so == null || so.getRenderOrderPos() < this.getRenderOrderPos())
+			x0 -= 4;
+		if (we == null || we.getRenderOrderPos() < this.getRenderOrderPos())
+			x0 -= 8;
+		
+		if (x == 0 && y == 0) {
+			System.out.println(no + " " + ea + " " + so + " " + we);
+			System.out.println(x0);
+		}
+		
+		Image.getImageFromName("spriteSheet").renderSprite(b, x, y, tileSize, tileSize, x0 * 16, ty * 16, 16, 16, yPosToDepth(y) - 1.0f, w.getTileBrightness((int) (x / 32.0f),(int) (y / 32.0f)) / 14.0f - 0.001f);
 	}
 
 	private static void loadTileDatabase(String path) {
@@ -66,7 +96,8 @@ public class Tile {
 			String s = dbs.getString("NAME", i);
 			int tey = dbs.getInt("TY", i);
 			boolean col = dbs.getBoolean("COL", i);
-			Tile t = new Tile(id, s, tey, col);
+			int rop = dbs.getInt("RENDER_ORDER_POSITION", i);
+			Tile t = new Tile(id, s, tey, col, rop);
 			tiles[id] = t;
 		}
 	}
@@ -74,12 +105,9 @@ public class Tile {
 	public static ImageIcon getTileImageIcon(int i, int scale) {
 		Tile t = tiles[i];
 		if (t != null) {
-			BufferedImage img = new BufferedImage(16, 16,
-					BufferedImage.TYPE_INT_RGB);
-			int pixels[] = ((DataBufferInt) img.getRaster().getDataBuffer())
-					.getData();
-			int oldPixels[] = Image.spriteSheet.getRawImage().getRGB(0,
-					t.ty * 16, 16, 16, null, 0, 16);
+			BufferedImage img = new BufferedImage(16, 16,BufferedImage.TYPE_INT_RGB);
+			int pixels[] = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+			int oldPixels[] = Image.getImageFromName("spriteSheet").getRawImage().getRGB(0, t.ty * 16, 16, 16, null, 0, 16);
 			for (int x = 0; x < 16; x++) {
 				for (int y = 0; y < 16; y++) {
 					pixels[x + y * 16] = oldPixels[x + y * 16];

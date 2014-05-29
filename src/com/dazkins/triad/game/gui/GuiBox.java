@@ -32,25 +32,25 @@ public class GuiBox {
 		bo.start();
 		
 		//Top left corner
-		Image.iconSheet.renderSprite(bo, x, y + height - 16, 16, 16, 24 + txOff, 0, 8, 8, z, 1.0f);
+		Image.getImageFromName("iconSheet").renderSprite(bo, x, y + height - 16, 16, 16, 24 + txOff, 0, 8, 8, z, 1.0f);
 		//Bottom left corner
-		Image.iconSheet.renderSprite(bo, x, y, 16, 16, 24 + txOff, 16, 8, 8, z, 1.0f);
+		Image.getImageFromName("iconSheet").renderSprite(bo, x, y, 16, 16, 24 + txOff, 16, 8, 8, z, 1.0f);
 		//Top right corner
-		Image.iconSheet.renderSprite(bo, x + width - 16, y + height - 16, 16, 16, 40 + txOff, 0, 8, 8, z, 1.0f);
+		Image.getImageFromName("iconSheet").renderSprite(bo, x + width - 16, y + height - 16, 16, 16, 40 + txOff, 0, 8, 8, z, 1.0f);
 		//Bottom right corner
-		Image.iconSheet.renderSprite(bo, x + width - 16, y, 16, 16, 40 + txOff, 16, 8, 8, z, 1.0f);
+		Image.getImageFromName("iconSheet").renderSprite(bo, x + width - 16, y, 16, 16, 40 + txOff, 16, 8, 8, z, 1.0f);
 		
 		//Central area
-		Image.iconSheet.renderSprite(bo, x + 16, y + 16, width - 32, height - 32, 32 + txOff, 8, 8, 8, z, 1.0f);
+		Image.getImageFromName("iconSheet").renderSprite(bo, x + 16, y + 16, width - 32, height - 32, 32 + txOff, 8, 8, 8, z, 1.0f);
 		
 		//Top band
-		Image.iconSheet.renderSprite(bo, x + 16, y + height - 16, width - 32, 16, 32 + txOff, 0, 8, 8, z, 1.0f);
+		Image.getImageFromName("iconSheet").renderSprite(bo, x + 16, y + height - 16, width - 32, 16, 32 + txOff, 0, 8, 8, z, 1.0f);
 		//Bottom band
-		Image.iconSheet.renderSprite(bo, x + 16, y, width - 32, 16, 32 + txOff, 16, 8, 8, z, 1.0f);
+		Image.getImageFromName("iconSheet").renderSprite(bo, x + 16, y, width - 32, 16, 32 + txOff, 16, 8, 8, z, 1.0f);
 		//Left band
-		Image.iconSheet.renderSprite(bo, x, y + 16, 16, height - 32, 24 + txOff, 8, 8, 8, z, 1.0f);
+		Image.getImageFromName("iconSheet").renderSprite(bo, x, y + 16, 16, height - 32, 24 + txOff, 8, 8, 8, z, 1.0f);
 		//Right band
-		Image.iconSheet.renderSprite(bo, x + width - 16, y + 16, 16, height - 32, 40 + txOff, 8, 8, 8, z, 1.0f);
+		Image.getImageFromName("iconSheet").renderSprite(bo, x + width - 16, y + 16, 16, height - 32, 40 + txOff, 8, 8, 8, z, 1.0f);
 		
 		bo.stop();
 	}

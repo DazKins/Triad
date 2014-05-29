@@ -148,9 +148,9 @@ public class Chunk {
 
 	public void generate() {
 		recalculateLighting();
-		tilePlane = new BufferObject(16 * 16 * 4 * 8);
+		tilePlane = new BufferObject(16 * 16 * 4 * 8 * 2);
 		tilePlane.start();
-		tilePlane.bindImage(Image.spriteSheet);
+		tilePlane.bindImage(Image.getImageFromName("spriteSheet"));
 		for (int x = 0; x < chunkW; x++) {
 			for (int y = 0; y < chunkH; y++) {
 				int tileIndex = tiles[x + y * chunkW];

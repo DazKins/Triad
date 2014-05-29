@@ -15,6 +15,7 @@ import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.WindowInfo;
 import com.dazkins.triad.input.InputHandler;
 
 public class GameStatePlaying implements GameState {
@@ -25,10 +26,11 @@ public class GameStatePlaying implements GameState {
 	private Camera cam;
 	
 	private Gui currentlyDisplayedGui;
-	
+	private WindowInfo winInf;
 	
 	public void init(Triad triad) {
 		this.triad = triad;
+		winInf = triad.winInfo;
 		input = new InputHandler();
 		cam = new Camera(input, triad.winInfo, 0, 0);
 		cam.lockZoom(0.0001f, 500f);
@@ -52,6 +54,9 @@ public class GameStatePlaying implements GameState {
 			else
 				changeGui(new GuiEquipMenu(triad, input, player.getEquipmentInventory()));
 		}
+		if (input.isKeyJustDown(Keyboard.KEY_ESCAPE)) {
+			changeGui(new PlayerGui(triad, input, world, player));
+		}
 		world.tick();
 		cam.tick();
 		cam.lockCameraToEntity(player);
@@ -64,6 +69,20 @@ public class GameStatePlaying implements GameState {
 		cam.attachTranslation();
 		world.render(cam);
 		GL11.glPopMatrix();
+		
+		if (!(currentlyDisplayedGui instanceof PlayerGui)) {
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			GL11.glBegin(GL11.GL_QUADS);
+				GL11.glColor4f(0.0f, 0.0f, 0.0f, 0.7f);
+				GL11.glVertex3f(0.0f, 0.0f, -0.1f);
+				GL11.glVertex3f(winInf.getW(), 0.0f, -0.1f);
+				GL11.glVertex3f(winInf.getW(), winInf.getH(), -0.1f);
+				GL11.glVertex3f(0.0f, winInf.getH(), -0.1f);
+				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			GL11.glEnd();
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+		}
+		
 		currentlyDisplayedGui.render(cam);
 	}
 	

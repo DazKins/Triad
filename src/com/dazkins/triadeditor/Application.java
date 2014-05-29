@@ -40,7 +40,7 @@ public class Application {
 		input = i;
 		winInfo = w;
 		cam = new Camera(i, winInfo, 0, 0);
-		cam.lockZoom(0.7f, 1.3f);
+		cam.lockZoom(0.001f, 10000f);
 	}
 
 	public void initControlPanel(ControlPanel cp) {

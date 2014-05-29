@@ -26,7 +26,7 @@ public class Item {
 	private void loadImageIconModel() {
 		icon = new BufferObject(4 * 8);
 		icon.start();
-		Image.itemSheet.renderSprite(icon, 0, 0, 32, 32, tx * 32, ty * 32, 32, 32, 0.0f, 1.0f);
+		Image.getImageFromName("items").renderSprite(icon, 0, 0, 32, 32, tx * 32, ty * 32, 32, 32, 0.0f, 1.0f);
 		icon.stop();
 	}
 	

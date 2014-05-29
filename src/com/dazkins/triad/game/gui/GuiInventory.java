@@ -42,13 +42,13 @@ public class GuiInventory extends Gui {
 	public GuiInventory(Triad t, InputHandler i, Inventory in) {
 		super(t, i);
 		inv = in;
-		mainBox = new GuiBox(windowPosX, windowPosY, windowWidth, windowHeight, - 1, false);
+		mainBox = new GuiBox(windowPosX, windowPosY, windowWidth, windowHeight, 0, false);
 		slotSheet = new GuiBox[inv.width * inv.height];
-		previewBox = new GuiBox(previewBoxX, previewBoxY, previewBoxW, previewBoxH, 2, true);
+		previewBox = new GuiBox(previewBoxX, previewBoxY, previewBoxW, previewBoxH, 1, true);
 		
 		for (int x = 0; x < inv.width; x++) {
 			for (int y = 0; y < inv.height; y++) {
-				slotSheet[x + y * inv.width] = new GuiBox(windowPosX +  x * (64 + gridSpacingX) + offsetX, windowPosY +  y * (64 + gridSpacingY) + offsetY, 64, 64, 2, true);
+				slotSheet[x + y * inv.width] = new GuiBox(windowPosX +  x * (64 + gridSpacingX) + offsetX, windowPosY +  y * (64 + gridSpacingY) + offsetY, 64, 64, 3, true);
 			}
 		}
 	}
@@ -98,13 +98,13 @@ public class GuiInventory extends Gui {
 				if (i != null) {
 					i.getItemType().renderIcon(windowPosX +  x * (64 + gridSpacingX) + offsetX, windowPosY +  y * (64 + gridSpacingY) + offsetY, 0.2f, 2);
 					if (i.getSize() > 1)
-						Font.drawString(i.getSize() + "", 45 + windowPosX +  x * (64 + gridSpacingX) + offsetX, windowPosY +  y * (64 + gridSpacingY) + offsetY + 3, 1.0f, 1.0f, 1.0f, 4, 1);
+						Font.drawString(i.getSize() + "", 45 + windowPosX +  x * (64 + gridSpacingX) + offsetX, windowPosY +  y * (64 + gridSpacingY) + offsetY + 3, 1.0f, 1.0f, 1.0f, 5, 1);
 				}
 			}
 		}
 		if (hoveredItem != null) {
 			hoveredItem.getItemType().renderIcon(previewBoxX + previewBoxW / 4, previewBoxY + 10, 3, 8);
-			Font.drawString(hoveredItem.getItemType().getName(), previewBoxX, previewBoxY - 50, 0.7f, 0.0f, 0.0f, 3, 3);
+			Font.drawString(hoveredItem.getItemType().getName(), previewBoxX, previewBoxY - 50, 0.7f, 0.0f, 0.0f, 4, 3);
 		}
 		if (selectedItem != null) {
 			selectedItem.getItemType().renderIcon(input.mouseX - 32, input.mouseY - 32, 1, 2);

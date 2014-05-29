@@ -27,12 +27,8 @@ public abstract class Model {
 	private boolean selectiveRendering;
 	
 	public static void loadModels() {
-		try {
-			entityModelMap.put(EntityPlayer.class, new ModelHumanoid(new Image("/art/entities/player.png")));
-			entityModelMap.put(EntityZombie.class, new ModelZombie(new Image("/art/entities/zombie.png")));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		entityModelMap.put(EntityPlayer.class, new ModelHumanoid(Image.getImageFromName("player")));
+		entityModelMap.put(EntityZombie.class, new ModelZombie(Image.getImageFromName("zombie")));
 	}
 	
 	protected void setOffset(float x, float y) {
