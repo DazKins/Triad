@@ -1,0 +1,85 @@
+package com.dazkins.triad.gfx.model.animation;
+
+import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.Facing;
+import com.dazkins.triad.game.entity.mob.EntityPlayer;
+import com.dazkins.triad.game.entity.mob.Mob;
+import com.dazkins.triad.game.entity.mob.MovementState;
+import com.dazkins.triad.gfx.model.ModelHumanoid;
+import com.dazkins.triad.gfx.model.Quad;
+
+public class AnimationHumanoidWalking extends Animation {
+	public void updateState(Entity e) {
+		verifyModel(ModelHumanoid.class);
+		if (modelOK) {
+			ModelHumanoid model = (ModelHumanoid) parentModel;
+			Mob m = (Mob) e;
+			Facing f = m.getFacing();
+			int ordinal = f.ordinal();
+			
+			Quad cHead = model.getHead()[ordinal];
+			Quad cRightArm = model.getRightArm()[ordinal];
+			Quad cLeftArm = model.getLeftArm()[ordinal];
+			Quad cRightLeg = model.getRightLeg()[ordinal];
+			Quad cLeftLeg = model.getLeftLeg()[ordinal];
+			Quad cBody = model.getBody()[ordinal];
+			
+			if (m.getMovementState() == MovementState.MOVING) {
+				if (f == Facing.LEFT || f == Facing.RIGHT) {
+					cRightArm.setRotation((float) Math.cos(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 50.0f);
+					cLeftArm.setRotation((float) -Math.cos(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 50.0f);
+					cRightLeg.setRotation((float) Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 50.0f);
+					cLeftLeg.setRotation((float) -Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 50.0f);
+				} else {
+					cRightArm.setRotation((float) Math.cos(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 15.0f);
+					cLeftArm.setRotation((float) -Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 15.0f);
+					cRightLeg.setOffset(0, (float) (Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) + 1.0f) * 3.0f);
+					cLeftLeg.setOffset(0, (float) (-Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) + 1.0f) * 3.0f);
+				}
+			} else {
+				float crar = cRightArm.getRotation();
+				if (crar != 0) {
+					if (crar > 0)
+						cRightArm.setRotation(crar - 0.05f);
+					if (crar < 0)
+						cRightArm.setRotation(crar + 0.05f);
+				}
+				float clar = cLeftArm.getRotation();
+				if (clar != 0) {
+					if (clar > 0)
+						cLeftArm.setRotation(clar - 0.05f);
+					if (clar < 0)
+						cLeftArm.setRotation(clar + 0.05f);
+				}
+				float crlr = cRightLeg.getRotation();
+				if (crlr != 0) {
+					if (crlr > 0)
+						cRightLeg.setRotation(crlr - 0.05f);
+					if (crlr < 0)
+						cRightLeg.setRotation(crlr + 0.05f);
+				}
+				float cllr = cLeftLeg.getRotation();
+				if (cllr != 0) {
+					if (cllr > 0)
+						cLeftLeg.setRotation(cllr - 0.05f);
+					if (cllr < 0)
+						cLeftLeg.setRotation(cllr + 0.05f);
+				}
+				float crlo = cRightLeg.getOffsetY();
+				if (crlo != 0) {
+					if (crlo > 0)
+						cRightLeg.setOffset(0, crlo - 0.005f);
+					if (crlo < 0)
+						cRightLeg.setOffset(0, crlo + 0.005f);
+				}
+				float cllo = cLeftLeg.getOffsetY();
+				if (cllo != 0) {
+					if (cllo > 0)
+						cLeftLeg.setOffset(0, cllo - 0.005f);
+					if (cllo < 0)
+						cLeftLeg.setOffset(0, cllo + 0.005f);
+				}
+			}
+		}
+	}
+}

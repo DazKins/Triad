@@ -1,6 +1,5 @@
 package com.dazkins.triad.gfx.model;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +11,7 @@ import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.gfx.model.animation.Animation;
 
 public abstract class Model {
 	public static Map<Class<? extends Entity>, Model> entityModelMap = new HashMap<Class<? extends Entity>, Model>();
@@ -26,9 +26,15 @@ public abstract class Model {
 
 	private boolean selectiveRendering;
 	
+	private Animation anim;
+	
 	public static void loadModels() {
 		entityModelMap.put(EntityPlayer.class, new ModelHumanoid(Image.getImageFromName("player")));
 		entityModelMap.put(EntityZombie.class, new ModelZombie(Image.getImageFromName("zombie")));
+	}
+	
+	public Quad getQuad(int i) {
+		return quads.get(i);
 	}
 	
 	protected void setOffset(float x, float y) {
@@ -73,7 +79,14 @@ public abstract class Model {
 		img = i;
 	}
 	
-	public abstract void updateAnimationState(Entity e);
+	public void updateAnimationState(Entity e) {
+		if (anim != null)
+			anim.updateState(e);
+	}
+	
+	public boolean hasAnimation() {
+		return anim != null;
+	}
 	
 	public abstract void render(Entity e);
 	 
@@ -95,7 +108,16 @@ public abstract class Model {
 		GL11.glPopMatrix();
 	}
 	
+	public void setCurrentAnimation(Animation a) {
+		a.init(this);
+		anim = a;
+	}
+	
 	private void renderQuad(Quad q) {
 		q.render();
+	}
+	
+	public void animationStop() {
+		anim = null;
 	}
 }

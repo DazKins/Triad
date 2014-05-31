@@ -26,14 +26,14 @@ public class GuiInventory extends Gui {
 	private int windowWidth = 1200;
 	private int windowHeight = 706;
 	
-	private int windowPosX = winInfo.getW() / 2 - windowWidth / 2;
-	private int windowPosY =  winInfo.getH() / 2 - windowHeight / 2;
+	private int windowPosX;
+	private int windowPosY;
 	
 	private int previewBoxW = 487;
 	private int previewBoxH = 4 * 64 + 4 * (gridSpacingX - 1);
 	
-	private int previewBoxX = windowPosX + windowWidth - 11 - previewBoxW;
-	private int previewBoxY = windowPosY + windowHeight - 11 - previewBoxH;
+	private int previewBoxX;
+	private int previewBoxY;
 	
 	private ItemStack hoveredItem;
 	
@@ -42,6 +42,15 @@ public class GuiInventory extends Gui {
 	public GuiInventory(Triad t, InputHandler i, Inventory in) {
 		super(t, i);
 		inv = in;
+		setupGraphics();
+	}
+	
+	public void setupGraphics() {
+		windowPosX = winInfo.getW() / 2 - windowWidth / 2;
+		windowPosY =  winInfo.getH() / 2 - windowHeight / 2;
+		previewBoxX = windowPosX + windowWidth - 11 - previewBoxW;
+		previewBoxY = windowPosY + windowHeight - 11 - previewBoxH;
+		
 		mainBox = new GuiBox(windowPosX, windowPosY, windowWidth, windowHeight, 0, false);
 		slotSheet = new GuiBox[inv.width * inv.height];
 		previewBox = new GuiBox(previewBoxX, previewBoxY, previewBoxW, previewBoxH, 1, true);
@@ -82,6 +91,10 @@ public class GuiInventory extends Gui {
 		} else {
 			hoveredItem = null;
 		}
+		
+		if (triad.wasRescaled()) {
+			setupGraphics();
+		}
 	}
 
 	public void render(Camera cam) {
@@ -104,7 +117,7 @@ public class GuiInventory extends Gui {
 		}
 		if (hoveredItem != null) {
 			hoveredItem.getItemType().renderIcon(previewBoxX + previewBoxW / 4, previewBoxY + 10, 3, 8);
-			Font.drawString(hoveredItem.getItemType().getName(), previewBoxX, previewBoxY - 50, 0.7f, 0.0f, 0.0f, 4, 3);
+			Font.drawString(hoveredItem.getItemType().getName(), previewBoxX, previewBoxY - 50, 0.7f, 0.0f, 0.0f, 4, 2);
 		}
 		if (selectedItem != null) {
 			selectedItem.getItemType().renderIcon(input.mouseX - 32, input.mouseY - 32, 1, 2);

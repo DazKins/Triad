@@ -3,6 +3,7 @@ package com.dazkins.triad.game.entity.mob;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
+import com.dazkins.triad.gfx.model.animation.AnimationZombieWalking;
 import com.dazkins.triad.math.AABB;
 
 public class EntityZombie extends Mob {
@@ -28,6 +29,9 @@ public class EntityZombie extends Mob {
 			sxa = -sxa;
 		
 		move(sxa, 0);
+		
+		if (!this.getModel().hasAnimation())
+			this.getModel().setCurrentAnimation(new AnimationZombieWalking());
 	}
 
 	public void render() {

@@ -13,6 +13,7 @@ import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
+import com.dazkins.triad.gfx.model.animation.AnimationHumanoidWalking;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
 
@@ -71,6 +72,9 @@ public class EntityPlayer extends Mob {
 		ya *= 0.75;
 		
 		move(xa, ya);
+		
+		if (!((ModelHumanoid)this.getModel()).hasAnimation()) 
+			((ModelHumanoid)this.getModel()).setCurrentAnimation(new AnimationHumanoidWalking());
 	}
 
 	public AABB getAABB() {

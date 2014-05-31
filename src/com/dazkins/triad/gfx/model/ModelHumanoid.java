@@ -15,12 +15,36 @@ public class ModelHumanoid extends Model {
 	protected Quad leftLeg[] = new Quad[4];
 	protected Quad rightLeg[] = new Quad[4];
 	
+	public Quad[] getHead() {
+		return head;
+	}
+
+	public Quad[] getRightArm() {
+		return rightArm;
+	}
+
+	public Quad[] getLeftArm() {
+		return leftArm;
+	}
+
+	public Quad[] getBody() {
+		return body;
+	}
+
+	public Quad[] getLeftLeg() {
+		return leftLeg;
+	}
+
+	public Quad[] getRightLeg() {
+		return rightLeg;
+	}
+
 	public ModelHumanoid(Image i) {
 		super(i);
-
+		
 		int up = Facing.UP.ordinal();
 		int down = Facing.DOWN.ordinal();
-		int	left = Facing.LEFT.ordinal();
+		int left = Facing.LEFT.ordinal();
 		int right = Facing.RIGHT.ordinal();
 		
 		head[up] = new Quad(-9, 32, 18, 16, 27, 0, 9, 8);
@@ -121,75 +145,5 @@ public class ModelHumanoid extends Model {
 		addQuadToRenderQeue(body[ordinal]);
 		
 		super.render();
-	}
-
-	public void updateAnimationState(Entity e) {
-		Mob m = (Mob) e;
-		Facing f = m.getFacing();
-		int ordinal = f.ordinal();
-		
-		Quad cHead = head[ordinal];
-		Quad cRightArm = rightArm[ordinal];
-		Quad cLeftArm = leftArm[ordinal];
-		Quad cRightLeg = rightLeg[ordinal];
-		Quad cLeftLeg = leftLeg[ordinal];
-		Quad cBody = body[ordinal];
-		
-		if (m.getMovementState() == MovementState.MOVING) {
-			if (f == Facing.LEFT || f == Facing.RIGHT) {
-				cRightArm.setRotation((float) Math.cos(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 50.0f);
-				cLeftArm.setRotation((float) -Math.cos(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 50.0f);
-				cRightLeg.setRotation((float) Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 50.0f);
-				cLeftLeg.setRotation((float) -Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 50.0f);
-			} else {
-				cRightArm.setRotation((float) Math.cos(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 15.0f);
-				cLeftArm.setRotation((float) -Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) * 15.0f);
-				cRightLeg.setOffset(0, (float) (Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) + 1.0f) * 3.0f);
-				cLeftLeg.setOffset(0, (float) (-Math.sin(m.lifeTicks * (m.getMovementSpeed() / 9.0f)) + 1.0f) * 3.0f);
-			}
-		} else {
-			float crar = cRightArm.getRotation();
-			if (crar != 0) {
-				if (crar > 0)
-					cRightArm.setRotation(crar - 0.05f);
-				if (crar < 0)
-					cRightArm.setRotation(crar + 0.05f);
-			}
-			float clar = cLeftArm.getRotation();
-			if (clar != 0) {
-				if (clar > 0)
-					cLeftArm.setRotation(clar - 0.05f);
-				if (clar < 0)
-					cLeftArm.setRotation(clar + 0.05f);
-			}
-			float crlr = cRightLeg.getRotation();
-			if (crlr != 0) {
-				if (crlr > 0)
-					cRightLeg.setRotation(crlr - 0.05f);
-				if (crlr < 0)
-					cRightLeg.setRotation(crlr + 0.05f);
-			}
-			float cllr = cLeftLeg.getRotation();
-			if (cllr != 0) {
-				if (cllr > 0)
-					cLeftLeg.setRotation(cllr - 0.05f);
-				if (cllr < 0)
-					cLeftLeg.setRotation(cllr + 0.05f);
-			}
-			float crlo = cRightLeg.getOffsetY();
-			if (crlo != 0) {
-				if (crlo > 0)
-					cRightLeg.setOffset(0, crlo - 0.005f);
-				if (crlo < 0)
-					cRightLeg.setOffset(0, crlo + 0.005f);
-			}
-			float cllo = cLeftLeg.getOffsetY();
-			if (cllo != 0) {
-				if (cllo > 0)
-					cLeftLeg.setOffset(0, cllo - 0.005f);
-				if (cllo < 0)
-					cLeftLeg.setOffset(0, cllo + 0.005f);
-			}
-		}
 	}
 }
