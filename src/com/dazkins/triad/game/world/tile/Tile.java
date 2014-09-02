@@ -75,11 +75,6 @@ public class Tile {
 		if (we == null || we.getRenderOrderPos() < this.getRenderOrderPos())
 			x0 -= 8;
 		
-		if (x == 0 && y == 0) {
-			System.out.println(no + " " + ea + " " + so + " " + we);
-			System.out.println(x0);
-		}
-		
 		Image.getImageFromName("spriteSheet").renderSprite(b, x, y, tileSize, tileSize, x0 * 16, ty * 16, 16, 16, yPosToDepth(y) - 1.0f, w.getTileBrightness((int) (x / 32.0f),(int) (y / 32.0f)) / 14.0f - 0.001f);
 	}
 

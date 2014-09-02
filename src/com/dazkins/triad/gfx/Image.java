@@ -17,7 +17,7 @@ public class Image {
 	private BufferedImage img;
 	private int width, height;
 	public int texID;
-	
+
 	private static Map<String, Image> nameToImage = new HashMap<String, Image>();
 
 	public BufferedImage getRawImage() {
@@ -37,14 +37,14 @@ public class Image {
 			String imageFolder = "/art";
 			File imageDir = null;
 			try {
-				imageDir = new File(Image.class.getResource(imageFolder).toURI());
+				imageDir = new File(Image.class.getResource(imageFolder)
+						.toURI());
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
-			
+
 			File[] foundFiles = imageDir.listFiles();
-			System.out.println(imageDir.getAbsolutePath());
-			
+
 			for (int i = 0; i < foundFiles.length; i++) {
 				File f = foundFiles[i];
 				if (f.getAbsolutePath().endsWith(".png")) {
@@ -57,7 +57,7 @@ public class Image {
 		}
 		return true;
 	}
-	
+
 	public static Image getImageFromName(String name) {
 		return nameToImage.get(name);
 	}
@@ -72,7 +72,8 @@ public class Image {
 		loadSpriteSheet(f);
 	}
 
-	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z, float b) {
+	public void renderSprite(BufferObject bo, float x, float y, float w,
+			float h, int tx, int ty, int tw, int th, float z, float b) {
 		float offset = 0.01f;
 
 		float tx0 = ((tx + offset) / (float) width);
@@ -82,8 +83,8 @@ public class Image {
 
 		bo.bindImage(this);
 		bo.setDepth(z);
-//		if (b != 1)
-			bo.setBrightness(b);
+		// if (b != 1)
+		bo.setBrightness(b);
 		bo.setUV(tx1, ty0);
 		bo.addVertex(x + w, y + h);
 		bo.setUV(tx0, ty0);
