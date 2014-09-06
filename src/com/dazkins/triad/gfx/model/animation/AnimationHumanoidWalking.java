@@ -40,44 +40,44 @@ public class AnimationHumanoidWalking extends Animation {
 				float crar = cRightArm.getRotation();
 				if (crar != 0) {
 					if (crar > 0)
-						cRightArm.setRotation(crar - 0.05f);
+						cRightArm.setRotation(crar - 0.3f);
 					if (crar < 0)
-						cRightArm.setRotation(crar + 0.05f);
+						cRightArm.setRotation(crar + 0.3f);
 				}
 				float clar = cLeftArm.getRotation();
 				if (clar != 0) {
 					if (clar > 0)
-						cLeftArm.setRotation(clar - 0.05f);
+						cLeftArm.setRotation(clar - 0.3f);
 					if (clar < 0)
-						cLeftArm.setRotation(clar + 0.05f);
+						cLeftArm.setRotation(clar + 0.3f);
 				}
 				float crlr = cRightLeg.getRotation();
 				if (crlr != 0) {
 					if (crlr > 0)
-						cRightLeg.setRotation(crlr - 0.05f);
+						cRightLeg.setRotation(crlr - 0.3f);
 					if (crlr < 0)
-						cRightLeg.setRotation(crlr + 0.05f);
+						cRightLeg.setRotation(crlr + 0.3f);
 				}
 				float cllr = cLeftLeg.getRotation();
 				if (cllr != 0) {
 					if (cllr > 0)
-						cLeftLeg.setRotation(cllr - 0.05f);
+						cLeftLeg.setRotation(cllr - 0.3f);
 					if (cllr < 0)
-						cLeftLeg.setRotation(cllr + 0.05f);
+						cLeftLeg.setRotation(cllr + 0.3f);
 				}
 				float crlo = cRightLeg.getOffsetY();
 				if (crlo != 0) {
 					if (crlo > 0)
-						cRightLeg.setOffset(0, crlo - 0.005f);
+						cRightLeg.setOffset(0, crlo - 0.03f);
 					if (crlo < 0)
-						cRightLeg.setOffset(0, crlo + 0.005f);
+						cRightLeg.setOffset(0, crlo + 0.03f);
 				}
 				float cllo = cLeftLeg.getOffsetY();
 				if (cllo != 0) {
 					if (cllo > 0)
-						cLeftLeg.setOffset(0, cllo - 0.005f);
+						cLeftLeg.setOffset(0, cllo - 0.03f);
 					if (cllo < 0)
-						cLeftLeg.setOffset(0, cllo + 0.005f);
+						cLeftLeg.setOffset(0, cllo + 0.03f);
 				}
 			}
 		}

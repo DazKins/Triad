@@ -33,8 +33,7 @@ public class BufferObject {
 	private float v;
 
 	public static void init() {
-		float version = Float.parseFloat(GL11.glGetString(GL11.GL_VERSION)
-				.substring(0, 3));
+		float version = Float.parseFloat(GL11.glGetString(GL11.GL_VERSION).substring(0, 3));
 		System.err.println("OpenGL version: " + version);
 		if (version <= 1.5) {
 			useVBO = false;

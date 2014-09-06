@@ -23,30 +23,42 @@ public class ObjectPool<T> {
 		}
 	}
 	
-	public void create(Object[] args) {
+	public T create(Object[] args) {
 		int index = -1;
 		for (int i = 0; i < poolSize; i++) {
-			if (((PoolableObject) objs[i]).isDestroyed() == false)
-				index = 0;
+			if (usedIDs[i] == false)
+				index = i;
 		}
 		
 		if (index == -1)
-			return;
+			return null;
 		
 		PoolableObject po = ((PoolableObject) objs[index]);
 		
 		po.create(args);
 		
 		usedIDs[index] = true;
+		
+		return (T) po;
+	}
+	
+	public boolean isObjectDestroyed(PoolableObject o) {
+		for (int i = 0; i < objs.length; i++) {
+			PoolableObject po = ((PoolableObject) objs[i]);
+			if (po == o) {
+				return usedIDs[i];
+			}
+		}
+		return false;
 	}
 	
 	public void destroy(PoolableObject o) {
 		for (int i = 0; i < objs.length; i++) {
 			PoolableObject po = ((PoolableObject) objs[i]);
-			if (po == o)
-				po.destroy();
+			if (po == o) {
+				usedIDs[i] = false;
+				return;
+			}
 		}
 	}
-	
-//	public 
 }

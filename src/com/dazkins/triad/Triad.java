@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 import com.dazkins.triad.audio.SoundManager;
 import com.dazkins.triad.game.GameState;
 import com.dazkins.triad.game.GameStatePlaying;
+import com.dazkins.triad.game.entity.particle.Particle;
 import com.dazkins.triad.game.inventory.item.ItemRegisterer;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -23,6 +24,7 @@ import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.WindowInfo;
 import com.dazkins.triad.gfx.model.Model;
+import com.dazkins.triad.util.pool.ObjectPool;
 
 public class Triad {
 	private boolean running;
@@ -45,6 +47,7 @@ public class Triad {
 		try {
 			Display.setResizable(true);
 			Display.setDisplayMode(new DisplayMode(winInfo.getW(), winInfo.getH()));
+
 			Display.setTitle(title);
 			Display.setIcon(loadIcon("/art/icon.png"));
 			Display.create();

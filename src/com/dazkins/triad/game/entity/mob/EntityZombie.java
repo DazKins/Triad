@@ -8,7 +8,7 @@ import com.dazkins.triad.math.AABB;
 
 public class EntityZombie extends Mob {
 	public EntityZombie(World w, float x, float y) {
-		super(w, x, y, "zombie", 1000);
+		super(w, x, y, "zombie", 100);
 		sxa = this.getMovementSpeed();
 	}
 
@@ -17,7 +17,7 @@ public class EntityZombie extends Mob {
 	}
 
 	public int getMaxHealth() {
-		return 1000;
+		return 100;
 	}
 	
 	float sxa = getMovementSpeed();

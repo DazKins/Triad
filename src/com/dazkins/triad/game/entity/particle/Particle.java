@@ -1,11 +1,11 @@
 package com.dazkins.triad.game.entity.particle;
 
 import com.dazkins.triad.game.entity.Entity;
-import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.util.pool.PoolableObject;
 
-public class Particle extends Entity {
+public class Particle extends Entity implements PoolableObject {
 	protected float w;
 	protected float h;
 	
@@ -15,9 +15,12 @@ public class Particle extends Entity {
 	
 	private int id;
 	
-	public Particle(int pID) {
+	public Particle() {
 		super(null, 0, 0, null);
-		this.id = pID;
+	}
+	
+	public float getW() {
+		return w;
 	}
 
 	public void renderToPlayerGui(Camera c) { }
@@ -32,6 +35,10 @@ public class Particle extends Entity {
 
 	public AABB getAABB() {
 		return null;
+	}
+
+	public void create(Object[] args) {
+		this.w = (Float) args[0];
 	}
 	
 }
