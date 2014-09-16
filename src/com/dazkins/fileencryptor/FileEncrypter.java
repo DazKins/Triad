@@ -116,7 +116,7 @@ public class FileEncrypter {
 
 	private static String decrypt(String s) throws IOException {
 		if (!s.startsWith("enc ")) {
-			throw new RuntimeException("File not correctly encrypted, please use the provided encrypter!");
+			System.err.println("File not correctly encrypted, please use the provided encrypter!");
 		}
 		s = s.replace("enc ", "");
 		BASE64Decoder be = new BASE64Decoder();

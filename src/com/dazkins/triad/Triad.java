@@ -25,6 +25,7 @@ import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.WindowInfo;
 import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.util.pool.ObjectPool;
+import com.dazkins.triad.util.pool.factory.ParticleFactory;
 
 public class Triad {
 	private boolean running;

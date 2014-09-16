@@ -38,7 +38,7 @@ public abstract class Entity {
 				globalIDEntityMap.put(globalID, getClass());
 			}
 		} catch (Exception e) {
-				System.err.println("Unable to load database for entity: " + s);
+			System.err.println("Unable to load database for entity: " + s);
 		}
 	}
 	
