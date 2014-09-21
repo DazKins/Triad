@@ -221,21 +221,21 @@ public class Chunk {
 	}
 
 	public void tick() {
-		for (int x = 0; x < chunkW; x++) {
-			for (int y = 0; y < chunkH; y++) {
-				ArrayList<Entity> list = entitiesInTiles[x + y * chunkW];
-				for (int i = 0; i < list.size(); i++) {
-					Entity e = list.get(i);
-					e.tick();
+		for (int i = 0; i < entities.size(); i++) {
+			Entity e = entities.get(i);
+			
+			int x = ((int) e.getX() >> 5) - chunkX * chunkW;
+			int y = ((int) e.getY() >> 5) - chunkY * chunkH;
+			
+			e.tick();
 
-					int xx = ((int) e.getX() >> 5) - chunkX * chunkW;
-					int yy = ((int) e.getY() >> 5) - chunkY * chunkH;
+			int xx = ((int) e.getX() >> 5) - chunkX * chunkW;
+			int yy = ((int) e.getY() >> 5) - chunkY * chunkH;
 
-					if (xx != x || yy != y) {
-						list.remove(e);
-						world.addEntity(e);
-					}
-				}
+			if (xx != x || yy != y) {
+				System.out.println(e);
+				entities.remove(e);
+				world.addEntity(e);
 			}
 		}
 	}

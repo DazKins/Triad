@@ -80,7 +80,7 @@ public class Image {
 		float ty0 = ((ty + offset) / (float) height);
 		float tx1 = ((tx + tw - offset) / (float) width);
 		float ty1 = ((ty + th - offset) / (float) height);
-
+		
 		bo.bindImage(this);
 		bo.setDepth(z);
 		// if (b != 1)

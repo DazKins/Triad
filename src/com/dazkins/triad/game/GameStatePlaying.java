@@ -4,9 +4,10 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.Triad;
-import com.dazkins.triad.game.entity.EntityTorch;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.entity.mob.EntityZombie;
+import com.dazkins.triad.game.entity.particle.Particle;
+import com.dazkins.triad.game.entity.particle.RainParticleBehaviourController;
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.GuiEquipMenu;
 import com.dazkins.triad.game.gui.GuiInventory;
@@ -17,6 +18,7 @@ import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.WindowInfo;
 import com.dazkins.triad.input.InputHandler;
+import com.dazkins.triad.util.pool.factory.ParticleFactory;
 
 public class GameStatePlaying implements GameState {
 	private Triad triad;
@@ -37,8 +39,13 @@ public class GameStatePlaying implements GameState {
 		changeWorld("TestingMap");
 		player = new EntityPlayer(world, 0, 0, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
-		world.addEntity(new EntityZombie(world, 500, 500));
+		world.addEntity(new EntityZombie(world, 500, 650));
 		world.addEntity(player);
+		for (int i = 0; i < 100; i++) {
+			Particle p = ((ParticleFactory)(Particle.pool.getCurrentFactory())).create(Particle.pool.getEmptyObjectForCreation(), ((float)Math.random() * 16.0f * 32.0f), 16.0f * 128.0f, 10, 30, 0.4f, 0.7f, 1.0f);
+			p.assignPBC(new RainParticleBehaviourController());
+			world.addEntity(p);
+		}
 	}
 	
 	public void tick() {

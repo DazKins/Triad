@@ -1,5 +1,11 @@
 package com.dazkins.triad.game.entity.particle;
 
-public interface ParticleBehaviourController {
-	public void tick();
+public abstract class ParticleBehaviourController {
+	protected Particle operatingParticle;
+	
+	public abstract void tick();
+	
+	public void assignOperatingParticle(Particle p) {
+		operatingParticle = p;
+	}
 }
