@@ -21,7 +21,7 @@ public class GuiStatusBar {
 		this.len = length;
 
 		int len0 = len >> 3;
-		model = new BufferObject(len0 * 4 * 8);
+		model = new BufferObject(len0 * 36);
 		model.start();
 		for (int x = 0; x < len0; x++) {
 			int sx = x == 0 ? 0 : (x == len0 - 1 ? 2 : 1);

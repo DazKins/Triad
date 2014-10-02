@@ -12,6 +12,7 @@ import com.dazkins.triad.file.ListFile;
 import com.dazkins.triad.file.MultiLineDatabaseFile;
 import com.dazkins.triad.file.SingleLineDatabaseFile;
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.particle.Particle;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.math.AABB;
@@ -26,6 +27,8 @@ public class World {
 	private Chunk[] chunks;
 
 	public WorldInfo info;
+	
+	public ArrayList<Particle> particles = new ArrayList<Particle>();
 
 	public static void init() {
 		try {
@@ -98,15 +101,22 @@ public class World {
 		if (e.getX() < 0 || e.getY() < 0)
 			return;
 
-		int cx = (int) ((e.getX() / Tile.tileSize) / Chunk.chunkW);
-		int cy = (int) ((e.getY() / Tile.tileSize) / Chunk.chunkH);
+		if (e instanceof Particle) {
+			particles.add((Particle) e);
+		} else {
+			int cx = (int) ((e.getX() / Tile.tileSize) / Chunk.chunkW);
+			int cy = (int) ((e.getY() / Tile.tileSize) / Chunk.chunkH);
 
-		if (cx >= 0 && cy >= 0 && cx < info.nChunksX && cy < info.nChunksY)
-			chunks[cx + cy * info.nChunksX].addEntity(e);
+			if (cx >= 0 && cy >= 0 && cx < info.nChunksX && cy < info.nChunksY)
+				chunks[cx + cy * info.nChunksX].addEntity(e);
+		}
 	}
 
 	public void render(Camera cam) {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
+		for (Particle p : particles) {
+			p.render();
+		}
 		for (int i = 0; i < chunks.length; i++) {
 			if (!chunks[i].isGenerated()) {
 				chunks[i].generate();
@@ -204,6 +214,9 @@ public class World {
 	public void tick() {
 		for (int i = 0; i < chunks.length; i++) {
 			chunks[i].tick();
+		}
+		for (Particle p : particles) {
+			p.tick();
 		}
 	}
 }

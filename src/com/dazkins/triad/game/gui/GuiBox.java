@@ -28,7 +28,7 @@ public class GuiBox {
 	
 	private void generate() {
 		float z = layer * 0.001f;
-		bo = new BufferObject(288);
+		bo = new BufferObject(350);
 		bo.start();
 		
 		//Top left corner

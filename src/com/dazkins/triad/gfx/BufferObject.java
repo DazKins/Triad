@@ -140,9 +140,10 @@ public class BufferObject {
 			rawBuffer[vertexCount * 8 + 3] = r;
 			rawBuffer[vertexCount * 8 + 4] = g;
 			rawBuffer[vertexCount * 8 + 5] = b;
+			rawBuffer[vertexCount * 8 + 6] = 1.0f;
 
-			rawBuffer[vertexCount * 8 + 6] = u;
-			rawBuffer[vertexCount * 8 + 7] = v;
+			rawBuffer[vertexCount * 8 + 7] = u;
+			rawBuffer[vertexCount * 8 + 8] = v;
 		} else {
 			// TODO reconsider Display List loading
 			GL11.glTexCoord2f(u, v);
@@ -180,14 +181,17 @@ public class BufferObject {
 				GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
+			
 			if (useDepth)
-				GL11.glVertexPointer(3, GL11.GL_FLOAT, 4 * 8, 0);
+				GL11.glVertexPointer(3, GL11.GL_FLOAT, 4 * 9, 0);
 			else
-				GL11.glVertexPointer(2, GL11.GL_FLOAT, 4 * 8, 0);
+				GL11.glVertexPointer(2, GL11.GL_FLOAT, 4 * 9, 0);
+			
 			if (useColors)
-				GL11.glColorPointer(3, GL11.GL_FLOAT, 4 * 8, 4 * 3);
+				GL11.glColorPointer(4, GL11.GL_FLOAT, 4 * 9, 4 * 3);
+			
 			if (useTextures)
-				GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 4 * 8, 4 * 6);
+				GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 4 * 9, 4 * 7);
 
 			GL11.glDrawArrays(GL11.GL_QUADS, 0, vertexCount);
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);

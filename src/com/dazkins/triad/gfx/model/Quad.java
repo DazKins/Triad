@@ -38,7 +38,7 @@ public class Quad {
 	}
 	
 	public void generate() {
-		bufferObject = new BufferObject(32);
+		bufferObject = new BufferObject(36);
 		bufferObject.start();
 		img.renderSprite(bufferObject, x, y, w, h, tx, ty, tw, th, 0.0f, 1.0f);
 		bufferObject.stop();

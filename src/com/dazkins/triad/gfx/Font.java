@@ -14,7 +14,7 @@ public class Font {
 		characterToModel = new HashMap<Character, BufferObject>();
 
 		for (int i = 0; i < letters.length(); i++) {
-			BufferObject b = new BufferObject(4 * 8);
+			BufferObject b = new BufferObject(36);
 			b.start();
 			Image.getImageFromName("font").renderSprite(b, 0, 0, 16, 16, i * 8, 0, 8, 8, 0.0f,1.0f);
 			b.stop();

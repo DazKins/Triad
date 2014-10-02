@@ -42,7 +42,9 @@ public class GameStatePlaying implements GameState {
 		world.addEntity(new EntityZombie(world, 500, 650));
 		world.addEntity(player);
 		for (int i = 0; i < 100; i++) {
-			Particle p = ((ParticleFactory)(Particle.pool.getCurrentFactory())).create(Particle.pool.getEmptyObjectForCreation(), ((float)Math.random() * 16.0f * 32.0f), 16.0f * 128.0f, 10, 30, 0.4f, 0.7f, 1.0f);
+//			Particle p = ((ParticleFactory)(Particle.pool.getCurrentFactory())).create(Particle.pool.getEmptyObjectForCreation(), ((float)Math.random() * 16.0f * 32.0f), 512, 10, 30, 0.4f, 0.7f, 1.0f);
+			Particle p = new Particle();
+			p.create(((float)Math.random() * 16.0f * 32.0f), 512, 10, 30, 0.4f, 0.7f, 1.0f);
 			p.assignPBC(new RainParticleBehaviourController());
 			world.addEntity(p);
 		}

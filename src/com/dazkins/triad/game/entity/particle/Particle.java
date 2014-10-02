@@ -82,7 +82,7 @@ public class Particle extends Entity implements PoolableObject {
 		this.g = g;
 		this.b = b;
 		
-		bo = new BufferObject(32);
+		bo = new BufferObject(36);
 		bo.start();
 		bo.setBrightness(1.0f);
 		bo.setDepth(0.0f);

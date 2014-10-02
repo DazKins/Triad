@@ -1,18 +1,17 @@
 package com.dazkins.triad.game.world;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.LightEmitter;
 import com.dazkins.triad.game.entity.mob.Mob;
+import com.dazkins.triad.game.entity.particle.Particle;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
-import com.dazkins.triad.util.TriadProfiler;
 
 public class Chunk {
 	public static int chunkW = 16, chunkH = 16;
@@ -58,11 +57,11 @@ public class Chunk {
 	public void addEntity(Entity e) {
 		int xx = ((int) e.getX() >> 5) - chunkX * chunkW;
 		int yy = ((int) e.getY() >> 5) - chunkY * chunkH;
-
-		entitiesInTiles[xx + yy * chunkW].add(e);
-
-		if (!entities.contains(e))
-			entities.add(e);
+		
+		if (!entitiesInTiles[xx + yy * chunkW].contains(e))
+			entitiesInTiles[xx + yy * chunkW].add(e);
+		
+		entities.add(e);
 
 		if (e instanceof LightEmitter) {
 			recalculateLighting();
@@ -224,16 +223,15 @@ public class Chunk {
 		for (int i = 0; i < entities.size(); i++) {
 			Entity e = entities.get(i);
 			
-			int x = ((int) e.getX() >> 5) - chunkX * chunkW;
-			int y = ((int) e.getY() >> 5) - chunkY * chunkH;
+			int x = ((int) e.getX() >> 8);
+			int y = ((int) e.getY() >> 8);
 			
 			e.tick();
 
-			int xx = ((int) e.getX() >> 5) - chunkX * chunkW;
-			int yy = ((int) e.getY() >> 5) - chunkY * chunkH;
+			int xx = ((int) e.getX() >> 8);
+			int yy = ((int) e.getY() >> 8);
 
 			if (xx != x || yy != y) {
-				System.out.println(e);
 				entities.remove(e);
 				world.addEntity(e);
 			}
