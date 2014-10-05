@@ -20,7 +20,6 @@ public class BufferObject {
 
 	private boolean useColors;
 	private boolean useTextures;
-	private boolean useDepth;
 
 	// Store the temporary variables to be loaded into the VBO
 	private float x;
@@ -29,6 +28,7 @@ public class BufferObject {
 	private float r;
 	private float g;
 	private float b;
+	private float a;
 	private float u;
 	private float v;
 
@@ -52,6 +52,7 @@ public class BufferObject {
 			if (ID == 0)
 				ID = GL11.glGenLists(1);
 		}
+		a = 1.0f;
 	}
 
 	public void start() {
@@ -64,7 +65,6 @@ public class BufferObject {
 		editing = true;
 		useColors = false;
 		useTextures = false;
-		useDepth = false;
 	}
 
 	public void stop() {
@@ -107,6 +107,10 @@ public class BufferObject {
 		this.g = g;
 		this.b = b;
 	}
+	
+	public void setA(float a) {
+		this.a = a;
+	}
 
 	public void setUV(float u, float v) {
 		if (!useTextures)
@@ -116,7 +120,6 @@ public class BufferObject {
 	}
 
 	public void setDepth(float z) {
-		useDepth = true;
 		this.z = z;
 	}
 
@@ -133,17 +136,17 @@ public class BufferObject {
 
 	public void loadVertexDataIntoArray() {
 		if (useVBO) {
-			rawBuffer[vertexCount * 8] = x;
-			rawBuffer[vertexCount * 8 + 1] = y;
-			rawBuffer[vertexCount * 8 + 2] = z;
+			rawBuffer[vertexCount * 9] = x;
+			rawBuffer[vertexCount * 9 + 1] = y;
+			rawBuffer[vertexCount * 9 + 2] = z;
 			
-			rawBuffer[vertexCount * 8 + 3] = r;
-			rawBuffer[vertexCount * 8 + 4] = g;
-			rawBuffer[vertexCount * 8 + 5] = b;
-			rawBuffer[vertexCount * 8 + 6] = 1.0f;
+			rawBuffer[vertexCount * 9 + 3] = r;
+			rawBuffer[vertexCount * 9 + 4] = g;
+			rawBuffer[vertexCount * 9 + 5] = b;
+			rawBuffer[vertexCount * 9 + 6] = a;
 
-			rawBuffer[vertexCount * 8 + 7] = u;
-			rawBuffer[vertexCount * 8 + 8] = v;
+			rawBuffer[vertexCount * 9 + 7] = u;
+			rawBuffer[vertexCount * 9 + 8] = v;
 		} else {
 			// TODO reconsider Display List loading
 			GL11.glTexCoord2f(u, v);
@@ -182,11 +185,8 @@ public class BufferObject {
 
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
 			
-			if (useDepth)
-				GL11.glVertexPointer(3, GL11.GL_FLOAT, 4 * 9, 0);
-			else
-				GL11.glVertexPointer(2, GL11.GL_FLOAT, 4 * 9, 0);
-			
+			GL11.glVertexPointer(3, GL11.GL_FLOAT, 4 * 9, 0);
+				
 			if (useColors)
 				GL11.glColorPointer(4, GL11.GL_FLOAT, 4 * 9, 4 * 3);
 			
