@@ -61,7 +61,8 @@ public class Chunk {
 		if (!entitiesInTiles[xx + yy * chunkW].contains(e))
 			entitiesInTiles[xx + yy * chunkW].add(e);
 		
-		entities.add(e);
+		if (!entities.contains(e))
+			entities.add(e);
 
 		if (e instanceof LightEmitter) {
 			recalculateLighting();
@@ -223,13 +224,13 @@ public class Chunk {
 		for (int i = 0; i < entities.size(); i++) {
 			Entity e = entities.get(i);
 			
-			int x = ((int) e.getX() >> 8);
-			int y = ((int) e.getY() >> 8);
+			int x = ((int) e.getX() >> 5);
+			int y = ((int) e.getY() >> 5);
 			
 			e.tick();
 
-			int xx = ((int) e.getX() >> 8);
-			int yy = ((int) e.getY() >> 8);
+			int xx = ((int) e.getX() >> 5);
+			int yy = ((int) e.getY() >> 5);
 
 			if (xx != x || yy != y) {
 				entities.remove(e);
