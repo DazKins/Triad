@@ -87,8 +87,8 @@ public abstract class Mob extends Entity {
 	
 	public void renderToPlayerGui(Camera c) {
 		healthBar.updateStatus((float) getHealth() / (float) getMaxHealth());
-		healthBar.render(x - (64 / c.getZoom()), y + 50, Tile.yPosToDepth(y), 1 / c.getZoom());
-		Font.drawString(name, x - ((8 / 1.5f) * 1/ c.getZoom()) * name.length(), y + 50 + (20 / (c.getZoom())), 1.0f, 1.0f, 1.0f, Tile.yPosToDepth(y), (1 / c.getZoom()) / 1.5f);
+		healthBar.render(x - (64 / c.getZoom()), y + 50, 0, 1 / c.getZoom());
+		Font.drawString(name, x - ((8 / 1.5f) * 1/ c.getZoom()) * name.length(), y + 50 + (20 / (c.getZoom())), 1.0f, 1.0f, 1.0f, 0, (1 / c.getZoom()) / 1.5f);
 	}
 	
 	public void render(boolean debug) {

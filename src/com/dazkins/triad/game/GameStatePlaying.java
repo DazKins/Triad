@@ -18,7 +18,7 @@ import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.WindowInfo;
 import com.dazkins.triad.input.InputHandler;
-import com.dazkins.triad.util.pool.factory.ParticleFactory;
+import com.dazkins.triad.util.pool.factory.RainParticleFactory;
 
 public class GameStatePlaying implements GameState {
 	private Triad triad;
@@ -41,16 +41,21 @@ public class GameStatePlaying implements GameState {
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
 		world.addEntity(new EntityZombie(world, 500, 650));
 		world.addEntity(player);
-		for (int i = 0; i < 100; i++) {
-//			Particle p = ((ParticleFactory)(Particle.pool.getCurrentFactory())).create(Particle.pool.getEmptyObjectForCreation(), ((float)Math.random() * 16.0f * 32.0f), 512, 10, 30, 0.4f, 0.7f, 1.0f);
-			Particle p = new Particle();
-			p.create(((float)Math.random() * 16.0f * 32.0f), 512, 10, 30, 0.4f, 0.7f, 1.0f);
-			p.assignPBC(new RainParticleBehaviourController());
+//		for (int i = 0; i < 100; i++) {
+//			Particle p = ((RainParticleFactory)(Particle.particlesPool.getCurrentFactory())).create(Particle.particlesPool.getEmptyObjectForCreation(), ((float)Math.random() * 16.0f * 32.0f), 512, 10, 30, 0.4f, 0.7f, 1.0f);
+//			p.assignPBC(new RainParticleBehaviourController());
+//			world.addEntity(p);
+//		}
+	}
+	int u = 0;
+	public void tick() {
+		for (int i = 0; i < Math.random() * 20; i++) {
+			Particle p = ((RainParticleFactory)(Particle.particlesPool.getCurrentFactory())).create(Particle.particlesPool.getEmptyObjectForCreation(), ((float)Math.random() * 16.0f * 32.0f * world.info.nChunksX), ((float)Math.random() * 16.0f * 32.0f * world.info.nChunksY), 10, 30, 0.4f, 0.7f, 1.0f);
+			RainParticleBehaviourController pbc = new RainParticleBehaviourController();
+			p.assignPBC(pbc);
+			pbc.assignOperatingPool(Particle.particlesPool);
 			world.addEntity(p);
 		}
-	}
-	
-	public void tick() {
 		if (input.isKeyJustDown(Keyboard.KEY_I)) {
 			if (currentlyDisplayedGui instanceof GuiInventory)
 				changeGui(new PlayerGui(triad, input, world, player));

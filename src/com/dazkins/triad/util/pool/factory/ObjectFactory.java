@@ -1,3 +1,3 @@
 package com.dazkins.triad.util.pool.factory;
 
-public interface ObjectFactory { }
+public interface ObjectFactory<T> { }

@@ -114,9 +114,6 @@ public class World {
 
 	public void render(Camera cam) {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		for (Particle p : particles) {
-			p.render();
-		}
 		for (int i = 0; i < chunks.length; i++) {
 			if (!chunks[i].isGenerated()) {
 				chunks[i].generate();
@@ -124,6 +121,9 @@ public class World {
 			if (chunks[i].getBounds().intersects(cam.getViewportBounds())) {
 				chunks[i].render();
 			}
+		}
+		for (Particle p : particles) {
+			p.render();
 		}
 	}
 

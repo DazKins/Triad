@@ -109,6 +109,7 @@ public class BufferObject {
 	}
 	
 	public void setA(float a) {
+		useColors = true;
 		this.a = a;
 	}
 

@@ -3,21 +3,21 @@ package com.dazkins.triad.game.entity.particle;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
-import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.util.pool.ObjectPool;
 import com.dazkins.triad.util.pool.PoolableObject;
 import com.dazkins.triad.util.pool.factory.ParticleFactory;
+import com.dazkins.triad.util.pool.factory.RainParticleFactory;
 
 public class Particle extends Entity implements PoolableObject {
-	public static ObjectPool<Particle> pool;
+	public static ObjectPool<Particle> particlesPool;
 	private static ParticleFactory pf;
 	
 	static {
-		pf = new ParticleFactory();
-		pool = new ObjectPool<Particle>(Particle.class, pf, 1000);
+		pf = new RainParticleFactory();
+		particlesPool = new ObjectPool<Particle>(Particle.class, pf, 10000);
 	}
 	
 	protected float w;
@@ -26,6 +26,8 @@ public class Particle extends Entity implements PoolableObject {
 	protected float r;
 	protected float g;
 	protected float b;
+	
+	protected float a;
 	
 	private int id;
 	
@@ -52,9 +54,11 @@ public class Particle extends Entity implements PoolableObject {
 		GL11.glPushMatrix();
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		
-		GL11.glTranslatef(x, y, Tile.yPosToDepth(y));
+		GL11.glTranslatef(x, y, 0);
 		
+		GL11.glColor4f(r, g, b, a);
 		bo.render();
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glPopMatrix();
@@ -73,7 +77,7 @@ public class Particle extends Entity implements PoolableObject {
 		pbc.tick();
 	}
 
-	public void create(float x, float y, float w, float h, float r, float g, float b) {
+	public void create(float x, float y, float w, float h, float r, float g, float b, float a, float d) {
 		this.x = x;
 		this.y = y;
 		this.w = w;
@@ -81,16 +85,24 @@ public class Particle extends Entity implements PoolableObject {
 		this.r = r;
 		this.g = g;
 		this.b = b;
+		this.a = a;
 		
 		bo = new BufferObject(36);
 		bo.start();
 		bo.setBrightness(1.0f);
-		bo.setDepth(0.0f);
-		bo.setRGB(r, g, b);
+		bo.setDepth(d);
 		bo.addVertex(0, 0);
 		bo.addVertex(w, 0);
 		bo.addVertex(w, h);
 		bo.addVertex(0, h);
 		bo.stop();
+	}
+
+	public float getA() {
+		return a;
+	}
+	
+	public void setA(float a) {
+		this.a = a;
 	}
 }
