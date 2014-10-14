@@ -3,7 +3,6 @@ package com.dazkins.triad.game.world;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
@@ -16,7 +15,8 @@ import com.dazkins.triad.game.entity.particle.Particle;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.math.AABB;
-import com.dazkins.triad.util.TriadProfiler;
+import com.dazkins.triad.util.pool.ObjectPool;
+import com.dazkins.triad.util.pool.factory.RainParticleFactory;
 
 public class World {
 	private static ArrayList<World> worlds;
@@ -29,6 +29,8 @@ public class World {
 	public WorldInfo info;
 	
 	public ArrayList<Particle> particles = new ArrayList<Particle>();
+	
+	private Camera cam;
 
 	public static void init() {
 		try {
@@ -112,7 +114,7 @@ public class World {
 		}
 	}
 
-	public void render(Camera cam) {
+	public void render() {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 		for (int i = 0; i < chunks.length; i++) {
 			if (!chunks[i].isGenerated()) {
@@ -123,11 +125,12 @@ public class World {
 			}
 		}
 		for (Particle p : particles) {
-			p.render();
+			if (p.getAABB().intersects(cam.getViewportBounds()))
+				p.render();
 		}
 	}
 
-	public void renderGrid(Camera cam) {
+	public void renderGrid() {
 		for (int i = 0; i < chunks.length; i++) {
 			if (chunks[i].getBounds().intersects(cam.getViewportBounds())) {
 				chunks[i].renderGrid();
@@ -171,6 +174,10 @@ public class World {
 			return null;
 		return getChunkFromWorldTileCoords(x, y).getEntitiesInTile(x % Chunk.chunkW, y % Chunk.chunkH);
 	}
+	
+	public void assignCamera(Camera c) {
+		this.cam = c;
+	}
 
 	public void sendAttackCommand(int damage, int x, int y) {
 		if (!isValidTilePos(x, y))
@@ -207,16 +214,30 @@ public class World {
 	public void setTile(Tile t, int x, int y) {
 		if (!isValidTilePos(x, y))
 			return;
-		getChunkFromWorldTileCoords(x, y).setTile(t, x % Chunk.chunkW,
-				y % Chunk.chunkH);
+		getChunkFromWorldTileCoords(x, y).setTile(t, x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 
 	public void tick() {
 		for (int i = 0; i < chunks.length; i++) {
 			chunks[i].tick();
 		}
-		for (Particle p : particles) {
-			p.tick();
+		for (int i = 0; i < particles.size(); i++) {
+			if (particles.get(i).needDestruction())
+				particles.remove(particles.get(i));
+			else
+				particles.get(i).tick();
+		}
+		ObjectPool<Particle> op = Particle.particlesPool;
+		RainParticleFactory pf = (RainParticleFactory) op.getCurrentFactory();
+		for (int i = 0; i < chunks.length; i++) {
+			if (Math.random() < 0.01f && cam.getViewportBounds().intersects(chunks[i].getBounds())) {
+				AABB c = chunks[i].getBounds();
+				float xp = (float) (Math.random() * (c.getX1() - c.getX0()) + c.getX0());
+				float yp = (float) (Math.random() * (c.getY1() - c.getY0()) + c.getY0());
+				Particle p = op.getEmptyObjectForCreation();
+				pf.create(p, xp, yp, 10, 30, 0.4f, 0.7f, 1.0f);
+				particles.add(p);
+			}
 		}
 	}
 }

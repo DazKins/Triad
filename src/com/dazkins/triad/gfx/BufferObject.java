@@ -165,8 +165,7 @@ public class BufferObject {
 			this.useTextures = true;
 			img = i;
 		} else if (!useTextures && i != img) {
-			throw new RuntimeException(
-					"Only one texture per buffer is supported!");
+			throw new RuntimeException("Only one texture per buffer is supported!");
 		}
 	}
 

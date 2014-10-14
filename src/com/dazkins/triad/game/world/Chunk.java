@@ -238,35 +238,35 @@ public class Chunk {
 			}
 		}
 	}
-
+	
 	public void renderGrid() {
 		int xx0 = chunkX * Tile.tileSize * chunkW;
 		int yy0 = chunkY * Tile.tileSize * chunkH;
 		int ww0 = chunkW * Tile.tileSize;
 		int hh0 = chunkH * Tile.tileSize;
-
+		
 		GL11.glLineWidth(4);
-
+		
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
-
+		
 		GL11.glColor4f(0.8f, 0.8f, 0.8f, 1.0f);
-
+		
 		GL11.glBegin(GL11.GL_LINES);
 		GL11.glVertex2f(xx0, yy0);
 		GL11.glVertex2f(xx0 + ww0, yy0);
-
+		
 		GL11.glVertex2f(xx0 + ww0, yy0);
 		GL11.glVertex2f(xx0 + ww0, yy0 + hh0);
-
+		
 		GL11.glVertex2f(xx0 + ww0, yy0 + hh0);
 		GL11.glVertex2f(xx0, yy0 + hh0);
-
+		
 		GL11.glVertex2f(xx0, yy0 + hh0);
 		GL11.glVertex2f(xx0, yy0);
 		GL11.glEnd();
-
+		
 		GL11.glLineWidth(0.002f);
-
+		
 		for (int x = 0; x < chunkW; x++) {
 			for (int y = 0; y < chunkH; y++) {
 				int xx1 = xx0 + x * Tile.tileSize;
@@ -281,9 +281,9 @@ public class Chunk {
 				GL11.glEnd();
 			}
 		}
-
+		
 		GL11.glColor4f(1, 1, 1, 1);
-
+		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 

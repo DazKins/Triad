@@ -17,7 +17,7 @@ public class Particle extends Entity implements PoolableObject {
 	
 	static {
 		pf = new RainParticleFactory();
-		particlesPool = new ObjectPool<Particle>(Particle.class, pf, 10000);
+		particlesPool = new ObjectPool<Particle>(Particle.class, pf, 1000);
 	}
 	
 	protected float w;
@@ -69,7 +69,7 @@ public class Particle extends Entity implements PoolableObject {
 	}
 
 	public AABB getAABB() {
-		return null;
+		return new AABB(x, y, x + w, y + h);
 	}
 	
 	public void tick() {
@@ -86,6 +86,7 @@ public class Particle extends Entity implements PoolableObject {
 		this.g = g;
 		this.b = b;
 		this.a = a;
+		lifeTicks = 0;
 		
 		bo = new BufferObject(36);
 		bo.start();
@@ -97,12 +98,18 @@ public class Particle extends Entity implements PoolableObject {
 		bo.addVertex(0, h);
 		bo.stop();
 	}
-
+	
 	public float getA() {
 		return a;
 	}
 	
 	public void setA(float a) {
 		this.a = a;
+	}
+
+	public boolean needDestruction() {
+		if (a <= -1)
+			return true;
+		return false;
 	}
 }

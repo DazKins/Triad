@@ -11,11 +11,9 @@ public class RainParticleBehaviourController extends ParticleBehaviourController
 		
 		if (l > 1 * 60) {
 			a -= 0.01f;
-			if (a <= 0.0f)
-				operatingPool.destroy(operatingParticle);
 		}
 		else {
-			if (a < 0.3f)
+			if (a < 0.5f)
 				a += 0.01f;
 		}
 		

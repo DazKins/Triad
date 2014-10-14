@@ -12,9 +12,9 @@ public class ObjectPool<T> {
 	private Class<? extends PoolableObject> c;
 	private boolean usedIDs[];
 	
-	private ObjectFactory factory;
+	private ObjectFactory<?> factory;
 	
-	public ObjectPool(Class<? extends PoolableObject> c, ObjectFactory of, int ps) {
+	public ObjectPool(Class<? extends PoolableObject> c, ObjectFactory<?> of, int ps) {
 		poolSize = ps;
 		usedIDs = new boolean[ps];
 		this.c = c;
@@ -32,12 +32,14 @@ public class ObjectPool<T> {
 	public T getEmptyObjectForCreation() {
 		int index = -1;
 		for (int i = 0; i < poolSize; i++) {
-			if (usedIDs[i] == false)
+			if (usedIDs[i] == false || ((PoolableObject)objs[i]).needDestruction())
 				index = i;
 		}
 		
-		if (index == -1)
+		if (index == -1) {
+			System.err.println("Tried to obtain a free object but none was found");
 			return null;
+		}
 		
 		usedIDs[index] = true;
 		
@@ -46,7 +48,7 @@ public class ObjectPool<T> {
 		return (T) po;
 	}
 	
-	public ObjectFactory getCurrentFactory() {
+	public ObjectFactory<?> getCurrentFactory() {
 		return factory;
 	}
 	

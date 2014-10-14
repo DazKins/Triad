@@ -171,9 +171,9 @@ public class Application {
 		cam.attachTranslation();
 		
 		if(displayGrid)
-			world.renderGrid(cam);
+			world.renderGrid();
 		
-		world.render(cam);
+		world.render();
 		
 		renderTileSelector();
 		
