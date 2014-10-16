@@ -162,6 +162,14 @@ public class World {
 			return null;
 		return chunks[(x / Chunk.chunkW) + (y / Chunk.chunkH) * info.nChunksX];
 	}
+	
+	public Chunk[] getChunks() {
+		return chunks;
+	}
+	
+	public Camera getCam() {
+		return cam;
+	}
 
 	public ArrayList<Entity> getEntitiesInChunk(int x, int y) {
 		if (x < 0 || y < 0 || x >= info.nChunksX || y >= info.nChunksY)
@@ -183,6 +191,10 @@ public class World {
 		if (!isValidTilePos(x, y))
 			return;
 		getChunkFromWorldTileCoords(x, y).sendAttackCommand(damage, x & 15, y & 15);
+	}
+	
+	public void addParticle(Particle p) {
+		particles.add(p);
 	}
 
 	private boolean isValidTilePos(int x, int y) {
@@ -226,18 +238,6 @@ public class World {
 				particles.remove(particles.get(i));
 			else
 				particles.get(i).tick();
-		}
-		ObjectPool<Particle> op = Particle.particlesPool;
-		RainParticleFactory pf = (RainParticleFactory) op.getCurrentFactory();
-		for (int i = 0; i < chunks.length; i++) {
-			if (Math.random() < 0.01f && cam.getViewportBounds().intersects(chunks[i].getBounds())) {
-				AABB c = chunks[i].getBounds();
-				float xp = (float) (Math.random() * (c.getX1() - c.getX0()) + c.getX0());
-				float yp = (float) (Math.random() * (c.getY1() - c.getY0()) + c.getY0());
-				Particle p = op.getEmptyObjectForCreation();
-				pf.create(p, xp, yp, 10, 30, 0.4f, 0.7f, 1.0f);
-				particles.add(p);
-			}
 		}
 	}
 }
