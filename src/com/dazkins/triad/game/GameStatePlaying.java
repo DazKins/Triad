@@ -15,6 +15,7 @@ import com.dazkins.triad.game.gui.PlayerGui;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
+import com.dazkins.triad.game.world.weather.RainWeather;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.WindowInfo;
 import com.dazkins.triad.input.InputHandler;
@@ -42,6 +43,7 @@ public class GameStatePlaying implements GameState {
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
 		world.addEntity(new EntityZombie(world, 500, 650));
 		world.addEntity(player);
+		world.setWeather(new RainWeather());
 	}
 	
 	public void tick() {

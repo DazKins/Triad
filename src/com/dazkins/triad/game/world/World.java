@@ -13,10 +13,9 @@ import com.dazkins.triad.file.SingleLineDatabaseFile;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.particle.Particle;
 import com.dazkins.triad.game.world.tile.Tile;
+import com.dazkins.triad.game.world.weather.Weather;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.math.AABB;
-import com.dazkins.triad.util.pool.ObjectPool;
-import com.dazkins.triad.util.pool.factory.RainParticleFactory;
 
 public class World {
 	private static ArrayList<World> worlds;
@@ -31,6 +30,8 @@ public class World {
 	public ArrayList<Particle> particles = new ArrayList<Particle>();
 	
 	private Camera cam;
+	
+	private Weather weather;
 
 	public static void init() {
 		try {
@@ -59,6 +60,11 @@ public class World {
 
 	public WorldInfo getInfo() {
 		return info;
+	}
+	
+	public void setWeather(Weather w) {
+		w.init(this);
+		weather = w;
 	}
 
 	public static World loadWorldFromFile(String p) {
@@ -239,5 +245,7 @@ public class World {
 			else
 				particles.get(i).tick();
 		}
+		
+		weather.tick();
 	}
 }

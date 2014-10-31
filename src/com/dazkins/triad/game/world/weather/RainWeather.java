@@ -8,10 +8,6 @@ import com.dazkins.triad.util.pool.ObjectPool;
 import com.dazkins.triad.util.pool.factory.RainParticleFactory;
 
 public class RainWeather extends Weather {
-	public RainWeather(World o) {
-		super(o);
-	}
-
 	public void tick() {
 		Chunk[] c = operatingWorld.getChunks();
 		ObjectPool<Particle> op = Particle.particlesPool;

@@ -5,7 +5,7 @@ import com.dazkins.triad.game.world.World;
 public abstract class Weather {
 	public World operatingWorld;
 	
-	public Weather(World o) {
+	public void init(World o) {
 		operatingWorld = o;
 	}
 	
