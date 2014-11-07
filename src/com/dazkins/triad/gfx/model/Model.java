@@ -8,6 +8,7 @@ import java.util.Map;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.EntityButton;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.gfx.Image;
@@ -31,6 +32,7 @@ public abstract class Model {
 	public static void loadModels() {
 		entityModelMap.put(EntityPlayer.class, new ModelHumanoid(Image.getImageFromName("player")));
 		entityModelMap.put(EntityZombie.class, new ModelZombie(Image.getImageFromName("zombie")));
+		entityModelMap.put(EntityButton.class, new ModelButton(Image.getImageFromName("button")));
 	}
 	
 	public Quad getQuad(int i) {

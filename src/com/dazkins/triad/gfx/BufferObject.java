@@ -173,8 +173,12 @@ public class BufferObject {
 		if (editing)
 			throw new RuntimeException("Buffer is still being edited!");
 
-		if (useTextures)
+		if (useTextures) {
 			img.bindGLTexture();
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+		}
+		else
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
 
 		if (useVBO) {
 			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);

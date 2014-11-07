@@ -43,7 +43,7 @@ public class GameStatePlaying implements GameState {
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
 		world.addEntity(new EntityZombie(world, 500, 650));
 		world.addEntity(player);
-		world.setWeather(new RainWeather());
+		world.setWeather(new RainWeather(10));
 	}
 	
 	public void tick() {

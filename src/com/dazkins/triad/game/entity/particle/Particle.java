@@ -6,6 +6,7 @@ import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.util.Loadable;
 import com.dazkins.triad.util.pool.ObjectPool;
 import com.dazkins.triad.util.pool.PoolableObject;
 import com.dazkins.triad.util.pool.factory.ParticleFactory;
@@ -15,9 +16,9 @@ public class Particle extends Entity implements PoolableObject {
 	public static ObjectPool<Particle> particlesPool;
 	private static ParticleFactory pf;
 	
-	static {
+	public static void setUpParticlePool() {
 		pf = new RainParticleFactory();
-		particlesPool = new ObjectPool<Particle>(Particle.class, pf, 1000);
+		particlesPool = new ObjectPool<Particle>(Particle.class, pf, 3000);
 	}
 	
 	protected float w;
@@ -52,7 +53,6 @@ public class Particle extends Entity implements PoolableObject {
 
 	public void render() {
 		GL11.glPushMatrix();
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		
 		GL11.glTranslatef(x, y, 0);
 		
@@ -60,7 +60,6 @@ public class Particle extends Entity implements PoolableObject {
 		bo.render();
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glPopMatrix();
 	}
 	

@@ -14,8 +14,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.audio.SoundManager;
 import com.dazkins.triad.game.GameState;
-import com.dazkins.triad.game.GameStatePlaying;
-import com.dazkins.triad.game.entity.particle.Particle;
+import com.dazkins.triad.game.GameStateLoading;
 import com.dazkins.triad.game.inventory.item.ItemRegisterer;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -24,8 +23,6 @@ import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.WindowInfo;
 import com.dazkins.triad.gfx.model.Model;
-import com.dazkins.triad.util.pool.ObjectPool;
-import com.dazkins.triad.util.pool.factory.ParticleFactory;
 
 public class Triad {
 	private boolean running;
@@ -75,10 +72,14 @@ public class Triad {
 		
 		ItemRegisterer.register();
 		
-		currentState = new GameStatePlaying();
-		currentState.init(this);
+		setGameState(new GameStateLoading());
 		
 		Font.initializeFont();
+	}
+	
+	public void setGameState(GameState g) {
+		currentState = g;
+		currentState.init(this);
 	}
 	
 	private void initOpenGL() {
