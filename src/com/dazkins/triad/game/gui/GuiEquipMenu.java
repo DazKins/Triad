@@ -1,7 +1,10 @@
 package com.dazkins.triad.game.gui;
 
 import com.dazkins.triad.Triad;
+import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
+import com.dazkins.triad.game.inventory.Inventory;
+import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.input.InputHandler;
 
@@ -17,31 +20,46 @@ public class GuiEquipMenu extends Gui {
 	private int windowWidth = 1200;
 	private int windowHeight = 706;
 	
-	private int windowPosX = winInfo.getW() / 2 - windowWidth / 2;
-	private int windowPosY =  winInfo.getH() / 2 - windowHeight / 2;
+	private int windowPosX;
+	private int windowPosY;
 	
 	private int gridSpacingX = 5;
 	private int gridSpacingY = 5;
 	
-	private EquipmentInventory inv;
+	private Mob mob;
+	private EquipmentInventory einv;
+	private Inventory inv;
 	
-	public GuiEquipMenu(Triad t, InputHandler i, EquipmentInventory ei) {
+	public GuiEquipMenu(Triad t, InputHandler i, Mob m) {
 		super(t, i);
 		
-		inv = ei;
-		
-		mainBox = new GuiBox(windowPosX, windowPosY, windowWidth, windowHeight, - 1, false);
-		
-		headSlot = new GuiBox(windowPosX + 200, windowPosY + windowHeight - 200, 128, 128, 0, true);
-		bodySlot = new GuiBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 - gridSpacingY, 128, 128, 0, true);
-		legSlot = new GuiBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 * 2 - gridSpacingY * 2, 128, 128, 0, true);
-		footSlot = new GuiBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 * 3 - gridSpacingY * 3, 128, 128, 0, true);
-		
-		weaponSlot = new GuiBox(windowPosX + 200 - 128 - gridSpacingX, windowPosY + windowHeight - 200 - 128 - gridSpacingY, 128, 128, 0, true);
+		mob = m;
+		einv = m.getEquipmentInventory();
+		inv = m.getInventory();
+
+		setupGraphics();
+	}
+	
+	public void unequip(int i) {
+		inv.addItemStack(einv.getItemStack(i));
+		einv.removeItemStack(i);
 	}
 
 	public void tick() {
+		super.tick();
 		
+		if (input.mouse2JustDown) {
+			if (headSlot.intersects(input.mouseX, input.mouseY))
+				unequip(EquipmentInventory.HEAD);
+			if (bodySlot.intersects(input.mouseX, input.mouseY))
+				unequip(EquipmentInventory.BODY);
+			if (legSlot.intersects(input.mouseX, input.mouseY))
+				unequip(EquipmentInventory.LEGS);
+			if (weaponSlot.intersects(input.mouseX, input.mouseY))
+				unequip(EquipmentInventory.WEAPON);
+			if (footSlot.intersects(input.mouseX, input.mouseY))
+				unequip(EquipmentInventory.FEET);
+		}
 	}
 
 	public void render(Camera cam) {
@@ -52,10 +70,42 @@ public class GuiEquipMenu extends Gui {
 		weaponSlot.render();
 		footSlot.render();
 		
-		inv.getItemStack(EquipmentInventory.Type.HEAD.ordinal()).getItemType().renderIcon(windowPosX + 200, windowPosY + windowHeight - 200, 3, 4);
+		ItemStack headItem = einv.getItemStack(EquipmentInventory.HEAD);
+		ItemStack bodyItem = einv.getItemStack(EquipmentInventory.BODY);
+		ItemStack legItem = einv.getItemStack(EquipmentInventory.LEGS);
+		ItemStack footItem = einv.getItemStack(EquipmentInventory.FEET);
+		
+		if (headItem != null)
+			headItem.getItemType().renderIcon(windowPosX + 200, windowPosY + windowHeight - 200, 3, 4);
+		if (bodyItem != null)
+			bodyItem.getItemType().renderIcon(windowPosX + 200, windowPosY + windowHeight - 200 - 128 - gridSpacingY, 3, 4);
+		if (legItem != null)
+			legItem.getItemType().renderIcon(windowPosX + 200, windowPosY + windowHeight - 200 - 128 * 2 - gridSpacingY * 2, 3, 4);
+		if (footItem != null)
+			footItem.getItemType().renderIcon(windowPosX + 200, windowPosY + windowHeight - 200 - 128 * 3 - gridSpacingY * 3, 3, 4);
+		
+		ItemStack weaponItem = einv.getItemStack(EquipmentInventory.WEAPON);
+		
+		if (weaponItem != null)
+			weaponItem.getItemType().renderIcon(windowPosX + 200 - 128 - gridSpacingX, windowPosY + windowHeight - 200 - 128 - gridSpacingY, 3, 4);
+			
 	}
 
 	public void onExit() {
 		
+	}
+
+	public void setupGraphics() {
+		windowPosX = winInfo.getW() / 2 - windowWidth / 2;
+		windowPosY =  winInfo.getH() / 2 - windowHeight / 2;
+		
+		mainBox = new GuiBox(windowPosX, windowPosY, windowWidth, windowHeight, - 1, false);
+		
+		headSlot = new GuiBox(windowPosX + 200, windowPosY + windowHeight - 200, 128, 128, 0, true);
+		bodySlot = new GuiBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 - gridSpacingY, 128, 128, 0, true);
+		legSlot = new GuiBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 * 2 - gridSpacingY * 2, 128, 128, 0, true);
+		footSlot = new GuiBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 * 3 - gridSpacingY * 3, 128, 128, 0, true);
+		
+		weaponSlot = new GuiBox(windowPosX + 200 - 128 - gridSpacingX, windowPosY + windowHeight - 200 - 128 - gridSpacingY, 128, 128, 0, true);
 	}
 }

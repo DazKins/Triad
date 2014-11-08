@@ -31,28 +31,32 @@ public class Image {
 	public int getHeight() {
 		return height;
 	}
+	
+	public static void processAndLoadFile(File f) {
+		try {
+			if (f.isFile()) {
+				if (f.getAbsolutePath().endsWith(".png")) {
+					Image im = new Image(f);
+					nameToImage.put(f.getName().replace(".png", ""), im);
+				}
+			} else if (f.isDirectory()) {
+				File[] files = f.listFiles();
+				for (int i = 0; i < files.length; i++)
+					processAndLoadFile(files[i]);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static boolean init() {
 		try {
 			String imageFolder = "/art";
 			File imageDir = null;
-			try {
-				imageDir = new File(Image.class.getResource(imageFolder)
-						.toURI());
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
-
-			File[] foundFiles = imageDir.listFiles();
-
-			for (int i = 0; i < foundFiles.length; i++) {
-				File f = foundFiles[i];
-				if (f.getAbsolutePath().endsWith(".png")) {
-					Image im = new Image(f);
-					nameToImage.put(f.getName().replace(".png", ""), im);
-				}
-			}
-		} catch (IOException e) {
+			imageDir = new File(Image.class.getResource(imageFolder).toURI());
+			
+			processAndLoadFile(imageDir);
+		} catch (Exception e) {
 			return false;
 		}
 		return true;
@@ -131,8 +135,7 @@ public class Image {
 				GL11.GL_NEAREST);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER,
 				GL11.GL_NEAREST);
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height,
-				0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, b);
+		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, b);
 
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 	}

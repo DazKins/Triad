@@ -7,7 +7,7 @@ import com.dazkins.triad.game.inventory.item.ItemStack;
 public class Inventory {
 	public int width, height;
 	
-	private ItemStack[] items;
+	protected ItemStack[] items;
 	
 	public Inventory(int width, int height) {
 		this.height = height;
@@ -19,24 +19,28 @@ public class Inventory {
 		return items[x + y * width];
 	}
 	
-	//For use in the Equipment Inventory
 	public ItemStack getItemStack(int i) {
 		return items[i];
 	}
 	
-	public void addItemStack(ItemStack is) {
+	public void removeItemStack(int i) {
+		items[i] = null;
+	}
+	
+	public boolean addItemStack(ItemStack is) {
 		if (is != null) {
 			if (is.getItemType() != null) {
 				for (int i = 0; i < items.length; i++) {
 					if (items[i] == null) {
 						items[i] = is;
-						break;
+						return true;
 					}
 				}
 			} else {
 				System.err.println("Item type added was null!");
 			}
 		}
+		return false;
 	}
 	
 	public void addItemStack(ItemStack is, int x, int y) {
@@ -46,11 +50,15 @@ public class Inventory {
 			System.err.println("Item type added was null!");
 	}
 	
-	public void addItemStack(ItemStack is, int i) {
-		if (is.getItemType() != null)
+	public boolean addItemStack(ItemStack is, int i) {
+		if (is.getItemType() != null) {
 			items[i] = is;
-		else
+			return true;
+		}
+		else {
 			System.err.println("Item type added was null!");
+			return false;
+		}
 	}
 	
 	public void removeItemStack(int x, int y) {

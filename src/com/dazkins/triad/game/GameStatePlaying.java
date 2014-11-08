@@ -41,7 +41,7 @@ public class GameStatePlaying implements GameState {
 		changeWorld("TestingMap");
 		player = new EntityPlayer(world, 0, 0, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
-		world.addEntity(new EntityZombie(world, 500, 650));
+		world.addEntity(new EntityZombie(world, 500, 350));
 		world.addEntity(player);
 		world.setWeather(new RainWeather(10));
 	}
@@ -51,13 +51,13 @@ public class GameStatePlaying implements GameState {
 			if (currentlyDisplayedGui instanceof GuiInventory)
 				changeGui(new PlayerGui(triad, input, world, player));
 			else
-				changeGui(new GuiInventory(triad, input, player.getInventory()));
+				changeGui(new GuiInventory(triad, input, player));
 		}
 		if (input.isKeyJustDown(Keyboard.KEY_E)) {
 			if (currentlyDisplayedGui instanceof GuiEquipMenu)
 				changeGui(new PlayerGui(triad, input, world, player));
 			else
-				changeGui(new GuiEquipMenu(triad, input, player.getEquipmentInventory()));
+				changeGui(new GuiEquipMenu(triad, input, player));
 		}
 		if (input.isKeyJustDown(Keyboard.KEY_ESCAPE)) {
 			changeGui(new PlayerGui(triad, input, world, player));

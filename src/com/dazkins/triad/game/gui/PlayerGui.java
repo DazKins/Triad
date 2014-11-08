@@ -1,6 +1,7 @@
 package com.dazkins.triad.game.gui;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +38,11 @@ public class PlayerGui extends Gui {
 		GL11.glPushMatrix();
 		cam.attachTranslation();
 		ArrayList<Entity> entities = world.getEntitiesInAABB(cam.getViewportBounds());
+		entities.sort(new Comparator<Entity>() {
+			public int compare(Entity o1, Entity o2) {
+				return (o1.getY() > o2.getY()) ? -1 : 1;
+			}
+		});
 		for (int i = 0; i < entities.size(); i++) {
 			Entity e = entities.get(i);
 			if (e instanceof Mob) {
@@ -48,6 +54,10 @@ public class PlayerGui extends Gui {
 	}
 
 	public void onExit() {
+		
+	}
+
+	public void setupGraphics() {
 		
 	}
 }

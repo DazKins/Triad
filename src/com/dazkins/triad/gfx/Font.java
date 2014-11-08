@@ -40,8 +40,7 @@ public class Font {
 		}
 	}
 
-	public static void drawStringWithShadow(String s, float xp, float yp, float r, float g, float b, int layer, float scale) {
-		float z = layer * 0.1f;
+	public static void drawStringWithShadow(String s, float xp, float yp, float r, float g, float b, float z, float scale) {
 		String lower = s.toLowerCase();
 
 		for (int x = 0; x < lower.length(); x++) {

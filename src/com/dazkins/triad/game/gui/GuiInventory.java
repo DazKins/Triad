@@ -1,16 +1,18 @@
 package  com.dazkins.triad.game.gui;
 
 import com.dazkins.triad.Triad;
+import com.dazkins.triad.game.entity.mob.Mob;
+import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.ItemStack;
-import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Font;
-import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.input.InputHandler;
 
 public class GuiInventory extends Gui {
+	private Mob mob;
 	private Inventory inv;
+	private EquipmentInventory einv;
 	
 	private GuiBox mainBox;
 	
@@ -39,9 +41,12 @@ public class GuiInventory extends Gui {
 	
 	private ItemStack selectedItem;
 	
-	public GuiInventory(Triad t, InputHandler i, Inventory in) {
+	public GuiInventory(Triad t, InputHandler i, Mob m) {
 		super(t, i);
-		inv = in;
+		mob = m;
+		inv = m.getInventory();
+		einv = m.getEquipmentInventory();
+		
 		setupGraphics();
 	}
 	
@@ -63,37 +68,35 @@ public class GuiInventory extends Gui {
 	}
 
 	public void tick() {
-		if (input.mouseX >= windowPosX + offsetX && input.mouseY >= windowPosY + offsetY && input.mouseX <= windowPosX + offsetX + 10 * (64 + gridSpacingX) && input.mouseY <= windowPosY + offsetY + 10 * (64 + gridSpacingY)) {
-			int mouseSlotX = ((input.mouseX - offsetX - windowPosX) / (64 + gridSpacingX));
-			int mouseSlotY = ((input.mouseY - offsetY - windowPosY) / (64 + gridSpacingY));
-				if (mouseSlotX >= 0 && mouseSlotY >= 0 && mouseSlotX < inv.width && mouseSlotY < inv.height)
-					hoveredItem = inv.getItemStack(mouseSlotX, mouseSlotY);
-				else
+		super.tick();
+		
+		for (int i = 0; i < slotSheet.length; i++) {
+			if (slotSheet[i].intersects(input.mouseX, input.mouseY)) {
+				if (input.mouse1JustDown) {
+					if (hoveredItem != null && selectedItem == null) {
+						inv.removeItemStack(i);
+						selectedItem = hoveredItem;
+					}
+					else if (selectedItem != null && hoveredItem == null) {
+						inv.addItemStack(selectedItem, i);
+						selectedItem = hoveredItem;
+					}
+					else if(selectedItem != null && hoveredItem != null) {
+						inv.removeItemStack(i);
+						ItemStack oldSI = selectedItem;
+						selectedItem = hoveredItem;
+						inv.addItemStack(oldSI, i);
+					}
+				}
+				else if (input.mouse2JustDown) {
+					if(einv.addItemStack(inv.getItemStack(i)))
+						inv.removeItemStack(i);
+				}
+				else {
 					hoveredItem = null;
-			
-	
-			if (input.mouse1JustDown) {
-				if (hoveredItem != null && selectedItem == null) {
-					inv.removeItemStack(mouseSlotX, mouseSlotY);
-					selectedItem = hoveredItem;
-				}
-				else if (selectedItem != null && hoveredItem == null) {
-					inv.addItemStack(selectedItem, mouseSlotX, mouseSlotY);
-					selectedItem = null;
-				}
-				else if(selectedItem != null && hoveredItem != null) {
-					inv.removeItemStack(mouseSlotX, mouseSlotY);
-					ItemStack oldSI = selectedItem;
-					selectedItem = hoveredItem;
-					inv.addItemStack(oldSI, mouseSlotX, mouseSlotY);
+					hoveredItem = inv.getItemStack(i);
 				}
 			}
-		} else {
-			hoveredItem = null;
-		}
-		
-		if (triad.wasRescaled()) {
-			setupGraphics();
 		}
 	}
 

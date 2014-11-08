@@ -16,9 +16,14 @@ public abstract class Gui {
 		winInfo = t.winInfo;
 	}
 	
-	public abstract void tick();
+	public void tick() {
+		if (triad.wasRescaled())
+			setupGraphics();
+	}
 	
 	public abstract void render(Camera cam);
 	
 	public abstract void onExit();
+	
+	public abstract void setupGraphics();
 }

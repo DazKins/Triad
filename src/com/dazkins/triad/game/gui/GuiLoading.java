@@ -46,4 +46,8 @@ public class GuiLoading extends Gui {
 	public void onExit() {
 		
 	}
+
+	public void setupGraphics() {
+		
+	}
 }

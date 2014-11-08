@@ -26,6 +26,10 @@ public class GuiBox {
 		generate();
 	}
 	
+	public boolean intersects(float x, float y) {
+		return x > this.x && y > this.y && x < this.x + width && y < this.y + height;
+	}
+	
 	private void generate() {
 		float z = layer * 0.001f;
 		bo = new BufferObject(350);

@@ -28,10 +28,13 @@ public class EntityPlayer extends Mob {
 		super(w, x, y, "player", 1000);
 		this.input = input;
 		this.inv = new Inventory(10, 10);
-//		for (int i = 0; i < 100; i++)
-			inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testsword"), 5));
-			inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testdagger"), 6));
-		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testHelmet"), 1), EquipmentInventory.Type.HEAD.ordinal());
+		inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testsword"), 1));
+		inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testdagger"), 1));
+		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testHelmet"), 1), EquipmentInventory.HEAD);
+		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testChest"), 1), EquipmentInventory.BODY);
+		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testLeg"), 1), EquipmentInventory.LEGS);
+		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testFoot"), 1), EquipmentInventory.FEET);
+		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testDagger"), 1), EquipmentInventory.WEAPON);
 	}
 	
 	public int getMaxHealth() {

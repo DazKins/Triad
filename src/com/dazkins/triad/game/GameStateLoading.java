@@ -26,7 +26,6 @@ public class GameStateLoading implements GameState {
 	}
 
 	public void tick() {
-		System.out.println(loader.getPercent());
 		if (loader.getPercent() >= 1.0f)
 			triad.setGameState(new GameStatePlaying());
 	}
