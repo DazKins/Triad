@@ -30,11 +30,11 @@ public class EntityPlayer extends Mob {
 		this.inv = new Inventory(10, 10);
 		inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testsword"), 1));
 		inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testdagger"), 1));
-		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testHelmet"), 1), EquipmentInventory.HEAD);
-		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testChest"), 1), EquipmentInventory.BODY);
-		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testLeg"), 1), EquipmentInventory.LEGS);
-		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testFoot"), 1), EquipmentInventory.FEET);
-		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testDagger"), 1), EquipmentInventory.WEAPON);
+		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testHelmet"), 1));
+		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testChest"), 1));
+		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testLegs"), 1));
+		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testFeet"), 1));
+		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testDagger"), 1));
 	}
 	
 	public int getMaxHealth() {

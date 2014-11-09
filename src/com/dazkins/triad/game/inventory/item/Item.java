@@ -11,22 +11,17 @@ public class Item {
 	protected String name;
 	protected int ID;
 	
-	private int tx;
-	private int ty;
-	
 	private BufferObject icon;
 	
-	public Item(int tx, int ty, String name) {
+	public Item(String name) {
 		this.name = name;
-		this.tx = tx;
-		this.ty = ty;
 		loadImageIconModel();
 	}
 
 	private void loadImageIconModel() {
 		icon = new BufferObject(36);
 		icon.start();
-		Image.getImageFromName("items").renderSprite(icon, 0, 0, 32, 32, tx * 32, ty * 32, 32, 32, 0.0f, 1.0f);
+		Image.getImageFromName("item_" + name).renderSprite(icon, 0, 0, 32, 32, 0, 0, 32, 32, 0.0f, 1.0f);
 		icon.stop();
 	}
 	
