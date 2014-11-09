@@ -44,12 +44,14 @@ public class Chunk {
 		tiles = new byte[chunkW * chunkH];
 	}
 
-	public void sendAttackCommand(int damage, int x, int y) {
+	public void sendAttackCommand(int damage, int x, int y, Entity e) {
 		ArrayList<Entity> l = entitiesInTiles[x + y * chunkW];
-		for (Entity e : l) {
-			if (e instanceof Mob) {
-				Mob m = (Mob) e;
-				m.hurt(damage);
+		for (Entity e0 : l) {
+			if (e0 != e) {
+				if (e instanceof Mob) {
+					Mob m = (Mob) e0;
+					m.hurt(damage);
+				}
 			}
 		}
 	}

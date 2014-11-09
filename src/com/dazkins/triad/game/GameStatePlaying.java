@@ -4,10 +4,9 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.Triad;
+import com.dazkins.triad.game.entity.EntityButton;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.entity.mob.EntityZombie;
-import com.dazkins.triad.game.entity.particle.Particle;
-import com.dazkins.triad.game.entity.particle.RainParticleBehaviourController;
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.GuiEquipMenu;
 import com.dazkins.triad.game.gui.GuiInventory;
@@ -19,8 +18,6 @@ import com.dazkins.triad.game.world.weather.RainWeather;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.WindowInfo;
 import com.dazkins.triad.input.InputHandler;
-import com.dazkins.triad.math.AABB;
-import com.dazkins.triad.util.pool.factory.RainParticleFactory;
 
 public class GameStatePlaying implements GameState {
 	private Triad triad;
@@ -44,6 +41,9 @@ public class GameStatePlaying implements GameState {
 		world.addEntity(new EntityZombie(world, 500, 350));
 		world.addEntity(player);
 		world.setWeather(new RainWeather(10));
+		
+		EntityButton b = new EntityButton(world, 64.0f, 64.0f);
+		world.addEntity(b);
 	}
 	
 	public void tick() {

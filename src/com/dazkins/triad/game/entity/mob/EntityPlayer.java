@@ -24,7 +24,6 @@ public class EntityPlayer extends Mob {
 	private int attackCooldownCounter;
 	
 	public EntityPlayer(World w, float x, float y, InputHandler input) {
-		
 		super(w, x, y, "player", 1000);
 		this.input = input;
 		this.inv = new Inventory(10, 10);
@@ -61,13 +60,13 @@ public class EntityPlayer extends Mob {
 			int xx = (int) x >> 5;
 			int yy = (int) y >> 5;
 			if (this.getFacing() == Facing.UP)
-				world.sendAttackCommand(10, xx, yy + 1);
+				world.sendAttackCommand(10, xx, yy + 1, this);
 			if (this.getFacing() == Facing.DOWN)
-				world.sendAttackCommand(10, xx, yy - 1);
+				world.sendAttackCommand(10, xx, yy - 1, this);
 			if (this.getFacing() == Facing.LEFT)
-				world.sendAttackCommand(10, xx - 1, yy);
+				world.sendAttackCommand(10, xx - 1, yy, this);
 			if (this.getFacing() == Facing.RIGHT)
-				world.sendAttackCommand(10, xx + 1, yy);
+				world.sendAttackCommand(10, xx + 1, yy, this);
 			attackCooldownCounter = attackCooldown;
 		}
 		

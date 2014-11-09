@@ -193,10 +193,10 @@ public class World {
 		this.cam = c;
 	}
 
-	public void sendAttackCommand(int damage, int x, int y) {
+	public void sendAttackCommand(int damage, int x, int y, Entity e) {
 		if (!isValidTilePos(x, y))
 			return;
-		getChunkFromWorldTileCoords(x, y).sendAttackCommand(damage, x & 15, y & 15);
+		getChunkFromWorldTileCoords(x, y).sendAttackCommand(damage, x & 15, y & 15, e);
 	}
 	
 	public void addParticle(Particle p) {
