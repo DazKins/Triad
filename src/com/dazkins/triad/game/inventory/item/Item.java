@@ -10,11 +10,13 @@ import com.dazkins.triad.gfx.Image;
 public class Item {
 	protected String name;
 	protected int ID;
+	protected boolean stackable;
 	
 	private BufferObject icon;
 	
-	public Item(String name) {
+	public Item(String name, boolean s) {
 		this.name = name;
+		this.stackable = s;
 		loadImageIconModel();
 	}
 	
@@ -31,8 +33,8 @@ public class Item {
 				Item type = is.getItemType();
 				ItemStack stack = new ItemStack(type, 1);
 				EntityItemStack eStack = new EntityItemStack(w, x, y, stack);
-				eStack.setXA((float)Math.random() * speed);
-				eStack.setYA((float)Math.random() * speed);
+				eStack.setXA(((float)Math.random() - 0.5f) * speed);
+				eStack.setYA(((float)Math.random() - 0.5f) * speed);
 				w.addEntity(eStack);
 			}
 		}
@@ -47,6 +49,10 @@ public class Item {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public boolean isStackable() {
+		return stackable;
 	}
 	
 	public void renderIcon(float x, float y, float z, float scale) {

@@ -47,8 +47,6 @@ public class GameStatePlaying implements GameState {
 		world.assignCamera(cam);
 		world.setWeather(new RainWeather(10));
 		
-		Item.dropItemStack(world, 50, 50, new ItemStack(ItemRegisterer.getItemByName("testHelmet"), 1));
-		
 		EntityButton b = new EntityButton(world, 64.0f, 64.0f);
 		world.addEntity(b);
 	}

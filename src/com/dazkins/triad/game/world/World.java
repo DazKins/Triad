@@ -122,7 +122,7 @@ public class World {
 
 	public void render() {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		for (int i = 0; i < chunks.length; i++) {
+		for (int i = chunks.length - 1; i >= 0; i--) {
 			if (!chunks[i].isGenerated()) {
 				chunks[i].generate();
 			}

@@ -50,7 +50,6 @@ public class EntityItemStack extends Entity {
 	}
 	
 	protected void onCollide(Entity e) {
-		System.out.println(e);
 		if (e instanceof EntityPlayer) {
 			EntityPlayer ep = (EntityPlayer) e;
 			ep.getInventory().addItemStack(is);

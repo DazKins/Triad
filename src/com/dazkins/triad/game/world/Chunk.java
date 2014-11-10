@@ -212,10 +212,10 @@ public class Chunk {
 	}
 
 	public AABB getBounds() {
-		return new AABB(chunkX * Tile.tileSize * chunkW, chunkY * Tile.tileSize
-				* chunkH, chunkX * Tile.tileSize * chunkW
-				+ (chunkW * Tile.tileSize), chunkY * Tile.tileSize * chunkH
-				+ (chunkH * Tile.tileSize));
+		return new AABB(chunkX * Tile.tileSize * chunkW,
+				chunkY * Tile.tileSize * chunkH,
+				chunkX * Tile.tileSize * chunkW + (chunkW * Tile.tileSize),
+				chunkY * Tile.tileSize * chunkH + (chunkH * Tile.tileSize));
 	}
 
 	public boolean isGenerated() {

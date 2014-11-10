@@ -28,10 +28,11 @@ public class ItemRegisterer {
 		for (int i = 0; i < mainDBS.getLineCount(); i++) {
 			String type = mainDBS.getString("ITEM_TYPE", i);
 			String name = mainDBS.getString("NAME", i);
+			boolean stackable = mainDBS.getBoolean("STACKS", i);
 			Item itemToAdd = null;
 			
 			if (type == "null")
-				itemToAdd = new Item(name);
+				itemToAdd = new Item(name, true);
 			else if (type.equals(ItemWeapon.itemTypeIdentifier)) {
 				int damage = mainDBS.getInt("DAMAGE", i);
 				itemToAdd = new ItemWeapon(name, damage);

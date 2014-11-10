@@ -25,7 +25,7 @@ public class EntityZombie extends Mob {
 	public void tick() {
 		super.tick();
 		
-		if (Math.random() * 1000 > 999)
+		if (Math.random() * 100 > 99)
 			sxa = -sxa;
 		
 		move(sxa, 0);
@@ -35,8 +35,9 @@ public class EntityZombie extends Mob {
 	}
 	
 	public ItemStack[] getItemsToDrop() {
-		ItemStack[] stacks = new ItemStack[1];
-		stacks[0] = new ItemStack(ItemRegisterer.getItemByName("testHelmet"), 1);
+		ItemStack[] stacks = new ItemStack[10];
+		for (int i = 0; i < 10; i++)
+			stacks[i] = new ItemStack(ItemRegisterer.getItemByName("testHelmet"), 1);
 		return stacks;
 	}
 
