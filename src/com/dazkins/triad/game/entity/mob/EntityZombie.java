@@ -25,7 +25,7 @@ public class EntityZombie extends Mob {
 	public void tick() {
 		super.tick();
 		
-		if (Math.random() * 100 > 99)
+		if (Math.random() * 1000 > 999)
 			sxa = -sxa;
 		
 		move(sxa, 0);

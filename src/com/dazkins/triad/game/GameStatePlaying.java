@@ -40,6 +40,8 @@ public class GameStatePlaying implements GameState {
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
 		world.addEntity(new EntityZombie(world, 500, 350));
 		world.addEntity(player);
+		
+		world.assignCamera(cam);
 		world.setWeather(new RainWeather(10));
 		
 		EntityButton b = new EntityButton(world, 64.0f, 64.0f);

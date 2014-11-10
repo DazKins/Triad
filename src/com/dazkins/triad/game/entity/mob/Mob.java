@@ -1,9 +1,12 @@
 package com.dazkins.triad.game.entity.mob;
 
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.EntityItemStack;
 import com.dazkins.triad.game.gui.GuiStatusBar;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
+import com.dazkins.triad.game.inventory.item.ItemRegisterer;
+import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -46,6 +49,19 @@ public abstract class Mob extends Entity {
 
 	public void hurt(int damage) {
 		health -= damage;
+	}
+	
+	public void tick() {
+		super.tick();
+		
+		if (health <= 0) {
+			kill();
+		}
+	}
+	
+	public void kill() {
+		world.addEntity(new EntityItemStack(world, x, y, new ItemStack(ItemRegisterer.getItemByIndex(0), 1)));
+		remove();
 	}
 
 	public void move(float xa, float ya) {

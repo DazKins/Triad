@@ -226,6 +226,11 @@ public class Chunk {
 		for (int i = 0; i < entities.size(); i++) {
 			Entity e = entities.get(i);
 			
+			if (e.needsToBeRemoved()) {
+				entities.remove(e);
+				continue;
+			}
+			
 			int x = ((int) e.getX() >> 5);
 			int y = ((int) e.getY() >> 5);
 			
