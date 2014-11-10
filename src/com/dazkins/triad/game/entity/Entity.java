@@ -1,5 +1,6 @@
 package com.dazkins.triad.game.entity;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -99,15 +100,33 @@ public abstract class Entity {
 		return xa;
 	}
 	
+	public void setXA(float a) {
+		xa = a;
+	}
+	
 	public float getYA() {
 		return ya;
 	}
 	
+	public void setYA(float a) {
+		ya = a;
+	}
+	
 	public void move(float xa, float ya) {
+		if (this.getAABB() != null) {
+			for (Entity e : world.getEntitiesInAABB(this.getAABB())) {
+				if (e != this) {
+					this.onCollide(e);
+				}
+			}
+		}
+		
 		x += xa;
 		y += ya;
 	}
 	
+	protected void onCollide(Entity e) { }
+
 	public void tick() {
 		lifeTicks++;
 	}
@@ -117,4 +136,12 @@ public abstract class Entity {
 	}
 	
 	public abstract AABB getAABB();
+	
+	public static SortByY ySorter = new SortByY();
+	
+	public static class SortByY implements Comparator<Entity> {
+		public int compare(Entity o1, Entity o2) {
+			return (o1.getY() > o2.getY()) ? -1 : 1;
+		}
+	}
 }

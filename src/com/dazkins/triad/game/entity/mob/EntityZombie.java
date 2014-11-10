@@ -1,8 +1,8 @@
 package com.dazkins.triad.game.entity.mob;
 
+import com.dazkins.triad.game.inventory.item.ItemRegisterer;
+import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.gfx.Font;
-import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.gfx.model.animation.AnimationZombieWalking;
 import com.dazkins.triad.math.AABB;
 
@@ -32,6 +32,12 @@ public class EntityZombie extends Mob {
 		
 		if (!this.getModel().hasAnimation())
 			this.getModel().setCurrentAnimation(new AnimationZombieWalking());
+	}
+	
+	public ItemStack[] getItemsToDrop() {
+		ItemStack[] stacks = new ItemStack[1];
+		stacks[0] = new ItemStack(ItemRegisterer.getItemByName("testHelmet"), 1);
+		return stacks;
 	}
 
 	public void render() {

@@ -48,7 +48,7 @@ public class Chunk {
 		ArrayList<Entity> l = entitiesInTiles[x + y * chunkW];
 		for (Entity e0 : l) {
 			if (e0 != e) {
-				if (e instanceof Mob) {
+				if (e0 instanceof Mob) {
 					Mob m = (Mob) e0;
 					m.hurt(damage);
 				}
@@ -244,6 +244,7 @@ public class Chunk {
 				world.addEntity(e);
 			}
 		}
+		entities.sort(Entity.ySorter);
 	}
 	
 	public void renderGrid() {

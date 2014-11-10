@@ -5,6 +5,7 @@ import com.dazkins.triad.game.entity.EntityItemStack;
 import com.dazkins.triad.game.gui.GuiStatusBar;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
+import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemRegisterer;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.Chunk;
@@ -59,8 +60,19 @@ public abstract class Mob extends Entity {
 		}
 	}
 	
+	public ItemStack[] getItemsToDrop() {
+		return null;
+	}
+	
+	public void onDeath() {
+		ItemStack[] stacks = getItemsToDrop();
+		for (int i = 0; i < stacks.length; i++) {
+			Item.dropItemStack(world, x, y, stacks[i]);
+		}
+	}
+	
 	public void kill() {
-		world.addEntity(new EntityItemStack(world, x, y, new ItemStack(ItemRegisterer.getItemByIndex(0), 1)));
+		onDeath();
 		remove();
 	}
 

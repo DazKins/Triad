@@ -11,6 +11,9 @@ import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.GuiEquipMenu;
 import com.dazkins.triad.game.gui.GuiInventory;
 import com.dazkins.triad.game.gui.PlayerGui;
+import com.dazkins.triad.game.inventory.item.Item;
+import com.dazkins.triad.game.inventory.item.ItemRegisterer;
+import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -43,6 +46,8 @@ public class GameStatePlaying implements GameState {
 		
 		world.assignCamera(cam);
 		world.setWeather(new RainWeather(10));
+		
+		Item.dropItemStack(world, 50, 50, new ItemStack(ItemRegisterer.getItemByName("testHelmet"), 1));
 		
 		EntityButton b = new EntityButton(world, 64.0f, 64.0f);
 		world.addEntity(b);
