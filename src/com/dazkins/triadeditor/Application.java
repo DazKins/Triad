@@ -36,7 +36,7 @@ public class Application {
 	private boolean displayGrid;
 	
 	public Application(InputHandler i, WindowInfo w) {
-		world = World.getWorldFromName("TestingMap");
+//		world = World.getWorldFromName("TestingMap");
 		input = i;
 		winInfo = w;
 		cam = new Camera(i, winInfo, 0, 0);

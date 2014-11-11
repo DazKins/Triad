@@ -16,7 +16,6 @@ import org.lwjgl.opengl.GL30;
 import com.dazkins.triad.audio.SoundManager;
 import com.dazkins.triad.game.GameState;
 import com.dazkins.triad.game.GameStateLoading;
-import com.dazkins.triad.game.inventory.item.ItemRegisterer;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
@@ -65,13 +64,7 @@ public class Triad {
 		if(!Image.init())
 			System.out.println("Failed to initialize art!");
 		
-		Tile.initDatabase();
-		
-		World.init();
-		
 		Model.loadModels();
-		
-		ItemRegisterer.register();
 		
 		setGameState(new GameStateLoading());
 		

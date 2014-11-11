@@ -24,27 +24,14 @@ public abstract class Entity {
 	protected int globalID; // TODO Implement working solution to generating globalID
 	protected int individualID;
 	
-	protected SingleLineDatabaseFile database;
-	
 	protected boolean toBeRemoved;
 
 	public Entity(World w, float x, float y, String s) {
 		this.x = x;
 		this.y = y;
 		this.world = w;
+		this.name = s;
 		individualID = rand.nextInt();
-		if (s != null) {
-			try {
-				database = new SingleLineDatabaseFile("res/data/entities/entity_" + s + ".db");
-				name = database.getString("NAME");
-				globalID = database.getInt("ID");
-				if (!globalIDEntityMap.containsKey(globalID)) {
-					globalIDEntityMap.put(globalID, getClass());
-				}
-			} catch (Exception e) {
-				System.err.println("Unable to load database for entity: " + s);
-			}
-		}
 	}
 	
 	public boolean needsToBeRemoved() {

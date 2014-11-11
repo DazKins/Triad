@@ -79,7 +79,7 @@ public class FileEncrypter {
 	private static File requestOpen() {
 		File f = null;
 		JFileChooser jfc = new JFileChooser();
-		jfc.setCurrentDirectory(new File("C:\\dev\\Triad\\res\\data"));
+		jfc.setCurrentDirectory(new File("G:\\dev\\Triad\\res\\data"));
 		int r = jfc.showOpenDialog(frame);
 		if (r == JFileChooser.APPROVE_OPTION) {
 			f = jfc.getSelectedFile();

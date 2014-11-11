@@ -3,6 +3,7 @@ package com.dazkins.triad.game.world;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
@@ -20,9 +21,6 @@ import com.dazkins.triad.math.AABB;
 
 public class World {
 	private static ArrayList<World> worlds;
-	private static Map<String, Integer> mapToIndex;
-
-	private static MultiLineDatabaseFile globalWorldDatabase = null;
 
 	private Chunk[] chunks;
 
@@ -33,31 +31,8 @@ public class World {
 	private Camera cam;
 	
 	private Weather weather;
-
-	public static void init() {
-		try {
-			globalWorldDatabase = new MultiLineDatabaseFile(
-					"res/data/worlds.db");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		worlds = new ArrayList<World>();
-		mapToIndex = new HashMap<String, Integer>();
-		for (int i = 0; i < globalWorldDatabase.getLineCount(); i++) {
-			String path = globalWorldDatabase.getString("PATH", i);
-			World w = loadWorldFromFile(path);
-			worlds.add(w);
-			assignWorldToDatabase(i, w);
-		}
-	}
-
-	public static World getWorldFromName(String n) {
-		return (World) (worlds.get((Integer) (mapToIndex.get(n))));
-	}
-
-	private static void assignWorldToDatabase(int i, World w) {
-		mapToIndex.put(w.info.name, i);
-	}
+	
+	public static TestWorld testWorld = new TestWorld();
 
 	public WorldInfo getInfo() {
 		return info;
@@ -68,8 +43,7 @@ public class World {
 		weather = w;
 	}
 
-	public static World loadWorldFromFile(String p) {
-		World rValue = new World();
+	public void loadDataFromFile(String p) {
 		ListFile l = null;
 		SingleLineDatabaseFile metaDatabase = null;
 		try {
@@ -80,21 +54,20 @@ public class World {
 			e.printStackTrace();
 		}
 
-		rValue.info = new WorldInfo();
-		rValue.info.loadFromDatabase(metaDatabase);
+		this.info = new WorldInfo();
+		this.info.loadFromDatabase(metaDatabase);
 
-		rValue.generate();
+		this.generate();
 
-		int tw = rValue.info.nChunksX * Chunk.chunkW;
+		int tw = this.info.nChunksX * Chunk.chunkW;
 
 		for (int i = 0; i < l.getSize(); i++) {
 			int t = l.getInt(i);
 			int x = i / tw;
 			int y = i % tw;
-			rValue.setTile(Tile.tiles[t], x, y);
+			System.out.println(t);
+			this.setTile(Tile.tiles[t], x, y);
 		}
-
-		return rValue;
 	}
 
 	private void generate() {
@@ -123,13 +96,23 @@ public class World {
 
 	public void render() {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		for (int i = chunks.length - 1; i >= 0; i--) {
-			if (!chunks[i].isGenerated()) {
-				chunks[i].generate();
+		for (int x = info.nChunksX - 1; x >= 0; x--) {
+			for (int y = info.nChunksY - 1; y >= 0; y--) {
+				if (!chunks[x + y * info.nChunksY].isGenerated()) {
+					chunks[x + y * info.nChunksY].generate();
+				}
+				if (chunks[x + y * info.nChunksY].getBounds().intersects(cam.getViewportBounds())) {
+					chunks[x + y * info.nChunksY].render();
+				}
 			}
-			if (chunks[i].getBounds().intersects(cam.getViewportBounds())) {
-				chunks[i].render();
-			}
+		}
+		List<Entity> entitiesToRender = new ArrayList<Entity>();
+		for (int i = 0; i < chunks.length; i++) {
+			entitiesToRender.addAll(chunks[i].getChunkEntities());
+		}
+		entitiesToRender.sort(Entity.ySorter);
+		for (Entity e : entitiesToRender) {
+			e.render();
 		}
 		for (Particle p : particles) {
 			if (p.getAABB().intersects(cam.getViewportBounds()))

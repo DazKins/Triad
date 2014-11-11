@@ -6,7 +6,6 @@ import com.dazkins.triad.game.gui.GuiStatusBar;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
-import com.dazkins.triad.game.inventory.item.ItemRegisterer;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
@@ -114,9 +113,10 @@ public abstract class Mob extends Entity {
 	}
 	
 	public void renderToPlayerGui(Camera c) {
+		float trans = 0.5f;
 		healthBar.updateStatus((float) getHealth() / (float) getMaxHealth());
-		healthBar.render(x - (64 / c.getZoom()), y + 50, Tile.yPosToDepth(y) + 500, 1 / c.getZoom());
-		Font.drawString(name, x - ((8 / 1.5f) * 1/ c.getZoom()) * name.length(), y + 50 + (20 / (c.getZoom())), 1.0f, 1.0f, 1.0f, Tile.yPosToDepth(y) + 500, (1 / c.getZoom()) / 1.5f);
+		healthBar.render(x - (64 / c.getZoom()), y + 50, Tile.yPosToDepth(y) + 500, 1 / c.getZoom(), trans);
+		Font.drawString(name, x - ((8 / 1.5f) * 1/ c.getZoom()) * name.length(), y + 50 + (20 / (c.getZoom())), 1.0f, 1.0f, 1.0f, trans, Tile.yPosToDepth(y) + 500, (1 / c.getZoom()) / 1.5f);
 	}
 	
 	public void render(boolean debug) {

@@ -12,7 +12,6 @@ import com.dazkins.triad.game.gui.GuiEquipMenu;
 import com.dazkins.triad.game.gui.GuiInventory;
 import com.dazkins.triad.game.gui.PlayerGui;
 import com.dazkins.triad.game.inventory.item.Item;
-import com.dazkins.triad.game.inventory.item.ItemRegisterer;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
@@ -38,7 +37,7 @@ public class GameStatePlaying implements GameState {
 		input = new InputHandler();
 		cam = new Camera(input, triad.winInfo, 0, 0);
 		cam.lockZoom(0.0001f, 500f);
-		changeWorld("TestingMap");
+		changeWorld(World.testWorld);
 		player = new EntityPlayer(world, 0, 0, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
 		world.addEntity(new EntityZombie(world, 500, 350));
@@ -97,8 +96,8 @@ public class GameStatePlaying implements GameState {
 		currentlyDisplayedGui.render(cam);
 	}
 	
-	public void changeWorld(String newWorld) {
-		world = World.getWorldFromName(newWorld);
+	public void changeWorld(World w) {
+		world = w;
 		cam.setBounds(0, 0, world.info.nChunksX * Chunk.chunkW * Tile.tileSize, world.info.nChunksX * Chunk.chunkH * Tile.tileSize);
 	}
 	

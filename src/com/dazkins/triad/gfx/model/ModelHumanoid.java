@@ -6,9 +6,8 @@ import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
-import com.dazkins.triad.game.inventory.item.ItemArmour.ItemArmourHead;
-import com.dazkins.triad.game.inventory.item.ItemEquipable;
 import com.dazkins.triad.game.inventory.item.ItemStack;
+import com.dazkins.triad.game.inventory.item.equipable.armour.head.ItemArmourHead;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Image;
 
@@ -162,7 +161,7 @@ public class ModelHumanoid extends Model {
 		if (is != null) {
 			ItemArmourHead item = (ItemArmourHead) is.getItemType();
 			GL11.glPushMatrix();
-				GL11.glTranslatef(offsetX - 33, offsetY + 12, Tile.yPosToDepth(offsetY) + 2.0f);
+				GL11.glTranslatef(offsetX - 33, offsetY + 32, Tile.yPosToDepth(offsetY) + 2.0f);
 				GL11.glScalef(2.0f, 2.0f, 1.0f);
 				item.getEquipIcon(f).render();
 			GL11.glPopMatrix();

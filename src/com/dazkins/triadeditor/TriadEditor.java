@@ -51,10 +51,6 @@ public class TriadEditor implements Runnable {
 		
 		Image.init();
 		
-		Tile.initDatabase();
-		
-		World.init();
-		
 		input = new InputHandler();
 		OGLViewport = new WindowInfo(WIDTH, HEIGHT);
 		

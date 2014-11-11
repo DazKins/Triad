@@ -1,6 +1,6 @@
 package com.dazkins.triad.game.entity.mob;
 
-import com.dazkins.triad.game.inventory.item.ItemRegisterer;
+import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.model.animation.AnimationZombieWalking;
@@ -37,7 +37,7 @@ public class EntityZombie extends Mob {
 	public ItemStack[] getItemsToDrop() {
 		ItemStack[] stacks = new ItemStack[10];
 		for (int i = 0; i < 10; i++)
-			stacks[i] = new ItemStack(ItemRegisterer.getItemByName("testHelmet"), 1);
+			stacks[i] = new ItemStack(Item.testHelmet, 1);
 		return stacks;
 	}
 

@@ -3,6 +3,11 @@ package com.dazkins.triad.game.inventory.item;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.EntityItemStack;
+import com.dazkins.triad.game.inventory.item.equipable.armour.body.ItemTestChest;
+import com.dazkins.triad.game.inventory.item.equipable.armour.feet.ItemTestFeet;
+import com.dazkins.triad.game.inventory.item.equipable.armour.head.ItemTestHelmet;
+import com.dazkins.triad.game.inventory.item.equipable.armour.legs.ItemTestLegs;
+import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemTestSword;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
@@ -13,6 +18,12 @@ public class Item {
 	protected boolean stackable;
 	
 	private BufferObject icon;
+	
+	public static ItemTestChest testChest = new ItemTestChest();
+	public static ItemTestFeet testFeet = new ItemTestFeet();
+	public static ItemTestHelmet testHelmet = new ItemTestHelmet();
+	public static ItemTestLegs testLegs = new ItemTestLegs();
+	public static ItemTestSword testSword = new ItemTestSword();
 	
 	public Item(String name, boolean s) {
 		this.name = name;

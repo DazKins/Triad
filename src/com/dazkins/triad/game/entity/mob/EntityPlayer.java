@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.inventory.Inventory;
-import com.dazkins.triad.game.inventory.item.ItemRegisterer;
+import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
@@ -23,13 +23,13 @@ public class EntityPlayer extends Mob {
 		super(w, x, y, "player", 1000);
 		this.input = input;
 		this.inv = new Inventory(10, 10);
-		inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testsword"), 1));
-		inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testdagger"), 1));
-		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testHelmet"), 1));
-		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testChest"), 1));
-		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testLegs"), 1));
-		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testFeet"), 1));
-		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testDagger"), 1));
+		inv.addItemStack(new ItemStack(Item.testChest, 1));
+//		inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testdagger"), 1));
+//		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testHelmet"), 1));
+//		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testChest"), 1));
+//		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testLegs"), 1));
+//		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testFeet"), 1));
+//		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testDagger"), 1));
 	}
 	
 	public int getMaxHealth() {

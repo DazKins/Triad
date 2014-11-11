@@ -13,38 +13,40 @@ import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
 
 public class Tile {
-	private static MultiLineDatabaseFile dbs = null;
 	public static final int tileSize = 32;
+	public static Tile[] tiles = new Tile[256];
 	
-	private byte id;
+	public static TileGrass grass = new TileGrass(1);
+	public static TileStone stone = new TileStone(2);
+	public static TileSand sand = new TileSand(3);
+	
+	private int id;
 	private String name;
 	private int ty;
 	private boolean col;
-	public static Tile[] tiles = new Tile[256];
 	private int renderOrderPos;
-
-	public static void initDatabase() {
-		loadTileDatabase("res/data/tile.db");
-	}
 
 	public static float yPosToDepth(float y) {
 		return -(y / tileSize) - 3;
 	}
 
-	public Tile(byte i, String s, int tey, boolean c, int rop) {
+	public Tile(int i, String s, int tey, boolean c, int rop) {
 		name = s;
 		ty = tey;
 		id = i;
 		col = c;
 		renderOrderPos = rop;
+		
+		tiles[id] = this;
 	}
 
 	public AABB getAABB(World w, int x, int y) {
-		int x0 = dbs.getInt("AABB.x0", id - 1) + x * Tile.tileSize;
-		int y0 = dbs.getInt("AABB.y0", id - 1) + y * Tile.tileSize;
-		int x1 = dbs.getInt("AABB.x1", id - 1) + x * Tile.tileSize;
-		int y1 = dbs.getInt("AABB.y1", id - 1) + y * Tile.tileSize;
-		return new AABB(x0, y0, x1, y1);
+		//TODO Sort this out
+//		int x0 = dbs.getInt("AABB.x0", id - 1) + x * Tile.tileSize;
+//		int y0 = dbs.getInt("AABB.y0", id - 1) + y * Tile.tileSize;
+//		int x1 = dbs.getInt("AABB.x1", id - 1) + x * Tile.tileSize;
+//		int y1 = dbs.getInt("AABB.y1", id - 1) + y * Tile.tileSize;
+		return null;
 	}
 
 	public boolean isCollidable() {
@@ -78,25 +80,6 @@ public class Tile {
 		Image.getImageFromName("spriteSheet").renderSprite(b, x, y, tileSize, tileSize, x0 * 16, ty * 16, 16, 16, yPosToDepth(y) - 1.0f, w.getTileBrightness((int) (x / 32.0f),(int) (y / 32.0f)) / 14.0f - 0.001f);
 	}
 
-	private static void loadTileDatabase(String path) {
-		try {
-			dbs = new MultiLineDatabaseFile(path);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
-
-		for (int i = 0; i < dbs.getLineCount(); i++) {
-			byte id = dbs.getByte("ID", i);
-			String s = dbs.getString("NAME", i);
-			int tey = dbs.getInt("TY", i);
-			boolean col = dbs.getBoolean("COL", i);
-			int rop = dbs.getInt("RENDER_ORDER_POSITION", i);
-			Tile t = new Tile(id, s, tey, col, rop);
-			tiles[id] = t;
-		}
-	}
-
 	public static ImageIcon getTileImageIcon(int i, int scale) {
 		Tile t = tiles[i];
 		if (t != null) {
@@ -114,7 +97,7 @@ public class Tile {
 		return null;
 	}
 
-	public byte getID() {
+	public int getID() {
 		return this.id;
 	}
 

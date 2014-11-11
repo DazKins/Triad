@@ -19,7 +19,7 @@ public class Chunk {
 	private World world;
 
 	private int chunkX, chunkY;
-	private byte[] tiles;
+	private int[] tiles;
 	private byte[] lightLevel;
 	private boolean generated;
 
@@ -41,7 +41,7 @@ public class Chunk {
 		entities = new ArrayList<Entity>();
 
 		lightLevel = new byte[chunkW * chunkH];
-		tiles = new byte[chunkW * chunkH];
+		tiles = new int[chunkW * chunkH];
 	}
 
 	public void sendAttackCommand(int damage, int x, int y, Entity e) {
@@ -297,8 +297,8 @@ public class Chunk {
 
 	public void render() {
 		tilePlane.render();
-		for (Entity e : entities) {
-			e.render();
-		}
+//		for (Entity e : entities) {
+//			e.render();
+//		}
 	}
 }

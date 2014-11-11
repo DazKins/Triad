@@ -1,12 +1,12 @@
 package com.dazkins.triad.game.inventory;
 
 import com.dazkins.triad.game.inventory.item.Item;
-import com.dazkins.triad.game.inventory.item.ItemArmour.ItemArmourBody;
-import com.dazkins.triad.game.inventory.item.ItemArmour.ItemArmourFeet;
-import com.dazkins.triad.game.inventory.item.ItemArmour.ItemArmourHead;
-import com.dazkins.triad.game.inventory.item.ItemArmour.ItemArmourLegs;
 import com.dazkins.triad.game.inventory.item.ItemStack;
-import com.dazkins.triad.game.inventory.item.ItemWeapon;
+import com.dazkins.triad.game.inventory.item.equipable.armour.body.ItemArmourBody;
+import com.dazkins.triad.game.inventory.item.equipable.armour.feet.ItemArmourFeet;
+import com.dazkins.triad.game.inventory.item.equipable.armour.head.ItemArmourHead;
+import com.dazkins.triad.game.inventory.item.equipable.armour.legs.ItemArmourLegs;
+import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
 
 public class EquipmentInventory extends Inventory {
 	public static final int HEAD = 0, BODY = 1, LEGS = 2, FEET = 3, WEAPON = 4;

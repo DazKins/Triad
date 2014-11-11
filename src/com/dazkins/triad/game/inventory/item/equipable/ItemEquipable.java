@@ -1,5 +1,6 @@
-package com.dazkins.triad.game.inventory.item;
+package com.dazkins.triad.game.inventory.item.equipable;
 
+import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
 

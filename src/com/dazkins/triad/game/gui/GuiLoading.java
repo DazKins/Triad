@@ -40,7 +40,7 @@ public class GuiLoading extends Gui {
 		
 		String msg = "Loading...";
 		
-		Font.drawString(msg, ((float)triad.winInfo.getW() / 2.0f) - ((float)msg.length() * 8), triad.winInfo.getH() / 2 + 16, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+		Font.drawString(msg, ((float)triad.winInfo.getW() / 2.0f) - ((float)msg.length() * 8), triad.winInfo.getH() / 2 + 16, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	public void onExit() {
