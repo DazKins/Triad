@@ -22,7 +22,7 @@ public abstract class Model {
 	
 	private Image img;
 	
-	private float offsetX, offsetY;
+	protected float offsetX, offsetY;
 	private float depth;
 
 	private boolean selectiveRendering;
@@ -68,9 +68,13 @@ public abstract class Model {
 		selectiveRendering = false;
 	}
 	
-	public void addQuadToRenderQeue(Quad quad) {
+	public void addQuadToRenderQueue(Quad quad) {
 		if (!selectiveRendering) {
 			System.err.println("Warning! Selective rendering is not enabled!");
+		}
+		if (!quads.contains(quad)) {
+			System.err.println("Quad was not added to the model!");
+			System.exit(1);
 		}
 		quadRenders.add(quads.indexOf(quad));
 	}
@@ -121,5 +125,9 @@ public abstract class Model {
 	
 	public void animationStop() {
 		anim = null;
+	}
+	
+	public void setImage(Image img) {
+		this.img = img;
 	}
 }

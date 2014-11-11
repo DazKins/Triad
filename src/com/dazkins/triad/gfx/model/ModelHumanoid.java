@@ -1,9 +1,14 @@
 package com.dazkins.triad.gfx.model;
 
+import org.lwjgl.opengl.GL11;
+
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.mob.Mob;
-import com.dazkins.triad.game.entity.mob.MovementState;
+import com.dazkins.triad.game.inventory.EquipmentInventory;
+import com.dazkins.triad.game.inventory.item.ItemArmour.ItemArmourHead;
+import com.dazkins.triad.game.inventory.item.ItemEquipable;
+import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Image;
 
@@ -137,13 +142,30 @@ public class ModelHumanoid extends Model {
 		
 		enableSelectiveRendering();
 		
-		addQuadToRenderQeue(head[ordinal]);
-		addQuadToRenderQeue(rightArm[ordinal]);
-		addQuadToRenderQeue(leftArm[ordinal]);
-		addQuadToRenderQeue(rightLeg[ordinal]);
-		addQuadToRenderQeue(leftLeg[ordinal]);
-		addQuadToRenderQeue(body[ordinal]);
+		addQuadToRenderQueue(head[ordinal]);
+		addQuadToRenderQueue(rightArm[ordinal]);
+		addQuadToRenderQueue(leftArm[ordinal]);
+		addQuadToRenderQueue(rightLeg[ordinal]);
+		addQuadToRenderQueue(leftLeg[ordinal]);
+		addQuadToRenderQueue(body[ordinal]);
+		
+		Mob m = (Mob) e;
+		EquipmentInventory einv = m.getEquipmentInventory();
 		
 		super.render();
+		
+		renderHeadPiece(ordinal, einv);
+	}
+	
+	public void renderHeadPiece(int f, EquipmentInventory einv) {
+		ItemStack is = einv.getItemStack(EquipmentInventory.HEAD);
+		if (is != null) {
+			ItemArmourHead item = (ItemArmourHead) is.getItemType();
+			GL11.glPushMatrix();
+				GL11.glTranslatef(offsetX - 33, offsetY + 12, Tile.yPosToDepth(offsetY) + 2.0f);
+				GL11.glScalef(2.0f, 2.0f, 1.0f);
+				item.getEquipIcon(f).render();
+			GL11.glPopMatrix();
+		}
 	}
 }
