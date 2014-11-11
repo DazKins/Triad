@@ -49,6 +49,8 @@ public class GameStatePlaying implements GameState {
 		
 		EntityButton b = new EntityButton(world, 64.0f, 64.0f);
 		world.addEntity(b);
+		
+		Item.dropItemStack(world, 500, 500, new ItemStack(ItemRegisterer.getItemByName("testSword"), 100));
 	}
 	
 	public void tick() {

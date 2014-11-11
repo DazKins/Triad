@@ -23,12 +23,13 @@ public class Item {
 	public static void dropItemStack(World w, float x, float y, ItemStack is) {
 		int no = is.getSize();
 		float speed = 7.0f;
-		if (no > 4) {
+		if (no > 4 && is.getItemType().isStackable()) {
 			EntityItemStack eStack = new EntityItemStack(w, x, y, is);
 			eStack.setXA(((float)Math.random() - 0.5f) * speed);
 			eStack.setYA(((float)Math.random() - 0.5f) * speed);
 			w.addEntity(eStack);
 		} else {
+			speed *= Math.sqrt(no) * 4f;
 			for (int i = 0; i < no; i++) {
 				Item type = is.getItemType();
 				ItemStack stack = new ItemStack(type, 1);

@@ -11,6 +11,7 @@ import com.dazkins.triad.file.ListFile;
 import com.dazkins.triad.file.MultiLineDatabaseFile;
 import com.dazkins.triad.file.SingleLineDatabaseFile;
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.entity.particle.Particle;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.game.world.weather.Weather;
@@ -193,10 +194,15 @@ public class World {
 		this.cam = c;
 	}
 
-	public void sendAttackCommand(int damage, int x, int y, Entity e) {
-		if (!isValidTilePos(x, y))
-			return;
-		getChunkFromWorldTileCoords(x, y).sendAttackCommand(damage, x & 15, y & 15, e);
+	public void sendAttackCommand(int damage, AABB b, Entity e) {
+		ArrayList<Entity> ents = getEntitiesInAABB(b);
+		for (int i = 0; i < ents.size(); i++) {
+			Entity e0 = ents.get(i);
+			if (e0 != e && e0 instanceof Mob) {
+				Mob m = (Mob) e0;
+				m.hurt(damage);
+			}
+		}
 	}
 	
 	public void addParticle(Particle p) {
