@@ -24,7 +24,7 @@ public class EntityPlayer extends Mob {
 		super(w, x, y, "player", 1000);
 		this.input = input;
 		this.inv = new Inventory(10, 10);
-		inv.addItemStack(new ItemStack(Item.testChest, 1));
+		inv.addItemStack(new ItemStack(Item.testHelmet, 1));
 //		inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testdagger"), 1));
 //		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testHelmet"), 1));
 //		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testChest"), 1));

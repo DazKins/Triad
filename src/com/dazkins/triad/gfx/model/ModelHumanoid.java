@@ -160,7 +160,7 @@ public class ModelHumanoid extends Model {
 		if (is != null) {
 			ItemArmourHead item = (ItemArmourHead) is.getItemType();
 			GL11.glPushMatrix();
-				GL11.glTranslatef(offsetX - 33, offsetY + 32, Tile.yPosToDepth(offsetY) + 2.0f);
+				GL11.glTranslatef(offsetX - 33, offsetY, Tile.yPosToDepth(offsetY));
 				GL11.glScalef(2.0f, 2.0f, 1.0f);
 				item.getEquipIcon(f).render();
 			GL11.glPopMatrix();
