@@ -9,13 +9,12 @@ public class AnimationZombieWalking extends AnimationHumanoidWalking {
 	public void updateState(Entity e) {
 		super.updateState(e);
 		
-		Facing f = e.getFacing();
-		int ordinal = f.ordinal();
+		int f = e.getFacing();
 		
 		ModelHumanoid model = (ModelHumanoid) parentModel;
 		
-		Quad cRightArm = model.getRightArm()[ordinal];
-		Quad cLeftArm = model.getLeftArm()[ordinal];
+		Quad cRightArm = model.getRightArm()[f];
+		Quad cLeftArm = model.getLeftArm()[f];
 		
 		if (f == Facing.LEFT) {
 			cRightArm.setRotation(-90);

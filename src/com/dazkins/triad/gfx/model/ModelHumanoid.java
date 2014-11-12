@@ -46,10 +46,10 @@ public class ModelHumanoid extends Model {
 	public ModelHumanoid(Image i) {
 		super(i);
 		
-		int up = Facing.UP.ordinal();
-		int down = Facing.DOWN.ordinal();
-		int left = Facing.LEFT.ordinal();
-		int right = Facing.RIGHT.ordinal();
+		int up = Facing.UP;
+		int down = Facing.DOWN;
+		int left = Facing.LEFT;
+		int right = Facing.RIGHT;
 		
 		head[up] = new Quad(-9, 32, 18, 16, 27, 0, 9, 8);
 		head[up].setRenderLayer(5);
@@ -136,24 +136,23 @@ public class ModelHumanoid extends Model {
 		setOffset(e.getX(), e.getY());
 		setDepth(Tile.yPosToDepth(e.getY()));
 		
-		Facing f = e.getFacing();
-		int ordinal = f.ordinal();
+		int f = e.getFacing();
 		
 		enableSelectiveRendering();
 		
-		addQuadToRenderQueue(head[ordinal]);
-		addQuadToRenderQueue(rightArm[ordinal]);
-		addQuadToRenderQueue(leftArm[ordinal]);
-		addQuadToRenderQueue(rightLeg[ordinal]);
-		addQuadToRenderQueue(leftLeg[ordinal]);
-		addQuadToRenderQueue(body[ordinal]);
+		addQuadToRenderQueue(head[f]);
+		addQuadToRenderQueue(rightArm[f]);
+		addQuadToRenderQueue(leftArm[f]);
+		addQuadToRenderQueue(rightLeg[f]);
+		addQuadToRenderQueue(leftLeg[f]);
+		addQuadToRenderQueue(body[f]);
 		
 		Mob m = (Mob) e;
 		EquipmentInventory einv = m.getEquipmentInventory();
 		
 		super.render();
 		
-		renderHeadPiece(ordinal, einv);
+		renderHeadPiece(f, einv);
 	}
 	
 	public void renderHeadPiece(int f, EquipmentInventory einv) {

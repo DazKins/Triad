@@ -42,7 +42,7 @@ public abstract class Entity {
 		toBeRemoved = true;
 	}
 	
-	public Facing getFacing() {
+	public int getFacing() {
 		float absXA = Math.abs(xa);
 		float absYA = Math.abs(ya);
 		

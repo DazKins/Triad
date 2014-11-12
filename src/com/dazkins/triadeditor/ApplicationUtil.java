@@ -10,7 +10,6 @@ import javax.swing.JFrame;
 import com.dazkins.fileencryptor.FileEncrypter;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.game.world.WorldInfo;
 
 public class ApplicationUtil {
 	public static void requestWorldSave(World w, JFrame frame) throws FileNotFoundException {
@@ -18,13 +17,10 @@ public class ApplicationUtil {
 		int r = jfc.showSaveDialog(frame);
 		if (r == JFileChooser.APPROVE_OPTION) {
 			File f = jfc.getSelectedFile();
-			
-			WorldInfo wi = w.getInfo();
-			
 			StringBuilder s = new StringBuilder();
 			
-			for (int x = 0; x < wi.nChunksX * Chunk.chunkW; x++) {
-				for (int y = 0; y < wi.nChunksY * Chunk.chunkH; y++) {
+			for (int x = 0; x < w.nChunksX * Chunk.chunkW; x++) {
+				for (int y = 0; y < w.nChunksY * Chunk.chunkH; y++) {
 					s.append(w.getTile(x, y).getID() + " ");
 				}
 			}

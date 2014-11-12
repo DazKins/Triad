@@ -3,6 +3,7 @@ package com.dazkins.triad.game.entity.mob;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import com.dazkins.triad.game.entity.EntityTorch;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
@@ -73,6 +74,8 @@ public class EntityPlayer extends Mob {
 				world.sendAttackCommand(10, hit, this);
 			}
 			attackCooldownCounter = attackCooldown;
+			
+			world.addEntity(new EntityTorch(world, x, y));
 		}
 		
 		xa *= 0.75;
@@ -89,7 +92,9 @@ public class EntityPlayer extends Mob {
 	}
 	
 	public void render() {
-		GL11.glColor3f(1.0f, 1.0f, 1.0f);
+		byte b = world.getTileBrightness((int)x >> 5, (int)y >> 5);
+		System.out.println(b);
+		GL11.glColor3f((b / 14.0f), (b / 14.0f), (b / 14.0f));
 		super.render(false);
 		((ModelHumanoid)this.getModel()).updateAnimationState(this);
 		((ModelHumanoid)this.getModel()).render(this);

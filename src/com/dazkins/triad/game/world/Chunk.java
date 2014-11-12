@@ -167,7 +167,7 @@ public class Chunk {
 
 	public void recalculateLighting() {
 		for (int i = 0; i < lightLevel.length; i++) {
-			lightLevel[i] = world.info.ambientLightLevel;
+			lightLevel[i] = world.ambientLightLevel;
 		}
 		ArrayList<Entity> tmpEntities = new ArrayList<Entity>();
 		for (int x = chunkX - 1; x <= chunkX + 1; x++) {

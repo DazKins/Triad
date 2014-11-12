@@ -87,10 +87,10 @@ public abstract class Mob extends Entity {
 			x0 = 0;
 		if (y0 < 0)
 			y0 = 0;
-		if (x1 > world.info.nChunksX * Chunk.chunkW)
-			x1 = world.info.nChunksX * Chunk.chunkW;
-		if (y1 > world.info.nChunksY * Chunk.chunkH)
-			y1 = world.info.nChunksY * Chunk.chunkH;
+		if (x1 > world.nChunksX * Chunk.chunkW)
+			x1 = world.nChunksX * Chunk.chunkW;
+		if (y1 > world.nChunksY * Chunk.chunkH)
+			y1 = world.nChunksY * Chunk.chunkH;
 
 		for (int x = x0; x < x1; x++) {
 			for (int y = y0; y < y1; y++) {

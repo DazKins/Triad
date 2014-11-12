@@ -2,14 +2,11 @@ package com.dazkins.triad.game.world;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.file.ListFile;
-import com.dazkins.triad.file.MultiLineDatabaseFile;
 import com.dazkins.triad.file.SingleLineDatabaseFile;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.mob.Mob;
@@ -18,29 +15,34 @@ import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.game.world.weather.Weather;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.util.Loadable;
 
-public class World {
+public abstract class World implements Loadable {
 	private static ArrayList<World> worlds;
 
 	private Chunk[] chunks;
 
-	public WorldInfo info;
-	
-	public ArrayList<Particle> particles = new ArrayList<Particle>();
-	
-	private Camera cam;
-	
-	private Weather weather;
-	
-	public static TestWorld testWorld = new TestWorld();
+	public int nChunksX;
+	public int nChunksY;
+	public byte ambientLightLevel;
 
-	public WorldInfo getInfo() {
-		return info;
-	}
-	
+	public ArrayList<Particle> particles = new ArrayList<Particle>();
+
+	private Camera cam;
+
+	private Weather weather;
+
+	protected String pathToLoad;
+
+	public static WorldTest testWorld = new WorldTest();
+
 	public void setWeather(Weather w) {
 		w.init(this);
 		weather = w;
+	}
+
+	public void load() {
+		loadDataFromFile(pathToLoad);
 	}
 
 	public void loadDataFromFile(String p) {
@@ -48,33 +50,30 @@ public class World {
 		SingleLineDatabaseFile metaDatabase = null;
 		try {
 			l = new ListFile("res/data/worlds/" + p + "_data.lt", " ");
-			metaDatabase = new SingleLineDatabaseFile("res/data/worlds/" + p
-					+ "_metadata.db");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		this.info = new WorldInfo();
-		this.info.loadFromDatabase(metaDatabase);
+		this.nChunksX = l.getInt(0);
+		this.nChunksY = l.getInt(1);
 
 		this.generate();
+		
+		int tw = this.nChunksX * Chunk.chunkW;
 
-		int tw = this.info.nChunksX * Chunk.chunkW;
-
-		for (int i = 0; i < l.getSize(); i++) {
+		for (int i = 2; i < l.getSize(); i++) {
 			int t = l.getInt(i);
-			int x = i / tw;
-			int y = i % tw;
-			System.out.println(t);
+			int x = (i - 2) / tw;
+			int y = (i - 2) % tw;
 			this.setTile(Tile.tiles[t], x, y);
 		}
 	}
 
 	private void generate() {
-		chunks = new Chunk[info.nChunksX * info.nChunksY];
-		for (int x = 0; x < info.nChunksX; x++) {
-			for (int y = 0; y < info.nChunksY; y++) {
-				chunks[x + y * info.nChunksX] = new Chunk(this, x, y);
+		chunks = new Chunk[nChunksX * nChunksY];
+		for (int x = 0; x < nChunksX; x++) {
+			for (int y = 0; y < nChunksY; y++) {
+				chunks[x + y * nChunksX] = new Chunk(this, x, y);
 			}
 		}
 	}
@@ -89,20 +88,21 @@ public class World {
 			int cx = (int) ((e.getX() / Tile.tileSize) / Chunk.chunkW);
 			int cy = (int) ((e.getY() / Tile.tileSize) / Chunk.chunkH);
 
-			if (cx >= 0 && cy >= 0 && cx < info.nChunksX && cy < info.nChunksY)
-				chunks[cx + cy * info.nChunksX].addEntity(e);
+			if (cx >= 0 && cy >= 0 && cx < nChunksX && cy < nChunksY)
+				chunks[cx + cy * nChunksX].addEntity(e);
 		}
 	}
 
 	public void render() {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		for (int x = info.nChunksX - 1; x >= 0; x--) {
-			for (int y = info.nChunksY - 1; y >= 0; y--) {
-				if (!chunks[x + y * info.nChunksY].isGenerated()) {
-					chunks[x + y * info.nChunksY].generate();
+		for (int x = nChunksX - 1; x >= 0; x--) {
+			for (int y = nChunksY - 1; y >= 0; y--) {
+				if (!chunks[x + y * nChunksY].isGenerated()) {
+					chunks[x + y * nChunksY].generate();
 				}
-				if (chunks[x + y * info.nChunksY].getBounds().intersects(cam.getViewportBounds())) {
-					chunks[x + y * info.nChunksY].render();
+				if (chunks[x + y * nChunksY].getBounds().intersects(
+						cam.getViewportBounds())) {
+					chunks[x + y * nChunksY].render();
 				}
 			}
 		}
@@ -150,29 +150,30 @@ public class World {
 	public Chunk getChunkFromWorldTileCoords(int x, int y) {
 		if (!isValidTilePos(x, y))
 			return null;
-		return chunks[(x / Chunk.chunkW) + (y / Chunk.chunkH) * info.nChunksX];
+		return chunks[(x / Chunk.chunkW) + (y / Chunk.chunkH) * nChunksX];
 	}
-	
+
 	public Chunk[] getChunks() {
 		return chunks;
 	}
-	
+
 	public Camera getCam() {
 		return cam;
 	}
 
 	public ArrayList<Entity> getEntitiesInChunk(int x, int y) {
-		if (x < 0 || y < 0 || x >= info.nChunksX || y >= info.nChunksY)
+		if (x < 0 || y < 0 || x >= nChunksX || y >= nChunksY)
 			return null;
-		return chunks[x + y * info.nChunksY].getChunkEntities();
+		return chunks[x + y * nChunksY].getChunkEntities();
 	}
 
 	public ArrayList<Entity> getEntitesInTile(int x, int y) {
-		if (x < 0 || y < 0 || x >= info.nChunksX || y >= info.nChunksY)
+		if (x < 0 || y < 0 || x >= nChunksX || y >= nChunksY)
 			return null;
-		return getChunkFromWorldTileCoords(x, y).getEntitiesInTile(x % Chunk.chunkW, y % Chunk.chunkH);
+		return getChunkFromWorldTileCoords(x, y).getEntitiesInTile(
+				x % Chunk.chunkW, y % Chunk.chunkH);
 	}
-	
+
 	public void assignCamera(Camera c) {
 		this.cam = c;
 	}
@@ -187,14 +188,14 @@ public class World {
 			}
 		}
 	}
-	
+
 	public void addParticle(Particle p) {
 		particles.add(p);
 	}
 
 	private boolean isValidTilePos(int x, int y) {
-		return (x >= 0 && x < info.nChunksX * Chunk.chunkW)
-				&& (y >= 0 && y < info.nChunksY * Chunk.chunkH);
+		return (x >= 0 && x < nChunksX * Chunk.chunkW)
+				&& (y >= 0 && y < nChunksY * Chunk.chunkH);
 	}
 
 	public byte getTileBrightness(int x, int y) {
@@ -221,7 +222,8 @@ public class World {
 	public void setTile(Tile t, int x, int y) {
 		if (!isValidTilePos(x, y))
 			return;
-		getChunkFromWorldTileCoords(x, y).setTile(t, x % Chunk.chunkW, y % Chunk.chunkH);
+		getChunkFromWorldTileCoords(x, y).setTile(t, x % Chunk.chunkW,
+				y % Chunk.chunkH);
 	}
 
 	public void tick() {
@@ -234,7 +236,7 @@ public class World {
 			else
 				particles.get(i).tick();
 		}
-		
+
 		weather.tick();
 	}
 }

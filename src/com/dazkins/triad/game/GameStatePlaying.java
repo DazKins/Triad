@@ -98,7 +98,7 @@ public class GameStatePlaying implements GameState {
 	
 	public void changeWorld(World w) {
 		world = w;
-		cam.setBounds(0, 0, world.info.nChunksX * Chunk.chunkW * Tile.tileSize, world.info.nChunksX * Chunk.chunkH * Tile.tileSize);
+		cam.setBounds(0, 0, world.nChunksX * Chunk.chunkW * Tile.tileSize, world.nChunksX * Chunk.chunkH * Tile.tileSize);
 	}
 	
 	private void changeGui(Gui g) {

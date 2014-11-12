@@ -14,15 +14,15 @@ public class AnimationHumanoidWalking extends Animation {
 		if (modelOK) {
 			ModelHumanoid model = (ModelHumanoid) parentModel;
 			Mob m = (Mob) e;
-			Facing f = m.getFacing();
-			int ordinal = f.ordinal();
 			
-			Quad cHead = model.getHead()[ordinal];
-			Quad cRightArm = model.getRightArm()[ordinal];
-			Quad cLeftArm = model.getLeftArm()[ordinal];
-			Quad cRightLeg = model.getRightLeg()[ordinal];
-			Quad cLeftLeg = model.getLeftLeg()[ordinal];
-			Quad cBody = model.getBody()[ordinal];
+			int f = e.getFacing();
+			
+			Quad cHead = model.getHead()[f];
+			Quad cRightArm = model.getRightArm()[f];
+			Quad cLeftArm = model.getLeftArm()[f];
+			Quad cRightLeg = model.getRightLeg()[f];
+			Quad cLeftLeg = model.getLeftLeg()[f];
+			Quad cBody = model.getBody()[f];
 			
 			if (m.getMovementState() == MovementState.MOVING) {
 				if (f == Facing.LEFT || f == Facing.RIGHT) {
