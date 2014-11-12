@@ -90,17 +90,8 @@ public class EntityPlayer extends Mob {
 	public AABB getAABB() {
 		return new AABB(x - 8, y, x + 8, y + 48);
 	}
-	
-	public void render() {
-		byte b = world.getTileBrightness((int)x >> 5, (int)y >> 5);
-		System.out.println(b);
-		GL11.glColor3f((b / 14.0f), (b / 14.0f), (b / 14.0f));
-		super.render(false);
-		((ModelHumanoid)this.getModel()).updateAnimationState(this);
-		((ModelHumanoid)this.getModel()).render(this);
-	}
 
 	public float getMovementSpeed() {
-		return 2;
+		return 20;
 	}
 }

@@ -55,8 +55,17 @@ public class Particle extends Entity implements PoolableObject {
 		GL11.glPushMatrix();
 		
 		GL11.glTranslatef(x, y, 0);
+
+		int xx = (int) x >> 5;
+		int yy = (int) y >> 5;
+		float brm = 1.0f;
 		
-		GL11.glColor4f(r, g, b, a);
+		if (world.isValidTilePos(xx, yy)) {
+			float br = world.getTileBrightness(xx, yy);
+			brm = br / 14.0f;
+		}
+		
+		GL11.glColor4f(r * brm, g * brm, b * brm, a);
 		bo.render();
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 

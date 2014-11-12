@@ -25,46 +25,18 @@ public class Chunk {
 
 	private BufferObject tilePlane;
 
-	public ArrayList<Entity>[] entitiesInTiles;
-	public ArrayList<Entity> entities;
-
 	public Chunk(World w, int xp, int yp) {
 		this.chunkX = xp;
 		this.chunkY = yp;
 		this.world = w;
 
-		entitiesInTiles = new ArrayList[chunkW * chunkH];
-		for (int i = 0; i < entitiesInTiles.length; i++) {
-			entitiesInTiles[i] = new ArrayList<Entity>();
-		}
-
-		entities = new ArrayList<Entity>();
-
 		lightLevel = new byte[chunkW * chunkH];
 		tiles = new int[chunkW * chunkH];
-	}
-
-	public void sendAttackCommand(int damage, int x, int y, Entity e) {
-		ArrayList<Entity> l = entitiesInTiles[x + y * chunkW];
-		for (Entity e0 : l) {
-			if (e0 != e) {
-				if (e0 instanceof Mob) {
-					Mob m = (Mob) e0;
-					m.hurt(damage);
-				}
-			}
-		}
 	}
 
 	public void addEntity(Entity e) {
 		int xx = ((int) e.getX() >> 5) - chunkX * chunkW;
 		int yy = ((int) e.getY() >> 5) - chunkY * chunkH;
-		
-		if (!entitiesInTiles[xx + yy * chunkW].contains(e))
-			entitiesInTiles[xx + yy * chunkW].add(e);
-		
-		if (!entities.contains(e))
-			entities.add(e);
 
 		if (e instanceof LightEmitter) {
 			recalculateLighting();
@@ -105,14 +77,6 @@ public class Chunk {
 		if (!isValidTilePos(x, y))
 			return null;
 		return Tile.tiles[tiles[x + y * chunkW]];
-	}
-
-	public ArrayList<Entity> getChunkEntities() {
-		return entities;
-	}
-
-	public ArrayList<Entity> getEntitiesInTile(int x, int y) {
-		return entitiesInTiles[x + y * chunkW];
 	}
 
 	// Unconfirmed whether or not this function works, just there if needed
@@ -169,17 +133,8 @@ public class Chunk {
 		for (int i = 0; i < lightLevel.length; i++) {
 			lightLevel[i] = world.ambientLightLevel;
 		}
-		ArrayList<Entity> tmpEntities = new ArrayList<Entity>();
-		for (int x = chunkX - 1; x <= chunkX + 1; x++) {
-			for (int y = chunkY - 1; y <= chunkY + 1; y++) {
-				ArrayList<Entity> tmp = world.getEntitiesInChunk(x, y);
-				if (tmp != null) {
-					for (Object o : tmp)
-						tmpEntities.add((Entity) o);
-				}
-			}
-		}
-		for (Entity e : tmpEntities) {
+		ArrayList<Entity> tmp = world.getEntities();
+		for (Entity e : tmp) {
 			if (e instanceof LightEmitter) {
 				LightEmitter le = (LightEmitter) e;
 
@@ -192,12 +147,12 @@ public class Chunk {
 				byte l = le.getLightStrength();
 
 				for (int x = cx - 13; x < cx + 14; x++) {
+					int dx = Math.abs(x - cx);
+					int ccx = x + (chunkX * chunkW);
 					for (int y = cy - 13; y < cy + 14; y++) {
-						int dx = Math.abs(x - cx);
 						int dy = Math.abs(y - cy);
 						int dist = (int) Math.sqrt(dx * dx + dy * dy);
 
-						int ccx = x + (chunkX * chunkW);
 						int ccy = y + (chunkY * chunkH);
 
 						byte lightVal = (byte) (l - dist);
@@ -222,30 +177,7 @@ public class Chunk {
 		return generated;
 	}
 
-	public void tick() {
-		for (int i = 0; i < entities.size(); i++) {
-			Entity e = entities.get(i);
-			
-			if (e.needsToBeRemoved()) {
-				entities.remove(e);
-				continue;
-			}
-			
-			int x = ((int) e.getX() >> 5);
-			int y = ((int) e.getY() >> 5);
-			
-			e.tick();
-
-			int xx = ((int) e.getX() >> 5);
-			int yy = ((int) e.getY() >> 5);
-
-			if (xx != x || yy != y) {
-				entities.remove(e);
-				world.addEntity(e);
-			}
-		}
-		entities.sort(Entity.ySorter);
-	}
+	public void tick() { }
 	
 	public void renderGrid() {
 		int xx0 = chunkX * Tile.tileSize * chunkW;
@@ -297,8 +229,5 @@ public class Chunk {
 
 	public void render() {
 		tilePlane.render();
-//		for (Entity e : entities) {
-//			e.render();
-//		}
 	}
 }

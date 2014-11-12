@@ -2,13 +2,13 @@ package com.dazkins.triad.game.world;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.file.ListFile;
 import com.dazkins.triad.file.SingleLineDatabaseFile;
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.LightEmitter;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.entity.particle.Particle;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -27,6 +27,7 @@ public abstract class World implements Loadable {
 	public byte ambientLightLevel;
 
 	public ArrayList<Particle> particles = new ArrayList<Particle>();
+	public ArrayList<Entity> entities = new ArrayList<Entity>();
 
 	private Camera cam;
 
@@ -68,6 +69,10 @@ public abstract class World implements Loadable {
 			this.setTile(Tile.tiles[t], x, y);
 		}
 	}
+	
+	public ArrayList<Entity> getEntities() {
+		return entities;
+	}
 
 	private void generate() {
 		chunks = new Chunk[nChunksX * nChunksY];
@@ -82,14 +87,24 @@ public abstract class World implements Loadable {
 		if (e.getX() < 0 || e.getY() < 0)
 			return;
 
-		if (e instanceof Particle) {
-			particles.add((Particle) e);
-		} else {
-			int cx = (int) ((e.getX() / Tile.tileSize) / Chunk.chunkW);
-			int cy = (int) ((e.getY() / Tile.tileSize) / Chunk.chunkH);
-
-			if (cx >= 0 && cy >= 0 && cx < nChunksX && cy < nChunksY)
-				chunks[cx + cy * nChunksX].addEntity(e);
+		if (e instanceof Particle)
+			addParticle((Particle) e);
+		
+		entities.add(e);
+		
+		int i = 0;
+		if (e instanceof LightEmitter) {
+			int xx = (int) e.getX() >> 9;
+			int yy = (int) e.getY() >> 9;
+			for (int x = xx - 1; x < xx + 2; x++) {
+				for (int y = yy - 1; y < yy + 2; y++) {
+					System.out.println(++i);
+					if (x >= 0 && y >= 0 && x < nChunksX && y < nChunksY) {
+						Chunk c = chunks[x + y * nChunksX];
+						c.recalculateLighting();
+					}
+				}
+			}
 		}
 	}
 
@@ -106,13 +121,12 @@ public abstract class World implements Loadable {
 				}
 			}
 		}
-		List<Entity> entitiesToRender = new ArrayList<Entity>();
-		for (int i = 0; i < chunks.length; i++) {
-			entitiesToRender.addAll(chunks[i].getChunkEntities());
-		}
-		entitiesToRender.sort(Entity.ySorter);
-		for (Entity e : entitiesToRender) {
-			e.render();
+		for (Entity e : entities) {
+			AABB b = e.getAABB();
+			if (b != null) {
+				if (e.getAABB().intersects(cam.getViewportBounds()))
+					e.render();
+			}
 		}
 		for (Particle p : particles) {
 			if (p.getAABB().intersects(cam.getViewportBounds()))
@@ -130,18 +144,12 @@ public abstract class World implements Loadable {
 
 	public ArrayList<Entity> getEntitiesInAABB(AABB b) {
 		ArrayList<Entity> rValue = new ArrayList<Entity>();
-		for (int i = 0; i < chunks.length; i++) {
-			if (chunks[i].getBounds().intersects(b)) {
-				ArrayList<Entity> cChunkEntities = chunks[i].getChunkEntities();
-				for (int u = 0; u < cChunkEntities.size(); u++) {
-					Entity cEntity = cChunkEntities.get(u);
-					AABB eB = cEntity.getAABB();
-					if (eB != null) {
-						if (eB.intersects(b) && !rValue.contains(cEntity)) {
-							rValue.add(cEntity);
-						}
-					}
-				}
+		for (int i = 0; i < entities.size(); i++) {
+			Entity e = entities.get(i);
+			AABB a = e.getAABB();
+			if (a != null) {
+				if (e.getAABB().intersects(b))
+					rValue.add(e);
 			}
 		}
 		return rValue;
@@ -161,17 +169,16 @@ public abstract class World implements Loadable {
 		return cam;
 	}
 
-	public ArrayList<Entity> getEntitiesInChunk(int x, int y) {
-		if (x < 0 || y < 0 || x >= nChunksX || y >= nChunksY)
-			return null;
-		return chunks[x + y * nChunksY].getChunkEntities();
-	}
-
 	public ArrayList<Entity> getEntitesInTile(int x, int y) {
+		ArrayList<Entity> rValue = new ArrayList<Entity>();
 		if (x < 0 || y < 0 || x >= nChunksX || y >= nChunksY)
 			return null;
-		return getChunkFromWorldTileCoords(x, y).getEntitiesInTile(
-				x % Chunk.chunkW, y % Chunk.chunkH);
+		for (int i = 0; i < entities.size(); i++) {
+			if (new AABB((int) x << 5, (int) y << 5, 32, 32).intersects(entities.get(i).getAABB()))
+				rValue.add(entities.get(i));
+				
+		}
+		return rValue;
 	}
 
 	public void assignCamera(Camera c) {
@@ -190,10 +197,11 @@ public abstract class World implements Loadable {
 	}
 
 	public void addParticle(Particle p) {
+		p.initWorld(this);
 		particles.add(p);
 	}
 
-	private boolean isValidTilePos(int x, int y) {
+	public boolean isValidTilePos(int x, int y) {
 		return (x >= 0 && x < nChunksX * Chunk.chunkW)
 				&& (y >= 0 && y < nChunksY * Chunk.chunkH);
 	}
@@ -232,9 +240,15 @@ public abstract class World implements Loadable {
 		}
 		for (int i = 0; i < particles.size(); i++) {
 			if (particles.get(i).needDestruction())
-				particles.remove(particles.get(i));
+				particles.remove(i);
 			else
 				particles.get(i).tick();
+		}
+		for (int i = 0; i < entities.size(); i++) {
+			if (entities.get(i).needsToBeRemoved())
+				entities.remove(i);
+			else
+				entities.get(i).tick();
 		}
 
 		weather.tick();

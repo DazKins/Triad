@@ -41,12 +41,6 @@ public class EntityZombie extends Mob {
 		return stacks;
 	}
 
-	public void render() {
-		super.render(false);
-		this.getModel().updateAnimationState(this);
-		this.getModel().render(this);
-	}
-
 	public AABB getAABB() {
 		return new AABB(x - 8, y, x + 8, y + 48);
 	}

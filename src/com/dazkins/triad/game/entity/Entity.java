@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import com.dazkins.triad.file.SingleLineDatabaseFile;
+import org.lwjgl.opengl.GL11;
+
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.model.Model;
@@ -42,6 +43,10 @@ public abstract class Entity {
 		toBeRemoved = true;
 	}
 	
+	public void initWorld(World w) {
+		world = w;
+	}
+	
 	public int getFacing() {
 		float absXA = Math.abs(xa);
 		float absYA = Math.abs(ya);
@@ -61,7 +66,16 @@ public abstract class Entity {
 	
 	public abstract void renderToPlayerGui(Camera c);
 	
-	public abstract void render();
+	public void render() {
+		Model m = getModel();
+		int xx = (int) x >> 5;
+		int yy = (int) y >> 5;
+		float b = world.getTileBrightness(xx, yy);
+		float bm = b / 14.0f;
+		GL11.glColor3f(bm, bm, bm);
+		m.updateAnimationState(this);
+		m.render(this);
+	}
 	
 	protected Model getModel() {
 		return Model.entityModelMap.get(this.getClass());
