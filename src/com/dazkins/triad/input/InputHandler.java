@@ -11,6 +11,8 @@ public class InputHandler  {
 	public boolean mouse1JustDown;
 	public boolean mouse2;
 	public boolean mouse2JustDown;
+	public boolean mouse3;
+	public boolean mouse3JustDown;
 	
 	public int mouseX, mouseY;
 	public int mWheel;
@@ -29,6 +31,7 @@ public class InputHandler  {
 		}
 		mouse1JustDown = false;
 		mouse2JustDown = false;
+		mouse3JustDown = false;
 		
 		while(Keyboard.next()) {
 			if(Keyboard.getEventKeyState()) {
@@ -42,11 +45,13 @@ public class InputHandler  {
 		
 		mouse1 = Mouse.isButtonDown(0);
 		mouse2 = Mouse.isButtonDown(1);
+		mouse3 = Mouse.isButtonDown(2);
 		
 		while(Mouse.next()) {
 			if (Mouse.getEventButtonState()) {
 				mouse1JustDown = Mouse.isButtonDown(0);
 				mouse2JustDown = Mouse.isButtonDown(1);
+				mouse3JustDown = Mouse.isButtonDown(2);
 			}
 		}
 		

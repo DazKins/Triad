@@ -36,6 +36,8 @@ public class EntityItemStack extends Entity {
 		//Shadow
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		float z = Tile.yPosToDepth(y);
+		float b = world.getTileBrightness((int) x >> 5, (int) y >> 5);
+		float bm = b / 14.0f;
 		GL11.glBegin(GL11.GL_QUADS);
 			GL11.glColor4f(0.0f, 0.0f, 0.0f, 0.2f);
 			GL11.glVertex3f(x, y, z);
@@ -45,15 +47,18 @@ public class EntityItemStack extends Entity {
 			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		GL11.glEnd();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-
+		GL11.glColor3f(bm, bm, bm);
 		is.getItemType().renderIcon(x, y + yBounce, Tile.yPosToDepth(y) + 0.001f, 1);
+		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 	}
 	
 	protected void onCollide(Entity e) {
 		if (e instanceof EntityPlayer) {
-			EntityPlayer ep = (EntityPlayer) e;
-			ep.getInventory().addItemStack(is);
-			this.remove();
+			if (xa < 0.1f && ya < 0.1f) {
+				EntityPlayer ep = (EntityPlayer) e;
+				ep.getInventory().addItemStack(is);
+				this.remove();
+			}
 		}
 	}
 	

@@ -53,6 +53,9 @@ public class EntityPlayer extends Mob {
 			attackCooldownCounter--;
 		}
 		
+		if (input.isKeyJustDown(Keyboard.KEY_Q))
+			world.addEntity(new EntityTorch(world, x, y));
+		
 		if (input.isKeyDown(Keyboard.KEY_SPACE) && attackCooldownCounter == 0) {
 			int xx = (int) x >> 5;
 			int yy = (int) y >> 5;
@@ -74,8 +77,6 @@ public class EntityPlayer extends Mob {
 				world.sendAttackCommand(10, hit, this);
 			}
 			attackCooldownCounter = attackCooldown;
-			
-			world.addEntity(new EntityTorch(world, x, y));
 		}
 		
 		xa *= 0.75;
@@ -88,10 +89,10 @@ public class EntityPlayer extends Mob {
 	}
 
 	public AABB getAABB() {
-		return new AABB(x - 8, y, x + 8, y + 48);
+		return new AABB(x - 8, y, x + 8, y + 10);
 	}
 
 	public float getMovementSpeed() {
-		return 20;
+		return 2;
 	}
 }

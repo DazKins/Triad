@@ -66,6 +66,11 @@ public class GameStatePlaying implements GameState {
 		if (input.isKeyJustDown(Keyboard.KEY_ESCAPE)) {
 			changeGui(new PlayerGui(triad, input, world, player));
 		}
+		if (input.isKeyDown(Keyboard.KEY_LCONTROL) && input.mouse1JustDown) {
+			int mx = (int) ((input.mouseX / cam.getZoom()) + cam.getX()) >> 5;
+			int my = (int) ((input.mouseY / cam.getZoom()) + cam.getY()) >> 5;
+			System.err.println("Tile location: " + mx + ", " + my);
+		}
 		world.tick();
 		cam.tick();
 		cam.lockCameraToEntity(player);

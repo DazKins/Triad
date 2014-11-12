@@ -98,7 +98,6 @@ public abstract class World implements Loadable {
 			int yy = (int) e.getY() >> 9;
 			for (int x = xx - 1; x < xx + 2; x++) {
 				for (int y = yy - 1; y < yy + 2; y++) {
-					System.out.println(++i);
 					if (x >= 0 && y >= 0 && x < nChunksX && y < nChunksY) {
 						Chunk c = chunks[x + y * nChunksX];
 						c.recalculateLighting();
@@ -121,6 +120,7 @@ public abstract class World implements Loadable {
 				}
 			}
 		}
+		entities.sort(Entity.ySorter);
 		for (Entity e : entities) {
 			AABB b = e.getAABB();
 			if (b != null) {
