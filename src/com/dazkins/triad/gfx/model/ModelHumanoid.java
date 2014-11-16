@@ -1,7 +1,5 @@
 package com.dazkins.triad.gfx.model;
 
-import org.lwjgl.opengl.GL11;
-
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.mob.Mob;
@@ -52,83 +50,83 @@ public class ModelHumanoid extends Model {
 		int right = Facing.RIGHT;
 		
 		head[up] = new Quad(-9, 32, 18, 16, 27, 0, 9, 8);
-		head[up].setRenderLayer(5);
+		head[up].setRenderLayer(2);
 		head[down] = new Quad(-9, 32, 18, 16, 0, 0, 9, 8);
-		head[down].setRenderLayer(5);
+		head[down].setRenderLayer(2);
 		head[left] = new Quad(-9, 32, 18, 16, 18, 0, 9, 8);
-		head[left].setRenderLayer(5);
+		head[left].setRenderLayer(2);
 		head[right] = new Quad(-9, 32, 18, 16, 9, 0, 9, 8);
-		head[right].setRenderLayer(5);
+		head[right].setRenderLayer(2);
 		addQuads(head);
 
 		rightArm[up] = new Quad(4, 16, 10, 18, 0, 8, 5, 9);
 		rightArm[up].setCenterOfRotation(9, 34);
-		rightArm[up].setRenderLayer(4);
+		rightArm[up].setRenderLayer(1);
 		rightArm[down] = new Quad(-14, 16, 10, 18, 5, 8, 5, 9);
 		rightArm[down].setCenterOfRotation(-9, 34);
-		rightArm[down].setRenderLayer(2);
+		rightArm[down].setRenderLayer(-1);
 		rightArm[left] = new Quad(-4, 16, 10, 18, 10, 8, 5, 9);
 		rightArm[left].setCenterOfRotation(1, 34);
-		rightArm[left].setRenderLayer(4);
+		rightArm[left].setRenderLayer(1);
 		rightArm[right] = new Quad(-4, 16, 10, 18, 15, 8, 5, 9);
 		rightArm[right].setCenterOfRotation(1, 34);
-		rightArm[right].setRenderLayer(2);
+		rightArm[right].setRenderLayer(-1);
 		addQuads(rightArm);
 		
 		
 		rightLeg[up] = new Quad(-1, 0, 10, 18, 20, 8, 5, 9);
 		rightLeg[up].setCenterOfRotation(4, 18);
-		rightLeg[up].setRenderLayer(1);
+		rightLeg[up].setRenderLayer(-2);
 		rightLeg[down] = new Quad(-9, 0, 10, 18, 25, 8, 5, 9);
 		rightLeg[down].setCenterOfRotation(-4, 18);
-		rightLeg[down].setRenderLayer(1);
+		rightLeg[down].setRenderLayer(-2);
 		rightLeg[left] = new Quad(-4, 0, 10, 18, 30, 8, 5, 9);
 		rightLeg[left].setCenterOfRotation(1, 18);
-		rightLeg[left].setRenderLayer(1);
+		rightLeg[left].setRenderLayer(-2);
 		rightLeg[right] = new Quad(-4, 0, 10, 18, 35, 8, 5, 9);
 		rightLeg[right].setCenterOfRotation(1, 18);
-		rightLeg[right].setRenderLayer(3);
+		rightLeg[right].setRenderLayer(0);
 		addQuads(rightLeg);
 		
 		
 		leftArm[up] = new Quad(-14, 16, 10, 18, 0, 17, 5, 9);
 		leftArm[up].setCenterOfRotation(-9, 34);
-		leftArm[up].setRenderLayer(2);
+		leftArm[up].setRenderLayer(-1);
 		leftArm[down] = new Quad(4, 16, 10, 18, 5, 17, 5, 9);
 		leftArm[down].setCenterOfRotation(9, 34);
-		leftArm[down].setRenderLayer(4);
+		leftArm[down].setRenderLayer(1);
 		leftArm[left] = new Quad(-4, 16, 10, 18, 10, 17, 5, 9);
 		leftArm[left].setCenterOfRotation(1, 34);
-		leftArm[left].setRenderLayer(2);
+		leftArm[left].setRenderLayer(-1);
 		leftArm[right] = new Quad(-4, 16, 10, 18, 15, 17, 5, 9);
 		leftArm[right].setCenterOfRotation(1, 34);
-		leftArm[right].setRenderLayer(4);
+		leftArm[right].setRenderLayer(1);
 		addQuads(leftArm);
 		
 		
 		leftLeg[up] = new Quad(-9, 0, 10, 18, 20, 17, 5, 9);
 		leftLeg[up].setCenterOfRotation(-4, 18);
-		leftLeg[up].setRenderLayer(1);
+		leftLeg[up].setRenderLayer(-2);
 		leftLeg[down] = new Quad(-1, 0, 10, 18, 25, 17, 5, 9);
 		leftLeg[down].setCenterOfRotation(4, 18);
-		leftLeg[down].setRenderLayer(1);
+		leftLeg[down].setRenderLayer(-2);
 		leftLeg[left] = new Quad(-4, 0, 10, 18, 30, 17, 5, 9);
 		leftLeg[left].setCenterOfRotation(1, 18);
-		leftLeg[left].setRenderLayer(3);
+		leftLeg[left].setRenderLayer(0);
 		leftLeg[right] = new Quad(-4, 0, 10, 18, 35, 17, 5, 9);
 		leftLeg[right].setCenterOfRotation(1, 18);
-		leftLeg[right].setRenderLayer(1);
+		leftLeg[right].setRenderLayer(-2);
 		addQuads(leftLeg);
 		
 		
 		body[up] = new Quad(-9, 16, 18, 18, 0, 26, 9, 9);
-		body[up].setRenderLayer(3);
+		body[up].setRenderLayer(0);
 		body[down] = new Quad(-9, 16, 18, 18, 9, 26, 9, 9);
-		body[down].setRenderLayer(3);
+		body[down].setRenderLayer(0);
 		body[left] = new Quad(-4, 16, 10, 18, 18, 26, 5, 9);
-		body[left].setRenderLayer(3);
+		body[left].setRenderLayer(0);
 		body[right] = new Quad(-4, 16, 10, 18, 23, 26, 5, 9);
-		body[right].setRenderLayer(3);
+		body[right].setRenderLayer(0);
 		addQuads(body);
 	}
 		
@@ -139,31 +137,37 @@ public class ModelHumanoid extends Model {
 		int f = e.getFacing();
 		
 		enableSelectiveRendering();
-		
+
+		addQuadToRenderQueue(body[f]);
 		addQuadToRenderQueue(head[f]);
-		addQuadToRenderQueue(rightArm[f]);
-		addQuadToRenderQueue(leftArm[f]);
 		addQuadToRenderQueue(rightLeg[f]);
 		addQuadToRenderQueue(leftLeg[f]);
-		addQuadToRenderQueue(body[f]);
+		addQuadToRenderQueue(rightArm[f]);
+		addQuadToRenderQueue(leftArm[f]);
 		
 		Mob m = (Mob) e;
 		EquipmentInventory einv = m.getEquipmentInventory();
 		
-		super.render();
+		addHeadPiece(head[f], f, einv);
 		
-		renderHeadPiece(f, einv);
+		super.render();
 	}
 	
-	public void renderHeadPiece(int f, EquipmentInventory einv) {
+	public void addHeadPiece(Quad q, int f, EquipmentInventory einv) {
 		ItemStack is = einv.getItemStack(EquipmentInventory.HEAD);
 		if (is != null) {
 			ItemArmourHead item = (ItemArmourHead) is.getItemType();
-			GL11.glPushMatrix();
-				GL11.glTranslatef(offsetX - 33, offsetY, Tile.yPosToDepth(offsetY));
-				GL11.glScalef(2.0f, 2.0f, 1.0f);
-				item.getEquipIcon(f).render();
-			GL11.glPopMatrix();
+			Quad q0 = null;
+			if (!item.hasEquipQuad(f)) {
+				q0 = new Quad(-24, -20, 64, 64, (f + 1) * 32, 0, 32, 32);
+				q0.setRenderLayer(0.1f);
+				q0.init(item.getImage());
+				q0.generate();
+				item.assignEquipQuad(q0, f);
+			} else {
+				q0 = item.getEquipQuad(f);
+			}
+			q.addTemporaryChildQuad(q0);
 		}
 	}
 }

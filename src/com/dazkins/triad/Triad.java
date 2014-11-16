@@ -53,6 +53,11 @@ public class Triad {
 			e.printStackTrace();
 		}
 		
+		if(!Image.init()) {
+			System.out.println("Failed to initialize art!");
+			System.exit(1);
+		}
+		
 		initOpenGL();
 		
 		initProg();
@@ -60,9 +65,6 @@ public class Triad {
 	
 	private void initProg() {
 		BufferObject.init();
-		
-		if(!Image.init())
-			System.out.println("Failed to initialize art!");
 		
 		Model.loadModels();
 		
@@ -78,8 +80,8 @@ public class Triad {
 	
 	private void initOpenGL() {
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glLoadIdentity();
+//		GL11.glMatrixMode(GL11.GL_PROJECTION);
+//		GL11.glLoadIdentity();
 		GL11.glOrtho(0, winInfo.getW(), 0, winInfo.getH(), -1000f, 1000f);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);

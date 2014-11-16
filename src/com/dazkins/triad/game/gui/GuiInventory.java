@@ -4,6 +4,7 @@ import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
+import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Font;
@@ -89,8 +90,11 @@ public class GuiInventory extends Gui {
 					}
 				}
 				else if (input.mouse2JustDown) {
-					if(einv.addItemStack(inv.getItemStack(i)))
-						inv.removeItemStack(i);
+					ItemStack item = inv.getItemStack(i);
+					if (item != null) {
+						if(einv.addItemStack(item))
+							inv.removeItemStack(i);
+					}
 				}
 				else {
 					hoveredItem = null;

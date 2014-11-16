@@ -16,7 +16,7 @@ public class Item {
 	protected String name;
 	protected int ID;
 	protected boolean stackable;
-	
+	private Image img;
 	private BufferObject icon;
 	
 	public static ItemTestChest testChest = new ItemTestChest();
@@ -54,9 +54,10 @@ public class Item {
 	}
 
 	private void loadImageIconModel() {
+		img = Image.getImageFromName("item_" + name);
 		icon = new BufferObject(36);
 		icon.start();
-		Image.getImageFromName("item_" + name).renderSprite(icon, 0, 0, 32, 32, 0, 0, 32, 32, 0.0f, 1.0f);
+		img.renderSprite(icon, 0, 0, 32, 32, 0, 0, 32, 32, 0.0f, 1.0f);
 		icon.stop();
 	}
 	
@@ -86,5 +87,9 @@ public class Item {
 			GL11.glScalef(scale, scale, scale);
 
 		GL11.glPopMatrix();
+	}
+	
+	public Image getImage() {
+		return img;
 	}
 }

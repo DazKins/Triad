@@ -14,11 +14,11 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 public class Image {
+	private static Map<String, Image> nameToImage;
+	
 	private BufferedImage img;
 	private int width, height;
-	public int texID;
-
-	private static Map<String, Image> nameToImage = new HashMap<String, Image>();
+	private int texID;
 
 	public BufferedImage getRawImage() {
 		return img;
@@ -50,10 +50,10 @@ public class Image {
 	}
 
 	public static boolean init() {
+		nameToImage = new HashMap<String, Image>();
 		try {
 			String imageFolder = "/art";
-			File imageDir = null;
-			imageDir = new File(Image.class.getResource(imageFolder).toURI());
+			File imageDir = new File(Image.class.getResource(imageFolder).toURI());
 			
 			processAndLoadFile(imageDir);
 		} catch (Exception e) {
@@ -76,8 +76,7 @@ public class Image {
 		loadSpriteSheet(f);
 	}
 
-	public void renderSprite(BufferObject bo, float x, float y, float w,
-			float h, int tx, int ty, int tw, int th, float z, float b) {
+	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z, float b) {
 		float offset = 0.01f;
 
 		float tx0 = ((tx + offset) / (float) width);
@@ -87,7 +86,6 @@ public class Image {
 		
 		bo.bindImage(this);
 		bo.setDepth(z);
-		// if (b != 1)
 		bo.setBrightness(b);
 		bo.setUV(tx1, ty0);
 		bo.addVertex(x + w, y + h);

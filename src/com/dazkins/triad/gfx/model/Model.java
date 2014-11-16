@@ -1,6 +1,7 @@
 package com.dazkins.triad.gfx.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ public abstract class Model {
 	
 	protected List<Quad> quads;
 	protected List<Integer> quadRenders;
+	protected List<Quad> tempQuads;
 	
 	private Image img;
 	
@@ -82,6 +84,7 @@ public abstract class Model {
 	public Model(Image i) {
 		quads = new ArrayList<Quad>();
 		quadRenders = new ArrayList<Integer>();
+		tempQuads = new ArrayList<Quad>();
 		img = i;
 	}
 	
@@ -95,23 +98,47 @@ public abstract class Model {
 	}
 	
 	public abstract void render(Entity e);
-	 
+	
+	private static RenderSorter rSort = new RenderSorter();
+	
+	private static class RenderSorter implements Comparator<Quad> {
+		public int compare(Quad q0, Quad q1) {
+			return q1.getRenderLayer() < q0.getRenderLayer() ? 1 : -1;
+		}
+	}
+	
 	public void render() {
-		GL11.glPushMatrix();
-		GL11.glTranslatef(offsetX, offsetY, depth);
+		ArrayList<Quad> quadsToRender = new ArrayList<Quad>();
 		if(selectiveRendering) {
 			for (int i = 0; i < quadRenders.size(); i++) {
-				Quad q = (Quad) quads.get(quadRenders.get(i));
-				renderQuad(q);
+				quadsToRender.add(quads.get(quadRenders.get(i)));
 			}
 		} else {
 			for (int i = 0; i < quads.size(); i++) {
-				Quad q = (Quad) quads.get(i);
-				renderQuad(q);
+				quadsToRender.add(quads.get(i));
 			}
 		}
-		quadRenders.clear();
+		quadsToRender.sort(rSort);
+		
+		GL11.glPushMatrix();
+		GL11.glTranslatef(offsetX, offsetY, depth);
+		for (int i = 0; i < quadsToRender.size(); i++) {
+			System.out.println(quadsToRender.get(i).getRenderLayer());
+			quadsToRender.get(i).render();
+		}
+		System.out.println();
+		for (Quad q : tempQuads) {
+			renderQuad(q);
+		}
 		GL11.glPopMatrix();
+
+		quadRenders.clear();
+		tempQuads.clear();
+	}
+	
+	public void addTemporaryQuad(Quad q) {
+		if (q != null)
+			tempQuads.add(q);
 	}
 	
 	public void setCurrentAnimation(Animation a) {

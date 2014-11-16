@@ -1,5 +1,7 @@
 package com.dazkins.triad.gfx.model;
 
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.gfx.BufferObject;
@@ -20,7 +22,10 @@ public class Quad {
 	private int tx, ty;
 	private int tw, th;
 	
-	private int renderLayer;
+	private float renderLayer;
+	
+	private ArrayList<Quad> childQuads;
+	private ArrayList<Quad> temporaryChildQuads;
 
 	public Quad(float x, float y, float w, float h, int tx, int ty, int tw, int th) {
 		this.x = x;
@@ -31,16 +36,33 @@ public class Quad {
 		this.ty = ty;
 		this.tw = tw;
 		this.th = th;
+		
+		childQuads = new ArrayList<Quad>();
+		temporaryChildQuads = new ArrayList<Quad>();
 	}
 	
 	public void init(Image i) {
 		this.img = i;
 	}
 	
+	public void addChildQuad(Quad q) {
+		childQuads.add(q);
+	}
+	
+	public void addTemporaryChildQuad(Quad q) {
+		temporaryChildQuads.add(q);
+	}
+	
+	public void addTemporaryChildQuads(Quad[] q) {
+		for (int i = 0; i < q.length; i++) {
+			temporaryChildQuads.add(q[i]);
+		}
+	}
+	
 	public void generate() {
 		bufferObject = new BufferObject(36);
 		bufferObject.start();
-		img.renderSprite(bufferObject, x, y, w, h, tx, ty, tw, th, 0.0f, 1.0f);
+		img.renderSprite(bufferObject, 0, 0, w, h, tx, ty, tw, th, 0.0f, 1.0f);
 		bufferObject.stop();
 	}
 
@@ -70,11 +92,11 @@ public class Quad {
 		offsetY = y;
 	}
 	
-	public void setRenderLayer(int l) {
+	public void setRenderLayer(float l) {
 		renderLayer = l;
 	}
 	
-	public int getRenderLayer() {
+	public float getRenderLayer() {
 		return renderLayer;
 	}
 
@@ -87,9 +109,21 @@ public class Quad {
 			GL11.glTranslatef(-cRotX, -cRotY, 0);
 		}
 		
-		GL11.glTranslatef(offsetX, offsetY, renderLayer * 0.001f);
+		GL11.glTranslatef(x + offsetX,  y + offsetY, renderLayer * 0.002f);
 
 		bufferObject.render();
+		
+		for (Quad q : childQuads) {
+			q.render();
+		}
+		for (int i = 0; i < temporaryChildQuads.size(); i++) {
+			Quad q = temporaryChildQuads.get(i);
+			if (q != null) {
+				q.render();
+			}
+		}
+		
 		GL11.glPopMatrix();
+		temporaryChildQuads.clear();
 	}
 }

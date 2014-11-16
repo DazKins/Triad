@@ -40,7 +40,8 @@ public class GameStatePlaying implements GameState {
 		changeWorld(World.testWorld);
 		player = new EntityPlayer(world, 0, 0, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
-		world.addEntity(new EntityZombie(world, 500, 350));
+		for (int i = 0; i < 100; i++)
+			world.addEntity(new EntityZombie(world, 200 + (float)Math.random() * 500.0f, 200 + (float) Math.random() * 500.0f));
 		world.addEntity(player);
 		
 		world.assignCamera(cam);

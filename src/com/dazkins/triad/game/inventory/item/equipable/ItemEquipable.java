@@ -3,26 +3,26 @@ package com.dazkins.triad.game.inventory.item.equipable;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.gfx.model.NormalisedRenderable;
+import com.dazkins.triad.gfx.model.Quad;
 
 public abstract class ItemEquipable extends Item {
-	protected BufferObject[] equiped;
+	private Quad equipQuads[];
 	
 	public ItemEquipable(String name) {
 		super(name, false);
-		
-		equiped = new BufferObject[4];
-		
-		for (int i = 0; i < 4; i++) {
-			BufferObject ic = new BufferObject(36);
-			ic.start();
-			Image.getImageFromName("item_" + name).renderSprite(ic, 0, 0, 32, 32, 32 * (i + 1), 0, 32, 32, 0.0f, 1.0f);
-			ic.stop();
-			equiped[i] = ic;
-			
-		}
+		equipQuads = new Quad[4];
 	}
 	
-	public BufferObject getEquipIcon(int i) {
-		return equiped[i];
+	public Quad getEquipQuad(int f) {
+		return equipQuads[f];
+	}
+	
+	public boolean hasEquipQuad(int f) {
+		return equipQuads[f] != null;
+	}
+	
+	public void assignEquipQuad(Quad q, int f) {
+		equipQuads[f] = q;
 	}
 }
