@@ -1,35 +1,40 @@
 package com.dazkins.triad;
 
+import static org.lwjgl.opengl.GL11.GL_FALSE;
+import static org.lwjgl.system.glfw.GLFW.glfwDestroyWindow;
+import static org.lwjgl.system.glfw.GLFW.glfwWindowShouldClose;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GLContext;
+import org.lwjgl.system.MemoryUtil;
+import org.lwjgl.system.glfw.ErrorCallback;
+import org.lwjgl.system.glfw.GLFW;
+import org.lwjgl.system.glfw.GLFWvidmode;
+import org.lwjgl.system.glfw.WindowCallback;
+import org.lwjgl.system.glfw.WindowCallbackAdapter;
 
 import com.dazkins.triad.audio.SoundManager;
 import com.dazkins.triad.game.GameState;
 import com.dazkins.triad.game.GameStateLoading;
-import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
-import com.dazkins.triad.gfx.WindowInfo;
+import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.gfx.model.Model;
 
 public class Triad {
 	private boolean running;
 	private final String title = "Triad Pre-Alpha";
-	public WindowInfo winInfo = new WindowInfo(1280, 720);
-	
-	private boolean rescaled;
+	public Window win = new Window(1280, 720);
 
 	private GameState currentState;
 	
@@ -41,22 +46,10 @@ public class Triad {
 	public Triad() {
 		SoundManager.registerSound("/audio/music/triad_theme.wav", "theme");
 //		SoundManager.getAudio("theme").play();
-		
-		try {
-			Display.setResizable(true);
-			Display.setDisplayMode(new DisplayMode(winInfo.getW(), winInfo.getH()));
 
-			Display.setTitle(title);
-			Display.setIcon(loadIcon("/art/icon.png"));
-			Display.create();
-		} catch (LWJGLException e) {
-			e.printStackTrace();
-		}
+		Sys.touch();
 		
-		if(!Image.init()) {
-			System.out.println("Failed to initialize art!");
-			System.exit(1);
-		}
+		win.setup();
 		
 		initOpenGL();
 		
@@ -64,6 +57,8 @@ public class Triad {
 	}
 	
 	private void initProg() {
+		Image.init();
+		
 		BufferObject.init();
 		
 		Model.loadModels();
@@ -79,10 +74,11 @@ public class Triad {
 	}
 	
 	private void initOpenGL() {
+        GLContext.createFromCurrent();
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-//		GL11.glMatrixMode(GL11.GL_PROJECTION);
-//		GL11.glLoadIdentity();
-		GL11.glOrtho(0, winInfo.getW(), 0, winInfo.getH(), -1000f, 1000f);
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
+		GL11.glLoadIdentity();
+		GL11.glOrtho(0, win.getW(), 0, win.getH(), -1000f, 1000f);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -91,13 +87,9 @@ public class Triad {
 		GL11.glCullFace(GL11.GL_BACK);
 	}
 	
-	public boolean wasRescaled() {
-		return rescaled;
-	}
-	
 	private void stop() {
 		running = false;
-		Display.destroy();
+        win.destroy();
 	}
 
 	private void start() {
@@ -138,9 +130,8 @@ public class Triad {
 	}
 	
 	private void checkWindow() {
-		if (Display.wasResized()) {
+		if (win.wasResized()) {
 			resyncOpenGL();
-			rescaled = true;
 		}
 	}
 	
@@ -149,7 +140,7 @@ public class Triad {
 		
 		currentState.render();
 		
-		Display.update();
+		win.update();
 	}
 	
 	private ByteBuffer[] loadIcon(String p) {
@@ -185,20 +176,20 @@ public class Triad {
 	}
 
 	private void resyncOpenGL() {
-		winInfo.setW(Display.getWidth());
-		winInfo.setH(Display.getHeight());
+		win.setW(win.getW());
+		win.setH(win.getH());
 		GL11.glLoadIdentity();
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glOrtho(0, winInfo.getW(), 0, winInfo.getH(), -1000.0f, 1000.0f);
-		GL11.glViewport(0, 0, winInfo.getW(), winInfo.getH());
+		GL11.glOrtho(0, win.getW(), 0, win.getH(), -1000.0f, 1000.0f);
+		GL11.glViewport(0, 0, win.getW(), win.getH());
 	}
 
 	private void tick() {
-		currentState.tick();
+//		currentState.tick();
 		
-		rescaled = false;
+		win.tickState();
 		
-		if(Display.isCloseRequested()) {
+		if(win.wasCloseRequested()) {
 			stop();
 		}
 	}

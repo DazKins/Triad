@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
-import com.dazkins.triad.gfx.WindowInfo;
+import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
 
 public class Application {
@@ -29,13 +29,13 @@ public class Application {
 	private World world;
 	private Camera cam;
 	private InputHandler input;
-	private WindowInfo winInfo;
+	private Window winInfo;
 	
 	private int selectedTile;
 	private int brushSize = 1;
 	private boolean displayGrid;
 	
-	public Application(InputHandler i, WindowInfo w) {
+	public Application(InputHandler i, Window w) {
 //		world = World.getWorldFromName("TestingMap");
 		input = i;
 		winInfo = w;

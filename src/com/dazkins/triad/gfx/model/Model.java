@@ -123,10 +123,8 @@ public abstract class Model {
 		GL11.glPushMatrix();
 		GL11.glTranslatef(offsetX, offsetY, depth);
 		for (int i = 0; i < quadsToRender.size(); i++) {
-			System.out.println(quadsToRender.get(i).getRenderLayer());
 			quadsToRender.get(i).render();
 		}
-		System.out.println();
 		for (Quad q : tempQuads) {
 			renderQuad(q);
 		}

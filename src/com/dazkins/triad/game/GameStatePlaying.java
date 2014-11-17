@@ -18,7 +18,7 @@ import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.game.world.weather.RainWeather;
 import com.dazkins.triad.gfx.Camera;
-import com.dazkins.triad.gfx.WindowInfo;
+import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
 
 public class GameStatePlaying implements GameState {
@@ -29,13 +29,13 @@ public class GameStatePlaying implements GameState {
 	private Camera cam;
 	
 	private Gui currentlyDisplayedGui;
-	private WindowInfo winInf;
+	private Window winInf;
 	
 	public void init(Triad triad) {
 		this.triad = triad;
-		winInf = triad.winInfo;
+		winInf = triad.win;
 		input = new InputHandler();
-		cam = new Camera(input, triad.winInfo, 0, 0);
+		cam = new Camera(input, triad.win, 0, 0);
 		cam.lockZoom(0.0001f, 500f);
 		changeWorld(World.testWorld);
 		player = new EntityPlayer(world, 0, 0, input);

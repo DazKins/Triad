@@ -22,9 +22,9 @@ public class GuiLoading extends Gui {
 		
 		bScreen.setRGB(0.3f, 0.0f, 0.0f);
 		bScreen.addVertex(0, 0);
-		bScreen.addVertex(t.winInfo.getW(), 0);
-		bScreen.addVertex(t.winInfo.getW(), t.winInfo.getH());
-		bScreen.addVertex(0, t.winInfo.getH());
+		bScreen.addVertex(t.win.getW(), 0);
+		bScreen.addVertex(t.win.getW(), t.win.getH());
+		bScreen.addVertex(0, t.win.getH());
 		
 		bScreen.stop();
 	}
@@ -40,7 +40,7 @@ public class GuiLoading extends Gui {
 		
 		String msg = "Loading...";
 		
-		Font.drawString(msg, ((float)triad.winInfo.getW() / 2.0f) - ((float)msg.length() * 8), triad.winInfo.getH() / 2 + 16, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+		Font.drawString(msg, ((float)triad.win.getW() / 2.0f) - ((float)msg.length() * 8), triad.win.getH() / 2 + 16, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	public void onExit() {

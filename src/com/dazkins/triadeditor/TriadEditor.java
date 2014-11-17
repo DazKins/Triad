@@ -9,7 +9,7 @@ import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
-import com.dazkins.triad.gfx.WindowInfo;
+import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
 
 public class TriadEditor implements Runnable {
@@ -22,7 +22,7 @@ public class TriadEditor implements Runnable {
 	private ControlPanel controlPanel;
 	
 	private InputHandler input;
-	private WindowInfo OGLViewport;
+	private Window OGLViewport;
 	
 	public static void main(String args[]) {
 		TriadEditor te = new TriadEditor();
@@ -52,7 +52,7 @@ public class TriadEditor implements Runnable {
 		Image.init();
 		
 		input = new InputHandler();
-		OGLViewport = new WindowInfo(WIDTH, HEIGHT);
+		OGLViewport = new Window(WIDTH, HEIGHT);
 		
 		app = new Application(input, OGLViewport);
 		

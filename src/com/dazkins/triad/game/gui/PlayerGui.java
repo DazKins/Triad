@@ -36,6 +36,7 @@ public class PlayerGui extends Gui {
 
 	public void render(Camera cam) {
 		GL11.glPushMatrix();
+		GL11.glPushMatrix();
 		cam.attachTranslation();
 		ArrayList<Entity> entities = world.getEntitiesInAABB(cam.getViewportBounds());
 		entities.sort(Entity.ySorter);
@@ -46,6 +47,7 @@ public class PlayerGui extends Gui {
 				m.renderToPlayerGui(cam);
 			}
 		}
+		GL11.glPopMatrix();
 		GL11.glPopMatrix();
 	}
 

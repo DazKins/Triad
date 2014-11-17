@@ -2,8 +2,13 @@ package com.dazkins.triad.input;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.system.glfw.GLFW;
+
+import com.dazkins.triad.gfx.Window;
 
 public class InputHandler  {
+	private Window window;
+	
 	private boolean[] keys = new boolean[65536];
 	private boolean[] justDownedKeys = new boolean[65536];
 	
@@ -17,8 +22,12 @@ public class InputHandler  {
 	public int mouseX, mouseY;
 	public int mWheel;
 	
+	public InputHandler(Window w) {
+		window = w;
+	}
+	
 	public boolean isKeyDown(int k) {
-		return keys[k];
+		return GLFW.glfwGetKey(window.getWindowReference(), GLFW.GLFW_KEY_A) == GLFW.GLFW_PRESS;
 	}
 	
 	public boolean isKeyJustDown(int k) {
@@ -33,11 +42,12 @@ public class InputHandler  {
 		mouse2JustDown = false;
 		mouse3JustDown = false;
 		
+		GLFW.
+		
 		while(Keyboard.next()) {
 			if(Keyboard.getEventKeyState()) {
 				keys[Keyboard.getEventKey()] = true;
 				justDownedKeys[Keyboard.getEventKey()] = true;
-
 			} else {
 				keys[Keyboard.getEventKey()] = false;
 			}
