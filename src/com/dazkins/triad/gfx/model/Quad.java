@@ -26,6 +26,8 @@ public class Quad {
 	
 	private ArrayList<Quad> childQuads;
 	private ArrayList<Quad> temporaryChildQuads;
+	
+	private Quad parentQuad;
 
 	public Quad(float x, float y, float w, float h, int tx, int ty, int tw, int th) {
 		this.x = x;
@@ -46,17 +48,24 @@ public class Quad {
 	}
 	
 	public void addChildQuad(Quad q) {
+		q.initParentQuad(this);
 		childQuads.add(q);
 	}
 	
 	public void addTemporaryChildQuad(Quad q) {
+		q.initParentQuad(this);
 		temporaryChildQuads.add(q);
 	}
 	
 	public void addTemporaryChildQuads(Quad[] q) {
 		for (int i = 0; i < q.length; i++) {
+			q[i].initParentQuad(this);
 			temporaryChildQuads.add(q[i]);
 		}
+	}
+	
+	private void initParentQuad(Quad q) {
+		parentQuad = q;
 	}
 	
 	public void generate() {
@@ -99,10 +108,8 @@ public class Quad {
 	public float getRenderLayer() {
 		return renderLayer;
 	}
-
-	public void render() {
-		GL11.glPushMatrix();
-		
+	
+	private void attachTransformation() {
 		if ((cRotX != 0 || cRotY != 0) && rot != 0) {
 			GL11.glTranslatef(cRotX, cRotY, 0);
 			GL11.glRotatef(rot, 0, 0, 1);
@@ -110,8 +117,20 @@ public class Quad {
 		}
 		
 		GL11.glTranslatef(x + offsetX,  y + offsetY, renderLayer * 0.002f);
+	}
+
+	public void render() {
+		GL11.glPushMatrix();
+		
+		attachTransformation();
+		
+		if (parentQuad != null) {
+			parentQuad.attachTransformation();
+		}
 
 		bufferObject.render();
+		
+		GL11.glPopMatrix();
 		
 		for (Quad q : childQuads) {
 			q.render();
@@ -123,7 +142,6 @@ public class Quad {
 			}
 		}
 		
-		GL11.glPopMatrix();
 		temporaryChildQuads.clear();
 	}
 }

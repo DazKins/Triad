@@ -79,10 +79,10 @@ public class Image {
 	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z, float b) {
 		float offset = 0.01f;
 
-		float tx0 = ((tx + offset) / (float) width);
-		float ty0 = ((ty + offset) / (float) height);
-		float tx1 = ((tx + tw - offset) / (float) width);
-		float ty1 = ((ty + th - offset) / (float) height);
+		float tx0 = ((tx + offset) / (float) width) + 0.001f;
+		float ty0 = ((ty + offset) / (float) height) + 0.001f;
+		float tx1 = ((tx + tw - offset) / (float) width) - 0.001f;
+		float ty1 = ((ty + th - offset) / (float) height) - 0.001f;
 		
 		bo.bindImage(this);
 		bo.setDepth(z);
@@ -129,10 +129,10 @@ public class Image {
 		b.flip();
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
 
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
-				GL11.GL_NEAREST);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER,
-				GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER,GL11.GL_NEAREST);
 		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, b);
 
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);

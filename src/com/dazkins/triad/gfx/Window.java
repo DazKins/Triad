@@ -31,34 +31,23 @@ public class Window {
 	public void setup() {
 		GLFW.glfwSetErrorCallback(ErrorCallback.Util.getDefault());
 		 
-        if (GLFW.glfwInit() != GL11.GL_TRUE )
+        if (GLFW.glfwInit() != GL11.GL_TRUE)
             throw new IllegalStateException("Unable to initialize GLFW");
  
-        GLFW.glfwDefaultWindowHints();
-        GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_FALSE);
+        System.out.println(Long.MAX_VALUE);
+        
+        GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 16);
+        GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_TRUE);
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL11.GL_TRUE);
  
         winRef =  GLFW.glfwCreateWindow(w, h, "Hello World!", MemoryUtil.NULL, MemoryUtil.NULL);
         if (winRef == MemoryUtil.NULL)
             throw new RuntimeException("Failed to create the GLFW window");
- 
-        WindowCallback.set(winRef, new WindowCallbackAdapter() {
-            @Override
-            public void key(long window, int key, int scancode, int action, int mods) {
-                if ( key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE )
-                	GLFW.glfwSetWindowShouldClose(window, GL11.GL_TRUE);
-            }
-        });
- 
+        
         ByteBuffer vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-        GLFW.glfwSetWindowPos(
-        	winRef,
-            (GLFWvidmode.width(vidmode) - w) / 2,
-            (GLFWvidmode.height(vidmode) - h) / 2
-        );
+        GLFW.glfwSetWindowPos(winRef, (GLFWvidmode.width(vidmode) - w) / 2, (GLFWvidmode.height(vidmode) - h) / 2);
  
         GLFW.glfwMakeContextCurrent(winRef);
-        GLFW.glfwSwapInterval(1);
  
         GLFW.glfwShowWindow(winRef);
 	}

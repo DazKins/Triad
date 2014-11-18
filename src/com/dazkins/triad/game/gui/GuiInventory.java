@@ -71,7 +71,6 @@ public class GuiInventory extends Gui {
 	public void tick() {
 		super.tick();
 
-		System.out.println(input.mouseX + " " + input.mouseY);
 		for (int i = 0; i < slotSheet.length; i++) {
 			if (slotSheet[i].intersects(input.mouseX, input.mouseY)) {
 				if (input.mouse1JustDown) {
