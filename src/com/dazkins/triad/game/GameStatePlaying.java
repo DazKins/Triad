@@ -1,7 +1,7 @@
 package com.dazkins.triad.game;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.EntityButton;
@@ -29,12 +29,12 @@ public class GameStatePlaying implements GameState {
 	private Camera cam;
 	
 	private Gui currentlyDisplayedGui;
-	private Window winInf;
+	private Window win;
 	
 	public void init(Triad triad) {
 		this.triad = triad;
-		winInf = triad.win;
-		input = new InputHandler();
+		win = triad.win;
+		input = new InputHandler(win);
 		cam = new Camera(input, triad.win, 0, 0);
 		cam.lockZoom(0.0001f, 500f);
 		changeWorld(World.testWorld);
@@ -52,22 +52,22 @@ public class GameStatePlaying implements GameState {
 	}
 	
 	public void tick() {
-		if (input.isKeyJustDown(Keyboard.KEY_I)) {
+		if (input.isKeyJustDown(GLFW.GLFW_KEY_I)) {
 			if (currentlyDisplayedGui instanceof GuiInventory)
 				changeGui(new PlayerGui(triad, input, world, player));
 			else
 				changeGui(new GuiInventory(triad, input, player));
 		}
-		if (input.isKeyJustDown(Keyboard.KEY_E)) {
+		if (input.isKeyJustDown(GLFW.GLFW_KEY_E)) {
 			if (currentlyDisplayedGui instanceof GuiEquipMenu)
 				changeGui(new PlayerGui(triad, input, world, player));
 			else
 				changeGui(new GuiEquipMenu(triad, input, player));
 		}
-		if (input.isKeyJustDown(Keyboard.KEY_ESCAPE)) {
+		if (input.isKeyJustDown(GLFW.GLFW_KEY_ESCAPE)) {
 			changeGui(new PlayerGui(triad, input, world, player));
 		}
-		if (input.isKeyDown(Keyboard.KEY_LCONTROL) && input.mouse1JustDown) {
+		if (input.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL) && input.mouse1JustDown) {
 			int mx = (int) ((input.mouseX / cam.getZoom()) + cam.getX()) >> 5;
 			int my = (int) ((input.mouseY / cam.getZoom()) + cam.getY()) >> 5;
 			System.err.println("Tile location: " + mx + ", " + my);
@@ -91,9 +91,9 @@ public class GameStatePlaying implements GameState {
 			GL11.glBegin(GL11.GL_QUADS);
 				GL11.glColor4f(0.0f, 0.0f, 0.0f, 0.7f);
 				GL11.glVertex3f(0.0f, 0.0f, -0.1f);
-				GL11.glVertex3f(winInf.getW(), 0.0f, -0.1f);
-				GL11.glVertex3f(winInf.getW(), winInf.getH(), -0.1f);
-				GL11.glVertex3f(0.0f, winInf.getH(), -0.1f);
+				GL11.glVertex3f(win.getW(), 0.0f, -0.1f);
+				GL11.glVertex3f(win.getW(), win.getH(), -0.1f);
+				GL11.glVertex3f(0.0f, win.getH(), -0.1f);
 				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			GL11.glEnd();
 			GL11.glEnable(GL11.GL_TEXTURE_2D);

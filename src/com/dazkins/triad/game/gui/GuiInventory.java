@@ -52,8 +52,8 @@ public class GuiInventory extends Gui {
 	}
 	
 	public void setupGraphics() {
-		windowPosX = winInfo.getW() / 2 - windowWidth / 2;
-		windowPosY =  winInfo.getH() / 2 - windowHeight / 2;
+		windowPosX = win.getW() / 2 - windowWidth / 2;
+		windowPosY =  win.getH() / 2 - windowHeight / 2;
 		previewBoxX = windowPosX + windowWidth - 11 - previewBoxW;
 		previewBoxY = windowPosY + windowHeight - 11 - previewBoxH;
 		
@@ -70,7 +70,8 @@ public class GuiInventory extends Gui {
 
 	public void tick() {
 		super.tick();
-		
+
+		System.out.println(input.mouseX + " " + input.mouseY);
 		for (int i = 0; i < slotSheet.length; i++) {
 			if (slotSheet[i].intersects(input.mouseX, input.mouseY)) {
 				if (input.mouse1JustDown) {

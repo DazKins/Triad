@@ -8,16 +8,16 @@ import com.dazkins.triad.input.InputHandler;
 public abstract class Gui {
 	protected Triad triad;
 	protected InputHandler input;
-	protected Window winInfo;
+	protected Window win;
 	
 	public Gui(Triad t, InputHandler i) {
 		triad = t;
 		input = i;
-		winInfo = t.win;
+		win = t.win;
 	}
 	
 	public void tick() {
-		if (triad.wasRescaled())
+		if (win.wasResized())
 			setupGraphics();
 	}
 	

@@ -1,16 +1,19 @@
 package com.dazkins.triad.input;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import java.nio.DoubleBuffer;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.glfw.GLFW;
+import org.lwjgl.system.glfw.WindowCallback;
 
 import com.dazkins.triad.gfx.Window;
 
-public class InputHandler  {
+public class InputHandler extends WindowCallback {
 	private Window window;
 	
-	private boolean[] keys = new boolean[65536];
-	private boolean[] justDownedKeys = new boolean[65536];
+	private boolean[] keys = new boolean[400];
+	private boolean[] justDownedKeys = new boolean[400];
 	
 	public boolean mouse1;
 	public boolean mouse1JustDown;
@@ -24,10 +27,11 @@ public class InputHandler  {
 	
 	public InputHandler(Window w) {
 		window = w;
+		WindowCallback.set(window.getWindowReference(), this);
 	}
 	
 	public boolean isKeyDown(int k) {
-		return GLFW.glfwGetKey(window.getWindowReference(), GLFW.GLFW_KEY_A) == GLFW.GLFW_PRESS;
+		return GLFW.glfwGetKey(window.getWindowReference(), k) == GLFW.GLFW_PRESS;
 	}
 	
 	public boolean isKeyJustDown(int k) {
@@ -35,38 +39,65 @@ public class InputHandler  {
 	}
 	
 	public void tick() {
-		for (int i = 0; i < 65536; i++) {
+		mouse1 = GLFW.glfwGetMouseButton(window.getWindowReference(), GLFW.GLFW_MOUSE_BUTTON_1) == GLFW.GLFW_PRESS;
+		mouse2 = GLFW.glfwGetMouseButton(window.getWindowReference(), GLFW.GLFW_MOUSE_BUTTON_2) == GLFW.GLFW_PRESS;
+		mouse3 = GLFW.glfwGetMouseButton(window.getWindowReference(), GLFW.GLFW_MOUSE_BUTTON_3) == GLFW.GLFW_PRESS;
+		
+		for (int i = 0; i < justDownedKeys.length; i++) {
 			justDownedKeys[i] = false;
 		}
+		
 		mouse1JustDown = false;
 		mouse2JustDown = false;
 		mouse3JustDown = false;
 		
-		GLFW.
-		
-		while(Keyboard.next()) {
-			if(Keyboard.getEventKeyState()) {
-				keys[Keyboard.getEventKey()] = true;
-				justDownedKeys[Keyboard.getEventKey()] = true;
-			} else {
-				keys[Keyboard.getEventKey()] = false;
-			}
-		}
-		
-		mouse1 = Mouse.isButtonDown(0);
-		mouse2 = Mouse.isButtonDown(1);
-		mouse3 = Mouse.isButtonDown(2);
-		
-		while(Mouse.next()) {
-			if (Mouse.getEventButtonState()) {
-				mouse1JustDown = Mouse.isButtonDown(0);
-				mouse2JustDown = Mouse.isButtonDown(1);
-				mouse3JustDown = Mouse.isButtonDown(2);
-			}
-		}
-		
-		mouseX = Mouse.getX();
-		mouseY = Mouse.getY();
-		mWheel = Mouse.getDWheel();
+		mWheel = 0;
 	}
+
+	public void charMods(long window, int codepoint, int mods) { }
+
+	public void character(long window, int codepoint) { }
+
+	public void cursorEnter(long window, int entered) { }
+
+	public void cursorPos(long window, double xpos, double ypos) {
+		mouseX = (int) xpos;
+		mouseY = (int) (this.window.getH() - ypos);
+	}
+
+	public void drop(long window, int count, long names) { }
+
+	public void framebufferSize(long window, int width, int height) { }
+
+	public void key(long window, int key, int scancode, int action, int mods) {
+		if (action == GLFW.GLFW_PRESS)
+			justDownedKeys[key] = true;
+	}
+
+	public void mouseButton(long window, int button, int action, int mods) {
+		if (action == GLFW.GLFW_PRESS) {
+			if (button == GLFW.GLFW_MOUSE_BUTTON_1)
+				mouse1JustDown = true;
+			else if (button == GLFW.GLFW_MOUSE_BUTTON_2)
+				mouse2JustDown = true;
+			else if (button == GLFW.GLFW_MOUSE_BUTTON_3)
+				mouse3JustDown = true;
+		}
+	}
+
+	public void scroll(long window, double xoffset, double yoffset) {
+		mWheel = (int) yoffset;
+	}
+
+	public void windowClose(long window) { }
+
+	public void windowFocus(long window, int focused) { }
+
+	public void windowIconify(long window, int iconified) { }
+
+	public void windowPos(long window, int xpos, int ypos) { }
+
+	public void windowRefresh(long window) { }
+
+	public void windowSize(long window, int width, int height) { }
 }

@@ -30,6 +30,7 @@ import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.gfx.model.Model;
+import com.dazkins.triad.input.InputHandler;
 
 public class Triad {
 	private boolean running;
@@ -37,6 +38,8 @@ public class Triad {
 	public Window win = new Window(1280, 720);
 
 	private GameState currentState;
+	
+	private InputHandler input;
 	
 	public static void main(String args[]) {
 		Triad triad = new Triad();
@@ -50,6 +53,8 @@ public class Triad {
 		Sys.touch();
 		
 		win.setup();
+		
+		input = new InputHandler(win);
 		
 		initOpenGL();
 		
@@ -185,9 +190,11 @@ public class Triad {
 	}
 
 	private void tick() {
-//		currentState.tick();
+		currentState.tick();
 		
 		win.tickState();
+		
+		input.tick();
 		
 		if(win.wasCloseRequested()) {
 			stop();

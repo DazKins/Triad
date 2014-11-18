@@ -96,8 +96,8 @@ public class GuiEquipMenu extends Gui {
 	}
 
 	public void setupGraphics() {
-		windowPosX = winInfo.getW() / 2 - windowWidth / 2;
-		windowPosY =  winInfo.getH() / 2 - windowHeight / 2;
+		windowPosX = win.getW() / 2 - windowWidth / 2;
+		windowPosY =  win.getH() / 2 - windowHeight / 2;
 		
 		mainBox = new GuiBox(windowPosX, windowPosY, windowWidth, windowHeight, - 1, false);
 		

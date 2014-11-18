@@ -1,7 +1,6 @@
 package com.dazkins.triad.game.entity.mob;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.game.entity.EntityTorch;
 import com.dazkins.triad.game.entity.Facing;
@@ -40,23 +39,23 @@ public class EntityPlayer extends Mob {
 	public void tick() {
 		super.tick();
 		
-		if (input.isKeyDown(Keyboard.KEY_W))
+		if (input.isKeyDown(GLFW.GLFW_KEY_W))
 			ya = getMovementSpeed();
-		if (input.isKeyDown(Keyboard.KEY_A))
+		if (input.isKeyDown(GLFW.GLFW_KEY_A))
 			xa = -getMovementSpeed();
-		if (input.isKeyDown(Keyboard.KEY_S))
+		if (input.isKeyDown(GLFW.GLFW_KEY_S))
 			ya = -getMovementSpeed();
-		if (input.isKeyDown(Keyboard.KEY_D))
+		if (input.isKeyDown(GLFW.GLFW_KEY_D))
 			xa = getMovementSpeed();
 		
 		if(attackCooldownCounter > 0) {
 			attackCooldownCounter--;
 		}
 		
-		if (input.isKeyJustDown(Keyboard.KEY_Q))
+		if (input.isKeyJustDown(GLFW.GLFW_KEY_Q))
 			world.addEntity(new EntityTorch(world, x, y));
 		
-		if (input.isKeyDown(Keyboard.KEY_SPACE) && attackCooldownCounter == 0) {
+		if (input.isKeyDown(GLFW.GLFW_KEY_SPACE) && attackCooldownCounter == 0) {
 			int xx = (int) x >> 5;
 			int yy = (int) y >> 5;
 
