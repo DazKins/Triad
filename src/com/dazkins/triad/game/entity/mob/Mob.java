@@ -120,6 +120,8 @@ public abstract class Mob extends Entity {
 	}
 	
 	public void render(boolean debug) {
+		super.render();
+		
 		if (debug)
 			getAABB().renderBounds(1);
 	}
