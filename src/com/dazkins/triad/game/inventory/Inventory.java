@@ -1,7 +1,6 @@
 package com.dazkins.triad.game.inventory;
 
-import org.lwjgl.Sys;
-
+import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 
 public class Inventory {
@@ -25,6 +24,16 @@ public class Inventory {
 	
 	public void removeItemStack(int i) {
 		items[i] = null;
+	}
+	
+	public boolean addItem(Item i) {
+		ItemStack is = new ItemStack(i, 1);
+		return addItemStack(is);
+	}
+	
+	public boolean addItems(Item i, int n) {
+		ItemStack is = new ItemStack(i, n);
+		return addItemStack(is);
 	}
 	
 	public boolean addItemStack(ItemStack is) {

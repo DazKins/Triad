@@ -122,11 +122,11 @@ public class Quad {
 	public void render() {
 		GL11.glPushMatrix();
 		
-		attachTransformation();
-		
 		if (parentQuad != null) {
 			parentQuad.attachTransformation();
 		}
+		
+		attachTransformation();
 
 		bufferObject.render();
 		

@@ -16,20 +16,16 @@ import com.dazkins.triad.math.AABB;
 public class EntityPlayer extends Mob {
 	private InputHandler input;
 	
-	private int attackCooldown = 30;
+	private int attackCooldown = 0;
 	private int attackCooldownCounter;
 	
 	public EntityPlayer(World w, float x, float y, InputHandler input) {
 		super(w, x, y, "player", 1000);
 		this.input = input;
 		this.inv = new Inventory(10, 10);
-		inv.addItemStack(new ItemStack(Item.testHelmet, 1));
-//		inv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testdagger"), 1));
-//		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testHelmet"), 1));
-//		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testChest"), 1));
-//		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testLegs"), 1));
-//		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testFeet"), 1));
-//		eInv.addItemStack(new ItemStack(ItemRegisterer.getItemByName("testDagger"), 1));
+		inv.addItem(Item.testHelmet);
+		inv.addItem(Item.testChest);
+		inv.addItem(Item.testLegs);
 	}
 	
 	public int getMaxHealth() {
@@ -61,19 +57,19 @@ public class EntityPlayer extends Mob {
 
 			if (this.getFacing() == Facing.UP) {
 				AABB hit = new AABB(x - 22, y + 20, x + 22, y + 70);
-				world.sendAttackCommand(10, hit, this);
+				world.sendAttackCommand(1000, hit, this);
 			}
 			if (this.getFacing() == Facing.DOWN) {
 				AABB hit = new AABB(x - 22, y - 30, x + 22, y + 20);
-				world.sendAttackCommand(10, hit, this);
+				world.sendAttackCommand(1000, hit, this);
 			}
 			if (this.getFacing() == Facing.LEFT) {
 				AABB hit = new AABB(x - 40, y + 10, x, y + 50);
-				world.sendAttackCommand(10, hit, this);
+				world.sendAttackCommand(1000, hit, this);
 			}
 			if (this.getFacing() == Facing.RIGHT) {
 				AABB hit = new AABB(x, y + 10, x + 40, y + 50);
-				world.sendAttackCommand(10, hit, this);
+				world.sendAttackCommand(1000, hit, this);
 			}
 			attackCooldownCounter = attackCooldown;
 		}

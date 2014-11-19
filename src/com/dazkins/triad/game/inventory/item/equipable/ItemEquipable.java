@@ -11,7 +11,7 @@ public abstract class ItemEquipable extends Item {
 	
 	public ItemEquipable(String name) {
 		super(name, false);
-		equipQuads = new Quad[4];
+		equipQuads = new Quad[20];
 	}
 	
 	public Quad getEquipQuad(int f) {
