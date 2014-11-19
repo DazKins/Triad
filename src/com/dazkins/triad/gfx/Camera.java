@@ -77,6 +77,7 @@ public class Camera {
 	}
 	
 	public void tick() {
+		System.out.println(input.mWheel);
 		if (input.mWheel != 0) {
 			float zoa = input.mWheel / 25.0f;
 			boolean canChange = ((zoa < 0) && zoom != minZoom) || ((zoa > 0) && zoom != maxZoom);

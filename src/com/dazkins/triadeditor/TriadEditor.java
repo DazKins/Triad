@@ -2,6 +2,7 @@ package com.dazkins.triadeditor;
 
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLContext;
 
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -37,10 +38,13 @@ public class TriadEditor implements Runnable {
 	}
 	
 	public void init() {
+		Sys.getVersion();
 		Sys.touch();
 		
 		OGLWindow = new Window(WIDTH, HEIGHT);
 		OGLWindow.setup();
+
+        GLContext.createFromCurrent();
 
 		BufferObject.init();
 		
@@ -113,8 +117,8 @@ public class TriadEditor implements Runnable {
 	private void tick() {
 		if (OGLWindow.wasCloseRequested())
 			running = false;
-		
-		input.tick();
+
 		app.tick();
+		input.tick();
 	}
 }

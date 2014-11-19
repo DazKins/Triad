@@ -19,6 +19,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.game.world.WorldTest;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Window;
@@ -41,6 +42,10 @@ public class Application {
 		winInfo = w;
 		cam = new Camera(i, winInfo, 0, 0);
 		cam.lockZoom(0.001f, 10000f);
+		
+		world = World.testWorld;
+		world.assignCamera(cam);
+		world.load();
 	}
 
 	public void initControlPanel(ControlPanel cp) {
@@ -161,9 +166,9 @@ public class Application {
 			}
 		}
 		
-		cam.tick();
-		
 		cam.moveWithKeys(10f, GLFW.GLFW_KEY_UP, GLFW.GLFW_KEY_DOWN, GLFW.GLFW_KEY_RIGHT, GLFW.GLFW_KEY_LEFT);
+		
+		cam.tick();
 	}
 	
 	public void render() {
@@ -173,7 +178,8 @@ public class Application {
 		if(displayGrid)
 			world.renderGrid();
 		
-		world.render();
+		if(world != null)
+			world.render();
 		
 		renderTileSelector();
 		

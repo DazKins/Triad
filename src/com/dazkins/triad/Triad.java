@@ -192,9 +192,9 @@ public class Triad {
 	private void tick() {
 		currentState.tick();
 		
-		win.tickState();
-		
 		input.tick();
+		
+		win.tickState();
 		
 		if(win.wasCloseRequested()) {
 			stop();
