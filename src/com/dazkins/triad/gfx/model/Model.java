@@ -99,7 +99,7 @@ public abstract class Model {
 	
 	public abstract void render(Entity e);
 	
-	private static RenderSorter rSort = new RenderSorter();
+	public static final RenderSorter rSort = new RenderSorter();
 	
 	private static class RenderSorter implements Comparator<Quad> {
 		public int compare(Quad q0, Quad q1) {

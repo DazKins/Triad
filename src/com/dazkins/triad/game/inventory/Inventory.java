@@ -45,6 +45,7 @@ public class Inventory {
 						return true;
 					}
 				}
+				return false;
 			} else {
 				System.err.println("Item type added was null!");
 			}

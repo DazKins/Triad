@@ -26,6 +26,7 @@ public class EntityPlayer extends Mob {
 		inv.addItem(Item.testHelmet);
 		inv.addItem(Item.testChest);
 		inv.addItem(Item.testLegs);
+		inv.addItem(Item.testSword);
 	}
 	
 	public int getMaxHealth() {

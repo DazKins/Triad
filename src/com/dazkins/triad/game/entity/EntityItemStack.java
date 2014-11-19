@@ -56,8 +56,8 @@ public class EntityItemStack extends Entity {
 		if (e instanceof EntityPlayer) {
 			if (xa < 0.1f && ya < 0.1f) {
 				EntityPlayer ep = (EntityPlayer) e;
-				ep.getInventory().addItemStack(is);
-				this.remove();
+				if (ep.getInventory().addItemStack(is))
+					this.remove();
 			}
 		}
 	}

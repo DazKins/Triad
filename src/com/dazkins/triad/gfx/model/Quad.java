@@ -120,6 +120,9 @@ public class Quad {
 	}
 
 	public void render() {
+		temporaryChildQuads.sort(Model.rSort);
+		childQuads.sort(Model.rSort);
+		
 		GL11.glPushMatrix();
 		
 		if (parentQuad != null) {
