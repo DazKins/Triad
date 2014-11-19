@@ -33,8 +33,6 @@ public class Window {
 		 
         if (GLFW.glfwInit() != GL11.GL_TRUE)
             throw new IllegalStateException("Unable to initialize GLFW");
- 
-        System.out.println(Long.MAX_VALUE);
         
         GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 16);
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_TRUE);

@@ -1,8 +1,6 @@
 package com.dazkins.triadeditor;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.world.World;
@@ -22,7 +20,7 @@ public class TriadEditor implements Runnable {
 	private ControlPanel controlPanel;
 	
 	private InputHandler input;
-	private Window OGLViewport;
+	private Window OGLWindow;
 	
 	public static void main(String args[]) {
 		TriadEditor te = new TriadEditor();
@@ -39,22 +37,18 @@ public class TriadEditor implements Runnable {
 	}
 	
 	public void init() {
-		try {
-			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
-			Display.setLocation(0, 0);
-			Display.create();
-		} catch (LWJGLException e) {
-			e.printStackTrace();
-		}
+		Sys.touch();
+		
+		OGLWindow = new Window(WIDTH, HEIGHT);
+		OGLWindow.setup();
 
 		BufferObject.init();
 		
 		Image.init();
 		
-		input = new InputHandler();
-		OGLViewport = new Window(WIDTH, HEIGHT);
+		input = new InputHandler(OGLWindow);
 		
-		app = new Application(input, OGLViewport);
+		app = new Application(input, OGLWindow);
 		
 		controlPanel = new ControlPanel(WIDTH, 0);
 		
@@ -113,11 +107,11 @@ public class TriadEditor implements Runnable {
 	private void render() {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		app.render();
-		Display.update();
+		OGLWindow.update();
 	}
 	
 	private void tick() {
-		if (Display.isCloseRequested())
+		if (OGLWindow.wasCloseRequested())
 			running = false;
 		
 		input.tick();

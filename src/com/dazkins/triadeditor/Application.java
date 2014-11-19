@@ -15,8 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -163,7 +163,7 @@ public class Application {
 		
 		cam.tick();
 		
-		cam.moveWithKeys(10f, Keyboard.KEY_UP, Keyboard.KEY_DOWN, Keyboard.KEY_RIGHT, Keyboard.KEY_LEFT);
+		cam.moveWithKeys(10f, GLFW.GLFW_KEY_UP, GLFW.GLFW_KEY_DOWN, GLFW.GLFW_KEY_RIGHT, GLFW.GLFW_KEY_LEFT);
 	}
 	
 	public void render() {
