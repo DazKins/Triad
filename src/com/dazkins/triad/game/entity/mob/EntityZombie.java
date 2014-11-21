@@ -30,8 +30,8 @@ public class EntityZombie extends Mob {
 		
 		move(sxa, 0);
 		
-		if (!this.getModel().hasAnimation())
-			this.getModel().setCurrentAnimation(new AnimationZombieWalking());
+		this.getModel().addAnimation(new AnimationZombieWalking(this), 0);
+		this.getModel().updateAnimationState(this);
 	}
 	
 	public ItemStack[] getItemsToDrop() {

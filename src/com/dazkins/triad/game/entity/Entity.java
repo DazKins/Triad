@@ -73,7 +73,6 @@ public abstract class Entity {
 		float b = world.getTileBrightness(xx, yy);
 		float bm = b / 14.0f;
 		GL11.glColor3f(bm, bm, bm);
-		m.updateAnimationState(this);
 		m.render(this);
 	}
 	

@@ -6,9 +6,10 @@ import com.dazkins.triad.game.entity.EntityTorch;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
-import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.gfx.model.ModelHumanoid;
+import com.dazkins.triad.gfx.model.Model;
+import com.dazkins.triad.gfx.model.animation.AnimationHumanoidIdle;
+import com.dazkins.triad.gfx.model.animation.AnimationHumanoidSlashing;
 import com.dazkins.triad.gfx.model.animation.AnimationHumanoidWalking;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
@@ -16,8 +17,9 @@ import com.dazkins.triad.math.AABB;
 public class EntityPlayer extends Mob {
 	private InputHandler input;
 	
-	private int attackCooldown = 0;
+	private int attackCooldown = 30;
 	private int attackCooldownCounter;
+	private int attackWindow;
 	
 	public EntityPlayer(World w, float x, float y, InputHandler input) {
 		super(w, x, y, "player", 1000);
@@ -35,15 +37,24 @@ public class EntityPlayer extends Mob {
 
 	public void tick() {
 		super.tick();
-		
-		if (input.isKeyDown(GLFW.GLFW_KEY_W))
+		if (input.isKeyDown(GLFW.GLFW_KEY_W)) {
 			ya = getMovementSpeed();
-		if (input.isKeyDown(GLFW.GLFW_KEY_A))
+			getModel().addAnimation(new AnimationHumanoidWalking(this), 1);
+		}
+		if (input.isKeyDown(GLFW.GLFW_KEY_A)) {
 			xa = -getMovementSpeed();
-		if (input.isKeyDown(GLFW.GLFW_KEY_S))
+			getModel().addAnimation(new AnimationHumanoidWalking(this), 1);
+		}
+		if (input.isKeyDown(GLFW.GLFW_KEY_S)) {
 			ya = -getMovementSpeed();
-		if (input.isKeyDown(GLFW.GLFW_KEY_D))
+			getModel().addAnimation(new AnimationHumanoidWalking(this), 1);
+		}
+		if (input.isKeyDown(GLFW.GLFW_KEY_D)) {
 			xa = getMovementSpeed();
+			getModel().addAnimation(new AnimationHumanoidWalking(this), 1);
+		}
+		getModel().addAnimation(new AnimationHumanoidIdle(this), 0);
+		
 		
 		if(attackCooldownCounter > 0) {
 			attackCooldownCounter--;
@@ -73,15 +84,19 @@ public class EntityPlayer extends Mob {
 				world.sendAttackCommand(1000, hit, this);
 			}
 			attackCooldownCounter = attackCooldown;
+
+			getModel().addAnimation(new AnimationHumanoidSlashing(this), 5);
 		}
 		
 		xa *= 0.75;
 		ya *= 0.75;
 		
 		move(xa, ya);
+
+		Model m = getModel();
+		m.updateAnimationState(this);
 		
-		if (!((ModelHumanoid)this.getModel()).hasAnimation()) 
-			((ModelHumanoid)this.getModel()).setCurrentAnimation(new AnimationHumanoidWalking());
+//		if (!getModel().hasAnimation())
 	}
 
 	public AABB getAABB() {

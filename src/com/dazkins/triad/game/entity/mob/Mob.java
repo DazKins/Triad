@@ -31,7 +31,7 @@ public abstract class Mob extends Entity {
 		healthBar = new GuiStatusBar(0, 0, 0xFF0000, 128);
 	}
 
-	public MovementState getMovementState() {
+	public int getMovementState() {
 		float speedLen = 0.2f;
 		if (Math.abs(xa) > speedLen || Math.abs(ya) > speedLen)
 			return MovementState.MOVING;
@@ -75,6 +75,7 @@ public abstract class Mob extends Entity {
 		remove();
 	}
 
+	
 	public void move(float xa, float ya) {
 		AABB aabb = this.getAABB();
 

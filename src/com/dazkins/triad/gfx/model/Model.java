@@ -1,6 +1,7 @@
 package com.dazkins.triad.gfx.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ public abstract class Model {
 
 	private boolean selectiveRendering;
 	
-	private Animation anim;
+	private Animation anims[];
 	
 	public static void loadModels() {
 		entityModelMap.put(EntityPlayer.class, new ModelHumanoid(Image.getImageFromName("player")));
@@ -82,6 +83,7 @@ public abstract class Model {
 	}
 	
 	public Model(Image i) {
+		anims = new Animation[50];
 		quads = new ArrayList<Quad>();
 		quadRenders = new ArrayList<Integer>();
 		tempQuads = new ArrayList<Quad>();
@@ -89,12 +91,18 @@ public abstract class Model {
 	}
 	
 	public void updateAnimationState(Entity e) {
-		if (anim != null)
-			anim.updateState(e);
+		for (int i = 0; i < anims.length; i++) {
+			if (anims[i] != null)
+				anims[i].updateState(e);
+		}
 	}
 	
 	public boolean hasAnimation() {
-		return anim != null;
+		for (int i = 0; i < anims.length; i++) {
+			if (anims[i] != null)
+				return false;
+		}
+		return true;
 	}
 	
 	public abstract void render(Entity e);
@@ -134,25 +142,45 @@ public abstract class Model {
 		tempQuads.clear();
 	}
 	
+	public void removeAnimations() {
+		Arrays.fill(anims, null);
+	}
+	
 	public void addTemporaryQuad(Quad q) {
 		if (q != null)
 			tempQuads.add(q);
 	}
 	
-	public void setCurrentAnimation(Animation a) {
-		a.init(this);
-		anim = a;
+	public boolean hasInstanceOfAnim(Class a) {
+		for (int i = 0; i < anims.length; i++) {
+			if (anims[i] != null) {
+				if (anims[i].getClass().equals(a))
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	public void addAnimation(Animation a, int i) {
+		if (!hasInstanceOfAnim(a.getClass())) {
+			a.init(this);
+			anims[i] = a;
+		}
 	}
 	
 	private void renderQuad(Quad q) {
 		q.render();
 	}
 	
-	public void animationStop() {
-		anim = null;
-	}
-	
 	public void setImage(Image img) {
 		this.img = img;
+	}
+
+	public void animationStop(Animation a) {
+		for (int i = 0; i < anims.length; i++) {
+			if (anims[i] == a)
+				anims[i] = null;
+		}
+		a = null;
 	}
 }

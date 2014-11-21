@@ -1,5 +1,5 @@
 package com.dazkins.triad.game.entity.mob;
 
-public enum MovementState {
-	STATIONARY, MOVING;
+public class MovementState {
+	public static final int STATIONARY = 0, MOVING = 1;
 }

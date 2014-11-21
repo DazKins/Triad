@@ -6,25 +6,28 @@ import com.dazkins.triad.gfx.model.Model;
 public abstract class Animation {
 	protected Model parentModel;
 	
-	protected int tickStart;
+	protected long tickStart;
 	protected int animationTicks;
 	
 	protected boolean modelOK;
+	
+	public Animation(Entity e) {
+		tickStart = e.lifeTicks;
+	}
 	
 	public void init(Model m) {
 		parentModel = m;
 	}
 	
-	public abstract void updateState(Entity e);
-	
-	public void onStop() {
-		parentModel.animationStop();
+	public void updateState(Entity e) {
+		animationTicks++;
 	}
 	
-	public void verifyModel(Class<? extends Model> m) {
-		if (m.isInstance(parentModel))
-			modelOK = true;
-		else
-			modelOK = false;
+	public void stop() {
+		parentModel.animationStop(this);
+	}
+	
+	public boolean verifyModel(Class<? extends Model> m) {
+		return m.isInstance(parentModel);
 	}
 }
