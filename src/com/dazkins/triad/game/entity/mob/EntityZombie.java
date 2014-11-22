@@ -3,35 +3,45 @@ package com.dazkins.triad.game.entity.mob;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.gfx.model.Model;
+import com.dazkins.triad.gfx.model.animation.AnimationHumanoidIdle;
 import com.dazkins.triad.gfx.model.animation.AnimationZombieWalking;
 import com.dazkins.triad.math.AABB;
 
 public class EntityZombie extends Mob {
 	public EntityZombie(World w, float x, float y) {
 		super(w, x, y, "zombie", 100);
-		sxa = this.getMovementSpeed();
 	}
 
 	public float getMovementSpeed() {
-		return 0.3f;
+		return 2f;
 	}
 
 	public int getMaxHealth() {
 		return 100;
 	}
 	
-	float sxa = getMovementSpeed();
-	
 	public void tick() {
 		super.tick();
 		
-		if (Math.random() * 100 > 99)
-			sxa = -sxa;
+		Model m = getModel();
 		
-		move(sxa, 0);
+		m.addAnimation(new AnimationHumanoidIdle(this), 0);
 		
-		this.getModel().addAnimation(new AnimationZombieWalking(this), 0);
-		this.getModel().updateAnimationState(this);
+		if (Math.random() * 1000 > 999)
+			xv = ((float) Math.random() - 0.5f) * getMovementSpeed();
+		if (Math.random() * 1000 > 999)
+			yv = ((float) Math.random() - 0.5f) * getMovementSpeed();
+		
+		xv *= 0.85;
+		yv *= 0.85;
+		
+		if (xv > 0.6f || yv > 0.6f)
+			m.addAnimation(new AnimationZombieWalking(this), 1);
+		
+		move(xv, yv);
+		
+		m.updateAnimationState(this);
 	}
 	
 	public ItemStack[] getItemsToDrop() {

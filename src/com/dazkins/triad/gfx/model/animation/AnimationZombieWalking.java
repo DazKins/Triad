@@ -26,6 +26,9 @@ public class AnimationZombieWalking extends AnimationHumanoidWalking {
 		} else if (f == Facing.RIGHT) {
 			cRightArm.setRotation(90);
 			cLeftArm.setRotation(90);
+		} else {
+			cRightArm.setRotation(0);
+			cLeftArm.setRotation(0);
 		}
 	}
 }

@@ -191,7 +191,7 @@ public abstract class World implements Loadable {
 			Entity e0 = ents.get(i);
 			if (e0 != e && e0 instanceof Mob) {
 				Mob m = (Mob) e0;
-				m.hurt(damage);
+				m.hurt(e, damage);
 			}
 		}
 	}

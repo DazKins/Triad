@@ -3,12 +3,11 @@ package com.dazkins.triad.game.inventory.item.equipable.weapon;
 import com.dazkins.triad.game.inventory.item.equipable.ItemEquipable;
 
 public abstract class ItemWeapon extends ItemEquipable {
-	public static String itemTypeIdentifier = "Weapon";
-	
-	protected int damage;
-	
-	public ItemWeapon(String name, int damage) {
+	public ItemWeapon(String name) {
 		super(name);
-		this.damage = damage;
+	}
+	
+	public int getDamage() {
+		return 0;
 	}
 }

@@ -47,7 +47,14 @@ public abstract class Mob extends Entity {
 		return health;
 	}
 
-	public void hurt(int damage) {
+	public void hurt(Entity e, int damage) {
+		float x0 = this.getX() - e.getX();
+		float y0 = this.getY() - e.getY();
+		float mag = (float) Math.sqrt(x0 * x0 + y0 * y0);
+		x0 /= mag;
+		y0 /= mag;
+		xv = x0 * 10;
+		yv = y0 * 10;
 		health -= damage;
 	}
 	
@@ -75,6 +82,7 @@ public abstract class Mob extends Entity {
 		remove();
 	}
 
+	protected float xv, yv;
 	
 	public void move(float xa, float ya) {
 		AABB aabb = this.getAABB();

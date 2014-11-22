@@ -6,6 +6,7 @@ import com.dazkins.triad.game.entity.EntityTorch;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
+import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.gfx.model.animation.AnimationHumanoidIdle;
@@ -66,22 +67,28 @@ public class EntityPlayer extends Mob {
 		if (input.isKeyDown(GLFW.GLFW_KEY_SPACE) && attackCooldownCounter == 0) {
 			int xx = (int) x >> 5;
 			int yy = (int) y >> 5;
+			ItemWeapon weapon = eInv.getWeaponItem();
+			int damage = 0;
+			if (weapon != null)
+				damage = weapon.getDamage();
+			else
+				damage = 5;
 
 			if (this.getFacing() == Facing.UP) {
 				AABB hit = new AABB(x - 22, y + 20, x + 22, y + 70);
-				world.sendAttackCommand(1000, hit, this);
+				world.sendAttackCommand(damage, hit, this);
 			}
 			if (this.getFacing() == Facing.DOWN) {
 				AABB hit = new AABB(x - 22, y - 30, x + 22, y + 20);
-				world.sendAttackCommand(1000, hit, this);
+				world.sendAttackCommand(damage, hit, this);
 			}
 			if (this.getFacing() == Facing.LEFT) {
 				AABB hit = new AABB(x - 40, y + 10, x, y + 50);
-				world.sendAttackCommand(1000, hit, this);
+				world.sendAttackCommand(damage, hit, this);
 			}
 			if (this.getFacing() == Facing.RIGHT) {
 				AABB hit = new AABB(x, y + 10, x + 40, y + 50);
-				world.sendAttackCommand(1000, hit, this);
+				world.sendAttackCommand(damage, hit, this);
 			}
 			attackCooldownCounter = attackCooldown;
 

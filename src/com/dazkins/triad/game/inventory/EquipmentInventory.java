@@ -1,7 +1,10 @@
 package com.dazkins.triad.game.inventory;
 
+import java.util.ArrayList;
+
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
+import com.dazkins.triad.game.inventory.item.equipable.armour.ItemArmour;
 import com.dazkins.triad.game.inventory.item.equipable.armour.body.ItemArmourBody;
 import com.dazkins.triad.game.inventory.item.equipable.armour.feet.ItemArmourFeet;
 import com.dazkins.triad.game.inventory.item.equipable.armour.head.ItemArmourHead;
@@ -29,6 +32,60 @@ public class EquipmentInventory extends Inventory {
 			return addItemStack(is, WEAPON);
 		}
 		return false;
+	}
+	
+	public ItemArmourHead getHeadItem() {
+		ItemStack is = getItemStack(HEAD);
+		if (is != null) {
+			return (ItemArmourHead) is.getItemType();
+		}
+		return null;
+	}
+	
+	public ItemArmourBody getBodyItem() {
+		ItemStack is = getItemStack(BODY);
+		if (is != null) {
+			return (ItemArmourBody) is.getItemType();
+		}
+		return null;
+	}
+	
+	public ItemArmourLegs getLegsItem() {
+		ItemStack is = getItemStack(LEGS);
+		if (is != null) {
+			return (ItemArmourLegs) is.getItemType();
+		}
+		return null;
+	}
+	
+	public ItemArmourFeet getFeetItem() {
+		ItemStack is = getItemStack(FEET);
+		if (is != null) {
+			return (ItemArmourFeet) is.getItemType();
+		}
+		return null;
+	}
+	
+	public ItemWeapon getWeaponItem() {
+		ItemStack is = getItemStack(WEAPON);
+		if (is != null) {
+			return (ItemWeapon) is.getItemType();
+		}
+		return null;
+	}
+	
+	public ArrayList<ItemArmour> getArmour(){
+		ArrayList<ItemArmour> rValue = new ArrayList<ItemArmour>();
+		if (getHeadItem() != null)
+			rValue.add(getHeadItem());
+		if (getBodyItem() != null)
+			rValue.add(getBodyItem());
+		if (getLegsItem() != null)
+			rValue.add(getLegsItem());
+		if (getFeetItem() != null)
+			rValue.add(getFeetItem());
+		
+		return rValue;
 	}
 	
 	public boolean addItemStack(ItemStack is, int i) {

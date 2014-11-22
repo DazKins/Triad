@@ -47,21 +47,25 @@ public abstract class Entity {
 		world = w;
 	}
 	
+	//Stores the last known direction the entity was facing
+	private int lFacing;
+	
 	public int getFacing() {
 		float absXA = Math.abs(xa);
 		float absYA = Math.abs(ya);
 		
 		if (absXA > absYA) {
 			if (xa < 0)
-				return Facing.LEFT;
+				lFacing = Facing.LEFT;
 			else
-				return Facing.RIGHT;
-		} else {
+				lFacing = Facing.RIGHT;
+		} else if(absXA < absYA) {
 			if (ya < 0)
-				return Facing.DOWN;
+				lFacing = Facing.DOWN;
 			else
-				return Facing.UP;
+				lFacing = Facing.UP;
 		}
+		return lFacing;
 	}
 	
 	public abstract void renderToPlayerGui(Camera c);
