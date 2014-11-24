@@ -28,15 +28,15 @@ public class AnimationHumanoidWalking extends Animation {
 			Quad cBody = model.getBody()[f];
 			
 			if (f == Facing.LEFT || f == Facing.RIGHT) {
-				cRightArm.setRotation((float) Math.cos(m.lifeTicks * (m.getMovementSpeed() / 6.0f)) * 50.0f);
-				cLeftArm.setRotation((float) -Math.cos(m.lifeTicks * (m.getMovementSpeed() / 6.0f)) * 50.0f);
-				cRightLeg.setRotation((float) Math.sin(m.lifeTicks * (m.getMovementSpeed() / 6.0f)) * 50.0f);
-				cLeftLeg.setRotation((float) -Math.sin(m.lifeTicks * (m.getMovementSpeed() / 6.0f)) * 50.0f);
+				cRightArm.setRotation((float) Math.cos(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) * 50.0f);
+				cLeftArm.setRotation((float) -Math.cos(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) * 50.0f);
+				cRightLeg.setRotation((float) Math.sin(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) * 50.0f);
+				cLeftLeg.setRotation((float) -Math.sin(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) * 50.0f);
 			} else {
-				cRightArm.setRotation((float) Math.cos(m.lifeTicks * (m.getMovementSpeed() / 6.0f)) * 15.0f);
-				cLeftArm.setRotation((float) -Math.sin(m.lifeTicks * (m.getMovementSpeed() / 6.0f)) * 15.0f);
-				cRightLeg.setOffset(0, (float) (Math.sin(m.lifeTicks * (m.getMovementSpeed() / 6.0f)) + 1.0f) * 3.0f);
-				cLeftLeg.setOffset(0, (float) (-Math.sin(m.lifeTicks * (m.getMovementSpeed() / 6.0f)) + 1.0f) * 3.0f);
+				cRightArm.setRotation((float) Math.cos(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) * 15.0f);
+				cLeftArm.setRotation((float) -Math.sin(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) * 15.0f);
+				cRightLeg.setOffset(0, (float) (Math.sin(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) + 1.0f) * 3.0f);
+				cLeftLeg.setOffset(0, (float) (-Math.sin(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) + 1.0f) * 3.0f);
 			}
 		}
 		if (((int) e.lifeTicks - tickStart) > 30) {

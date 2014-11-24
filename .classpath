@@ -9,7 +9,7 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Triad/libs/native/windows/x64"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="G:/dev/Triad/libs/disruptor.jar"/>
-	<classpathentry kind="lib" path="G:/dev/Triad/libs/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="libs/disruptor.jar"/>
+	<classpathentry kind="lib" path="libs/lwjgl_util.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

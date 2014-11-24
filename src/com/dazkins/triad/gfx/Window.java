@@ -38,7 +38,7 @@ public class Window {
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_TRUE);
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL11.GL_TRUE);
  
-        winRef =  GLFW.glfwCreateWindow(w, h, "Hello World!", MemoryUtil.NULL, MemoryUtil.NULL);
+        winRef =  GLFW.glfwCreateWindow(w, h, "Triad", MemoryUtil.NULL, MemoryUtil.NULL);
         if (winRef == MemoryUtil.NULL)
             throw new RuntimeException("Failed to create the GLFW window");
         
