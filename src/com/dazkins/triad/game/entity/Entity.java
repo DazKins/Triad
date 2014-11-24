@@ -1,5 +1,6 @@
 package com.dazkins.triad.game.entity;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +27,9 @@ public abstract class Entity {
 	protected int individualID;
 	
 	protected boolean toBeRemoved;
+	
+	protected ArrayList<Float> xvm;
+	protected ArrayList<Float> yvm;
 
 	public Entity(World w, float x, float y, String s) {
 		this.x = x;
@@ -33,6 +37,8 @@ public abstract class Entity {
 		this.world = w;
 		this.name = s;
 		individualID = rand.nextInt();
+		xvm = new ArrayList<Float>();
+		yvm = new ArrayList<Float>();
 	}
 	
 	public boolean needsToBeRemoved() {
@@ -104,19 +110,28 @@ public abstract class Entity {
 		return xa;
 	}
 	
-	public void setXA(float a) {
-		xa = a;
+	public void addXAMod(float a) {
+		xvm.add(a);
 	}
 	
 	public float getYA() {
 		return ya;
 	}
 	
-	public void setYA(float a) {
-		ya = a;
+	public void addYAMod(float a) {
+		yvm.add(a);
 	}
 	
-	public void move(float xa, float ya) {
+	public void move(boolean a) {
+		if (!a) {
+			for (Float i : xvm) {
+				this.xa += i;
+			}
+			for (Float i : yvm) {
+				this.ya += i;
+			}
+		}
+		
 		if (this.getAABB() != null) {
 			for (Entity e : world.getEntitiesInAABB(this.getAABB())) {
 				if (e != this) {
@@ -127,6 +142,9 @@ public abstract class Entity {
 		
 		x += xa;
 		y += ya;
+		
+		xvm.clear();
+		yvm.clear();
 	}
 	
 	protected void onCollide(Entity e) { }

@@ -53,8 +53,8 @@ public abstract class Mob extends Entity {
 		float mag = (float) Math.sqrt(x0 * x0 + y0 * y0);
 		x0 /= mag;
 		y0 /= mag;
-		xv = x0 * 10;
-		yv = y0 * 10;
+		addXAMod(x0 * 10);
+		addYAMod(x0 * 10);
 		health -= damage;
 	}
 	
@@ -81,10 +81,15 @@ public abstract class Mob extends Entity {
 		onDeath();
 		remove();
 	}
-
-	protected float xv, yv;
 	
-	public void move(float xa, float ya) {
+	public void move() {
+		for (Float i : xvm) {
+			this.xa += i;
+		}
+		for (Float i : yvm) {
+			this.ya += i;
+		}
+		
 		AABB aabb = this.getAABB();
 
 		int x0 = ((int) x / Tile.tileSize) - 3;
@@ -115,10 +120,7 @@ public abstract class Mob extends Entity {
 			}
 		}
 
-		this.xa = xa;
-		this.ya = ya;
-
-		super.move(xa, ya);
+		super.move(true);
 	}
 	
 	public void renderToPlayerGui(Camera c) {

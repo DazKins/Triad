@@ -36,8 +36,8 @@ public class Item {
 		float speed = 7.0f;
 		if (no > 4 && is.getItemType().isStackable()) {
 			EntityItemStack eStack = new EntityItemStack(w, x, y, is);
-			eStack.setXA(((float)Math.random() - 0.5f) * speed);
-			eStack.setYA(((float)Math.random() - 0.5f) * speed);
+			eStack.addXAMod(((float)Math.random() - 0.5f) * speed);
+			eStack.addYAMod(((float)Math.random() - 0.5f) * speed);
 			w.addEntity(eStack);
 		} else {
 			speed *= Math.sqrt(no) * 4f;
@@ -46,8 +46,8 @@ public class Item {
 				ItemStack stack = new ItemStack(type, 1);
 				EntityItemStack eStack = new EntityItemStack(w, x, y, stack);
 				
-				eStack.setXA(((float)Math.random() - 0.5f) * speed);
-				eStack.setYA(((float)Math.random() - 0.5f) * speed);
+				eStack.addXAMod(((float)Math.random() - 0.5f) * speed);
+				eStack.addYAMod(((float)Math.random() - 0.5f) * speed);
 				w.addEntity(eStack);
 			}
 		}

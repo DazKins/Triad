@@ -39,19 +39,19 @@ public class EntityPlayer extends Mob {
 	public void tick() {
 		super.tick();
 		if (input.isKeyDown(GLFW.GLFW_KEY_W)) {
-			ya = getMovementSpeed();
+			addYAMod(getMovementSpeed());
 			getModel().addAnimation(new AnimationHumanoidWalking(this), 1);
 		}
 		if (input.isKeyDown(GLFW.GLFW_KEY_A)) {
-			xa = -getMovementSpeed();
+			addXAMod(-getMovementSpeed());
 			getModel().addAnimation(new AnimationHumanoidWalking(this), 1);
 		}
 		if (input.isKeyDown(GLFW.GLFW_KEY_S)) {
-			ya = -getMovementSpeed();
+			addYAMod(-getMovementSpeed());
 			getModel().addAnimation(new AnimationHumanoidWalking(this), 1);
 		}
 		if (input.isKeyDown(GLFW.GLFW_KEY_D)) {
-			xa = getMovementSpeed();
+			addXAMod(getMovementSpeed());
 			getModel().addAnimation(new AnimationHumanoidWalking(this), 1);
 		}
 		getModel().addAnimation(new AnimationHumanoidIdle(this), 0);
@@ -98,12 +98,10 @@ public class EntityPlayer extends Mob {
 		xa *= 0.75;
 		ya *= 0.75;
 		
-		move(xa, ya);
+		move();
 
 		Model m = getModel();
 		m.updateAnimationState(this);
-		
-//		if (!getModel().hasAnimation())
 	}
 
 	public AABB getAABB() {
@@ -111,6 +109,6 @@ public class EntityPlayer extends Mob {
 	}
 
 	public float getMovementSpeed() {
-		return 2;
+		return 1;
 	}
 }

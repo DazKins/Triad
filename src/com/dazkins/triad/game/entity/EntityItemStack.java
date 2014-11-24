@@ -27,7 +27,7 @@ public class EntityItemStack extends Entity {
 		xa *= 0.89;
 		ya *= 0.89;
 		
-		super.move(xa, ya);
+		super.move(false);
 		
 		yBounce = (float) (Math.sin((float)lifeTicks / 10.0f) * 4.0f) + 6;
 	}
