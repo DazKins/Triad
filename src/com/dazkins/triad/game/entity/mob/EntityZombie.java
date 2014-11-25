@@ -14,7 +14,7 @@ public class EntityZombie extends Mob {
 	}
 
 	public float getMovementSpeed() {
-		return 0.2f;
+		return 0.05f;
 	}
 
 	public int getMaxHealth() {
@@ -30,14 +30,29 @@ public class EntityZombie extends Mob {
 		
 		m.addAnimation(new AnimationHumanoidIdle(this), 0);
 		
-		if (Math.random() * 1000 > 999) {
+		if (Math.random() * 100 > 99) {
 			int r = (int) (Math.random() * 3);
+			if (r == 0) {
+				dirX = getMovementSpeed();
+			} else if (r == 1) {
+				dirX = -getMovementSpeed();
+			} else {
+				dirX = 0;
+			}
 		}
-		if (Math.random() * 1000 > 999)
-			dirY *= -1;
+		if (Math.random() * 100 > 99) {
+			int r = (int) (Math.random() * 3);
+			if (r == 0) {
+				dirY = getMovementSpeed();
+			} else if (r == 1) {
+				dirY = -getMovementSpeed();
+			} else {
+				dirY = 0;
+			}
+		}
 		
-		addXAMod(dirX * getMovementSpeed());
-		addYAMod(dirY * getMovementSpeed());
+		addXAMod(dirX);
+		addYAMod(dirY);
 		
 		xa *= 0.75;
 		ya *= 0.75;

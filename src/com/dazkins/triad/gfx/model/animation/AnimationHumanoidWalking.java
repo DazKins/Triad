@@ -14,32 +14,31 @@ public class AnimationHumanoidWalking extends Animation {
 	}
 	
 	public void updateState(Entity e) {
+		super.updateState(e);
 		if (verifyModel(ModelHumanoid.class)) {
 			ModelHumanoid model = (ModelHumanoid) parentModel;
 			Mob m = (Mob) e;
 			
 			int f = e.getFacing();
 			
-			Quad cHead = model.getHead()[f];
 			Quad cRightArm = model.getRightArm()[f];
 			Quad cLeftArm = model.getLeftArm()[f];
 			Quad cRightLeg = model.getRightLeg()[f];
 			Quad cLeftLeg = model.getLeftLeg()[f];
-			Quad cBody = model.getBody()[f];
 			
 			if (f == Facing.LEFT || f == Facing.RIGHT) {
-				cRightArm.setRotation((float) Math.cos(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) * 50.0f);
-				cLeftArm.setRotation((float) -Math.cos(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) * 50.0f);
-				cRightLeg.setRotation((float) Math.sin(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) * 50.0f);
-				cLeftLeg.setRotation((float) -Math.sin(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) * 50.0f);
+				cRightArm.setRotation((float) Math.cos((float) animationTicks * (m.getMovementSpeed() / 4.0f)) * 50.0f);
+				cLeftArm.setRotation((float) -Math.cos((float) animationTicks * (m.getMovementSpeed() / 4.0f)) * 50.0f);
+				cRightLeg.setRotation((float) Math.sin((float) animationTicks * (m.getMovementSpeed() / 4.0f)) * 50.0f);
+				cLeftLeg.setRotation((float) -Math.sin((float) animationTicks * (m.getMovementSpeed() / 4.0f)) * 50.0f);
 			} else {
-				cRightArm.setRotation((float) Math.cos(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) * 15.0f);
-				cLeftArm.setRotation((float) -Math.sin(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) * 15.0f);
-				cRightLeg.setOffset(0, (float) (Math.sin(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) + 1.0f) * 3.0f);
-				cLeftLeg.setOffset(0, (float) (-Math.sin(m.lifeTicks * (m.getMovementSpeed() / 4.0f)) + 1.0f) * 3.0f);
+				cRightArm.setRotation((float) Math.cos((float) animationTicks * (m.getMovementSpeed() / 4.0f)) * 15.0f);
+				cLeftArm.setRotation((float) -Math.sin((float) animationTicks * (m.getMovementSpeed() / 4.0f)) * 15.0f);
+				cRightLeg.setOffset(0, (float) (Math.sin((float) animationTicks * (m.getMovementSpeed() / 4.0f)) + 1.0f) * 3.0f);
+				cLeftLeg.setOffset(0, (float) (-Math.sin((float) animationTicks * (m.getMovementSpeed() / 4.0f)) + 1.0f) * 3.0f);
 			}
 		}
-		if (((int) e.lifeTicks - tickStart) > 30) {
+		if (((int) e.lifeTicks - tickStart) > 120) {
 			stop();
 		}
 	}

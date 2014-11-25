@@ -38,6 +38,7 @@ public class EntityPlayer extends Mob {
 
 	public void tick() {
 		super.tick();
+		getModel().addAnimation(new AnimationHumanoidIdle(this), 0);
 		if (input.isKeyDown(GLFW.GLFW_KEY_W)) {
 			addYAMod(getMovementSpeed());
 			getModel().addAnimation(new AnimationHumanoidWalking(this), 1);
@@ -54,7 +55,6 @@ public class EntityPlayer extends Mob {
 			addXAMod(getMovementSpeed());
 			getModel().addAnimation(new AnimationHumanoidWalking(this), 1);
 		}
-		getModel().addAnimation(new AnimationHumanoidIdle(this), 0);
 		
 		
 		if(attackCooldownCounter > 0) {
@@ -109,6 +109,6 @@ public class EntityPlayer extends Mob {
 	}
 
 	public float getMovementSpeed() {
-		return 1;
+		return 0.2f;
 	}
 }
