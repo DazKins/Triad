@@ -20,8 +20,11 @@ public abstract class Animation {
 	}
 	
 	public void updateState(Entity e) {
-		animationTicks++;
+		if (animationTicks++ == 0)
+			firstFrameInit(e);
 	}
+	
+	public void firstFrameInit(Entity e) { }
 	
 	public void stop() {
 		parentModel.animationStop(this);

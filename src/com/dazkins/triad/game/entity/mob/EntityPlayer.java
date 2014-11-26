@@ -8,7 +8,9 @@ import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.model.Model;
+import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.gfx.model.animation.AnimationHumanoidIdle;
 import com.dazkins.triad.gfx.model.animation.AnimationHumanoidSlashing;
 import com.dazkins.triad.gfx.model.animation.AnimationHumanoidWalking;
@@ -38,24 +40,23 @@ public class EntityPlayer extends Mob {
 
 	public void tick() {
 		super.tick();
-		getModel().addAnimation(new AnimationHumanoidIdle(this), 0);
+		model.addAnimation(new AnimationHumanoidIdle(this), 0);
 		if (input.isKeyDown(GLFW.GLFW_KEY_W)) {
 			addYAMod(getMovementSpeed());
-			getModel().addAnimation(new AnimationHumanoidWalking(this), 1);
+			model.addAnimation(new AnimationHumanoidWalking(this, getMovementSpeed()), 1);
 		}
 		if (input.isKeyDown(GLFW.GLFW_KEY_A)) {
 			addXAMod(-getMovementSpeed());
-			getModel().addAnimation(new AnimationHumanoidWalking(this), 1);
+			model.addAnimation(new AnimationHumanoidWalking(this, getMovementSpeed()), 1);
 		}
 		if (input.isKeyDown(GLFW.GLFW_KEY_S)) {
 			addYAMod(-getMovementSpeed());
-			getModel().addAnimation(new AnimationHumanoidWalking(this), 1);
+			model.addAnimation(new AnimationHumanoidWalking(this, getMovementSpeed()), 1);
 		}
 		if (input.isKeyDown(GLFW.GLFW_KEY_D)) {
 			addXAMod(getMovementSpeed());
-			getModel().addAnimation(new AnimationHumanoidWalking(this), 1);
+			model.addAnimation(new AnimationHumanoidWalking(this, getMovementSpeed()), 1);
 		}
-		
 		
 		if(attackCooldownCounter > 0) {
 			attackCooldownCounter--;
@@ -92,16 +93,19 @@ public class EntityPlayer extends Mob {
 			}
 			attackCooldownCounter = attackCooldown;
 
-			getModel().addAnimation(new AnimationHumanoidSlashing(this), 5);
+			model.addAnimation(new AnimationHumanoidSlashing(this), 5);
 		}
-		
-		xa *= 0.75;
-		ya *= 0.75;
 		
 		move();
 
-		Model m = getModel();
-		m.updateAnimationState(this);
+		model.updateAnimationState(this);
+		
+		xa *= 0.75;
+		ya *= 0.75;
+	}
+	
+	protected void initModel() {
+		model = new ModelHumanoid(Image.getImageFromName("player"));
 	}
 
 	public AABB getAABB() {
@@ -109,6 +113,6 @@ public class EntityPlayer extends Mob {
 	}
 
 	public float getMovementSpeed() {
-		return 0.2f;
+		return 0.5f;
 	}
 }

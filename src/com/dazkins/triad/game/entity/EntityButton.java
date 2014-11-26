@@ -15,7 +15,7 @@ public class EntityButton extends TriggerableEntity {
 	}
 
 	public void render() {
-		this.getModel().render();
+		super.render();
 	}
 	
 	public void tick() {

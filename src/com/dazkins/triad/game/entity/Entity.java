@@ -8,6 +8,7 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
+import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.model.Model;
@@ -30,6 +31,8 @@ public abstract class Entity {
 	
 	protected ArrayList<Float> xvm;
 	protected ArrayList<Float> yvm;
+	
+	protected Model model;
 
 	public Entity(World w, float x, float y, String s) {
 		this.x = x;
@@ -39,6 +42,7 @@ public abstract class Entity {
 		individualID = rand.nextInt();
 		xvm = new ArrayList<Float>();
 		yvm = new ArrayList<Float>();
+		initModel();
 	}
 	
 	public boolean needsToBeRemoved() {
@@ -77,18 +81,17 @@ public abstract class Entity {
 	public abstract void renderToPlayerGui(Camera c);
 	
 	public void render() {
-		Model m = getModel();
-		int xx = (int) x >> 5;
-		int yy = (int) y >> 5;
-		float b = world.getTileBrightness(xx, yy);
-		float bm = b / 14.0f;
-		GL11.glColor3f(bm, bm, bm);
-		m.render(this);
+		if (model != null) {
+			int xx = (int) x >> 5;
+			int yy = (int) y >> 5;
+			float b = world.getTileBrightness(xx, yy);
+			float bm = b / 14.0f;
+			GL11.glColor3f(bm, bm, bm);
+			model.render(this);
+		}
 	}
 	
-	protected Model getModel() {
-		return Model.entityModelMap.get(this.getClass());
-	}
+	protected void initModel() { }
 	
 	public float getX() {
 		return x;
@@ -120,6 +123,13 @@ public abstract class Entity {
 	
 	public void addYAMod(float a) {
 		yvm.add(a);
+	}
+	
+	public float getSpeed() {
+		float x0 = Math.abs(getXA());
+		float y0 = Math.abs(getYA());
+		float mag = (float) Math.sqrt(x0 * x0 + y0 * y0);
+		return mag;
 	}
 	
 	public void move(boolean a) {
