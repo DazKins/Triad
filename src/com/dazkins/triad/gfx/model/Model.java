@@ -17,8 +17,6 @@ import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.model.animation.Animation;
 
 public abstract class Model {
-	public static Map<Class<? extends Entity>, Model> entityModelMap = new HashMap<Class<? extends Entity>, Model>();
-	
 	protected List<Quad> quads;
 	protected List<Integer> quadRenders;
 	protected List<Quad> tempQuads;
@@ -31,12 +29,6 @@ public abstract class Model {
 	private boolean selectiveRendering;
 	
 	private Animation anims[];
-	
-	public static void loadModels() {
-		entityModelMap.put(EntityPlayer.class, new ModelHumanoid(Image.getImageFromName("player")));
-		entityModelMap.put(EntityZombie.class, new ModelZombie(Image.getImageFromName("zombie")));
-		entityModelMap.put(EntityButton.class, new ModelButton(Image.getImageFromName("button")));
-	}
 	
 	public Quad getQuad(int i) {
 		return quads.get(i);
@@ -161,10 +153,15 @@ public abstract class Model {
 		return false;
 	}
 	
-	public void addAnimation(Animation a, int i) {
-		if (!hasInstanceOfAnim(a.getClass())) {
+	public void addAnimation(Animation a, int i, boolean overwrite) {
+		if (overwrite) {
 			a.init(this);
 			anims[i] = a;
+		} else {
+			if (!hasInstanceOfAnim(a.getClass())) {
+				a.init(this);
+				anims[i] = a;
+			}
 		}
 	}
 	

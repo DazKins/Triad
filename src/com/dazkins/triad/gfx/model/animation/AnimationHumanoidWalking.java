@@ -9,7 +9,7 @@ import com.dazkins.triad.gfx.model.Quad;
 public class AnimationHumanoidWalking extends Animation {
 	private float animSpeed;
 	
-	public AnimationHumanoidWalking(Entity e, float a) {
+	public AnimationHumanoidWalking(Entity e) {
 		super(e);
 	}
 	

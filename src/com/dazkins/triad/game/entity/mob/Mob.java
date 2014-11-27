@@ -7,6 +7,7 @@ import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
+import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -22,6 +23,8 @@ public abstract class Mob extends Entity {
 	//I don't really want graphical data stored in Entity classes
 	//This is just a temporary measure
 	protected GuiStatusBar healthBar;
+	
+	private int attackCooldownCounter;
 
 	public Mob(World w, float x, float y, String s, int h) {
 		super(w, x, y, s);
@@ -46,20 +49,63 @@ public abstract class Mob extends Entity {
 	public int getHealth() {
 		return health;
 	}
+	
+	public int getBaseDamage() {
+		return 0;
+	}
+	
+	public int getBaseKnockback() {
+		return 0;
+	}
+	
+	public int getBaseAttackCooldown() {
+		return 0;
+	}
+	
+	protected boolean attemptAttack(AABB a) {
+		if (attackCooldownCounter == 0) {
+			attackArea(a);
+			ItemWeapon wep = eInv.getWeaponItem();
+			if (wep != null)
+				attackCooldownCounter = wep.getAttackCooldown();
+			else
+				attackCooldownCounter = getBaseAttackCooldown();
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private void attackArea(AABB a) {
+		world.sendAttackCommand(a, this, eInv.getWeaponItem());
+	}
 
-	public void hurt(Entity e, int damage) {
-		float x0 = this.getX() - e.getX();
-		float y0 = this.getY() - e.getY();
+	public void hurt(Mob m, ItemWeapon it) {
+		float x0 = this.getX() - m.getX();
+		float y0 = this.getY() - m.getY();
 		float mag = (float) Math.sqrt(x0 * x0 + y0 * y0);
 		x0 /= mag;
 		y0 /= mag;
-		addXAMod(x0 * 10);
-		addYAMod(x0 * 10);
-		health -= damage;
+		if (it != null) {
+			push(x0 * it.getKnockback(), y0 * it.getKnockback());
+			health -= it.getDamage();
+		} else {
+			push(x0 * m.getBaseKnockback(), y0 * m.getBaseKnockback());
+			health -= m.getBaseDamage();
+		}
+	}
+	
+	public void push(float xa, float ya) {
+		addXAMod(xa);
+		addYAMod(ya);
 	}
 	
 	public void tick() {
 		super.tick();
+		
+		if(attackCooldownCounter > 0) {
+			attackCooldownCounter--;
+		}
 		
 		if (health <= 0) {
 			kill();

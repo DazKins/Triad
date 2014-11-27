@@ -10,4 +10,12 @@ public abstract class ItemWeapon extends ItemEquipable {
 	public int getDamage() {
 		return 0;
 	}
+	
+	public int getKnockback() {
+		return 0;
+	}
+	
+	public int getAttackCooldown() {
+		return 0;
+	}
 }

@@ -8,4 +8,12 @@ public class ItemTestSword extends ItemWeapon {
 	public int getDamage() {
 		return 15;
 	}
+	
+	public int getKnockback() {
+		return 10;
+	}
+	
+	public int getAttackCooldown() {
+		return 30;
+	}
 }

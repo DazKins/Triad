@@ -11,6 +11,7 @@ import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.LightEmitter;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.entity.particle.Particle;
+import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.game.world.weather.Weather;
 import com.dazkins.triad.gfx.Camera;
@@ -27,7 +28,7 @@ public abstract class World implements Loadable {
 	public byte ambientLightLevel;
 
 	public ArrayList<Particle> particles = new ArrayList<Particle>();
-	public ArrayList<Entity> entities = new ArrayList<Entity>();
+	public ArrayList<Entity>[] entitiesInTiles;
 
 	private Camera cam;
 
@@ -90,14 +91,17 @@ public abstract class World implements Loadable {
 		if (e instanceof Particle)
 			addParticle((Particle) e);
 		
-		entities.add(e);
+		int tx = (int) e.getX() >> 4;
+		int ty = (int) e.getY() >> 4;
+		
+		entitiesInTiles[tx + ty * nChunksX].add(e);
 		
 		int i = 0;
 		if (e instanceof LightEmitter) {
-			int xx = (int) e.getX() >> 9;
-			int yy = (int) e.getY() >> 9;
-			for (int x = xx - 1; x < xx + 2; x++) {
-				for (int y = yy - 1; y < yy + 2; y++) {
+			int cx = (int) e.getX() >> 9;
+			int cy = (int) e.getY() >> 9;
+			for (int x = cx - 1; x < cx + 2; x++) {
+				for (int y = cy - 1; y < cy + 2; y++) {
 					if (x >= 0 && y >= 0 && x < nChunksX && y < nChunksY) {
 						Chunk c = chunks[x + y * nChunksX];
 						c.recalculateLighting();
@@ -121,6 +125,7 @@ public abstract class World implements Loadable {
 			}
 		}
 		entities.sort(Entity.ySorter);
+		for (int i = 0; i < entities.)
 		for (Entity e : entities) {
 			AABB b = e.getAABB();
 			if (b != null) {
@@ -185,13 +190,13 @@ public abstract class World implements Loadable {
 		this.cam = c;
 	}
 
-	public void sendAttackCommand(int damage, AABB b, Entity e) {
+	public void sendAttackCommand(AABB b, Mob m, ItemWeapon it) {
 		ArrayList<Entity> ents = getEntitiesInAABB(b);
 		for (int i = 0; i < ents.size(); i++) {
-			Entity e0 = ents.get(i);
-			if (e0 != e && e0 instanceof Mob) {
-				Mob m = (Mob) e0;
-				m.hurt(e, damage);
+			Entity e = ents.get(i);
+			if (e != m && e instanceof Mob) {
+				Mob tm = (Mob) e;
+				tm.hurt(m, it);
 			}
 		}
 	}

@@ -66,8 +66,6 @@ public class Triad {
 		
 		BufferObject.init();
 		
-		Model.loadModels();
-		
 		setGameState(new GameStateLoading());
 		
 		Font.initializeFont();

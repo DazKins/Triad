@@ -28,7 +28,7 @@ public class EntityZombie extends Mob {
 	public void tick() {
 		super.tick();
 		
-		model.addAnimation(new AnimationHumanoidIdle(this), 0);
+		model.addAnimation(new AnimationHumanoidIdle(this), 0, false);
 		
 		if (Math.random() * 100 > 99) {
 			int r = (int) (Math.random() * 3);
@@ -58,7 +58,7 @@ public class EntityZombie extends Mob {
 		ya *= 0.75;
 		
 		if (getSpeed() > 0.0001f)
-			model.addAnimation(new AnimationZombieWalking(this, getSpeed()), 1);
+			model.addAnimation(new AnimationZombieWalking(this, getSpeed()), 1, false);
 		
 		super.move();
 		

@@ -7,7 +7,7 @@ import com.dazkins.triad.gfx.model.Quad;
 
 public class AnimationZombieWalking extends AnimationHumanoidWalking {
 	public AnimationZombieWalking(Entity e, float a) {
-		super(e, a);
+		super(e);
 	}
 
 	public void updateState(Entity e) {
