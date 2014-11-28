@@ -40,14 +40,13 @@ public class GameStatePlaying implements GameState {
 		changeWorld(World.testWorld);
 		player = new EntityPlayer(world, 0, 0, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
-		for (int i = 0; i < 50; i++)
-			world.addEntity(new EntityZombie(world, 200 + (float)Math.random() * 500.0f, 200 + (float) Math.random() * 500.0f));
+		
+		world.addEntity(new EntityZombie(world, (float) Math.random() * 200 + 100, (float) Math.random() * 200 + 100));
+		
 		world.addEntity(player);
 		
 		world.assignCamera(cam);
 		world.setWeather(new RainWeather(10));
-		
-		Item.dropItemStack(world, 200, 200, new ItemStack(Item.testSword, 10));
 		
 		EntityButton b = new EntityButton(world, 64.0f, 64.0f);
 		world.addEntity(b);
@@ -86,6 +85,7 @@ public class GameStatePlaying implements GameState {
 		cam.attachTranslation();
 		world.assignCamera(cam);
 		world.render();
+//		world.renderGrid();
 		GL11.glPopMatrix();
 		
 		if (!(currentlyDisplayedGui instanceof PlayerGui)) {

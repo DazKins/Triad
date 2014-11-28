@@ -100,6 +100,15 @@ public class EntityPlayer extends Mob {
 	public int getBaseAttackCooldown() {
 		return 40;
 	}
+
+	protected AABB[] getAttackAreas() {
+		AABB[] r = new AABB[4];
+		r[Facing.DOWN] = new AABB(x - 22, y - 30, x + 22, y + 20);
+		r[Facing.UP] = new AABB(x - 22, y + 20, x + 22, y + 70);
+		r[Facing.LEFT] = new AABB(x - 40, y + 10, x, y + 50);
+		r[Facing.RIGHT] = new AABB(x, y + 10, x + 40, y + 50);
+		return r;
+	}
 	
 	protected void initModel() {
 		model = new ModelHumanoid(Image.getImageFromName("player"));

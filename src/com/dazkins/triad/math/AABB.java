@@ -21,7 +21,14 @@ public class AABB {
 	public float getY1() {
 		return y1;
 	}
-
+	
+	public float getW() {
+		return Math.abs(x1 - x0);
+	}
+	
+	public float getH() {
+		return Math.abs(y1 - y0);
+	}
 	public AABB(float x0, float y0, float x1, float y1) {
 		this.x0 = x0;
 		this.y0 = y0;

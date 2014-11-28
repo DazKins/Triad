@@ -1,7 +1,8 @@
 package com.dazkins.triad.game.entity.mob;
 
+import java.util.ArrayList;
+
 import com.dazkins.triad.game.entity.Entity;
-import com.dazkins.triad.game.entity.EntityItemStack;
 import com.dazkins.triad.game.gui.GuiStatusBar;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
@@ -25,6 +26,8 @@ public abstract class Mob extends Entity {
 	protected GuiStatusBar healthBar;
 	
 	private int attackCooldownCounter;
+	
+	protected Mob target;
 
 	public Mob(World w, float x, float y, String s, int h) {
 		super(w, x, y, s);
@@ -79,6 +82,14 @@ public abstract class Mob extends Entity {
 	private void attackArea(AABB a) {
 		world.sendAttackCommand(a, this, eInv.getWeaponItem());
 	}
+	
+	public Class<? extends Mob>[] getHostileMobs() {
+		return null;
+	}
+	
+	public AABB getEnemyScanArea() {
+		return null;
+	}
 
 	public void hurt(Mob m, ItemWeapon it) {
 		float x0 = this.getX() - m.getX();
@@ -95,13 +106,37 @@ public abstract class Mob extends Entity {
 		}
 	}
 	
-	public void push(float xa, float ya) {
-		addXAMod(xa);
-		addYAMod(ya);
-	}
-	
 	public void tick() {
 		super.tick();
+		
+		
+		ArrayList<Entity> ents = new ArrayList<Entity>();
+		
+		AABB eb = this.getEnemyScanArea();
+		
+		if (eb != null) {
+			ArrayList<Mob> hostileMobs = new ArrayList<Mob>();
+			ents = world.getEntitiesInAABB(eb);
+			Class<? extends Mob>[] m = this.getHostileMobs();
+			for (Entity e : ents) {
+				if (e instanceof Mob) {
+					for (int i = 0; i < m.length; i++) {
+						if (e.getClass() == m[i]) {
+							hostileMobs.add((Mob) e);
+						}
+					}
+				}
+			}
+			
+			if (hostileMobs.size() > 1) {
+				int r = (int) (Math.random() * (hostileMobs.size() - 1));
+				this.target = hostileMobs.get(r);
+			} else if (hostileMobs.size() == 1) {
+				this.target = hostileMobs.get(0);
+			} else {
+				target = null;
+			}
+		}
 		
 		if(attackCooldownCounter > 0) {
 			attackCooldownCounter--;
@@ -185,6 +220,10 @@ public abstract class Mob extends Entity {
 	
 	public Inventory getInventory() {
 		return inv;
+	}
+	
+	protected AABB[] getAttackAreas() {
+		return null;
 	}
 	
 	public EquipmentInventory getEquipmentInventory() {

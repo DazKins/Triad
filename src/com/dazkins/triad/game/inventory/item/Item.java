@@ -31,26 +31,31 @@ public class Item {
 		loadImageIconModel();
 	}
 	
+	public static void dropItemStack(World w, float x, float y, Item i, int n) {
+		dropItemStack(w, x, y, new ItemStack(i, n));
+	}
+	
 	public static void dropItemStack(World w, float x, float y, ItemStack is) {
 		int no = is.getSize();
 		float speed = 7.0f;
 		if (no > 4 && is.getItemType().isStackable()) {
-			EntityItemStack eStack = new EntityItemStack(w, x, y, is);
-			eStack.addXAMod(((float)Math.random() - 0.5f) * speed);
-			eStack.addYAMod(((float)Math.random() - 0.5f) * speed);
-			w.addEntity(eStack);
+			dropStackWithVelocity(w, x, y, is, no);
 		} else {
-			speed *= Math.sqrt(no) * 4f;
 			for (int i = 0; i < no; i++) {
 				Item type = is.getItemType();
 				ItemStack stack = new ItemStack(type, 1);
-				EntityItemStack eStack = new EntityItemStack(w, x, y, stack);
-				
-				eStack.addXAMod(((float)Math.random() - 0.5f) * speed);
-				eStack.addYAMod(((float)Math.random() - 0.5f) * speed);
-				w.addEntity(eStack);
+				dropStackWithVelocity(w, x, y, stack, no);
 			}
 		}
+	}
+	
+	private static void dropStackWithVelocity(World w, float x, float y, ItemStack stack, int no) {
+		float speed  = (float) Math.sqrt(no) * 28.0f;
+		EntityItemStack eStack = new EntityItemStack(w, x, y, stack);
+		float xa = ((float)Math.random() - 0.5f) * speed;
+		float ya = ((float)Math.random() - 0.5f) * speed;
+		eStack.push(xa, ya);
+		w.addEntity(eStack);
 	}
 
 	private void loadImageIconModel() {

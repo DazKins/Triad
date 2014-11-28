@@ -29,6 +29,7 @@ public abstract class World implements Loadable {
 
 	public ArrayList<Particle> particles = new ArrayList<Particle>();
 	public ArrayList<Entity>[] entitiesInTiles;
+	public ArrayList<Entity> entities;
 
 	private Camera cam;
 
@@ -58,7 +59,14 @@ public abstract class World implements Loadable {
 
 		this.nChunksX = l.getInt(0);
 		this.nChunksY = l.getInt(1);
-
+		
+		entitiesInTiles = new ArrayList[nChunksX * Chunk.chunkW * nChunksY * Chunk.chunkH];
+		for (int i = 0; i < entitiesInTiles.length; i++) {
+			entitiesInTiles[i] = new ArrayList<Entity>();
+		}
+		
+		entities = new ArrayList<Entity>();
+		
 		this.generate();
 		
 		int tw = this.nChunksX * Chunk.chunkW;
@@ -69,10 +77,6 @@ public abstract class World implements Loadable {
 			int y = (i - 2) % tw;
 			this.setTile(Tile.tiles[t], x, y);
 		}
-	}
-	
-	public ArrayList<Entity> getEntities() {
-		return entities;
 	}
 
 	private void generate() {
@@ -91,12 +95,12 @@ public abstract class World implements Loadable {
 		if (e instanceof Particle)
 			addParticle((Particle) e);
 		
-		int tx = (int) e.getX() >> 4;
-		int ty = (int) e.getY() >> 4;
+		int tx = (int) e.getX() >> 5;
+		int ty = (int) e.getY() >> 5;
 		
-		entitiesInTiles[tx + ty * nChunksX].add(e);
+		entitiesInTiles[tx + ty * nChunksX * Chunk.chunkW].add(e);
+		entities.add(e);
 		
-		int i = 0;
 		if (e instanceof LightEmitter) {
 			int cx = (int) e.getX() >> 9;
 			int cy = (int) e.getY() >> 9;
@@ -124,8 +128,8 @@ public abstract class World implements Loadable {
 				}
 			}
 		}
+		
 		entities.sort(Entity.ySorter);
-		for (int i = 0; i < entities.)
 		for (Entity e : entities) {
 			AABB b = e.getAABB();
 			if (b != null) {
@@ -133,6 +137,7 @@ public abstract class World implements Loadable {
 					e.render();
 			}
 		}
+		
 		for (Particle p : particles) {
 			if (p.getAABB().intersects(cam.getViewportBounds()))
 				p.render();
@@ -149,14 +154,25 @@ public abstract class World implements Loadable {
 
 	public ArrayList<Entity> getEntitiesInAABB(AABB b) {
 		ArrayList<Entity> rValue = new ArrayList<Entity>();
-		for (int i = 0; i < entities.size(); i++) {
-			Entity e = entities.get(i);
-			AABB a = e.getAABB();
-			if (a != null) {
-				if (e.getAABB().intersects(b))
-					rValue.add(e);
+		
+		int x0 = ((int) b.getX0() >> 5) - 1;
+		int y0 = ((int) b.getY0() >> 5) - 1;
+		int x1 = ((int) b.getX1() >> 5) + 1;
+		int y1 = ((int) b.getY1() >> 5) + 1;
+		
+		for (int x = x0; x < x1; x++) {
+			for (int y = y0; y < y1; y++) {
+				ArrayList<Entity> tmp = getEntitesInTile(x, y);
+				for (Entity e : tmp) {
+					if (e.getAABB() != null) {
+						if (e.getAABB().intersects(b)) {
+							rValue.add(e);
+						}
+					}
+				}
 			}
 		}
+		
 		return rValue;
 	}
 
@@ -169,21 +185,24 @@ public abstract class World implements Loadable {
 	public Chunk[] getChunks() {
 		return chunks;
 	}
+	
+	public float getW() {
+		return nChunksX * Chunk.chunkW * Tile.tileSize; 
+	}
+	
+	public float getH() {
+		return nChunksY * Chunk.chunkH * Tile.tileSize;
+	}
 
 	public Camera getCam() {
 		return cam;
 	}
 
 	public ArrayList<Entity> getEntitesInTile(int x, int y) {
-		ArrayList<Entity> rValue = new ArrayList<Entity>();
-		if (x < 0 || y < 0 || x >= nChunksX || y >= nChunksY)
-			return null;
-		for (int i = 0; i < entities.size(); i++) {
-			if (new AABB((int) x << 5, (int) y << 5, 32, 32).intersects(entities.get(i).getAABB()))
-				rValue.add(entities.get(i));
-				
-		}
-		return rValue;
+		if (x < 0 || y < 0 || x >= nChunksX * Chunk.chunkW || y >= nChunksY * Chunk.chunkH)
+			return new ArrayList<Entity>();
+		
+		return entitiesInTiles[x + y * nChunksX * Chunk.chunkW];
 	}
 
 	public void assignCamera(Camera c) {
@@ -207,36 +226,31 @@ public abstract class World implements Loadable {
 	}
 
 	public boolean isValidTilePos(int x, int y) {
-		return (x >= 0 && x < nChunksX * Chunk.chunkW)
-				&& (y >= 0 && y < nChunksY * Chunk.chunkH);
+		return (x >= 0 && x < nChunksX * Chunk.chunkW) && (y >= 0 && y < nChunksY * Chunk.chunkH);
 	}
 
 	public byte getTileBrightness(int x, int y) {
 		if (!isValidTilePos(x, y))
 			return 0;
-		return getChunkFromWorldTileCoords(x, y).getTileBrightness(
-				x % Chunk.chunkW, y % Chunk.chunkH);
+		return getChunkFromWorldTileCoords(x, y).getTileBrightness(x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 
 	public void setTileBrightness(byte b, int x, int y) {
 		if (!isValidTilePos(x, y))
 			return;
-		getChunkFromWorldTileCoords(x, y).setTileBrightness(b,
-				x % Chunk.chunkW, y % Chunk.chunkH);
+		getChunkFromWorldTileCoords(x, y).setTileBrightness(b, x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 
 	public Tile getTile(int x, int y) {
 		if (!isValidTilePos(x, y))
 			return null;
-		return getChunkFromWorldTileCoords(x, y).getTile(x % Chunk.chunkW,
-				y % Chunk.chunkH);
+		return getChunkFromWorldTileCoords(x, y).getTile(x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 
 	public void setTile(Tile t, int x, int y) {
 		if (!isValidTilePos(x, y))
 			return;
-		getChunkFromWorldTileCoords(x, y).setTile(t, x % Chunk.chunkW,
-				y % Chunk.chunkH);
+		getChunkFromWorldTileCoords(x, y).setTile(t, x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 
 	public void tick() {
@@ -249,13 +263,44 @@ public abstract class World implements Loadable {
 			else
 				particles.get(i).tick();
 		}
-		for (int i = 0; i < entities.size(); i++) {
-			if (entities.get(i).needsToBeRemoved())
-				entities.remove(i);
-			else
-				entities.get(i).tick();
+		for (int i = 0; i < entitiesInTiles.length; i++) {
+			ArrayList<Entity> tmp = entitiesInTiles[i];
+			for (int u = 0; u < tmp.size(); u++) {
+				Entity e = tmp.get(u);
+				if (e.needsToBeRemoved()) {
+					entitiesInTiles[i].remove(e);
+					entities.remove(e);
+				}
+				else {
+					int tx0 = (int) e.getX() >> 4;
+					int ty0 = (int) e.getY() >> 4;
+					
+					e.tick();
+					
+					int tx1 = (int) e.getX() >> 4;
+					int ty1 = (int) e.getY() >> 4;
+					
+					if (tx0 != tx1 || ty0 != ty1) {
+						entities.remove(e);
+						entitiesInTiles[i].remove(e);
+						
+						addEntity(e);
+					}
+				}
+			}
 		}
 
 		weather.tick();
+	}
+
+	public ArrayList<Entity> getEntities() {
+		ArrayList<Entity> rValue = new ArrayList<Entity>();
+		for (int i = 0; i < entitiesInTiles.length; i++) {
+			ArrayList<Entity> tmp = entitiesInTiles[i];
+			for (Entity e : tmp) {
+				rValue.add(e);
+			}
+		}
+		return rValue;
 	}
 }

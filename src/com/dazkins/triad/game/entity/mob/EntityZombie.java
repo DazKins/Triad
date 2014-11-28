@@ -16,43 +16,26 @@ public class EntityZombie extends Mob {
 	}
 
 	public float getMovementSpeed() {
-		return 0.05f;
+		return 0.25f;
 	}
 
 	public int getMaxHealth() {
 		return 100;
 	}
 	
-	private float dirX, dirY;
-	
 	public void tick() {
 		super.tick();
 		
 		model.addAnimation(new AnimationHumanoidIdle(this), 0, false);
 		
-		if (Math.random() * 100 > 99) {
-			int r = (int) (Math.random() * 3);
-			if (r == 0) {
-				dirX = getMovementSpeed();
-			} else if (r == 1) {
-				dirX = -getMovementSpeed();
-			} else {
-				dirX = 0;
-			}
+		if (target != null) {
+			float tx = target.getX() - this.getX();
+			float ty = target.getY() - this.getY();
+			float mag = (float) Math.sqrt(tx * tx + ty * ty);
+			float xv = (tx / mag) * getMovementSpeed();
+			float yv = (ty / mag) * getMovementSpeed();
+			push(xv, yv);
 		}
-		if (Math.random() * 100 > 99) {
-			int r = (int) (Math.random() * 3);
-			if (r == 0) {
-				dirY = getMovementSpeed();
-			} else if (r == 1) {
-				dirY = -getMovementSpeed();
-			} else {
-				dirY = 0;
-			}
-		}
-		
-		addXAMod(dirX);
-		addYAMod(dirY);
 		
 		xa *= 0.75;
 		ya *= 0.75;
@@ -69,11 +52,33 @@ public class EntityZombie extends Mob {
 		model = new ModelZombie(Image.getImageFromName("zombie"));
 	}
 	
+	public int getBaseDamage() {
+		return 5;
+	}
+	
+	public int getBaseKnockback() {
+		return 5;
+	}
+	
+	public int getBaseAttackCooldown() {
+		return 40;
+	}
+	
 	public ItemStack[] getItemsToDrop() {
 		ItemStack[] stacks = new ItemStack[10];
 		for (int i = 0; i < 10; i++)
 			stacks[i] = new ItemStack(Item.testHelmet, 1);
 		return stacks;
+	}
+	
+	public Class<? extends Mob>[] getHostileMobs() {
+		Class<? extends Mob>[] r = new Class[1];
+		r[0] = EntityPlayer.class;
+		return r;
+	}
+	
+	public AABB getEnemyScanArea() {
+		return new AABB(x - 256, y - 256, x + 256, y + 256);
 	}
 
 	public AABB getAABB() {

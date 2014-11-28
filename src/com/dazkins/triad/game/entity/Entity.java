@@ -1,5 +1,6 @@
 package com.dazkins.triad.game.entity;
 
+import java.sql.NClob;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -9,14 +10,16 @@ import java.util.Random;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
+import com.dazkins.triad.game.entity.mob.Mob;
+import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.math.AABB;
 
 public abstract class Entity {
 	private static Random rand = new Random();
-	private static Map<Integer, Class<? extends Entity>> globalIDEntityMap = new HashMap<Integer, Class<? extends Entity>>();
 	
 	protected float x, y;
 	protected float xa, ya;
@@ -25,7 +28,6 @@ public abstract class Entity {
 	protected World world;
 	
 	protected int globalID; // TODO Implement working solution to generating globalID
-	protected int individualID;
 	
 	protected boolean toBeRemoved;
 	
@@ -39,10 +41,14 @@ public abstract class Entity {
 		this.y = y;
 		this.world = w;
 		this.name = s;
-		individualID = rand.nextInt();
 		xvm = new ArrayList<Float>();
 		yvm = new ArrayList<Float>();
 		initModel();
+	}
+	
+	public void push(float xa, float ya) {
+		addXAMod(xa);
+		addYAMod(ya);
 	}
 	
 	public boolean needsToBeRemoved() {
@@ -152,6 +158,18 @@ public abstract class Entity {
 		
 		x += xa;
 		y += ya;
+		
+		AABB b = getAABB();
+		if (b != null) {
+			if (b.getX0() < 0)
+				x -= b.getX0();
+			if (b.getY0() < 0)
+				y -= b.getY0();
+			if (b.getX1() > world.getW())
+				x += world.getW() - b.getX1();
+			if (b.getY1() > world.getH())
+				y += world.getH() - b.getY1();
+		}
 		
 		xvm.clear();
 		yvm.clear();
