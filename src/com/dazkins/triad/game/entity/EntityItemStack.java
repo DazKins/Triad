@@ -54,7 +54,7 @@ public class EntityItemStack extends Entity {
 	
 	protected void onCollide(Entity e) {
 		if (e instanceof EntityPlayer) {
-			if (getSpeed() < 0.2f && lifeTicks > 15) {
+			if (getSpeed() < 0.2f && lifeTicks > 30) {
 				EntityPlayer ep = (EntityPlayer) e;
 				if (ep.getInventory().addItemStack(is))
 					this.remove();

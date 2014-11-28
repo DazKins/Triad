@@ -209,13 +209,13 @@ public abstract class World implements Loadable {
 		this.cam = c;
 	}
 
-	public void sendAttackCommand(AABB b, Mob m, ItemWeapon it) {
+	public void sendAttackCommand(AABB b, Mob m, int d, int k) {
 		ArrayList<Entity> ents = getEntitiesInAABB(b);
 		for (int i = 0; i < ents.size(); i++) {
 			Entity e = ents.get(i);
 			if (e != m && e instanceof Mob) {
 				Mob tm = (Mob) e;
-				tm.hurt(m, it);
+				tm.hurt(m, d, k);
 			}
 		}
 	}

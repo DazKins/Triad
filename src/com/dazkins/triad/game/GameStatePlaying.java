@@ -38,7 +38,7 @@ public class GameStatePlaying implements GameState {
 		cam = new Camera(input, triad.win, 0, 0);
 		cam.lockZoom(0.0001f, 500f);
 		changeWorld(World.testWorld);
-		player = new EntityPlayer(world, 0, 0, input);
+		player = new EntityPlayer(world, 100, 100, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
 		
 		world.addEntity(new EntityZombie(world, (float) Math.random() * 200 + 100, (float) Math.random() * 200 + 100));

@@ -58,22 +58,8 @@ public class EntityPlayer extends Mob {
 			world.addEntity(new EntityTorch(world, x, y));
 		
 		if (input.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
-			AABB hit = null;
-			if (this.getFacing() == Facing.UP) {
-				hit = new AABB(x - 22, y + 20, x + 22, y + 70);
-			}
-			if (this.getFacing() == Facing.DOWN) {
-				hit = new AABB(x - 22, y - 30, x + 22, y + 20);
-			}
-			if (this.getFacing() == Facing.LEFT) {
-				hit = new AABB(x - 40, y + 10, x, y + 50);
-			}
-			if (this.getFacing() == Facing.RIGHT) {
-				hit = new AABB(x, y + 10, x + 40, y + 50);
-			}
-			
 			ItemWeapon wep = eInv.getWeaponItem();
-			if (attemptAttack(hit)) {
+			if (attemptAttack(getFacingAttackArea(getFacing()))) {
 				if (wep != null)
 					model.addAnimation(new AnimationHumanoidSlashing(this, eInv.getWeaponItem().getAttackCooldown()), 5, true);
 				else
@@ -89,25 +75,20 @@ public class EntityPlayer extends Mob {
 		ya *= 0.75;
 	}
 	
-	public int getBaseDamage() {
+	protected int getBaseDamage() {
 		return 5;
 	}
 	
-	public int getBaseKnockback() {
+	protected int getBaseKnockback() {
 		return 5;
 	}
 	
-	public int getBaseAttackCooldown() {
+	protected int getBaseAttackCooldown() {
 		return 40;
 	}
-
-	protected AABB[] getAttackAreas() {
-		AABB[] r = new AABB[4];
-		r[Facing.DOWN] = new AABB(x - 22, y - 30, x + 22, y + 20);
-		r[Facing.UP] = new AABB(x - 22, y + 20, x + 22, y + 70);
-		r[Facing.LEFT] = new AABB(x - 40, y + 10, x, y + 50);
-		r[Facing.RIGHT] = new AABB(x, y + 10, x + 40, y + 50);
-		return r;
+	
+	protected int getBaseAttackRange() {
+		return 50;
 	}
 	
 	protected void initModel() {

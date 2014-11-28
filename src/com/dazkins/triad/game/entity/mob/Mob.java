@@ -3,6 +3,7 @@ package com.dazkins.triad.game.entity.mob;
 import java.util.ArrayList;
 
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.gui.GuiStatusBar;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
@@ -53,26 +54,62 @@ public abstract class Mob extends Entity {
 		return health;
 	}
 	
-	public int getBaseDamage() {
+	protected int getBaseDamage() {
 		return 0;
 	}
 	
-	public int getBaseKnockback() {
+	protected int getDamage() {
+		ItemWeapon wep = eInv.getWeaponItem();
+		if (wep != null) {
+			return wep.getDamage();
+		} else {
+			return getBaseDamage();
+		}
+	}
+	
+	protected int getBaseKnockback() {
 		return 0;
 	}
 	
-	public int getBaseAttackCooldown() {
+	protected int getKnockbackValue() {
+		ItemWeapon wep = eInv.getWeaponItem();
+		if (wep != null) {
+			return wep.getKnockback();
+		} else {
+			return getBaseKnockback();
+		}
+	}
+	
+	protected int getBaseAttackCooldown() {
 		return 0;
+	}
+	
+	protected int getAttackCooldown() {
+		ItemWeapon wep = eInv.getWeaponItem();
+		if (wep != null) {
+			return wep.getAttackCooldown();
+		} else {
+			return getBaseAttackCooldown();
+		}
+	}
+	
+	protected int getBaseAttackRange() {
+		return 0;
+	}
+	
+	protected int getAttackRange() {
+		ItemWeapon wep = eInv.getWeaponItem();
+		if (wep != null) {
+			return wep.getAttackRange();
+		} else {
+			return getBaseAttackRange();
+		}
 	}
 	
 	protected boolean attemptAttack(AABB a) {
 		if (attackCooldownCounter == 0) {
 			attackArea(a);
-			ItemWeapon wep = eInv.getWeaponItem();
-			if (wep != null)
-				attackCooldownCounter = wep.getAttackCooldown();
-			else
-				attackCooldownCounter = getBaseAttackCooldown();
+			attackCooldownCounter = getAttackCooldown();
 			return true;
 		} else {
 			return false;
@@ -80,7 +117,7 @@ public abstract class Mob extends Entity {
 	}
 	
 	private void attackArea(AABB a) {
-		world.sendAttackCommand(a, this, eInv.getWeaponItem());
+		world.sendAttackCommand(a, this, getDamage(), getKnockbackValue());
 	}
 	
 	public Class<? extends Mob>[] getHostileMobs() {
@@ -91,19 +128,14 @@ public abstract class Mob extends Entity {
 		return null;
 	}
 
-	public void hurt(Mob m, ItemWeapon it) {
+	public void hurt(Mob m, int d, int k) {
 		float x0 = this.getX() - m.getX();
 		float y0 = this.getY() - m.getY();
 		float mag = (float) Math.sqrt(x0 * x0 + y0 * y0);
 		x0 /= mag;
 		y0 /= mag;
-		if (it != null) {
-			push(x0 * it.getKnockback(), y0 * it.getKnockback());
-			health -= it.getDamage();
-		} else {
-			push(x0 * m.getBaseKnockback(), y0 * m.getBaseKnockback());
-			health -= m.getBaseDamage();
-		}
+		push(x0 * k, y0 * k);
+		health -= d;
 	}
 	
 	public void tick() {
@@ -211,19 +243,28 @@ public abstract class Mob extends Entity {
 		Font.drawString(name, x - ((8 / 1.5f) * 1/ c.getZoom()) * name.length(), y + 50 + (20 / (c.getZoom())), 1.0f, 1.0f, 1.0f, trans, Tile.yPosToDepth(y) + 500, (1 / c.getZoom()) / 1.5f);
 	}
 	
-	public void render(boolean debug) {
+	public void render() {
+		this.getFacingAttackArea(getFacing()).renderBounds(1);
+		this.getAABB().renderBounds(1);
 		super.render();
-		
-		if (debug)
-			getAABB().renderBounds(1);
 	}
 	
 	public Inventory getInventory() {
 		return inv;
 	}
-	
+
 	protected AABB[] getAttackAreas() {
-		return null;
+		AABB[] r = new AABB[4];
+		int ar = getAttackRange();
+		r[Facing.DOWN] = new AABB(x - 20, y - ar + 5, x + 20, y + 5);
+		r[Facing.UP] = new AABB(x - 20, y + 5, x + 20, y + 5 + ar);
+		r[Facing.LEFT] = new AABB(x - ar, y - 10, x, y + 20);
+		r[Facing.RIGHT] = new AABB(x, y - 10, x + ar, y + 20);
+		return r;
+	}
+	
+	protected AABB getFacingAttackArea(int i) {
+		return getAttackAreas()[i];
 	}
 	
 	public EquipmentInventory getEquipmentInventory() {

@@ -116,7 +116,7 @@ public class Quad {
 			GL11.glTranslatef(-cRotX, -cRotY, 0);
 		}
 		
-		GL11.glTranslatef(x + offsetX,  y + offsetY, renderLayer * 0.002f);
+		GL11.glTranslatef(x + offsetX,  y + offsetY, renderLayer * 0.001f);
 	}
 
 	public void render() {

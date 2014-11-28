@@ -16,4 +16,8 @@ public class ItemTestSword extends ItemWeapon {
 	public int getAttackCooldown() {
 		return 30;
 	}
+	
+	public int getAttackRange() {
+		return 50;
+	}
 }

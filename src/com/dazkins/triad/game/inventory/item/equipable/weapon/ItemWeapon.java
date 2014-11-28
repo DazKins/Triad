@@ -18,4 +18,8 @@ public abstract class ItemWeapon extends ItemEquipable {
 	public int getAttackCooldown() {
 		return 0;
 	}
+	
+	public int getAttackRange() {
+		return 0;
+	}
 }

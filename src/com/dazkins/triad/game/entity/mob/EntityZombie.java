@@ -1,5 +1,6 @@
 package com.dazkins.triad.game.entity.mob;
 
+import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.World;
@@ -34,6 +35,11 @@ public class EntityZombie extends Mob {
 			float mag = (float) Math.sqrt(tx * tx + ty * ty);
 			float xv = (tx / mag) * getMovementSpeed();
 			float yv = (ty / mag) * getMovementSpeed();
+			
+			if (getFacingAttackArea(getFacing()).intersects(target.getAABB())) {
+				attemptAttack(getFacingAttackArea(getFacing()));
+			}
+			
 			push(xv, yv);
 		}
 		
@@ -52,16 +58,24 @@ public class EntityZombie extends Mob {
 		model = new ModelZombie(Image.getImageFromName("zombie"));
 	}
 	
-	public int getBaseDamage() {
+	protected int getBaseDamage() {
 		return 5;
 	}
 	
-	public int getBaseKnockback() {
+	protected int getBaseKnockback() {
 		return 5;
 	}
 	
-	public int getBaseAttackCooldown() {
+	protected int getBaseAttackCooldown() {
 		return 40;
+	}
+	
+	protected int getBaseAttackRange() {
+		return 30;
+	}
+
+	public AABB getAABB() {
+		return new AABB(x - 8, y, x + 8, y + 10);
 	}
 	
 	public ItemStack[] getItemsToDrop() {
@@ -79,9 +93,5 @@ public class EntityZombie extends Mob {
 	
 	public AABB getEnemyScanArea() {
 		return new AABB(x - 256, y - 256, x + 256, y + 256);
-	}
-
-	public AABB getAABB() {
-		return new AABB(x - 8, y, x + 8, y + 48);
 	}
 }
