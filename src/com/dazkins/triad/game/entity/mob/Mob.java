@@ -149,14 +149,10 @@ public abstract class Mob extends Entity {
 		if (eb != null) {
 			ArrayList<Mob> hostileMobs = new ArrayList<Mob>();
 			ents = world.getEntitiesInAABB(eb);
-			Class<? extends Mob>[] m = this.getHostileMobs();
 			for (Entity e : ents) {
 				if (e instanceof Mob) {
-					for (int i = 0; i < m.length; i++) {
-						if (e.getClass() == m[i]) {
-							hostileMobs.add((Mob) e);
-						}
-					}
+					if (this.isHostileTo(e))
+						hostileMobs.add((Mob) e);
 				}
 			}
 			
@@ -185,8 +181,10 @@ public abstract class Mob extends Entity {
 	
 	public void onDeath() {
 		ItemStack[] stacks = getItemsToDrop();
-		for (int i = 0; i < stacks.length; i++) {
-			Item.dropItemStack(world, x, y, stacks[i]);
+		if (stacks != null) {
+			for (int i = 0; i < stacks.length; i++) {
+				Item.dropItemStack(world, x, y, stacks[i]);
+			}
 		}
 	}
 	
@@ -236,17 +234,27 @@ public abstract class Mob extends Entity {
 		super.move(true);
 	}
 	
+	public boolean mayPass(Entity e) {
+		if (e instanceof Mob) {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean isHostileTo(Entity e) {
+		Class<? extends Entity>[] c = getHostileMobs();
+		for (int i = 0; i < c.length; i++) {
+			if (e.getClass() == c[i])
+				return true;
+		}
+		return false;
+	}
+	
 	public void renderToPlayerGui(Camera c) {
 		float trans = 0.5f;
 		healthBar.updateStatus((float) getHealth() / (float) getMaxHealth());
 		healthBar.render(x - (64 / c.getZoom()), y + 50, Tile.yPosToDepth(y) + 500, 1 / c.getZoom(), trans);
 		Font.drawString(name, x - ((8 / 1.5f) * 1/ c.getZoom()) * name.length(), y + 50 + (20 / (c.getZoom())), 1.0f, 1.0f, 1.0f, trans, Tile.yPosToDepth(y) + 500, (1 / c.getZoom()) / 1.5f);
-	}
-	
-	public void render() {
-		this.getFacingAttackArea(getFacing()).renderBounds(1);
-		this.getAABB().renderBounds(1);
-		super.render();
 	}
 	
 	public Inventory getInventory() {

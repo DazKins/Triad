@@ -40,9 +40,9 @@ public class GuiEquipMenu extends Gui {
 		setupGraphics();
 	}
 	
-	public void unequip(int i) {
-		inv.addItemStack(einv.getItemStack(i));
-		einv.removeItemStack(i);
+	public void attempUnequip(int i) {
+		if (inv.addItemStack(einv.getItemStack(i)))
+			einv.removeItemStack(i);
 	}
 
 	public void tick() {
@@ -50,15 +50,15 @@ public class GuiEquipMenu extends Gui {
 		
 		if (input.mouse2JustDown) {
 			if (headSlot.intersects(input.mouseX, input.mouseY))
-				unequip(EquipmentInventory.HEAD);
+				attempUnequip(EquipmentInventory.HEAD);
 			if (bodySlot.intersects(input.mouseX, input.mouseY))
-				unequip(EquipmentInventory.BODY);
+				attempUnequip(EquipmentInventory.BODY);
 			if (legSlot.intersects(input.mouseX, input.mouseY))
-				unequip(EquipmentInventory.LEGS);
+				attempUnequip(EquipmentInventory.LEGS);
 			if (weaponSlot.intersects(input.mouseX, input.mouseY))
-				unequip(EquipmentInventory.WEAPON);
+				attempUnequip(EquipmentInventory.WEAPON);
 			if (footSlot.intersects(input.mouseX, input.mouseY))
-				unequip(EquipmentInventory.FEET);
+				attempUnequip(EquipmentInventory.FEET);
 		}
 	}
 

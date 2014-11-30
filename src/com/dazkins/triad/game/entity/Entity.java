@@ -51,6 +51,10 @@ public abstract class Entity {
 		addYAMod(ya);
 	}
 	
+	public boolean mayPass(Entity e) {
+		return true;
+	}
+	
 	public boolean needsToBeRemoved() {
 		return toBeRemoved;
 	}
@@ -64,24 +68,28 @@ public abstract class Entity {
 	}
 	
 	//Stores the last known direction the entity was facing
-	private int lFacing;
+	private int facing;
 	
 	public int getFacing() {
-		float absXA = Math.abs(xa);
-		float absYA = Math.abs(ya);
-		
-		if (absXA > absYA) {
+		return facing;
+	}
+	
+	protected void setFacingBasedOnVelocities(float xa, float ya) {
+		if (Math.abs(xa) > Math.abs(ya)) {
 			if (xa < 0)
-				lFacing = Facing.LEFT;
+				facing = Facing.LEFT;
 			else
-				lFacing = Facing.RIGHT;
-		} else if(absXA < absYA) {
+				facing = Facing.RIGHT;
+		} else if (Math.abs(xa) < Math.abs(ya)) {
 			if (ya < 0)
-				lFacing = Facing.DOWN;
+				facing = Facing.DOWN;
 			else
-				lFacing = Facing.UP;
+				facing = Facing.UP;	
 		}
-		return lFacing;
+	}
+	
+	public void setFacing(int f) {
+		facing = f;
 	}
 	
 	public abstract void renderToPlayerGui(Camera c);
@@ -154,22 +162,36 @@ public abstract class Entity {
 					this.onCollide(e);
 				}
 			}
+			for (Entity e : world.getEntitiesInAABB(this.getAABB().shifted(xa, 0))) {
+				if (e != this && (!this.mayPass(e) || !e.mayPass(this))) {
+					e.push(xa, 0);
+					xa = 0;
+					break;
+				}
+			}
+			for (Entity e : world.getEntitiesInAABB(this.getAABB().shifted(0, ya))) {
+				if (e != this && (!this.mayPass(e) || !e.mayPass(this))) {
+					e.push(0, ya);
+					ya = 0;
+					break;
+				}
+			}
+		}
+		
+		AABB b = getAABB().shifted(xa, ya);
+		if (b != null) {
+			if (b.getX0() < 0)
+				xa = Math.abs(xa * 0.01f);
+			if (b.getY0() < 0)
+				ya = Math.abs(ya *= 0.01f);
+			if (b.getX1() > world.getW())
+				xa = -Math.abs(xa *= 0.01f);
+			if (b.getY1() > world.getH())
+				ya = -Math.abs(ya *= 0.01f);
 		}
 		
 		x += xa;
 		y += ya;
-		
-		AABB b = getAABB();
-		if (b != null) {
-			if (b.getX0() < 0)
-				x -= b.getX0();
-			if (b.getY0() < 0)
-				y -= b.getY0();
-			if (b.getX1() > world.getW())
-				x += world.getW() - b.getX1();
-			if (b.getY1() > world.getH())
-				y += world.getH() - b.getY1();
-		}
 		
 		xvm.clear();
 		yvm.clear();
@@ -191,7 +213,7 @@ public abstract class Entity {
 	
 	public static class SortByY implements Comparator<Entity> {
 		public int compare(Entity o1, Entity o2) {
-			return (o1.getY() > o2.getY()) ? -1 : 1;
+			return (o1.getY() > o2.getY()) ? -1 : (o1.getY() < o2.getY()) ? 1 : 0;
 		}
 	}
 }

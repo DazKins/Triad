@@ -21,7 +21,12 @@ public class AnimationHumanoidSlashing extends Animation {
 			
 			Quad rArm = model.getRightArm()[f];
 			
-			float multiplier = 50 / time;
+			float multiplier;
+			
+			if (time != 0)
+				multiplier = 50 / time;
+			else
+				multiplier = 50;
 			
 			if (f == Facing.LEFT) {
 				rArm.setRotation(((float) Math.sin(((animationTicks * multiplier) - 8) / 8.0f) * 90.0f) - 90.0f);

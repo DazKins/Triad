@@ -32,6 +32,7 @@ public class EntityZombie extends Mob {
 		if (target != null) {
 			float tx = target.getX() - this.getX();
 			float ty = target.getY() - this.getY();
+			if (Math.abs(ty) < 0.01f) ty = 0;
 			float mag = (float) Math.sqrt(tx * tx + ty * ty);
 			float xv = (tx / mag) * getMovementSpeed();
 			float yv = (ty / mag) * getMovementSpeed();
@@ -39,6 +40,8 @@ public class EntityZombie extends Mob {
 			if (getFacingAttackArea(getFacing()).intersects(target.getAABB())) {
 				attemptAttack(getFacingAttackArea(getFacing()));
 			}
+			
+			setFacingBasedOnVelocities(xv, yv);
 			
 			push(xv, yv);
 		}

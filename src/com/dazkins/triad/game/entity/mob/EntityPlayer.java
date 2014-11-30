@@ -38,18 +38,20 @@ public class EntityPlayer extends Mob {
 		super.tick();
 		model.addAnimation(new AnimationHumanoidIdle(this), 0, false);
 		if (input.isKeyDown(GLFW.GLFW_KEY_W)) {
+			setFacing(Facing.UP);
 			addYAMod(getMovementSpeed());
 			model.addAnimation(new AnimationHumanoidWalking(this), 1, false);
-		}
-		if (input.isKeyDown(GLFW.GLFW_KEY_A)) {
-			addXAMod(-getMovementSpeed());
-			model.addAnimation(new AnimationHumanoidWalking(this), 1, false);
-		}
-		if (input.isKeyDown(GLFW.GLFW_KEY_S)) {
+		} else if (input.isKeyDown(GLFW.GLFW_KEY_S)) {
+			setFacing(Facing.DOWN);
 			addYAMod(-getMovementSpeed());
 			model.addAnimation(new AnimationHumanoidWalking(this), 1, false);
 		}
-		if (input.isKeyDown(GLFW.GLFW_KEY_D)) {
+		if (input.isKeyDown(GLFW.GLFW_KEY_A)) {
+			setFacing(Facing.LEFT);
+			addXAMod(-getMovementSpeed());
+			model.addAnimation(new AnimationHumanoidWalking(this), 1, false);
+		} else if (input.isKeyDown(GLFW.GLFW_KEY_D)) {
+			setFacing(Facing.RIGHT);
 			addXAMod(getMovementSpeed());
 			model.addAnimation(new AnimationHumanoidWalking(this), 1, false);
 		}
@@ -58,12 +60,8 @@ public class EntityPlayer extends Mob {
 			world.addEntity(new EntityTorch(world, x, y));
 		
 		if (input.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
-			ItemWeapon wep = eInv.getWeaponItem();
 			if (attemptAttack(getFacingAttackArea(getFacing()))) {
-				if (wep != null)
-					model.addAnimation(new AnimationHumanoidSlashing(this, eInv.getWeaponItem().getAttackCooldown()), 5, true);
-				else
-					model.addAnimation(new AnimationHumanoidSlashing(this, getBaseAttackCooldown()), 5, true);
+				model.addAnimation(new AnimationHumanoidSlashing(this, this.getAttackCooldown()), 5, true);
 			}
 		}
 		
