@@ -19,14 +19,12 @@ public class PlayerGui extends Gui {
 	private EntityPlayer player;
 	private World world;
 	
-	private GuiBox mainBox;
 	private GuiStatusBar statusBar;
 	
 	public PlayerGui(Triad t, InputHandler i, World w, EntityPlayer player) {
 		super(t, i);
 		world = w;
 		this.player = player;
-		mainBox = new GuiBox(0, 0, 1000, 400, 1, false);
 		statusBar = new GuiStatusBar(0, 0, 0xff0000, 1024);
 	}
 
@@ -51,11 +49,7 @@ public class PlayerGui extends Gui {
 		GL11.glPopMatrix();
 	}
 
-	public void onExit() {
-		
-	}
+	public void onExit() { }
 
-	public void setupGraphics() {
-		
-	}
+	public void setupGraphics() { }
 }

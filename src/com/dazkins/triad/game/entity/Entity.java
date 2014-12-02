@@ -1,26 +1,16 @@
 package com.dazkins.triad.game.entity;
 
-import java.sql.NClob;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
-import com.dazkins.triad.game.entity.mob.EntityPlayer;
-import com.dazkins.triad.game.entity.mob.Mob;
-import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.math.AABB;
 
 public abstract class Entity {
-	private static Random rand = new Random();
-	
 	protected float x, y;
 	protected float xa, ya;
 	public long lifeTicks;
@@ -65,6 +55,12 @@ public abstract class Entity {
 	
 	public void initWorld(World w) {
 		world = w;
+	}
+	
+	public AABB getBoundsForRendering() {
+		if (model != null)
+			return model.getRenderAABB().shifted(x, y);
+		return null;
 	}
 	
 	//Stores the last known direction the entity was facing

@@ -3,18 +3,14 @@ package com.dazkins.triad.gfx.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
-import com.dazkins.triad.game.entity.EntityButton;
-import com.dazkins.triad.game.entity.mob.EntityPlayer;
-import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.model.animation.Animation;
+import com.dazkins.triad.math.AABB;
 
 public abstract class Model {
 	protected List<Quad> quads;
@@ -29,6 +25,13 @@ public abstract class Model {
 	private boolean selectiveRendering;
 	
 	private Animation anims[];
+	
+	private float xMin, yMin;
+	private float xMax, yMax;
+	
+	public AABB getRenderAABB() {
+		return new AABB(xMin, yMin, xMax, yMax);
+	}
 	
 	public Quad getQuad(int i) {
 		return quads.get(i);
@@ -52,7 +55,16 @@ public abstract class Model {
 	protected void addQuad(Quad q) {
 		q.init(img);
 		q.generate();
+		getBoundsAndRevalidateRender(q);
 		quads.add(q);
+	}
+	
+	private void getBoundsAndRevalidateRender(Quad q) {
+		AABB b = q.getRenderAABB();
+		if (b.getX0() < xMin) xMin = b.getX0();
+		if (b.getY0() < yMin) yMin = b.getY0();
+		if (b.getX1() > xMax) xMax = b.getX1();
+		if (b.getY1() > yMax) yMax = b.getY1();
 	}
 	
 	protected void enableSelectiveRendering() {
@@ -118,20 +130,36 @@ public abstract class Model {
 				quadsToRender.add(quads.get(i));
 			}
 		}
+		for (Quad q : tempQuads) {
+			quadsToRender.add(q);
+		}
 		quadsToRender.sort(rSort);
+
+		resetRenderBounds();
+		loadRenderBounds(quadsToRender);
 		
 		GL11.glPushMatrix();
 		GL11.glTranslatef(offsetX, offsetY, depth);
 		for (int i = 0; i < quadsToRender.size(); i++) {
 			quadsToRender.get(i).render();
-		}
-		for (Quad q : tempQuads) {
-			renderQuad(q);
-		}
+		}	
 		GL11.glPopMatrix();
 
 		quadRenders.clear();
 		tempQuads.clear();
+	}
+	
+	public void loadRenderBounds(ArrayList<Quad> quads) {
+		for (Quad q : quads) {
+			getBoundsAndRevalidateRender(q);
+		}
+	}
+	
+	public void resetRenderBounds() {
+		xMin = 0;
+		yMin = 0;
+		xMax = 0;
+		yMax = 0;
 	}
 	
 	public void removeAnimations() {
@@ -139,8 +167,10 @@ public abstract class Model {
 	}
 	
 	public void addTemporaryQuad(Quad q) {
-		if (q != null)
+		if (q != null) {
 			tempQuads.add(q);
+			getBoundsAndRevalidateRender(q);
+		}
 	}
 	
 	public boolean hasInstanceOfAnim(Class a) {

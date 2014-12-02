@@ -41,7 +41,7 @@ public class GameStatePlaying implements GameState {
 		player = new EntityPlayer(world, 100, 100, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
 		
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < 1; i++)
 			world.addEntity(new EntityZombie(world, (float) Math.random() * 200 + 100, (float) Math.random() * 200 + 100));
 		
 		world.addEntity(player);

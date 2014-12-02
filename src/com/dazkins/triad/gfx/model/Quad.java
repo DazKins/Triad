@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.math.AABB;
 
 public class Quad {
 	private BufferObject bufferObject;
@@ -146,5 +147,9 @@ public class Quad {
 		}
 		
 		temporaryChildQuads.clear();
+	}
+	
+	public AABB getRenderAABB() {
+		return new AABB(x, y, x + w, y + h);
 	}
 }

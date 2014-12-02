@@ -131,9 +131,9 @@ public abstract class World implements Loadable {
 		
 		entities.sort(Entity.ySorter);
 		for (Entity e : entities) {
-			AABB b = e.getAABB();
+			AABB b = e.getBoundsForRendering();
 			if (b != null) {
-				if (e.getAABB().intersects(cam.getViewportBounds()))
+				if (b.intersects(cam.getViewportBounds()))
 					e.render();
 			}
 		}

@@ -8,6 +8,7 @@ import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.gfx.model.ModelZombie;
 import com.dazkins.triad.gfx.model.animation.AnimationHumanoidIdle;
+import com.dazkins.triad.gfx.model.animation.AnimationZombieSlashing;
 import com.dazkins.triad.gfx.model.animation.AnimationZombieWalking;
 import com.dazkins.triad.math.AABB;
 
@@ -38,7 +39,9 @@ public class EntityZombie extends Mob {
 			float yv = (ty / mag) * getMovementSpeed();
 			
 			if (getFacingAttackArea(getFacing()).intersects(target.getAABB())) {
-				attemptAttack(getFacingAttackArea(getFacing()));
+				if (attemptAttack(getFacingAttackArea(getFacing()))) {
+					model.addAnimation(new AnimationZombieSlashing(this, getAttackCooldown()), 5, true);
+				}
 			}
 			
 			setFacingBasedOnVelocities(xv, yv);
@@ -66,7 +69,7 @@ public class EntityZombie extends Mob {
 	}
 	
 	protected int getBaseKnockback() {
-		return 5;
+		return 200;
 	}
 	
 	protected int getBaseAttackCooldown() {
