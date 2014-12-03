@@ -6,10 +6,15 @@ import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
+import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.math.AABB;
 
 public class EntityItemStack extends Entity {
+	
+	static {
+	}
+	
 	private ItemStack is;
 	
 	private float yBounce;
@@ -35,18 +40,18 @@ public class EntityItemStack extends Entity {
 	public void render() {
 		//Shadow
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		
 		float z = Tile.yPosToDepth(y);
+		
+		GL11.glPushMatrix();
+			GL11.glTranslatef(x, y, z);
+			BufferObject.shadow.render();
+		GL11.glPopMatrix();
+		
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		
 		float b = world.getTileBrightness((int) x >> 5, (int) y >> 5);
 		float bm = b / 14.0f;
-		GL11.glBegin(GL11.GL_QUADS);
-			GL11.glColor4f(0.0f, 0.0f, 0.0f, 0.2f);
-			GL11.glVertex3f(x, y, z);
-			GL11.glVertex3f(x + 32, y, z);
-			GL11.glVertex3f(x + 32, y + 5, z);
-			GL11.glVertex3f(x, y + 5, z);
-			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		GL11.glEnd();
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glColor3f(bm, bm, bm);
 		is.getItemType().renderIcon(x, y + yBounce, Tile.yPosToDepth(y) + 0.001f, 1);
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
@@ -62,7 +67,11 @@ public class EntityItemStack extends Entity {
 		}
 	}
 	
+	public AABB getBoundsForRendering() {
+		return new AABB(x, y + yBounce, x + 32, y + 32 + yBounce);
+	}
+	
 	public AABB getAABB() {
-		return new AABB(x, y, x + 32, y + 32);
+		return new AABB(x, y, x + 32, y + 32 + yBounce);
 	}
 }

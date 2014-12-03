@@ -6,12 +6,10 @@ import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.file.ListFile;
-import com.dazkins.triad.file.SingleLineDatabaseFile;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.LightEmitter;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.entity.particle.Particle;
-import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.game.world.weather.Weather;
 import com.dazkins.triad.gfx.Camera;
@@ -50,7 +48,6 @@ public abstract class World implements Loadable {
 
 	public void loadDataFromFile(String p) {
 		ListFile l = null;
-		SingleLineDatabaseFile metaDatabase = null;
 		try {
 			l = new ListFile("res/data/worlds/" + p + "_data.lt", " ");
 		} catch (IOException e) {
@@ -102,14 +99,18 @@ public abstract class World implements Loadable {
 		entities.add(e);
 		
 		if (e instanceof LightEmitter) {
-			int cx = (int) e.getX() >> 9;
-			int cy = (int) e.getY() >> 9;
-			for (int x = cx - 1; x < cx + 2; x++) {
-				for (int y = cy - 1; y < cy + 2; y++) {
-					if (x >= 0 && y >= 0 && x < nChunksX && y < nChunksY) {
-						Chunk c = chunks[x + y * nChunksX];
-						c.recalculateLighting();
-					}
+			registerLightUpdateForEntity(e);
+		}
+	}
+	
+	public void registerLightUpdateForEntity(Entity e) {
+		int cx = (int) e.getX() >> 9;
+		int cy = (int) e.getY() >> 9;
+		for (int x = cx - 1; x < cx + 2; x++) {
+			for (int y = cy - 1; y < cy + 2; y++) {
+				if (x >= 0 && y >= 0 && x < nChunksX && y < nChunksY) {
+					Chunk c = chunks[x + y * nChunksX];
+					c.recalculateLighting();
 				}
 			}
 		}
@@ -135,6 +136,8 @@ public abstract class World implements Loadable {
 			if (b != null) {
 				if (b.intersects(cam.getViewportBounds()))
 					e.render();
+			} else {
+				e.render();
 			}
 		}
 		
@@ -272,13 +275,13 @@ public abstract class World implements Loadable {
 					entities.remove(e);
 				}
 				else {
-					int tx0 = (int) e.getX() >> 4;
-					int ty0 = (int) e.getY() >> 4;
+					int tx0 = (int) e.getX() >> 5;
+					int ty0 = (int) e.getY() >> 5;
 					
 					e.tick();
 					
-					int tx1 = (int) e.getX() >> 4;
-					int ty1 = (int) e.getY() >> 4;
+					int tx1 = (int) e.getX() >> 5;
+					int ty1 = (int) e.getY() >> 5;
 					
 					if (tx0 != tx1 || ty0 != ty1) {
 						entities.remove(e);

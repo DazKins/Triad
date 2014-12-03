@@ -29,6 +29,23 @@ public class AABB {
 	public float getH() {
 		return Math.abs(y1 - y0);
 	}
+	
+	public AABB shiftX0(float v) {
+		return new AABB(x0 + v, y0, x1, y1);
+	}
+	
+	public AABB shiftY0(float v) {
+		return new AABB(x0, y0 + v, x1, y1);
+	}
+	
+	public AABB shiftX1(float v) {
+		return new AABB(x0, y0, x1 + v, y1);
+	}
+	
+	public AABB shiftY1(float v) {
+		return new AABB(x0, y0, x1, y1 + v);
+	}
+	
 	public AABB(float x0, float y0, float x1, float y1) {
 		this.x0 = x0;
 		this.y0 = y0;

@@ -69,7 +69,7 @@ public class EntityZombie extends Mob {
 	}
 	
 	protected int getBaseKnockback() {
-		return 200;
+		return 5;
 	}
 	
 	protected int getBaseAttackCooldown() {

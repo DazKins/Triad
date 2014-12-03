@@ -7,6 +7,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 
 public class BufferObject {
+	public static BufferObject shadow;
+	
 	private static boolean useVBO;
 
 	private float[] rawBuffer;
@@ -32,6 +34,18 @@ public class BufferObject {
 	private float u;
 	private float v;
 
+	private static void initStaticVBOs() {
+		shadow = new BufferObject(36);
+		shadow.start();
+			shadow.setRGB(0.0f, 0.0f, 0.0f);
+			shadow.setA(0.2f);
+			shadow.addVertex(0, 0);
+			shadow.addVertex(32, 0);
+			shadow.addVertex(32, 5);
+			shadow.addVertex(0, 5);
+		shadow.stop();
+	}
+	
 	public static void init() {
 		float version = Float.parseFloat(GL11.glGetString(GL11.GL_VERSION).substring(0, 3));
 		System.err.println("OpenGL version: " + version);
@@ -42,6 +56,7 @@ public class BufferObject {
 			useVBO = true;
 			System.err.println("VBOs enabled");
 		}
+		initStaticVBOs();
 	}
 
 	public BufferObject(int size) {
@@ -93,7 +108,6 @@ public class BufferObject {
 	private void closeVBO() {
 		rawBuffer = null;
 		dataBuffer = null;
-		// System.gc();
 	}
 
 	public void setBrightness(float b) {

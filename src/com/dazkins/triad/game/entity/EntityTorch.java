@@ -16,6 +16,10 @@ public class EntityTorch extends Entity implements LightEmitter {
 	public void render() {
 		
 	}
+	
+	public void tick() {
+		super.tick();
+	}
 
 	public AABB getAABB() {
 		return null;
