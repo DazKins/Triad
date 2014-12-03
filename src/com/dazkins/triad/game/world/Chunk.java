@@ -147,15 +147,16 @@ public class Chunk {
 				byte l = le.getLightStrength();
 
 				for (int x = cx - 13; x < cx + 14; x++) {
-					int dx = Math.abs(x - cx);
+					float dx = (float) Math.abs(e.getX() - x * Tile.tileSize);
 					int ccx = x + (chunkX * chunkW);
 					for (int y = cy - 13; y < cy + 14; y++) {
-						int dy = Math.abs(y - cy);
-						int dist = (int) Math.sqrt(dx * dx + dy * dy);
+						float dy = (float) Math.abs(e.getY() - y * Tile.tileSize);
+						float dist = (float) Math.sqrt(dx * dx + dy * dy);
+//						System.out.println(dist / Tile.tileSize);
 
 						int ccy = y + (chunkY * chunkH);
 
-						byte lightVal = (byte) (l - dist);
+						byte lightVal = (byte) (l - dist / Tile.tileSize);
 						byte cLightVal = world.getTileBrightness(ccx, ccy);
 
 						if (cLightVal < lightVal)

@@ -19,6 +19,8 @@ public class EntityTorch extends Entity implements LightEmitter {
 	
 	public void tick() {
 		super.tick();
+		y += 1;
+		x += 1;
 	}
 
 	public AABB getAABB() {

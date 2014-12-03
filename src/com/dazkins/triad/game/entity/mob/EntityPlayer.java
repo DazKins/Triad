@@ -71,6 +71,8 @@ public class EntityPlayer extends Mob {
 		
 		xa *= 0.75;
 		ya *= 0.75;
+		
+		System.out.println(x + " " + y);
 	}
 	
 	protected int getBaseDamage() {

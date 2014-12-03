@@ -19,6 +19,8 @@ public class Camera {
 	
 	private float minZoom, maxZoom;
 	
+	private boolean lockToBounds;
+	
 	public Camera(InputHandler i, Window w, int x, int y) {
 		this.winInfo = w;
 		this.input = i;
@@ -40,6 +42,7 @@ public class Camera {
 		this.maxY = maxY;
 		this.minX = minX;
 		this.minY = minY;
+		this.lockToBounds = true;
 	}
 	
 	public void moveWithKeys(float speed, int upKey, int downKey, int rightKey, int leftKey) {
@@ -66,14 +69,16 @@ public class Camera {
 		x = (e.getX() - getW() / 2.0f) * zoom;
 		y = (e.getY() - getH() / 2.0f) * zoom;
 		
-		if (getX() + getW() > maxX)
-			x = (maxX - getW()) * zoom;
-		if (getY() + getH() > maxY)
-			y = (maxY - getH()) * zoom;
-		if (getX() < minX)
-			x = (minX) * zoom;
-		if (getY() < minY)
-			y = minY * zoom;
+		if (lockToBounds) {
+			if (getX() + getW() > maxX)
+				x = (maxX - getW()) * zoom;
+			if (getY() + getH() > maxY)
+				y = (maxY - getH()) * zoom;
+			if (getX() < minX)
+				x = (minX) * zoom;
+			if (getY() < minY)
+				y = minY * zoom;
+		}
 	}
 	
 	public void tick() {

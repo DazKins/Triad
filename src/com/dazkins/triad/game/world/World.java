@@ -95,7 +95,11 @@ public abstract class World implements Loadable {
 		int tx = (int) e.getX() >> 5;
 		int ty = (int) e.getY() >> 5;
 		
-		entitiesInTiles[tx + ty * nChunksX * Chunk.chunkW].add(e);
+		try {
+			entitiesInTiles[tx + ty * nChunksX * Chunk.chunkW].add(e);
+		} catch (Exception ex) {
+			
+		}
 		entities.add(e);
 		
 		if (e instanceof LightEmitter) {
@@ -277,11 +281,26 @@ public abstract class World implements Loadable {
 				else {
 					int tx0 = (int) e.getX() >> 5;
 					int ty0 = (int) e.getY() >> 5;
+		
+					float x0 = e.getX();
+					float y0 = e.getY();
 					
 					e.tick();
+
+					float x1 = e.getX();
+					float y1 = e.getY();
 					
 					int tx1 = (int) e.getX() >> 5;
 					int ty1 = (int) e.getY() >> 5;
+		
+					if (x1 != x0 || y1 != y0) {
+						if (e instanceof LightEmitter) {
+							entities.remove(e);
+							entitiesInTiles[i].remove(e);
+							
+							addEntity(e);
+						}
+					}
 					
 					if (tx0 != tx1 || ty0 != ty1) {
 						entities.remove(e);
