@@ -20,7 +20,7 @@ public class Chunk {
 
 	private int chunkX, chunkY;
 	private int[] tiles;
-	private byte[] lightLevel;
+	private float[] lightLevel;
 	private boolean generated;
 
 	private BufferObject tilePlane;
@@ -30,7 +30,7 @@ public class Chunk {
 		this.chunkY = yp;
 		this.world = w;
 
-		lightLevel = new byte[chunkW * chunkH];
+		lightLevel = new float[chunkW * chunkH];
 		tiles = new int[chunkW * chunkH];
 	}
 
@@ -49,13 +49,13 @@ public class Chunk {
 		return true;
 	}
 
-	public byte getTileBrightness(int x, int y) {
+	public float getTileBrightness(int x, int y) {
 		if (!isValidTilePos(x, y))
 			return 0;
 		return lightLevel[x + y * chunkW];
 	}
 
-	public void setTileBrightness(byte b, int x, int y) {
+	public void setTileBrightness(float b, int x, int y) {
 		if (getTileBrightness(x, y) != b) {
 			if (!isValidTilePos(x, y))
 				return;
@@ -133,7 +133,7 @@ public class Chunk {
 		for (int i = 0; i < lightLevel.length; i++) {
 			lightLevel[i] = world.ambientLightLevel;
 		}
-		ArrayList<Entity> tmp = world.getEntities();
+		ArrayList<Entity> tmp = world.getLights();
 		for (Entity e : tmp) {
 			if (e instanceof LightEmitter) {
 				LightEmitter le = (LightEmitter) e;
@@ -147,20 +147,19 @@ public class Chunk {
 				byte l = le.getLightStrength();
 
 				for (int x = cx - 13; x < cx + 14; x++) {
-					float dx = (float) Math.abs(e.getX() - x * Tile.tileSize);
+					float dx = (float) Math.abs(e.getX() - (x + (chunkX * chunkW)) * Tile.tileSize);
 					int ccx = x + (chunkX * chunkW);
 					for (int y = cy - 13; y < cy + 14; y++) {
-						float dy = (float) Math.abs(e.getY() - y * Tile.tileSize);
+						float dy = (float) Math.abs(e.getY() - (y + (chunkY * chunkH)) * Tile.tileSize);
 						float dist = (float) Math.sqrt(dx * dx + dy * dy);
-//						System.out.println(dist / Tile.tileSize);
 
 						int ccy = y + (chunkY * chunkH);
 
-						byte lightVal = (byte) (l - dist / Tile.tileSize);
-						byte cLightVal = world.getTileBrightness(ccx, ccy);
+						float lightVal = l - (dist / Tile.tileSize);
+						float cLightVal = world.getTileBrightness(ccx, ccy);
 
 						if (cLightVal < lightVal)
-							world.setTileBrightness((byte) (lightVal), ccx, ccy);
+							world.setTileBrightness(lightVal, ccx, ccy);
 					}
 				}
 			}
@@ -168,10 +167,7 @@ public class Chunk {
 	}
 
 	public AABB getBounds() {
-		return new AABB(chunkX * Tile.tileSize * chunkW,
-				chunkY * Tile.tileSize * chunkH,
-				chunkX * Tile.tileSize * chunkW + (chunkW * Tile.tileSize),
-				chunkY * Tile.tileSize * chunkH + (chunkH * Tile.tileSize));
+		return new AABB(chunkX * Tile.tileSize * chunkW, chunkY * Tile.tileSize * chunkH, chunkX * Tile.tileSize * chunkW + (chunkW * Tile.tileSize), chunkY * Tile.tileSize * chunkH + (chunkH * Tile.tileSize));
 	}
 
 	public boolean isGenerated() {

@@ -3,6 +3,8 @@ package com.dazkins.triad.game.world;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javafx.scene.effect.Light;
+
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.file.ListFile;
@@ -28,6 +30,7 @@ public abstract class World implements Loadable {
 	public ArrayList<Particle> particles = new ArrayList<Particle>();
 	public ArrayList<Entity>[] entitiesInTiles;
 	public ArrayList<Entity> entities;
+	public ArrayList<Entity> lights;
 
 	private Camera cam;
 
@@ -63,6 +66,7 @@ public abstract class World implements Loadable {
 		}
 		
 		entities = new ArrayList<Entity>();
+		lights = new ArrayList<Entity>();
 		
 		this.generate();
 		
@@ -103,6 +107,8 @@ public abstract class World implements Loadable {
 		entities.add(e);
 		
 		if (e instanceof LightEmitter) {
+			System.out.println(lights.size());
+			lights.add(e);
 			registerLightUpdateForEntity(e);
 		}
 	}
@@ -236,13 +242,13 @@ public abstract class World implements Loadable {
 		return (x >= 0 && x < nChunksX * Chunk.chunkW) && (y >= 0 && y < nChunksY * Chunk.chunkH);
 	}
 
-	public byte getTileBrightness(int x, int y) {
+	public float getTileBrightness(int x, int y) {
 		if (!isValidTilePos(x, y))
 			return 0;
 		return getChunkFromWorldTileCoords(x, y).getTileBrightness(x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 
-	public void setTileBrightness(byte b, int x, int y) {
+	public void setTileBrightness(float b, int x, int y) {
 		if (!isValidTilePos(x, y))
 			return;
 		getChunkFromWorldTileCoords(x, y).setTileBrightness(b, x % Chunk.chunkW, y % Chunk.chunkH);
@@ -258,6 +264,10 @@ public abstract class World implements Loadable {
 		if (!isValidTilePos(x, y))
 			return;
 		getChunkFromWorldTileCoords(x, y).setTile(t, x % Chunk.chunkW, y % Chunk.chunkH);
+	}
+	
+	public ArrayList<Entity> getLights() {
+		return lights;
 	}
 
 	public void tick() {
@@ -292,21 +302,22 @@ public abstract class World implements Loadable {
 					
 					int tx1 = (int) e.getX() >> 5;
 					int ty1 = (int) e.getY() >> 5;
-		
-					if (x1 != x0 || y1 != y0) {
-						if (e instanceof LightEmitter) {
+
+					if (e instanceof LightEmitter) {
+						if (x1 != x0 || y1 != y0) {
 							entities.remove(e);
 							entitiesInTiles[i].remove(e);
+							lights.remove(e);
 							
 							addEntity(e);
+						} else { 
+							if (tx0 != tx1 || ty0 != ty1) {
+								entities.remove(e);
+								entitiesInTiles[i].remove(e);
+								
+								addEntity(e);
+							}
 						}
-					}
-					
-					if (tx0 != tx1 || ty0 != ty1) {
-						entities.remove(e);
-						entitiesInTiles[i].remove(e);
-						
-						addEntity(e);
 					}
 				}
 			}

@@ -41,8 +41,8 @@ public class GameStatePlaying implements GameState {
 		player = new EntityPlayer(world, 100, 100, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
 		
-//		for (int i = 0; i < 20; i++)
-//			world.addEntity(new EntityZombie(world, (float) Math.random() * 200 + 100, (float) Math.random() * 200 + 100));
+		for (int i = 0; i < 20; i++)
+			world.addEntity(new EntityZombie(world, (float) Math.random() * 200 + 100, (float) Math.random() * 200 + 100));
 		
 		world.addEntity(player);
 		
@@ -107,7 +107,7 @@ public class GameStatePlaying implements GameState {
 	
 	public void changeWorld(World w) {
 		world = w;
-//		cam.setBounds(0, 0, world.nChunksX * Chunk.chunkW * Tile.tileSize, world.nChunksX * Chunk.chunkH * Tile.tileSize);
+		cam.setBounds(0, 0, world.nChunksX * Chunk.chunkW * Tile.tileSize, world.nChunksX * Chunk.chunkH * Tile.tileSize);
 	}
 	
 	private void changeGui(Gui g) {
