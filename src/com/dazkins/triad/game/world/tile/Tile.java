@@ -57,16 +57,16 @@ public class Tile {
 		return renderOrderPos;
 	}
 
-	public void render(BufferObject b, World w, int x, int y) {
+	public void render(BufferObject bo, World wo, int x, int y) {
 		byte x0 = 15;
 		
 		int xt = x / tileSize;
 		int yt = y / tileSize;
 		
-		Tile no = w.getTile(xt, yt + 1);
-		Tile ea = w.getTile(xt + 1, yt);
-		Tile so = w.getTile(xt, yt - 1);
-		Tile we = w.getTile(xt - 1, yt);
+		Tile no = wo.getTile(xt, yt + 1);
+		Tile ea = wo.getTile(xt + 1, yt);
+		Tile so = wo.getTile(xt, yt - 1);
+		Tile we = wo.getTile(xt - 1, yt);
 		
 		if (no == null || no.getRenderOrderPos() < this.getRenderOrderPos())
 			x0 -= 1;
@@ -77,7 +77,35 @@ public class Tile {
 		if (we == null || we.getRenderOrderPos() < this.getRenderOrderPos())
 			x0 -= 8;
 		
-		Image.getImageFromName("spriteSheet").renderSprite(b, x, y, tileSize, tileSize, x0 * 16, ty * 16, 16, 16, yPosToDepth(y) - 1.0f, w.getTileBrightness((int) (x / 32.0f),(int) (y / 32.0f)) / 14.0f - 0.001f);
+		float tOffset = 0.001f;
+		
+		float b = wo.getTileBrightness(xt, yt);
+		float b0 = ((wo.getTileBrightness(xt + 1, yt + 1) + wo.getTileBrightness(xt, yt + 1) + wo.getTileBrightness(xt + 1, yt) + b) / 4.0f) / 14.0f;
+		float b1 = ((wo.getTileBrightness(xt - 1, yt + 1) + wo.getTileBrightness(xt, yt + 1) + wo.getTileBrightness(xt - 1, yt) + b) / 4.0f) / 14.0f;
+		float b2 = ((wo.getTileBrightness(xt + 1, yt - 1) + wo.getTileBrightness(xt, yt - 1) + wo.getTileBrightness(xt + 1, yt) + b) / 4.0f) / 14.0f;
+		float b3 = ((wo.getTileBrightness(xt - 1, yt - 1) + wo.getTileBrightness(xt, yt - 1) + wo.getTileBrightness(xt - 1, yt) + b) / 4.0f) / 14.0f;
+		
+		Image i = Image.getImageFromName("spriteSheet");
+		
+		float txmin = ((x0 + tOffset) * 16.0f) / i.getWidth();
+		float tymin = ((ty + tOffset) * 16.0f) / i.getHeight();
+		float txmax = (txmin - tOffset) + (16.0f / i.getWidth());
+		float tymax = (tymin - tOffset) + (16.0f / i.getHeight());
+		
+		bo.bindImage(i);
+		bo.setDepth(Tile.yPosToDepth(y) - 1.0f);
+		bo.setRGB(b0, b0, b0);
+		bo.setUV(txmax, tymin);
+		bo.addVertex(x + tileSize, y + tileSize);
+		bo.setRGB(b1, b1, b1);
+		bo.setUV(txmin, tymin);
+		bo.addVertex(x, y + tileSize);
+		bo.setRGB(b3, b3, b3);
+		bo.setUV(txmin, tymax);
+		bo.addVertex(x, y);
+		bo.setRGB(b2, b2, b2);
+		bo.setUV(txmax, tymax);
+		bo.addVertex(x + tileSize, y);
 	}
 
 	public static ImageIcon getTileImageIcon(int i, int scale) {

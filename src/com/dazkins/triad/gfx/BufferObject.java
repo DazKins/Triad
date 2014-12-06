@@ -68,6 +68,7 @@ public class BufferObject {
 				ID = GL11.glGenLists(1);
 		}
 		a = 1.0f;
+		setRGB(1.0f, 1.0f, 1.0f);
 	}
 
 	public void start() {
@@ -108,11 +109,6 @@ public class BufferObject {
 	private void closeVBO() {
 		rawBuffer = null;
 		dataBuffer = null;
-	}
-
-	public void setBrightness(float b) {
-		if (b != 1)
-			setRGB(b, b, b);
 	}
 
 	public void setRGB(float r, float g, float b) {

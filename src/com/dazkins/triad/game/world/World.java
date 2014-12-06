@@ -30,7 +30,6 @@ public abstract class World implements Loadable {
 	public ArrayList<Particle> particles = new ArrayList<Particle>();
 	public ArrayList<Entity>[] entitiesInTiles;
 	public ArrayList<Entity> entities;
-	public ArrayList<Entity> lights;
 
 	private Camera cam;
 
@@ -48,7 +47,7 @@ public abstract class World implements Loadable {
 	public void load() {
 		loadDataFromFile(pathToLoad);
 	}
-
+	
 	public void loadDataFromFile(String p) {
 		ListFile l = null;
 		try {
@@ -66,7 +65,6 @@ public abstract class World implements Loadable {
 		}
 		
 		entities = new ArrayList<Entity>();
-		lights = new ArrayList<Entity>();
 		
 		this.generate();
 		
@@ -105,25 +103,6 @@ public abstract class World implements Loadable {
 			
 		}
 		entities.add(e);
-		
-		if (e instanceof LightEmitter) {
-			System.out.println(lights.size());
-			lights.add(e);
-			registerLightUpdateForEntity(e);
-		}
-	}
-	
-	public void registerLightUpdateForEntity(Entity e) {
-		int cx = (int) e.getX() >> 9;
-		int cy = (int) e.getY() >> 9;
-		for (int x = cx - 1; x < cx + 2; x++) {
-			for (int y = cy - 1; y < cy + 2; y++) {
-				if (x >= 0 && y >= 0 && x < nChunksX && y < nChunksY) {
-					Chunk c = chunks[x + y * nChunksX];
-					c.recalculateLighting();
-				}
-			}
-		}
 	}
 
 	public void render() {
@@ -265,10 +244,6 @@ public abstract class World implements Loadable {
 			return;
 		getChunkFromWorldTileCoords(x, y).setTile(t, x % Chunk.chunkW, y % Chunk.chunkH);
 	}
-	
-	public ArrayList<Entity> getLights() {
-		return lights;
-	}
 
 	public void tick() {
 		for (int i = 0; i < chunks.length; i++) {
@@ -302,22 +277,12 @@ public abstract class World implements Loadable {
 					
 					int tx1 = (int) e.getX() >> 5;
 					int ty1 = (int) e.getY() >> 5;
-
-					if (e instanceof LightEmitter) {
-						if (x1 != x0 || y1 != y0) {
-							entities.remove(e);
-							entitiesInTiles[i].remove(e);
-							lights.remove(e);
-							
-							addEntity(e);
-						} else { 
-							if (tx0 != tx1 || ty0 != ty1) {
-								entities.remove(e);
-								entitiesInTiles[i].remove(e);
-								
-								addEntity(e);
-							}
-						}
+		
+					if (tx0 != tx1 || ty0 != ty1) {
+						entities.remove(e);
+						entitiesInTiles[i].remove(e);
+						
+						addEntity(e);
 					}
 				}
 			}

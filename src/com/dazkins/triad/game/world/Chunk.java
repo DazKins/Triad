@@ -31,16 +31,10 @@ public class Chunk {
 		this.world = w;
 
 		lightLevel = new float[chunkW * chunkH];
-		tiles = new int[chunkW * chunkH];
-	}
-
-	public void addEntity(Entity e) {
-		int xx = ((int) e.getX() >> 5) - chunkX * chunkW;
-		int yy = ((int) e.getY() >> 5) - chunkY * chunkH;
-
-		if (e instanceof LightEmitter) {
-			recalculateLighting();
+		for (int i = 0; i < lightLevel.length; i++) {
+			lightLevel[i] = world.ambientLightLevel;
 		}
+		tiles = new int[chunkW * chunkH];
 	}
 
 	private boolean isValidTilePos(int x, int y) {
@@ -79,41 +73,7 @@ public class Chunk {
 		return Tile.tiles[tiles[x + y * chunkW]];
 	}
 
-	// Unconfirmed whether or not this function works, just there if needed
-	//
-	// public ArrayList<Entity> getEntitiesInAABB(AABB b) {
-	// ArrayList<Entity> rValue = new ArrayList<Entity>();
-	// int x0 = ((int) b.getX0() >> 5) - chunkX;
-	// int y0 = ((int) b.getY0() >> 5) - chunkY;
-	// int x1 = ((int) b.getX1() >> 5) - chunkX;
-	// int y1 = ((int) b.getY1() >> 5) - chunkY;
-	//
-	// if (x0 < 0) x0 = 0;
-	// if (y0 < 0) y0 = 0;
-	// if (x1 > chunkW) x1 = chunkW;
-	// if (y1 > chunkH) y1 = chunkH;
-	//
-	// System.out.println(x0 + " " + y0 + " " + x1 + " " + y1);
-	//
-	// for (int x = x0; x < x1; x++) {
-	// for (int y = y0; y < y1; y++) {
-	// ArrayList<Entity> aabbEntities = new ArrayList<Entity>();
-	// ArrayList<Entity> entitiesInTile = getEntitiesInTile(x, y);
-	// for (int i = 0; i < entitiesInTile.size(); i++) {
-	// Entity e = entitiesInTile.get(i);
-	// if (e.getAABB().intersects(b)) {
-	// if (!aabbEntities.contains(e) && !rValue.contains(e))
-	// aabbEntities.add(e);
-	// }
-	// }
-	// }
-	// }
-	//
-	// return rValue;
-	// }
-
 	public void generate() {
-		recalculateLighting();
 		tilePlane = new BufferObject(16 * 16 * 4 * 8 * 2);
 		tilePlane.start();
 		tilePlane.bindImage(Image.getImageFromName("spriteSheet"));
@@ -128,41 +88,10 @@ public class Chunk {
 		tilePlane.stop();
 		generated = true;
 	}
-
-	public void recalculateLighting() {
+	
+	private void resetLightLevels() {
 		for (int i = 0; i < lightLevel.length; i++) {
 			lightLevel[i] = world.ambientLightLevel;
-		}
-		ArrayList<Entity> tmp = world.getLights();
-		for (Entity e : tmp) {
-			if (e instanceof LightEmitter) {
-				LightEmitter le = (LightEmitter) e;
-
-				int xx = (int) (e.getX() / Tile.tileSize);
-				int yy = (int) (e.getY() / Tile.tileSize);
-
-				int cx = xx - (chunkX * chunkW);
-				int cy = yy - (chunkY * chunkH);
-
-				byte l = le.getLightStrength();
-
-				for (int x = cx - 13; x < cx + 14; x++) {
-					float dx = (float) Math.abs(e.getX() - (x + (chunkX * chunkW)) * Tile.tileSize);
-					int ccx = x + (chunkX * chunkW);
-					for (int y = cy - 13; y < cy + 14; y++) {
-						float dy = (float) Math.abs(e.getY() - (y + (chunkY * chunkH)) * Tile.tileSize);
-						float dist = (float) Math.sqrt(dx * dx + dy * dy);
-
-						int ccy = y + (chunkY * chunkH);
-
-						float lightVal = l - (dist / Tile.tileSize);
-						float cLightVal = world.getTileBrightness(ccx, ccy);
-
-						if (cLightVal < lightVal)
-							world.setTileBrightness(lightVal, ccx, ccy);
-					}
-				}
-			}
 		}
 	}
 
@@ -174,7 +103,9 @@ public class Chunk {
 		return generated;
 	}
 
-	public void tick() { }
+	public void tick() { 
+		resetLightLevels();
+	}
 	
 	public void renderGrid() {
 		int xx0 = chunkX * Tile.tileSize * chunkW;
