@@ -36,7 +36,7 @@ public class GameStatePlaying implements GameState {
 		win = triad.win;
 		input = new InputHandler(win);
 		cam = new Camera(input, triad.win, 0, 0);
-		cam.lockZoom(0.0001f, 500f);
+		cam.lockZoom(0.1f, 500f);
 		changeWorld(World.testWorld);
 		player = new EntityPlayer(world, 100, 100, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
@@ -107,6 +107,7 @@ public class GameStatePlaying implements GameState {
 	
 	public void changeWorld(World w) {
 		world = w;
+		world.initFirstGeneration();
 		cam.setBounds(0, 0, world.nChunksX * Chunk.chunkW * Tile.tileSize, world.nChunksX * Chunk.chunkH * Tile.tileSize);
 	}
 	

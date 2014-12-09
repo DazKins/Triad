@@ -66,9 +66,9 @@ public class Triad {
 		
 		BufferObject.init();
 		
-		setGameState(new GameStateLoading());
-		
 		Font.initializeFont();
+		
+		setGameState(new GameStateLoading());
 	}
 	
 	public void setGameState(GameState g) {
@@ -88,6 +88,8 @@ public class Triad {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glCullFace(GL11.GL_BACK);
+        
+        System.err.println("OpenGL Context Succefully Created!");
 	}
 	
 	private void stop() {
@@ -188,11 +190,11 @@ public class Triad {
 	}
 
 	private void tick() {
-		currentState.tick();
-		
 		input.tick();
 		
 		win.tickState();
+		
+		currentState.tick();
 		
 		if(win.wasCloseRequested()) {
 			stop();

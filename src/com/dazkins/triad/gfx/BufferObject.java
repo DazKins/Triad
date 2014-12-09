@@ -58,6 +58,10 @@ public class BufferObject {
 		}
 		initStaticVBOs();
 	}
+	
+	public void deleteBuffer() {
+		GL15.glDeleteBuffers(ID);
+	}
 
 	public BufferObject(int size) {
 		if (useVBO) {

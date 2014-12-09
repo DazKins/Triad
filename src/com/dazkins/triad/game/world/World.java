@@ -77,6 +77,14 @@ public abstract class World implements Loadable {
 			this.setTile(Tile.tiles[t], x, y);
 		}
 	}
+	
+	public void initFirstGeneration() {
+		for (int i = 0; i < chunks.length; i++) {
+			if (!chunks[i].isGenerated()) {
+				chunks[i].generate();
+			}
+		}
+	}
 
 	private void generate() {
 		chunks = new Chunk[nChunksX * nChunksY];
@@ -99,23 +107,16 @@ public abstract class World implements Loadable {
 		
 		try {
 			entitiesInTiles[tx + ty * nChunksX * Chunk.chunkW].add(e);
-		} catch (Exception ex) {
-			
-		}
+		} catch (Exception ex) { }
+		
 		entities.add(e);
 	}
 
 	public void render() {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		for (int x = nChunksX - 1; x >= 0; x--) {
-			for (int y = nChunksY - 1; y >= 0; y--) {
-				if (!chunks[x + y * nChunksY].isGenerated()) {
-					chunks[x + y * nChunksY].generate();
-				}
-				if (chunks[x + y * nChunksY].getBounds().intersects(
-						cam.getViewportBounds())) {
-					chunks[x + y * nChunksY].render();
-				}
+		for (int i = 0; i < chunks.length; i++) {
+			if (chunks[i].getBounds().intersects(cam.getViewportBounds())) {
+				chunks[i].render();
 			}
 		}
 		
@@ -220,6 +221,10 @@ public abstract class World implements Loadable {
 	public boolean isValidTilePos(int x, int y) {
 		return (x >= 0 && x < nChunksX * Chunk.chunkW) && (y >= 0 && y < nChunksY * Chunk.chunkH);
 	}
+	
+	public boolean isValidChunkPos(int x, int y) {
+		return (x >= 0 && x < nChunksX) && (y >= 0 && y < nChunksY);
+	}
 
 	public float getTileBrightness(int x, int y) {
 		if (!isValidTilePos(x, y))
@@ -247,6 +252,11 @@ public abstract class World implements Loadable {
 
 	public void tick() {
 		for (int i = 0; i < chunks.length; i++) {
+			if (!chunks[i].isGenerated() || Math.random() * 100 > 99) {
+				chunks[i].generate();
+			}
+		}
+		for (int i = 0; i < chunks.length; i++) {
 			chunks[i].tick();
 		}
 		for (int i = 0; i < particles.size(); i++) {
@@ -266,14 +276,8 @@ public abstract class World implements Loadable {
 				else {
 					int tx0 = (int) e.getX() >> 5;
 					int ty0 = (int) e.getY() >> 5;
-		
-					float x0 = e.getX();
-					float y0 = e.getY();
 					
 					e.tick();
-
-					float x1 = e.getX();
-					float y1 = e.getY();
 					
 					int tx1 = (int) e.getX() >> 5;
 					int ty1 = (int) e.getY() >> 5;
@@ -289,6 +293,13 @@ public abstract class World implements Loadable {
 		}
 
 		weather.tick();
+	}
+	
+	public Chunk getChunk(int x, int y) {
+		if (isValidChunkPos(x, y)) {
+			return chunks[x + y * nChunksX];
+		}
+		return null;
 	}
 
 	public ArrayList<Entity> getEntities() {

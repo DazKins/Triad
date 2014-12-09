@@ -50,9 +50,9 @@ public class Chunk {
 	}
 
 	public void setTileBrightness(float b, int x, int y) {
+		if (!isValidTilePos(x, y))
+			return;
 		if (getTileBrightness(x, y) != b) {
-			if (!isValidTilePos(x, y))
-				return;
 			lightLevel[x + y * chunkW] = b;
 			generated = false;
 		}
@@ -74,6 +74,8 @@ public class Chunk {
 	}
 
 	public void generate() {
+		if (tilePlane != null)
+			tilePlane.deleteBuffer();
 		tilePlane = new BufferObject(16 * 16 * 4 * 8 * 2);
 		tilePlane.start();
 		tilePlane.bindImage(Image.getImageFromName("spriteSheet"));
@@ -103,7 +105,7 @@ public class Chunk {
 		return generated;
 	}
 
-	public void tick() { 
+	public void tick() {
 		resetLightLevels();
 	}
 	
@@ -115,7 +117,7 @@ public class Chunk {
 		
 		GL11.glLineWidth(4);
 		
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
+//		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		
 		GL11.glColor4f(0.8f, 0.8f, 0.8f, 1.0f);
 		
@@ -152,7 +154,7 @@ public class Chunk {
 		
 		GL11.glColor4f(1, 1, 1, 1);
 		
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+//		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
 	public void render() {

@@ -3,6 +3,8 @@ package com.dazkins.triad.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.opengl.GLContext;
+
 public class Loader implements Runnable {
 	private List<Loadable> lds;
 	

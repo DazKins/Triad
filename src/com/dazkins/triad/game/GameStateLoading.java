@@ -12,6 +12,8 @@ public class GameStateLoading implements GameState {
 	
 	private GuiLoading gui;
 	
+	private boolean started;
+	
 	public void init(Triad triad) {
 		this.triad = triad;
 		loader = new Loader();
@@ -19,8 +21,6 @@ public class GameStateLoading implements GameState {
 		loader.addLoad(World.testWorld);
 		
 		gui = new GuiLoading(triad, loader);
-		
-		new Thread(loader).start();
 	}
 
 	public void render() {
@@ -28,6 +28,10 @@ public class GameStateLoading implements GameState {
 	}
 
 	public void tick() {
+		if (!started) {
+			new Thread(loader).start();
+			started = true;
+		}
 		if (loader.getPercent() >= 1.0f)
 			triad.setGameState(new GameStatePlaying());
 	}

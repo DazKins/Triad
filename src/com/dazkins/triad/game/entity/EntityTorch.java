@@ -20,8 +20,8 @@ public class EntityTorch extends Entity implements LightEmitter {
 	
 	public void tick() {
 		super.tick();
-		y += 1;
-		x += 1;
+//		y += 1;
+//		x += 1;
 		
 		int xx = (int) x >> 5;
 		int yy = (int) y >> 5;
@@ -29,16 +29,17 @@ public class EntityTorch extends Entity implements LightEmitter {
 		int halfScanRange = 25;
 		
 		for (int ix = xx - halfScanRange; ix < xx + halfScanRange; ix++) {
-			float dx = (float) Math.abs(x - (float) ix * (float) Tile.tileSize);
+			float dx = (float) Math.abs(x -  ix * Tile.tileSize);
 			for (int iy = yy - halfScanRange; iy < yy + halfScanRange; iy++) {
-				float dy = (float) Math.abs(y - (float) iy * (float) Tile.tileSize);
+				float dy = (float) Math.abs(y - iy * Tile.tileSize);
 				float dist = (float) Math.sqrt(dx * dx + dy * dy);
 
-				float lightVal = getLightStrength() - (dist / (float) Tile.tileSize);
+				float lightVal = getLightStrength() - (dist / Tile.tileSize);
 				float cLightVal = world.getTileBrightness(ix, iy);
 				
-				if (cLightVal < lightVal)
+				if (cLightVal < lightVal) {
 					world.setTileBrightness(lightVal, ix, iy);
+				}
 			}
 		}
 	}
