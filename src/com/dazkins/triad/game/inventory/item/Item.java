@@ -62,7 +62,7 @@ public class Item {
 		img = Image.getImageFromName("item_" + name);
 		icon = new BufferObject(36);
 		icon.start();
-		img.renderSprite(icon, 0, 0, 32, 32, 0, 0, 32, 32, 0.0f, 1.0f);
+		img.renderSprite(icon, 0, 0, 32, 32, 0, 0, 32, 32, 0.0f, 0.0f);
 		icon.stop();
 	}
 	

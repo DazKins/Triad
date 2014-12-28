@@ -56,9 +56,6 @@ public class EntityPlayer extends Mob {
 			model.addAnimation(new AnimationHumanoidWalking(this), 1, false);
 		}
 		
-		if (input.isKeyJustDown(GLFW.GLFW_KEY_Q))
-			world.addEntity(new EntityTorch(world, x, y));
-		
 		if (input.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
 			if (attemptAttack(getFacingAttackArea(getFacing()))) {
 				model.addAnimation(new AnimationHumanoidSlashing(this, this.getAttackCooldown()), 5, true);

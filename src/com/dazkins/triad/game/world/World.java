@@ -9,7 +9,9 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.file.ListFile;
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.EntityTorch;
 import com.dazkins.triad.game.entity.LightEmitter;
+import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.entity.particle.Particle;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -25,7 +27,7 @@ public abstract class World implements Loadable {
 
 	public int nChunksX;
 	public int nChunksY;
-	public byte ambientLightLevel;
+	public float ambientLightLevel;
 
 	public ArrayList<Particle> particles = new ArrayList<Particle>();
 	public ArrayList<Entity>[] entitiesInTiles;
@@ -75,6 +77,7 @@ public abstract class World implements Loadable {
 			int x = (i - 2) / tw;
 			int y = (i - 2) % tw;
 			this.setTile(Tile.tiles[t], x, y);
+//			this.setTile(Tile.white, x, y);
 		}
 	}
 	
@@ -101,24 +104,31 @@ public abstract class World implements Loadable {
 
 		if (e instanceof Particle)
 			addParticle((Particle) e);
-		
-		int tx = (int) e.getX() >> 5;
-		int ty = (int) e.getY() >> 5;
-		
-		try {
-			entitiesInTiles[tx + ty * nChunksX * Chunk.chunkW].add(e);
-		} catch (Exception ex) { }
-		
-		entities.add(e);
+		else {
+			int tx = (int) e.getX() >> 5;
+			int ty = (int) e.getY() >> 5;
+			
+			try {
+				entitiesInTiles[tx + ty * nChunksX * Chunk.chunkW].add(e);
+			} catch (Exception ex) { }
+			
+			entities.add(e);
+		}
 	}
 
 	public void render() {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
+//		int it = 0;
 		for (int i = 0; i < chunks.length; i++) {
 			if (chunks[i].getBounds().intersects(cam.getViewportBounds())) {
+				if (!chunks[i].isGenerated()) {
+					chunks[i].generate();
+//					it++;
+				}
 				chunks[i].render();
 			}
 		}
+//		System.out.println(it + " chunks regenerated!");
 		
 		entities.sort(Entity.ySorter);
 		for (Entity e : entities) {
@@ -225,17 +235,59 @@ public abstract class World implements Loadable {
 	public boolean isValidChunkPos(int x, int y) {
 		return (x >= 0 && x < nChunksX) && (y >= 0 && y < nChunksY);
 	}
-
-	public float getTileBrightness(int x, int y) {
+	
+	public float getTileR(int x, int y) {
 		if (!isValidTilePos(x, y))
 			return 0;
-		return getChunkFromWorldTileCoords(x, y).getTileBrightness(x % Chunk.chunkW, y % Chunk.chunkH);
+		return getChunkFromWorldTileCoords(x, y).getTileR(x % Chunk.chunkW, y % Chunk.chunkH);
 	}
-
-	public void setTileBrightness(float b, int x, int y) {
+	
+	public float getTileG(int x, int y) {
+		if (!isValidTilePos(x, y))
+			return 0;
+		return getChunkFromWorldTileCoords(x, y).getTileG(x % Chunk.chunkW, y % Chunk.chunkH);
+	}
+	
+	public float getTileB(int x, int y) {
+		if (!isValidTilePos(x, y))
+			return 0;
+		return getChunkFromWorldTileCoords(x, y).getTileB(x % Chunk.chunkW, y % Chunk.chunkH);
+	}
+	
+	public void setTileR(float b, int x, int y) {
 		if (!isValidTilePos(x, y))
 			return;
-		getChunkFromWorldTileCoords(x, y).setTileBrightness(b, x % Chunk.chunkW, y % Chunk.chunkH);
+		getChunkFromWorldTileCoords(x, y).setTileR(b, x % Chunk.chunkW, y % Chunk.chunkH);
+	}
+	
+	public void setTileG(float b, int x, int y) {
+		if (!isValidTilePos(x, y))
+			return;
+		getChunkFromWorldTileCoords(x, y).setTileG(b, x % Chunk.chunkW, y % Chunk.chunkH);
+	}
+	
+	public void setTileB(float b, int x, int y) {
+		if (!isValidTilePos(x, y))
+			return;
+		getChunkFromWorldTileCoords(x, y).setTileB(b, x % Chunk.chunkW, y % Chunk.chunkH);
+	}
+	
+	public void applyTileR(float b, int x, int y) {
+		if (!isValidTilePos(x, y))
+			return;
+		getChunkFromWorldTileCoords(x, y).applyTileR(b, x % Chunk.chunkW, y % Chunk.chunkH);
+	}
+	
+	public void applyTileG(float b, int x, int y) {
+		if (!isValidTilePos(x, y))
+			return;
+		getChunkFromWorldTileCoords(x, y).applyTileG(b, x % Chunk.chunkW, y % Chunk.chunkH);
+	}
+	
+	public void applyTileB(float b, int x, int y) {
+		if (!isValidTilePos(x, y))
+			return;
+		getChunkFromWorldTileCoords(x, y).applyTileB(b, x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 
 	public Tile getTile(int x, int y) {
@@ -250,15 +302,9 @@ public abstract class World implements Loadable {
 		getChunkFromWorldTileCoords(x, y).setTile(t, x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 
+	private ArrayList<Entity> ticked = new ArrayList<Entity>();
+	
 	public void tick() {
-		for (int i = 0; i < chunks.length; i++) {
-			if (!chunks[i].isGenerated() || Math.random() * 100 > 99) {
-				chunks[i].generate();
-			}
-		}
-		for (int i = 0; i < chunks.length; i++) {
-			chunks[i].tick();
-		}
 		for (int i = 0; i < particles.size(); i++) {
 			if (particles.get(i).needDestruction())
 				particles.remove(i);
@@ -277,7 +323,10 @@ public abstract class World implements Loadable {
 					int tx0 = (int) e.getX() >> 5;
 					int ty0 = (int) e.getY() >> 5;
 					
-					e.tick();
+					if (!ticked.contains(e))
+						e.tick();
+					
+					ticked.add(e);
 					
 					int tx1 = (int) e.getX() >> 5;
 					int ty1 = (int) e.getY() >> 5;
@@ -291,7 +340,11 @@ public abstract class World implements Loadable {
 				}
 			}
 		}
-
+		for (int i = 0; i < chunks.length; i++) {
+			chunks[i].tick();
+		}
+		
+		ticked.clear();
 		weather.tick();
 	}
 	

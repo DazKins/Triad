@@ -94,9 +94,10 @@ public abstract class Entity {
 		if (model != null) {
 			int xx = (int) x >> 5;
 			int yy = (int) y >> 5;
-			float b = world.getTileBrightness(xx, yy);
-			float bm = b / 14.0f;
-			GL11.glColor3f(bm, bm, bm);
+			float r = world.getTileR(xx, yy);
+			float g = world.getTileG(xx, yy);
+			float b = world.getTileB(xx, yy);
+			GL11.glColor4f(r, g, b, 1.0f);
 			model.render(this);
 		}
 	}

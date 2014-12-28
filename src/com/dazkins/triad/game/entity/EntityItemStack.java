@@ -50,9 +50,14 @@ public class EntityItemStack extends Entity {
 		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
-		float b = world.getTileBrightness((int) x >> 5, (int) y >> 5);
-		float bm = b / 14.0f;
-		GL11.glColor3f(bm, bm, bm);
+		int xx = (int) x >> 5;
+		int yy = (int) y >> 5;
+		
+		float r = world.getTileR(xx, yy);
+		float g = world.getTileG(xx, yy);
+		float b = world.getTileB(xx, yy);
+		
+		GL11.glColor3f(r, g, b);
 		is.getItemType().renderIcon(x, y + yBounce, Tile.yPosToDepth(y) + 0.001f, 1);
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 	}

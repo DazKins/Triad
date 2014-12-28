@@ -5,6 +5,7 @@ import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.EntityButton;
+import com.dazkins.triad.game.entity.EntityTorch;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.game.gui.Gui;
@@ -41,8 +42,8 @@ public class GameStatePlaying implements GameState {
 		player = new EntityPlayer(world, 100, 100, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
 		
-//		for (int i = 0; i < 20; i++)
-//			world.addEntity(new EntityZombie(world, (float) Math.random() * 200 + 100, (float) Math.random() * 200 + 100));
+		for (int i = 0; i < 20; i++)
+			world.addEntity(new EntityZombie(world, (float) Math.random() * 200 + 100, (float) Math.random() * 200 + 100));
 		
 		world.addEntity(player);
 		
@@ -69,15 +70,19 @@ public class GameStatePlaying implements GameState {
 		if (input.isKeyJustDown(GLFW.GLFW_KEY_ESCAPE)) {
 			changeGui(new PlayerGui(triad, input, world, player));
 		}
-		if (input.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL) && input.mouse1JustDown) {
-			int mx = (int) ((input.mouseX / cam.getZoom()) + cam.getX()) >> 5;
-			int my = (int) ((input.mouseY / cam.getZoom()) + cam.getY()) >> 5;
-			System.err.println("Tile location: " + mx + ", " + my);
-		}
 		world.tick();
 		cam.tick();
 		cam.lockCameraToEntity(player);
 		currentlyDisplayedGui.tick();
+		if (input.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL) && input.mouse1JustDown) {
+			int mx = (int) ((input.mouseX / cam.getZoom()) + cam.getX()) >> 5;
+			int my = (int) ((input.mouseY / cam.getZoom()) + cam.getY()) >> 5;
+			System.err.println("Tile position: " + mx + ", " + my);
+			System.err.println("Tile RGB: " + world.getTileR(mx, my) + ", " + world.getTileG(mx, my) + ", " + world.getTileB(mx, my));
+		}
+		if (input.isKeyJustDown(GLFW.GLFW_KEY_Q)) {
+			world.addEntity(new EntityTorch(world, player.getX(), player.getY()));
+		}
 		input.tick();
 	}
 	

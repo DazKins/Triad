@@ -31,7 +31,7 @@ public class InputHandler extends WindowCallback {
 	}
 	
 	public boolean isKeyDown(int k) {
-		return GLFW.glfwGetKey(window.getWindowReference(), k) == GLFW.GLFW_PRESS;
+		return keys[k];
 	}
 	
 	public boolean isKeyJustDown(int k) {
@@ -70,8 +70,16 @@ public class InputHandler extends WindowCallback {
 	public void framebufferSize(long window, int width, int height) { }
 
 	public void key(long window, int key, int scancode, int action, int mods) {
-		if (action == GLFW.GLFW_PRESS)
-			justDownedKeys[key] = true;
+		if (action == GLFW.GLFW_PRESS) {
+			if (key < 400 && key >= 0) {
+				keys[key] = true;
+				justDownedKeys[key] = true;
+			}
+		} else if (action == GLFW.GLFW_RELEASE) {
+			if (key < 400 && key >= 0) {
+				keys[key] = false;
+			}
+		}
 	}
 
 	public void mouseButton(long window, int button, int action, int mods) {

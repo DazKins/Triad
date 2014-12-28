@@ -19,6 +19,7 @@ public class Tile {
 	public static TileGrass grass = new TileGrass(1);
 	public static TileStone stone = new TileStone(2);
 	public static TileSand sand = new TileSand(3);
+	public static TileWhite white = new TileWhite(4);
 	
 	private int id;
 	private String name;
@@ -79,31 +80,43 @@ public class Tile {
 		
 		float tOffset = 0.001f;
 		
-		float b = wo.getTileBrightness(xt, yt);
-		float b0 = ((wo.getTileBrightness(xt + 1, yt + 1) + wo.getTileBrightness(xt, yt + 1) + wo.getTileBrightness(xt + 1, yt) + b) / 4.0f) / 14.0f;
-		float b1 = ((wo.getTileBrightness(xt - 1, yt + 1) + wo.getTileBrightness(xt, yt + 1) + wo.getTileBrightness(xt - 1, yt) + b) / 4.0f) / 14.0f;
-		float b2 = ((wo.getTileBrightness(xt + 1, yt - 1) + wo.getTileBrightness(xt, yt - 1) + wo.getTileBrightness(xt + 1, yt) + b) / 4.0f) / 14.0f;
-		float b3 = ((wo.getTileBrightness(xt - 1, yt - 1) + wo.getTileBrightness(xt, yt - 1) + wo.getTileBrightness(xt - 1, yt) + b) / 4.0f) / 14.0f;
+		float r = wo.getTileR(xt, yt);
+		float r0 = ((wo.getTileR(xt + 1, yt + 1) + wo.getTileR(xt, yt + 1) + wo.getTileR(xt + 1, yt) + r) / 4.0f);
+		float r1 = ((wo.getTileR(xt - 1, yt + 1) + wo.getTileR(xt, yt + 1) + wo.getTileR(xt - 1, yt) + r) / 4.0f);
+		float r2 = ((wo.getTileR(xt + 1, yt - 1) + wo.getTileR(xt, yt - 1) + wo.getTileR(xt + 1, yt) + r) / 4.0f);
+		float r3 = ((wo.getTileR(xt - 1, yt - 1) + wo.getTileR(xt, yt - 1) + wo.getTileR(xt - 1, yt) + r) / 4.0f);
+		
+		float g = wo.getTileG(xt, yt);
+		float g0 = ((wo.getTileG(xt + 1, yt + 1) + wo.getTileG(xt, yt + 1) + wo.getTileG(xt + 1, yt) + g) / 4.0f);
+		float g1 = ((wo.getTileG(xt - 1, yt + 1) + wo.getTileG(xt, yt + 1) + wo.getTileG(xt - 1, yt) + g) / 4.0f);
+		float g2 = ((wo.getTileG(xt + 1, yt - 1) + wo.getTileG(xt, yt - 1) + wo.getTileG(xt + 1, yt) + g) / 4.0f);
+		float g3 = ((wo.getTileG(xt - 1, yt - 1) + wo.getTileG(xt, yt - 1) + wo.getTileG(xt - 1, yt) + g) / 4.0f);
+		
+		float b = wo.getTileB(xt, yt);
+		float b0 = ((wo.getTileB(xt + 1, yt + 1) + wo.getTileB(xt, yt + 1) + wo.getTileB(xt + 1, yt) + b) / 4.0f);
+		float b1 = ((wo.getTileB(xt - 1, yt + 1) + wo.getTileB(xt, yt + 1) + wo.getTileB(xt - 1, yt) + b) / 4.0f);
+		float b2 = ((wo.getTileB(xt + 1, yt - 1) + wo.getTileB(xt, yt - 1) + wo.getTileB(xt + 1, yt) + b) / 4.0f);
+		float b3 = ((wo.getTileB(xt - 1, yt - 1) + wo.getTileB(xt, yt - 1) + wo.getTileB(xt - 1, yt) + b) / 4.0f);
 		
 		Image i = Image.getImageFromName("spriteSheet");
 		
-		float txmin = ((x0 + tOffset) * 16.0f) / i.getWidth();
-		float tymin = ((ty + tOffset) * 16.0f) / i.getHeight();
-		float txmax = (txmin - tOffset) + (16.0f / i.getWidth());
-		float tymax = (tymin - tOffset) + (16.0f / i.getHeight());
+		float txmin = (x0 * 16.0f) / i.getWidth() + tOffset;
+		float tymin = (ty * 16.0f) / i.getHeight() + tOffset;
+		float txmax = (x0 * 16.0f + 16) / i.getWidth() - tOffset;
+		float tymax = (ty * 16.0f + 16) / i.getHeight() - tOffset;
 		
 		bo.bindImage(i);
 		bo.setDepth(Tile.yPosToDepth(y) - 1.0f);
-		bo.setRGB(b0, b0, b0);
+		bo.setRGB(r0, g0, b0);
 		bo.setUV(txmax, tymin);
 		bo.addVertex(x + tileSize, y + tileSize);
-		bo.setRGB(b1, b1, b1);
+		bo.setRGB(r1, g1, b1);
 		bo.setUV(txmin, tymin);
 		bo.addVertex(x, y + tileSize);
-		bo.setRGB(b3, b3, b3);
+		bo.setRGB(r3, g3, b3);
 		bo.setUV(txmin, tymax);
 		bo.addVertex(x, y);
-		bo.setRGB(b2, b2, b2);
+		bo.setRGB(r2, g2, b2);
 		bo.setUV(txmax, tymax);
 		bo.addVertex(x + tileSize, y);
 	}
