@@ -5,8 +5,8 @@ import org.lwjgl.opengl.GL11;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.math.AABB;
-import com.dazkins.triad.util.Loadable;
 import com.dazkins.triad.util.pool.ObjectPool;
 import com.dazkins.triad.util.pool.PoolableObject;
 import com.dazkins.triad.util.pool.factory.ParticleFactory;
@@ -58,18 +58,14 @@ public class Particle extends Entity implements PoolableObject {
 
 		int xx = (int) x >> 5;
 		int yy = (int) y >> 5;
-
-		float rc = 1.0f;
-		float gc = 1.0f;
-		float bc = 1.0f;
+		
+		Color c = new Color(255, 255, 255);
 		
 		if (world.isValidTilePos(xx, yy)) {
-			rc = world.getTileR(xx, yy);
-			gc = world.getTileG(xx, yy);
-			bc = world.getTileB(xx, yy);
+			c = world.getTileColor(xx, yy);
 		}
 		
-		GL11.glColor4f(r * rc, g * gc, b * bc, a);
+		GL11.glColor4f(r * c.getDR(), g * c.getDG(), b * c.getDB(), a);
 		bo.render();
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 

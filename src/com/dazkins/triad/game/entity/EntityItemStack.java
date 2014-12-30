@@ -8,6 +8,7 @@ import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.math.AABB;
 
 public class EntityItemStack extends Entity {
@@ -53,11 +54,9 @@ public class EntityItemStack extends Entity {
 		int xx = (int) x >> 5;
 		int yy = (int) y >> 5;
 		
-		float r = world.getTileR(xx, yy);
-		float g = world.getTileG(xx, yy);
-		float b = world.getTileB(xx, yy);
+		Color c = world.getTileColor(xx, yy);
 		
-		GL11.glColor3f(r, g, b);
+		GL11.glColor3f(c.getR(), c.getG(), c.getB());
 		is.getItemType().renderIcon(x, y + yBounce, Tile.yPosToDepth(y) + 0.001f, 1);
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 	}

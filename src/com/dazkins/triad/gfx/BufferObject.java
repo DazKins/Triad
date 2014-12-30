@@ -122,6 +122,13 @@ public class BufferObject {
 		this.b = b;
 	}
 	
+	public void setColor(Color c) {
+		useColors = true;
+		this.r = c.getDR();
+		this.g = c.getDG();
+		this.b = c.getDB();
+	}
+	
 	public void setA(float a) {
 		useColors = true;
 		this.a = a;

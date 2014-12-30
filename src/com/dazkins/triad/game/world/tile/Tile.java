@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import com.dazkins.triad.file.MultiLineDatabaseFile;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.BufferObject;
+import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
 
@@ -80,23 +81,11 @@ public class Tile {
 		
 		float tOffset = 0.001f;
 		
-		float r = wo.getTileR(xt, yt);
-		float r0 = ((wo.getTileR(xt + 1, yt + 1) + wo.getTileR(xt, yt + 1) + wo.getTileR(xt + 1, yt) + r) / 4.0f);
-		float r1 = ((wo.getTileR(xt - 1, yt + 1) + wo.getTileR(xt, yt + 1) + wo.getTileR(xt - 1, yt) + r) / 4.0f);
-		float r2 = ((wo.getTileR(xt + 1, yt - 1) + wo.getTileR(xt, yt - 1) + wo.getTileR(xt + 1, yt) + r) / 4.0f);
-		float r3 = ((wo.getTileR(xt - 1, yt - 1) + wo.getTileR(xt, yt - 1) + wo.getTileR(xt - 1, yt) + r) / 4.0f);
-		
-		float g = wo.getTileG(xt, yt);
-		float g0 = ((wo.getTileG(xt + 1, yt + 1) + wo.getTileG(xt, yt + 1) + wo.getTileG(xt + 1, yt) + g) / 4.0f);
-		float g1 = ((wo.getTileG(xt - 1, yt + 1) + wo.getTileG(xt, yt + 1) + wo.getTileG(xt - 1, yt) + g) / 4.0f);
-		float g2 = ((wo.getTileG(xt + 1, yt - 1) + wo.getTileG(xt, yt - 1) + wo.getTileG(xt + 1, yt) + g) / 4.0f);
-		float g3 = ((wo.getTileG(xt - 1, yt - 1) + wo.getTileG(xt, yt - 1) + wo.getTileG(xt - 1, yt) + g) / 4.0f);
-		
-		float b = wo.getTileB(xt, yt);
-		float b0 = ((wo.getTileB(xt + 1, yt + 1) + wo.getTileB(xt, yt + 1) + wo.getTileB(xt + 1, yt) + b) / 4.0f);
-		float b1 = ((wo.getTileB(xt - 1, yt + 1) + wo.getTileB(xt, yt + 1) + wo.getTileB(xt - 1, yt) + b) / 4.0f);
-		float b2 = ((wo.getTileB(xt + 1, yt - 1) + wo.getTileB(xt, yt - 1) + wo.getTileB(xt + 1, yt) + b) / 4.0f);
-		float b3 = ((wo.getTileB(xt - 1, yt - 1) + wo.getTileB(xt, yt - 1) + wo.getTileB(xt - 1, yt) + b) / 4.0f);
+		Color c = wo.getTileColor(xt, yt);
+		Color c0 = Color.averageColors(new Color[] {wo.getTileColor(xt + 1, yt + 1), wo.getTileColor(xt, yt + 1), wo.getTileColor(xt + 1, yt), c});
+		Color c1 = Color.averageColors(new Color[] {wo.getTileColor(xt - 1, yt + 1), wo.getTileColor(xt, yt + 1), wo.getTileColor(xt - 1, yt), c});
+		Color c2 = Color.averageColors(new Color[] {wo.getTileColor(xt + 1, yt - 1), wo.getTileColor(xt, yt - 1), wo.getTileColor(xt + 1, yt), c});
+		Color c3 = Color.averageColors(new Color[] {wo.getTileColor(xt - 1, yt - 1), wo.getTileColor(xt, yt - 1), wo.getTileColor(xt - 1, yt), c});
 		
 		Image i = Image.getImageFromName("spriteSheet");
 		
@@ -107,16 +96,16 @@ public class Tile {
 		
 		bo.bindImage(i);
 		bo.setDepth(Tile.yPosToDepth(y) - 1.0f);
-		bo.setRGB(r0, g0, b0);
+		bo.setColor(c0);
 		bo.setUV(txmax, tymin);
 		bo.addVertex(x + tileSize, y + tileSize);
-		bo.setRGB(r1, g1, b1);
+		bo.setColor(c1);
 		bo.setUV(txmin, tymin);
 		bo.addVertex(x, y + tileSize);
-		bo.setRGB(r3, g3, b3);
+		bo.setColor(c3);
 		bo.setUV(txmin, tymax);
 		bo.addVertex(x, y);
-		bo.setRGB(r2, g2, b2);
+		bo.setColor(c2);
 		bo.setUV(txmax, tymax);
 		bo.addVertex(x + tileSize, y);
 	}

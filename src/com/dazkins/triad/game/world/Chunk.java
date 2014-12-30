@@ -11,43 +11,36 @@ import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.entity.particle.Particle;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
+import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
 
 public class Chunk {
 	public static int chunkW = 16, chunkH = 16;
+	
+	private static float lFadeOut = 0.85f;
 
 	private World world;
 
 	private int chunkX, chunkY;
 	private int[] tiles;
 	
-	private float[] lightR;
-	private float[] lightG;
-	private float[] lightB;
+	private Color[] tileColors;
 	
-	private float[] pLightR;
-	private float[] pLightG;
-	private float[] pLightB;
+	//Store light value from the previous frame
+	private Color[] pTileColors;
 	
 	private boolean generated;
 
 	private BufferObject tilePlane;
-	
-	private static float lFalloff = 0.85f;
 
 	public Chunk(World w, int xp, int yp) {
 		this.chunkX = xp;
 		this.chunkY = yp;
 		this.world = w;
 
-		lightR = new float[chunkW * chunkH];
-		lightG = new float[chunkW * chunkH];
-		lightB = new float[chunkW * chunkH];
-		
-		pLightR = new float[chunkW * chunkH];
-		pLightG = new float[chunkW * chunkH];
-		pLightB = new float[chunkW * chunkH];
+		tileColors = new Color[chunkW * chunkH];
+		pTileColors = new Color[chunkW * chunkH];
 		
 		resetLightLevels();
 		
@@ -60,64 +53,16 @@ public class Chunk {
 		return true;
 	}
 
-	public float getTileR(int x, int y) {
+	public Color getTileColor(int x, int y) {
 		if (!isValidTilePos(x, y))
-			return 0;
-		return lightR[x + y * chunkW];
+			return new Color(0);
+		return tileColors[x + y * chunkW];
 	}
 	
-	public float getTileG(int x, int y) {
-		if (!isValidTilePos(x, y))
-			return 0;
-		return lightG[x + y * chunkW];
-	}
-	
-	public float getTileB(int x, int y) {
-		if (!isValidTilePos(x, y))
-			return 0;
-		return lightB[x + y * chunkW];
-	}
-	
-	public void setTileR(float b, int x, int y) {
+	public void blendTileColor(Color c, int x, int y) {
 		if (!isValidTilePos(x, y))
 			return;
-		lightR[x + y * chunkW] = b;
-	}
-	
-	public void setTileG(float b, int x, int y) {
-		if (!isValidTilePos(x, y))
-			return;
-		lightG[x + y * chunkW] = b;
-	}
-	
-	public void setTileB(float b, int x, int y) {
-		if (!isValidTilePos(x, y))
-			return;
-		lightB[x + y * chunkW] = b;
-	}
-	
-	public void applyTileR(float b, int x, int y) {
-		if (!isValidTilePos(x, y))
-			return;
-		if (b > lightR[x + y * chunkW] && b >= world.ambientLightLevel) {
-			lightR[x + y * chunkW] = b;
-		}
-	}
-	
-	public void applyTileG(float b, int x, int y) {
-		if (!isValidTilePos(x, y))
-			return;
-		if (b > lightG[x + y * chunkW] && b >= world.ambientLightLevel) {
-			lightG[x + y * chunkW] = b;
-		}
-	}
-	
-	public void applyTileB(float b, int x, int y) {
-		if (!isValidTilePos(x, y))
-			return;
-		if (b > lightB[x + y * chunkW] && b >= world.ambientLightLevel) {
-			lightB[x + y * chunkW] = b;
-		}
+		tileColors[x + y * chunkW].blend(c);
 	}
 
 	public void setTile(Tile t, int x, int y) {
@@ -154,10 +99,9 @@ public class Chunk {
 	}
 	
 	private void resetLightLevels() {
-		for (int i = 0; i < lightR.length; i++) {
-			lightR[i] = world.ambientLightLevel * lFalloff;
-			lightG[i] = world.ambientLightLevel * lFalloff;
-			lightB[i] = world.ambientLightLevel * lFalloff;
+		for (int i = 0; i < tileColors.length; i++) {
+			int c = (int) (world.ambientLightLevel * lFadeOut);
+			tileColors[i] = new Color(c, c, c);
 		}
 	}
 
@@ -170,41 +114,38 @@ public class Chunk {
 	}
 
 	public void tick() {
-		for (int i = 0; i < lightR.length; i++) {
-			if (lightR[i] * lFalloff > world.ambientLightLevel * lFalloff) {
-				lightR[i] *= lFalloff;
-			} else if (lightR[i] > world.ambientLightLevel * lFalloff) {
-				lightR[i] = world.ambientLightLevel * lFalloff;
+		for (int i = 0; i < tileColors.length; i++) {
+			Color c = tileColors[i];
+			if (c.getR() * lFadeOut > world.ambientLightLevel * lFadeOut) {
+				c.setR((int) (c.getR() * lFadeOut));
+			} else if (c.getR() > world.ambientLightLevel * lFadeOut) {
+				c.setR((int) (world.ambientLightLevel * lFadeOut));
 			}
-			if (lightG[i] * lFalloff > world.ambientLightLevel * lFalloff) {
-				lightG[i] *= lFalloff;
-			} else if (lightG[i] > world.ambientLightLevel * lFalloff) {
-				lightG[i] = world.ambientLightLevel * lFalloff;
+			if (c.getG() * lFadeOut > world.ambientLightLevel * lFadeOut) {
+				c.setG((int) (c.getG() * lFadeOut));
+			} else if (c.getG() > world.ambientLightLevel * lFadeOut) {
+				c.setG((int) (world.ambientLightLevel * lFadeOut));
 			}
-			if (lightB[i] * lFalloff > world.ambientLightLevel * lFalloff) {
-				lightB[i] *= lFalloff;
-			} else if (lightB[i] > world.ambientLightLevel * lFalloff) {
-				lightB[i] = world.ambientLightLevel * lFalloff;
+			if (c.getB() * lFadeOut > world.ambientLightLevel * lFadeOut) {
+				c.setB((int) (c.getB() * lFadeOut));
+			} else if (c.getB() > world.ambientLightLevel * lFadeOut) {
+				c.setB((int) (world.ambientLightLevel * lFadeOut));
 			}
 		}
 		
 		if (hasLightChanged())
 			generated = false;
 
-		for (int i = 0; i < lightR.length; i++) {
-			pLightR[i] = lightR[i];
-			pLightG[i] = lightG[i];
-			pLightB[i] = lightB[i];
+		for (int i = 0; i < tileColors.length; i++) {
+			pTileColors[i] = tileColors[i].copyOf();
 		}
 	}
 	
 	private boolean hasLightChanged() {
-		for (int i = 0; i < lightR.length; i++) {
-			if (pLightR[i] != lightR[i])
-				return true;
-			if (pLightG[i] != lightB[i])
-				return true;
-			if (pLightG[i] != lightB[i])
+		for (int i = 0; i < tileColors.length; i++) {
+			Color c = tileColors[i];
+			Color pc = pTileColors[i];
+			if (!c.equals(pc))
 				return true;
 		}
 		return false;
@@ -259,7 +200,9 @@ public class Chunk {
 	}
 
 	public void render() {
+		GL11.glDisable(GL11.GL_BLEND);
 		tilePlane.render();
+		GL11.glEnable(GL11.GL_BLEND);
 //		for (int x = 0; x < chunkW; x++) {
 //			for (int y = 0; y < chunkH; y++) {
 //				float x0 = x * Tile.tileSize + (chunkX * Tile.tileSize * chunkW);

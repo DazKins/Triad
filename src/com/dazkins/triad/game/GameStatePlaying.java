@@ -37,7 +37,7 @@ public class GameStatePlaying implements GameState {
 		win = triad.win;
 		input = new InputHandler(win);
 		cam = new Camera(input, triad.win, 0, 0);
-		cam.lockZoom(0.1f, 500f);
+		cam.lockZoom(0.56f, 500f);
 		changeWorld(World.testWorld);
 		player = new EntityPlayer(world, 100, 100, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
@@ -78,12 +78,14 @@ public class GameStatePlaying implements GameState {
 			int mx = (int) ((input.mouseX / cam.getZoom()) + cam.getX()) >> 5;
 			int my = (int) ((input.mouseY / cam.getZoom()) + cam.getY()) >> 5;
 			System.err.println("Tile position: " + mx + ", " + my);
-			System.err.println("Tile RGB: " + world.getTileR(mx, my) + ", " + world.getTileG(mx, my) + ", " + world.getTileB(mx, my));
+			System.err.println(world.getTileColor(mx, my));
 		}
 		if (input.isKeyJustDown(GLFW.GLFW_KEY_Q)) {
 			world.addEntity(new EntityTorch(world, player.getX(), player.getY()));
 		}
 		input.tick();
+		
+		System.out.println(cam.getZoom());
 	}
 	
 	public void render() {

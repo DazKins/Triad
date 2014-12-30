@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.math.AABB;
 
@@ -94,10 +95,8 @@ public abstract class Entity {
 		if (model != null) {
 			int xx = (int) x >> 5;
 			int yy = (int) y >> 5;
-			float r = world.getTileR(xx, yy);
-			float g = world.getTileG(xx, yy);
-			float b = world.getTileB(xx, yy);
-			GL11.glColor4f(r, g, b, 1.0f);
+			Color c = world.getTileColor(xx, yy);
+			GL11.glColor4f(c.getDR(), c.getDG(), c.getDB(), 1.0f);
 			model.render(this);
 		}
 	}
