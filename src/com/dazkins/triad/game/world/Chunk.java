@@ -22,7 +22,7 @@ public class Chunk {
 
 	private World world;
 
-	private int chunkX, chunkY;
+	public int chunkX, chunkY;
 	private int[] tiles;
 	
 	private Color[] tileColors;

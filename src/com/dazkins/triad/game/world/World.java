@@ -8,6 +8,7 @@ import javafx.scene.effect.Light;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.file.ListFile;
+import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.EntityTorch;
 import com.dazkins.triad.game.entity.LightEmitter;
@@ -146,8 +147,6 @@ public abstract class World implements Loadable {
 				break;
 		}
 		
-		System.out.println(it + " chunks regenerated!");
-		
 		entities.sort(Entity.ySorter);
 		for (Entity e : entities) {
 			AABB b = e.getBoundsForRendering();
@@ -228,6 +227,16 @@ public abstract class World implements Loadable {
 
 	public void assignCamera(Camera c) {
 		this.cam = c;
+	}
+	
+	public ArrayList<Activeatable> getActivatablesInAABB(AABB b) {
+		ArrayList<Activeatable> rValue = new ArrayList<Activeatable>();
+		ArrayList<Entity> ents = getEntitiesInAABB(b);
+		for (Entity e : ents) {
+			if (e instanceof Activeatable)
+				rValue.add((Activeatable) e);
+		}
+		return rValue;
 	}
 
 	public void sendAttackCommand(AABB b, Mob m, int d, int k) {

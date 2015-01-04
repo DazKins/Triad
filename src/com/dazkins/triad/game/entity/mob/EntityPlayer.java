@@ -1,15 +1,15 @@
 package com.dazkins.triad.game.entity.mob;
 
+import java.util.ArrayList;
+
 import org.lwjgl.system.glfw.GLFW;
 
-import com.dazkins.triad.game.entity.EntityTorch;
+import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
-import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Image;
-import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.gfx.model.animation.AnimationHumanoidIdle;
 import com.dazkins.triad.gfx.model.animation.AnimationHumanoidSlashing;
@@ -62,6 +62,13 @@ public class EntityPlayer extends Mob {
 			}
 		}
 		
+		if (input.isKeyJustDown(GLFW.GLFW_KEY_Z)) {
+			ArrayList<Activeatable> as = world.getActivatablesInAABB(getAABB());
+			for (Activeatable a : as) {
+				a.onActivate(this);
+			}
+		}
+		
 		move();
 
 		model.updateAnimationState(this);
@@ -95,6 +102,6 @@ public class EntityPlayer extends Mob {
 	}
 
 	public float getMovementSpeed() {
-		return 2f;
+		return 1f;
 	}
 }

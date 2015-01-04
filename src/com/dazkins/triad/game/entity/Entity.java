@@ -89,7 +89,7 @@ public abstract class Entity {
 		facing = f;
 	}
 	
-	public abstract void renderToPlayerGui(Camera c);
+	public void renderToPlayerGui(Camera c) { }
 	
 	public void render() {
 		if (model != null) {

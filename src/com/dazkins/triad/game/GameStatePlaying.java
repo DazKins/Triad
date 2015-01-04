@@ -1,19 +1,21 @@
 package com.dazkins.triad.game;
 
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.Triad;
+import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.EntityButton;
+import com.dazkins.triad.game.entity.EntityDoor;
 import com.dazkins.triad.game.entity.EntityTorch;
+import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
-import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.GuiEquipMenu;
 import com.dazkins.triad.game.gui.GuiInventory;
 import com.dazkins.triad.game.gui.PlayerGui;
-import com.dazkins.triad.game.inventory.item.Item;
-import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -42,15 +44,32 @@ public class GameStatePlaying implements GameState {
 		player = new EntityPlayer(world, 100, 100, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
 		
-		for (int i = 0; i < 20; i++)
-			world.addEntity(new EntityZombie(world, (float) Math.random() * 200 + 100, (float) Math.random() * 200 + 100));
+//		for (int i = 0; i < 20; i++)
+//			world.addEntity(new EntityZombie(world, (float) Math.random() * 200 + 100, (float) Math.random() * 200 + 100));
 		
 		world.addEntity(player);
 		
 		world.assignCamera(cam);
 		world.setWeather(new RainWeather(10));
 		
-		EntityButton b = new EntityButton(world, 64.0f, 64.0f);
+		ArrayList<Activeatable> a = new ArrayList<Activeatable>();
+		
+		EntityDoor d0 = new EntityDoor(world, 200.0f, 400.0f, Facing.DOWN);
+		EntityDoor d1 = new EntityDoor(world, 300.0f, 400.0f, Facing.UP);
+		EntityDoor d2 = new EntityDoor(world, 400.0f, 400.0f, Facing.LEFT);
+		EntityDoor d3 = new EntityDoor(world, 500.0f, 400.0f, Facing.RIGHT);
+		
+		a.add(d0);
+		a.add(d1);
+		a.add(d2);
+		a.add(d3);
+		
+		world.addEntity(d0);
+		world.addEntity(d1);
+		world.addEntity(d2);
+		world.addEntity(d3);
+
+		EntityButton b = new EntityButton(world, 200.0f, 200.0f, a);
 		world.addEntity(b);
 	}
 	
@@ -84,8 +103,6 @@ public class GameStatePlaying implements GameState {
 			world.addEntity(new EntityTorch(world, player.getX(), player.getY()));
 		}
 		input.tick();
-		
-		System.out.println(cam.getZoom());
 	}
 	
 	public void render() {

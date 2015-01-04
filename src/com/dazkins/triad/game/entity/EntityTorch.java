@@ -1,9 +1,13 @@
 package com.dazkins.triad.game.entity;
 
+import org.lwjgl.opengl.GL11;
+
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
+import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
+import com.dazkins.triad.gfx.model.ModelTorch;
 import com.dazkins.triad.math.AABB;
 
 public class EntityTorch extends Entity implements LightEmitter {
@@ -16,22 +20,28 @@ public class EntityTorch extends Entity implements LightEmitter {
 	}
 	
 	public int getG() {
-		return 255;
+		return 150;
 	}
 	
 	public int getB() {
-		return 255;
+		return 150;
 	}
-
+	
 	public void render() {
-		
+		super.render();
+		GL11.glPushMatrix();
+		GL11.glTranslatef(x - (0.3f * 16), y - 2, Tile.yPosToDepth(y) + 0.1f);
+		GL11.glScalef(0.3f, 1.0f, 1.0f);
+		BufferObject.shadow.render();
+		GL11.glPopMatrix();
+	}
+	
+	protected void initModel() {
+		model = new ModelTorch();
 	}
 	
 	public void tick() {
 		super.tick();
-		
-		y += 1;
-		x += 1;
 		
 		int xx = (int) x >> 5;
 		int yy = (int) y >> 5;
@@ -59,10 +69,19 @@ public class EntityTorch extends Entity implements LightEmitter {
 		
 //		if (lifeTicks > 60)
 //			remove();
+		
+		super.move(false);
+		
+		xa *= 0.85;
+		ya *= 0.85;
+	}
+	
+	public boolean mayPass(Entity e) {
+		return false;
 	}
 
 	public AABB getAABB() {
-		return null;
+		return new AABB(x - 4, y, x + 4, y + 5);
 	}
 
 	public void renderToPlayerGui(Camera c) {
