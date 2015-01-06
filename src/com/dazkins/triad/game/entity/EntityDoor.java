@@ -34,10 +34,14 @@ public class EntityDoor extends Entity implements Activeatable {
 		}
 	}
 	
+	public boolean mayPass(Entity e) {
+		return false;
+	}
+	
 	public void render() {
 		super.render();
 		
-		getAABB().renderBounds(2.0f);
+//		getAABB().renderBounds(2.0f);
 	}
 
 	public void onActivate(Entity e) {
@@ -49,7 +53,7 @@ public class EntityDoor extends Entity implements Activeatable {
 		if (d == Facing.DOWN || d == Facing.UP) {
 			return new AABB(x, y, x + 32, y + 5);
 		} else {
-			return new AABB(x, y + 16, x + 5, y - 16);
+			return new AABB(x, y - 16, x + 5, y + 1);
 		}
 	}
 	

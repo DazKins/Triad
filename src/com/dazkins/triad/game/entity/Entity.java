@@ -152,6 +152,8 @@ public abstract class Entity {
 			}
 		}
 		
+		System.out.println(world.getEntitiesInAABB(getAABB().shifted(xa, ya)));
+		
 		if (this.getAABB() != null) {
 			for (Entity e : world.getEntitiesInAABB(this.getAABB())) {
 				if (e != this) {

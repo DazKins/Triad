@@ -175,10 +175,10 @@ public abstract class World implements Loadable {
 	public ArrayList<Entity> getEntitiesInAABB(AABB b) {
 		ArrayList<Entity> rValue = new ArrayList<Entity>();
 		
-		int x0 = ((int) b.getX0() >> 5) - 1;
-		int y0 = ((int) b.getY0() >> 5) - 1;
-		int x1 = ((int) b.getX1() >> 5) + 1;
-		int y1 = ((int) b.getY1() >> 5) + 1;
+		int x0 = ((int) b.getX0() >> 5) - 2;
+		int y0 = ((int) b.getY0() >> 5) - 2;
+		int x1 = ((int) b.getX1() >> 5) + 2;
+		int y1 = ((int) b.getY1() >> 5) + 2;
 		
 		for (int x = x0; x < x1; x++) {
 			for (int y = y0; y < y1; y++) {
