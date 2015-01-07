@@ -21,7 +21,12 @@ public class NoiseMap {
 		int pixels[] = new int[256 * 256];
 		for (int x = 0; x < 256; x++) {
 			for (int y = 0; y < 256; y++) {
-				pixels[x + y * 256] = (int) ((this.sample(x / 32.0f, y / 32.0f) + 1) / 2.0f * 255);
+				float r = sample(x / 64.0f, y / 64.0f);
+				
+				if (r < 0)
+					pixels[x + y * 256] = 0x0000FF;
+				else
+					pixels[x + y * 256] = 0x00FF00;
 			}
 		}
 		
@@ -36,27 +41,27 @@ public class NoiseMap {
 		
 		for (int i = 0; i < rGrads.length; i++) {
 			rGrads[i] = new float[2];
-//			float xx = r.nextFloat();
-//			float yy = r.nextFloat();
-//			float mag = (float) Math.sqrt(xx * xx + yy * yy);
-//			xx /= mag;
-//			yy /= mag;
-//			rGrads[i][0] = xx;
-//			rGrads[i][1] = yy;
-			int rand = r.nextInt(4);
-			if (rand == 0) {
-				rGrads[i][0] = 0.0f;
-				rGrads[i][1] = 1.0f;
-			} else if (rand == 1) {
-				rGrads[i][0] = 0.0f;
-				rGrads[i][1] = -1.0f;
-			} else if (rand == 2) {
-				rGrads[i][0] = 1.0f;
-				rGrads[i][1] = 0.0f;
-			} else {
-				rGrads[i][0] = -1.0f;
-				rGrads[i][1] = 0.0f;
-			}
+			float xx = r.nextFloat() * 2 - 1;
+			float yy = r.nextFloat() * 2 - 1;
+			float mag = (float) Math.sqrt(xx * xx + yy * yy);
+			xx /= mag;
+			yy /= mag;
+			rGrads[i][0] = xx;
+			rGrads[i][1] = yy;
+//			int rand = r.nextInt(4);
+//			if (rand == 0) {
+//				rGrads[i][0] = 0.0f;
+//				rGrads[i][1] = 1.0f;
+//			} else if (rand == 1) {
+//				rGrads[i][0] = 0.0f;
+//				rGrads[i][1] = -1.0f;
+//			} else if (rand == 2) {
+//				rGrads[i][0] = 1.0f;
+//				rGrads[i][1] = 0.0f;
+//			} else {
+//				rGrads[i][0] = -1.0f;
+//				rGrads[i][1] = 0.0f;
+//			}
 		}
 	}
 	
@@ -65,10 +70,14 @@ public class NoiseMap {
 	}
 	
 	private float getVX(int x, int y) {
+		if (x < 0 || y < 0 || x >= 256 || y >= 256)
+			return 0;
 		return rGrads[x + y * 256][0];
 	}
 	
-	private float getVY(int x, int y) {
+	private float getVY(int x, int y) {	
+		if (x < 0 || y < 0 || x >= 256 || y >= 256)
+			return 0;
 		return rGrads[x + y * 256][1];
 	}
 	
@@ -89,15 +98,11 @@ public class NoiseMap {
 		float w2 = dot(dx1, dy1, getVX(gx1, gy1), getVY(gx1, gy1));
 		float w3 = dot(dx1, dy0, getVX(gx1, gy0), getVY(gx1, gy0));
 		
-		if (w0 == -0.40625) {
-			System.out.println(x + " " + y + " " + gx0 + " " + gy0);
-		}
-		
 		float sx = weigh(dx0);
 		float sy = weigh(dy0);
 		
 		float a = lerp(sy, w0, w1);
-		float b = lerp(sy, w2, w3);
+		float b = lerp(sy, w3, w2);
 		float h = lerp(sx, a, b);
 		
 		return h;
