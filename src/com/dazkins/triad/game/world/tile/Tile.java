@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import javax.swing.ImageIcon;
 
+import org.lwjgl.system.linux.SysIOctl;
+
 import com.dazkins.triad.file.MultiLineDatabaseFile;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.BufferObject;
@@ -21,6 +23,7 @@ public class Tile {
 	public static TileStone stone = new TileStone(2);
 	public static TileSand sand = new TileSand(3);
 	public static TileWhite white = new TileWhite(4);
+	public static TileWater water = new TileWater(5);
 	
 	private int id;
 	private String name;
@@ -108,23 +111,6 @@ public class Tile {
 		bo.setColor(c2);
 		bo.setUV(txmax, tymax);
 		bo.addVertex(x + tileSize, y);
-	}
-
-	public static ImageIcon getTileImageIcon(int i, int scale) {
-		Tile t = tiles[i];
-		if (t != null) {
-			BufferedImage img = new BufferedImage(16, 16,BufferedImage.TYPE_INT_RGB);
-			int pixels[] = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
-			int oldPixels[] = Image.getImageFromName("spriteSheet").getRawImage().getRGB(0, t.ty * 16, 16, 16, null, 0, 16);
-			for (int x = 0; x < 16; x++) {
-				for (int y = 0; y < 16; y++) {
-					pixels[x + y * 16] = oldPixels[x + y * 16];
-				}
-			}
-			java.awt.Image finalImg = img.getScaledInstance(scale, scale, 0);
-			return new ImageIcon(finalImg);
-		}
-		return null;
 	}
 
 	public int getID() {

@@ -14,6 +14,7 @@ import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.math.NoiseMap;
 
 public class Chunk {
 	public static int chunkW = 16, chunkH = 16;
@@ -30,7 +31,8 @@ public class Chunk {
 	//Store light value from the previous frame
 	private Color[] pTileColors;
 	
-	private boolean generated;
+	private boolean vboGenerated;
+	private boolean tilesGenerated;
 
 	private BufferObject tilePlane;
 
@@ -45,6 +47,46 @@ public class Chunk {
 		resetLightLevels();
 		
 		tiles = new int[chunkW * chunkH];
+	}
+	
+	public void generateTileMap() {
+		for (int x = 0; x < chunkW; x++) {
+			for (int y = 0; y < chunkH; y++) {
+				float s = world.worldNoise.sample(x + chunkX * chunkW, y + chunkY * chunkH);
+				if (s < 0) setTile(Tile.water, x, y);
+				else if (s < 0.01f) setTile(Tile.sand, x, y);
+				else setTile(Tile.grass, x, y);
+			}
+		}
+		vboGenerated = false;
+		
+		Chunk c0 = world.chunkm.getChunk(chunkX - 1, chunkY);
+		Chunk c1 = world.chunkm.getChunk(chunkX + 1, chunkY);
+		Chunk c2 = world.chunkm.getChunk(chunkX, chunkY + 1);
+		Chunk c3 = world.chunkm.getChunk(chunkX, chunkY - 1);
+		Chunk c4 = world.chunkm.getChunk(chunkX - 1, chunkY -1);
+		Chunk c5 = world.chunkm.getChunk(chunkX + 1, chunkY + 1);
+		Chunk c6 = world.chunkm.getChunk(chunkX - 1, chunkY + 1);
+		Chunk c7 = world.chunkm.getChunk(chunkX + 1, chunkY - 1);
+		
+		if (c0 != null)
+			c0.vboGenerated = false;
+		if (c1 != null)
+			c1.vboGenerated = false;
+		if (c2 != null)
+			c2.vboGenerated = false;
+		if (c3 != null)
+			c3.vboGenerated = false;
+		if (c4 != null)
+			c4.vboGenerated = false;
+		if (c5 != null)
+			c5.vboGenerated = false;
+		if (c6 != null)
+			c6.vboGenerated = false;
+		if (c7 != null)
+			c7.vboGenerated = false;
+		
+		tilesGenerated = true;
 	}
 
 	private boolean isValidTilePos(int x, int y) {
@@ -70,7 +112,7 @@ public class Chunk {
 			if (!isValidTilePos(x, y))
 				return;
 			tiles[x + y * chunkW] = t.getID();
-			generated = false;
+			vboGenerated = false;
 		}
 	}
 
@@ -80,7 +122,7 @@ public class Chunk {
 		return Tile.tiles[tiles[x + y * chunkW]];
 	}
 
-	public void generate() {
+	public void generateVBO() {
 		if (tilePlane != null)
 			tilePlane.deleteBuffer();
 		tilePlane = new BufferObject(16 * 16 * 4 * 8 * 2 * 2);
@@ -95,7 +137,7 @@ public class Chunk {
 			}
 		}
 		tilePlane.stop();
-		generated = true;
+		vboGenerated = true;
 	}
 	
 	private void resetLightLevels() {
@@ -109,8 +151,12 @@ public class Chunk {
 		return new AABB(chunkX * Tile.tileSize * chunkW, chunkY * Tile.tileSize * chunkH, chunkX * Tile.tileSize * chunkW + (chunkW * Tile.tileSize), chunkY * Tile.tileSize * chunkH + (chunkH * Tile.tileSize));
 	}
 
-	public boolean isGenerated() {
-		return generated;
+	public boolean isVBOGenerated() {
+		return vboGenerated;
+	}
+	
+	public boolean isTileMapGenerated() {
+		return tilesGenerated;
 	}
 
 	public void tick() {
@@ -134,7 +180,10 @@ public class Chunk {
 		}
 		
 		if (hasLightChanged())
-			generated = false;
+			vboGenerated = false;
+		
+		if (!tilesGenerated)
+			generateTileMap();
 
 		for (int i = 0; i < tileColors.length; i++) {
 			pTileColors[i] = tileColors[i].copyOf();
@@ -158,8 +207,6 @@ public class Chunk {
 		int hh0 = chunkH * Tile.tileSize;
 		
 		GL11.glLineWidth(4);
-		
-//		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		
 		GL11.glColor4f(0.8f, 0.8f, 0.8f, 1.0f);
 		
@@ -200,27 +247,6 @@ public class Chunk {
 	}
 
 	public void render() {
-		GL11.glDisable(GL11.GL_BLEND);
 		tilePlane.render();
-		GL11.glEnable(GL11.GL_BLEND);
-//		for (int x = 0; x < chunkW; x++) {
-//			for (int y = 0; y < chunkH; y++) {
-//				float x0 = x * Tile.tileSize + (chunkX * Tile.tileSize * chunkW);
-//				float y0 = y * Tile.tileSize + (chunkY * Tile.tileSize * chunkH);
-//				float x1 = x0 + Tile.tileSize;
-//				float y1 = y0 + Tile.tileSize;
-//				
-//				GL11.glDisable(GL11.GL_TEXTURE_2D);
-//				GL11.glColor4f(lightR[x + y * chunkW], lightG[x + y * chunkW], lightB[x + y * chunkW], 0.9f);
-//				GL11.glBegin(GL11.GL_QUADS);
-//					GL11.glVertex3f(x0, y0, 20);
-//					GL11.glVertex3f(x1, y0, 20);
-//					GL11.glVertex3f(x1, y1, 20);
-//					GL11.glVertex3f(x0, y1, 20);
-//				GL11.glEnd();
-//				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-//				GL11.glEnable(GL11.GL_TEXTURE_2D);
-//			}
-//		}
 	}
 }

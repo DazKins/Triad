@@ -37,7 +37,6 @@ public class ObjectPool<T> {
 		}
 		
 		if (index == -1) {
-			System.err.println("Tried to obtain a free object but none was found");
 			return null;
 		}
 		

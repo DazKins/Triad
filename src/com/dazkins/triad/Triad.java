@@ -1,13 +1,9 @@
 package com.dazkins.triad;
 
-import static org.lwjgl.opengl.GL11.GL_FALSE;
-import static org.lwjgl.system.glfw.GLFW.glfwDestroyWindow;
-import static org.lwjgl.system.glfw.GLFW.glfwWindowShouldClose;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -15,12 +11,6 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
-import org.lwjgl.system.MemoryUtil;
-import org.lwjgl.system.glfw.ErrorCallback;
-import org.lwjgl.system.glfw.GLFW;
-import org.lwjgl.system.glfw.GLFWvidmode;
-import org.lwjgl.system.glfw.WindowCallback;
-import org.lwjgl.system.glfw.WindowCallbackAdapter;
 
 import com.dazkins.triad.audio.SoundManager;
 import com.dazkins.triad.game.GameState;
@@ -29,8 +19,8 @@ import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.Window;
-import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.input.InputHandler;
+import com.dazkins.triad.math.NoiseRandom;
 
 public class Triad {
 	private boolean running;
@@ -116,12 +106,14 @@ public class Triad {
 			lastTime = now;
 			while (delta >= 1) {
 				ticks++;
+				long l = System.currentTimeMillis();
 				tick();
 				if(running == false)
 					break mainLoop;
 				delta -= 1;
 			}
 			frames++;
+			long l = System.currentTimeMillis();
 			render();
 			checkWindow();
 

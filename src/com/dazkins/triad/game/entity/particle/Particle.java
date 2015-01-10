@@ -61,9 +61,7 @@ public class Particle extends Entity implements PoolableObject {
 		
 		Color c = new Color(255, 255, 255);
 		
-		if (world.isValidTilePos(xx, yy)) {
-			c = world.getTileColor(xx, yy);
-		}
+		c = world.getTileColor(xx, yy);
 		
 		GL11.glColor4f(r * c.getDR(), g * c.getDG(), b * c.getDB(), a);
 		bo.render();

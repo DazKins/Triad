@@ -152,8 +152,6 @@ public abstract class Entity {
 			}
 		}
 		
-		System.out.println(world.getEntitiesInAABB(getAABB().shifted(xa, ya)));
-		
 		if (this.getAABB() != null) {
 			for (Entity e : world.getEntitiesInAABB(this.getAABB())) {
 				if (e != this) {
@@ -174,18 +172,6 @@ public abstract class Entity {
 					break;
 				}
 			}
-		}
-		
-		AABB b = getAABB().shifted(xa, ya);
-		if (b != null) {
-			if (b.getX0() < 0)
-				xa = Math.abs(xa * 0.01f);
-			if (b.getY0() < 0)
-				ya = Math.abs(ya *= 0.01f);
-			if (b.getX1() > world.getW())
-				xa = -Math.abs(xa *= 0.01f);
-			if (b.getY1() > world.getH())
-				ya = -Math.abs(ya *= 0.01f);
 		}
 		
 		x += xa;

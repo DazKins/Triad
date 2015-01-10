@@ -2,17 +2,14 @@ package com.dazkins.triad.game.world;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import javafx.scene.effect.Light;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.file.ListFile;
 import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.Entity;
-import com.dazkins.triad.game.entity.EntityTorch;
-import com.dazkins.triad.game.entity.LightEmitter;
-import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.entity.particle.Particle;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -20,16 +17,15 @@ import com.dazkins.triad.game.world.weather.Weather;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.math.NoiseMap;
+import com.dazkins.triad.math.PerlinNoise;
 import com.dazkins.triad.util.Loadable;
 
-public abstract class World implements Loadable {
+public class World {
 	private static ArrayList<World> worlds;
 
-	private Chunk[] chunks;
-
-	public int nChunksX;
-	public int nChunksY;
-	public int ambientLightLevel;
+	public ChunkManager chunkm;
+	public int ambientLightLevel = 120;
 	public float iLightFalloff = 20.0f;
 
 	public ArrayList<Particle> particles = new ArrayList<Particle>();
@@ -42,64 +38,25 @@ public abstract class World implements Loadable {
 
 	protected String pathToLoad;
 
-	public static WorldTest testWorld = new WorldTest();
-
 	public void setWeather(Weather w) {
 		w.init(this);
 		weather = w;
 	}
-
-	public void load() {
-		loadDataFromFile(pathToLoad);
-	}
 	
-	public void loadDataFromFile(String p) {
-		ListFile l = null;
-		try {
-			l = new ListFile("res/data/worlds/" + p + "_data.lt", " ");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		this.nChunksX = l.getInt(0);
-		this.nChunksY = l.getInt(1);
+	public World() {
+		chunkm = new ChunkManager(this);
 		
-		entitiesInTiles = new ArrayList[nChunksX * Chunk.chunkW * nChunksY * Chunk.chunkH];
+		entitiesInTiles = new ArrayList[256 * 256];
 		for (int i = 0; i < entitiesInTiles.length; i++) {
 			entitiesInTiles[i] = new ArrayList<Entity>();
 		}
 		
+		worldNoise = new NoiseMap(0.5f, 16, 1/1024.0f);
+		
 		entities = new ArrayList<Entity>();
-		
-		this.generate();
-		
-		int tw = this.nChunksX * Chunk.chunkW;
-
-		for (int i = 2; i < l.getSize(); i++) {
-			int t = l.getInt(i);
-			int x = (i - 2) / tw;
-			int y = (i - 2) % tw;
-			this.setTile(Tile.tiles[t], x, y);
-//			this.setTile(Tile.white, x, y);
-		}
 	}
 	
-	public void initFirstGeneration() {
-		for (int i = 0; i < chunks.length; i++) {
-			if (!chunks[i].isGenerated()) {
-				chunks[i].generate();
-			}
-		}
-	}
-
-	private void generate() {
-		chunks = new Chunk[nChunksX * nChunksY];
-		for (int x = 0; x < nChunksX; x++) {
-			for (int y = 0; y < nChunksY; y++) {
-				chunks[x + y * nChunksX] = new Chunk(this, x, y);
-			}
-		}
-	}
+	public NoiseMap worldNoise;
 
 	public void addEntity(Entity e) {
 		if (e.getX() < 0 || e.getY() < 0)
@@ -112,7 +69,7 @@ public abstract class World implements Loadable {
 			int ty = (int) e.getY() >> 5;
 			
 			try {
-				entitiesInTiles[tx + ty * nChunksX * Chunk.chunkW].add(e);
+//				entitiesInTiles[tx + ty * nChunksX * Chunk.chunkW].add(e);
 			} catch (Exception ex) { }
 			
 			entities.add(e);
@@ -121,56 +78,40 @@ public abstract class World implements Loadable {
 
 	public void render() {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		int it = 0;
-		for (int i = 0; i < chunks.length; i++) {
-			if (chunks[i].getBounds().intersects(cam.getViewportBounds())) {
-				if (!chunks[i].isGenerated()) {
-					chunks[i].generate();
-					it++;
-				}
-				chunks[i].render();
+
+		ArrayList<Chunk> cs = chunkm.getChunksInAABB(cam.getViewportBounds());
+		for (Chunk c : cs) {
+			if (!c.isVBOGenerated()) {
+				c.generateVBO();
 			}
+			c.render();
 		}
 		
-		//Off screen overflow regeneration
-		for (int i = 0; i < 1; i++) {
-			boolean generated = false;
-			for (int u = 0; u < chunks.length; u++) {
-				if (!chunks[u].isGenerated()) {
-					chunks[u].generate();
-					generated = true;
-					it++;
-					break;
-				}
-			}
-			if (!generated)
-				break;
-		}
+//		entities.sort(Entity.ySorter);
+//		for (Entity e : entities) {
+//			AABB b = e.getBoundsForRendering();
+//			if (b != null) {
+//				if (b.intersects(cam.getViewportBounds()))
+//					e.render();
+//			} else {
+//				e.render();
+//			}
+//		}
 		
-		entities.sort(Entity.ySorter);
-		for (Entity e : entities) {
-			AABB b = e.getBoundsForRendering();
-			if (b != null) {
-				if (b.intersects(cam.getViewportBounds()))
-					e.render();
-			} else {
-				e.render();
-			}
-		}
-		
-		for (Particle p : particles) {
-			if (p.getAABB().intersects(cam.getViewportBounds()))
-				p.render();
-		}
+//		for (Particle p : particles) {
+//			if (p.getAABB().intersects(cam.getViewportBounds()))
+//				p.render();
+//		}
 	}
 
-	public void renderGrid() {
-		for (int i = 0; i < chunks.length; i++) {
-			if (chunks[i].getBounds().intersects(cam.getViewportBounds())) {
-				chunks[i].renderGrid();
-			}
-		}
-	}
+	//TODO : Reimplement
+//	public void renderGrid() {
+//		for (int i = 0; i < chunks.length; i++) {
+//			if (chunks[i].getBounds().intersects(cam.getViewportBounds())) {
+//				chunks[i].renderGrid();
+//			}
+//		}
+//	}
 
 	public ArrayList<Entity> getEntitiesInAABB(AABB b) {
 		ArrayList<Entity> rValue = new ArrayList<Entity>();
@@ -196,33 +137,12 @@ public abstract class World implements Loadable {
 		return rValue;
 	}
 
-	public Chunk getChunkFromWorldTileCoords(int x, int y) {
-		if (!isValidTilePos(x, y))
-			return null;
-		return chunks[(x / Chunk.chunkW) + (y / Chunk.chunkH) * nChunksX];
-	}
-
-	public Chunk[] getChunks() {
-		return chunks;
-	}
-	
-	public float getW() {
-		return nChunksX * Chunk.chunkW * Tile.tileSize; 
-	}
-	
-	public float getH() {
-		return nChunksY * Chunk.chunkH * Tile.tileSize;
-	}
-
 	public Camera getCam() {
 		return cam;
 	}
 
 	public ArrayList<Entity> getEntitesInTile(int x, int y) {
-		if (x < 0 || y < 0 || x >= nChunksX * Chunk.chunkW || y >= nChunksY * Chunk.chunkH)
-			return new ArrayList<Entity>();
-		
-		return entitiesInTiles[x + y * nChunksX * Chunk.chunkW];
+		return entities;
 	}
 
 	public void assignCamera(Camera c) {
@@ -254,91 +174,113 @@ public abstract class World implements Loadable {
 		p.initWorld(this);
 		particles.add(p);
 	}
+	
+	public Chunk getChunkFromWorldTileCoords(int x, int y) {
+		int cx = 0;
+		int cy = 0;
+		
+		if (x >= 0)
+			cx = x /= Chunk.chunkW;
+		else
+			cx = (int) Math.floor((float) x / (float) Chunk.chunkW);
 
-	public boolean isValidTilePos(int x, int y) {
-		return (x >= 0 && x < nChunksX * Chunk.chunkW) && (y >= 0 && y < nChunksY * Chunk.chunkH);
+		if (y >= 0)
+			cy = y /= Chunk.chunkH;
+		else
+			cy = (int) Math.floor((float) y / (float) Chunk.chunkH);
+		
+		return chunkm.getChunk(cx, cy);
 	}
 	
-	public boolean isValidChunkPos(int x, int y) {
-		return (x >= 0 && x < nChunksX) && (y >= 0 && y < nChunksY);
+	public int convertToChunkX(int x) {
+		if (x < 0)
+			return (Chunk.chunkW - (Math.abs(x) % Chunk.chunkW)) & 15;
+		else
+			return x % Chunk.chunkW;
+	}
+	
+	public int convertToChunkY(int y) {
+		if (y < 0)
+			return (Chunk.chunkH - (Math.abs(y) % Chunk.chunkH)) & 15;
+		else
+			return y % Chunk.chunkH;
 	}
 	
 	public Color getTileColor(int x, int y) {
-		if (!isValidTilePos(x, y))
-			return new Color(0);
-		return getChunkFromWorldTileCoords(x, y).getTileColor(x % Chunk.chunkW, y % Chunk.chunkH);
+		Chunk c = getChunkFromWorldTileCoords(x, y);
+		if (c != null)
+			return c.getTileColor(convertToChunkX(x), convertToChunkY(y));
+		else
+			return new Color(255, 255, 255);
 	}
 	
 	public void blendTileColor(Color c, int x, int y) {
-		if (!isValidTilePos(x, y))
-			return;
-		getChunkFromWorldTileCoords(x, y).blendTileColor(c, x % Chunk.chunkW, y % Chunk.chunkH);
+		Chunk ch = chunkm.getChunk(x / Chunk.chunkW, y / Chunk.chunkW);
+		if (ch != null)
+			chunkm.getChunk(x / Chunk.chunkW, y / Chunk.chunkW).blendTileColor(c, x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 
 	public Tile getTile(int x, int y) {
-		if (!isValidTilePos(x, y))
+		Chunk c = getChunkFromWorldTileCoords(x, y);
+		if (c != null)
+			return c.getTile(convertToChunkX(x), convertToChunkY(y));
+		else
 			return null;
-		return getChunkFromWorldTileCoords(x, y).getTile(x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 
 	public void setTile(Tile t, int x, int y) {
-		if (!isValidTilePos(x, y))
-			return;
-		getChunkFromWorldTileCoords(x, y).setTile(t, x % Chunk.chunkW, y % Chunk.chunkH);
+		Chunk c = chunkm.getChunk(x / Chunk.chunkW, y / Chunk.chunkW);
+		if (c != null)
+			chunkm.getChunk(x / Chunk.chunkW, y / Chunk.chunkW).setTile(t, x % Chunk.chunkW, y % Chunk.chunkH);
 	}
 
 	private ArrayList<Entity> ticked = new ArrayList<Entity>();
 	
 	public void tick() {
-		for (int i = 0; i < particles.size(); i++) {
-			if (particles.get(i).needDestruction())
-				particles.remove(i);
-			else
-				particles.get(i).tick();
-		}
+//		for (int i = 0; i < particles.size(); i++) {
+//			if (particles.get(i).needDestruction())
+//				particles.remove(i);
+//			else
+//				particles.get(i).tick();
+//		}
 		
-		ticked = new ArrayList<Entity>();
-		for (int i = 0; i < entitiesInTiles.length; i++) {
-			ArrayList<Entity> tmp = entitiesInTiles[i];
-			for (int u = 0; u < tmp.size(); u++) {
-				Entity e = tmp.get(u);
-				if (e.needsToBeRemoved()) {
-					entitiesInTiles[i].remove(e);
-					entities.remove(e);
-				} else {
-					int tx0 = (int) e.getX() >> 5;
-					int ty0 = (int) e.getY() >> 5;
-					
-					if (!ticked.contains(e)) {
-						e.tick();
-					}
-					
-					ticked.add(e);
-					
-					int tx1 = (int) e.getX() >> 5;
-					int ty1 = (int) e.getY() >> 5;
-		
-					if (tx0 != tx1 || ty0 != ty1) {
-						entities.remove(e);
-						entitiesInTiles[i].remove(e);
-						
-						addEntity(e);
-						u--;
-					}
-				}
-			}
+//		ticked = new ArrayList<Entity>();
+//		for (int i = 0; i < entitiesInTiles.length; i++) {
+//			ArrayList<Entity> tmp = entitiesInTiles[i];
+//			for (int u = 0; u < tmp.size(); u++) {
+//				Entity e = tmp.get(u);
+//				if (e.needsToBeRemoved()) {
+//					entitiesInTiles[i].remove(e);
+//					entities.remove(e);
+//				} else {
+//					int tx0 = (int) e.getX() >> 5;
+//					int ty0 = (int) e.getY() >> 5;
+//					
+//					if (!ticked.contains(e)) {
+//						e.tick();
+//					}
+//					
+//					ticked.add(e);
+//					
+//					int tx1 = (int) e.getX() >> 5;
+//					int ty1 = (int) e.getY() >> 5;
+//		
+//					if (tx0 != tx1 || ty0 != ty1) {
+//						entities.remove(e);
+//						entitiesInTiles[i].remove(e);
+//						
+//						addEntity(e);
+//						u--;
+//					}
+//				}
+//			}
+//		}
+		ArrayList<Chunk> cs = chunkm.getAllChunks();
+		for (int i = 0; i < cs.size(); i++) {
+			cs.get(i).tick();
 		}
-		for (int i = 0; i < chunks.length; i++) {
-			chunks[i].tick();
-		}
-		weather.tick();
-	}
-	
-	public Chunk getChunk(int x, int y) {
-		if (isValidChunkPos(x, y)) {
-			return chunks[x + y * nChunksX];
-		}
-		return null;
+//		weather.tick();
+		chunkm.tick();
 	}
 
 	public ArrayList<Entity> getEntities() {

@@ -208,18 +208,10 @@ public abstract class Mob extends Entity {
 		int x1 = ((int) x / Tile.tileSize) + 3;
 		int y1 = ((int) y / Tile.tileSize) + 3;
 
-		if (x0 < 0)
-			x0 = 0;
-		if (y0 < 0)
-			y0 = 0;
-		if (x1 > world.nChunksX * Chunk.chunkW)
-			x1 = world.nChunksX * Chunk.chunkW;
-		if (y1 > world.nChunksY * Chunk.chunkH)
-			y1 = world.nChunksY * Chunk.chunkH;
-
 		for (int x = x0; x < x1; x++) {
 			for (int y = y0; y < y1; y++) {
-				if (world.getTile(x, y).isCollidable()) {
+				Tile t = world.getTile(x, y);
+				if (t != null && t.isCollidable()) {
 					AABB taabb = world.getTile(x, y).getAABB(world, x, y);
 					if (aabb.shifted(xa, 0).intersects(taabb)) {
 						xa = 0;

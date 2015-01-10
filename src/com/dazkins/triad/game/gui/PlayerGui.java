@@ -34,18 +34,16 @@ public class PlayerGui extends Gui {
 
 	public void render(Camera cam) {
 		GL11.glPushMatrix();
-		GL11.glPushMatrix();
 		cam.attachTranslation();
 		ArrayList<Entity> entities = world.getEntitiesInAABB(cam.getViewportBounds().shiftX0(-100).shiftX1(100).shiftY0(-100).shiftY1(100));
 		entities.sort(Entity.ySorter);
-		for (int i = 0; i < entities.size(); i++) {
-			Entity e = entities.get(i);
-			if (e instanceof Mob) {
-				Mob m = (Mob) e;
-				m.renderToPlayerGui(cam);
-			}
-		}
-		GL11.glPopMatrix();
+//		for (int i = 0; i < entities.size(); i++) {
+//			Entity e = entities.get(i);
+//			if (e instanceof Mob) {
+//				Mob m = (Mob) e;
+//				m.renderToPlayerGui(cam);
+//			}
+//		}
 		GL11.glPopMatrix();
 	}
 

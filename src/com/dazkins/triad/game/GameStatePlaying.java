@@ -40,7 +40,8 @@ public class GameStatePlaying implements GameState {
 		input = new InputHandler(win);
 		cam = new Camera(input, triad.win, 0, 0);
 		cam.lockZoom(0.56f, 500f);
-		changeWorld(World.testWorld);
+		world = new World();
+//		cam.lockZoom(0.04f, 500f);
 		player = new EntityPlayer(world, 100, 100, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
 		
@@ -103,36 +104,34 @@ public class GameStatePlaying implements GameState {
 			world.addEntity(new EntityTorch(world, player.getX(), player.getY()));
 		}
 		input.tick();
+		
+		player.tick();
 	}
 	
 	public void render() {
 		GL11.glPushMatrix();
 		cam.attachTranslation();
-		world.assignCamera(cam);
+//		world.assignCamera(cam);
 		world.render();
+		
+		player.render();
 //		world.renderGrid();
 		GL11.glPopMatrix();
 		
-		if (!(currentlyDisplayedGui instanceof PlayerGui)) {
-			GL11.glDisable(GL11.GL_TEXTURE_2D);
-			GL11.glBegin(GL11.GL_QUADS);
-				GL11.glColor4f(0.0f, 0.0f, 0.0f, 0.7f);
-				GL11.glVertex3f(0.0f, 0.0f, -0.1f);
-				GL11.glVertex3f(win.getW(), 0.0f, -0.1f);
-				GL11.glVertex3f(win.getW(), win.getH(), -0.1f);
-				GL11.glVertex3f(0.0f, win.getH(), -0.1f);
-				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-			GL11.glEnd();
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
-		}
-		
-		currentlyDisplayedGui.render(cam);
-	}
-	
-	public void changeWorld(World w) {
-		world = w;
-		world.initFirstGeneration();
-		cam.setBounds(0, 0, world.nChunksX * Chunk.chunkW * Tile.tileSize, world.nChunksX * Chunk.chunkH * Tile.tileSize);
+//		if (!(currentlyDisplayedGui instanceof PlayerGui)) {
+//			GL11.glDisable(GL11.GL_TEXTURE_2D);
+//			GL11.glBegin(GL11.GL_QUADS);
+//				GL11.glColor4f(0.0f, 0.0f, 0.0f, 0.7f);
+//				GL11.glVertex3f(0.0f, 0.0f, -0.1f);
+//				GL11.glVertex3f(win.getW(), 0.0f, -0.1f);
+//				GL11.glVertex3f(win.getW(), win.getH(), -0.1f);
+//				GL11.glVertex3f(0.0f, win.getH(), -0.1f);
+//				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+//			GL11.glEnd();
+//			GL11.glEnable(GL11.GL_TEXTURE_2D);
+//		}
+//		
+//		currentlyDisplayedGui.render(cam);
 	}
 	
 	private void changeGui(Gui g) {
