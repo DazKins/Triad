@@ -15,8 +15,10 @@ import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.NoiseMap;
+import com.dazkins.triad.util.Loadable;
+import com.dazkins.triad.util.Loader;
 
-public class Chunk {
+public class Chunk implements Loadable {
 	public static int chunkW = 16, chunkH = 16;
 	
 	private static float lFadeOut = 0.85f;
@@ -33,6 +35,8 @@ public class Chunk {
 	
 	private boolean vboGenerated;
 	private boolean tilesGenerated;
+	
+	private boolean isBeingLoaded;
 
 	private BufferObject tilePlane;
 
@@ -47,6 +51,13 @@ public class Chunk {
 		resetLightLevels();
 		
 		tiles = new int[chunkW * chunkH];
+	}
+	
+	public void addToLoader(Loader l) {
+		if (!isBeingLoaded) {
+			l.addLoad(this);
+			isBeingLoaded = true;
+		}
 	}
 	
 	public void generateTileMap() {
@@ -155,8 +166,12 @@ public class Chunk {
 		return vboGenerated;
 	}
 	
-	public boolean isTileMapGenerated() {
+	public synchronized boolean isTileMapGenerated() {
 		return tilesGenerated;
+	}
+	
+	public void markForTileGeneration() {
+		tilesGenerated = false;
 	}
 
 	public void tick() {
@@ -181,9 +196,6 @@ public class Chunk {
 		
 		if (hasLightChanged())
 			vboGenerated = false;
-		
-		if (!tilesGenerated)
-			generateTileMap();
 
 		for (int i = 0; i < tileColors.length; i++) {
 			pTileColors[i] = tileColors[i].copyOf();
@@ -248,5 +260,11 @@ public class Chunk {
 
 	public void render() {
 		tilePlane.render();
+	}
+
+	public void load() {
+		if (!isTileMapGenerated()) {
+			this.generateTileMap();
+		}
 	}
 }

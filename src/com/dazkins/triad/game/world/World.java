@@ -20,6 +20,7 @@ import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.NoiseMap;
 import com.dazkins.triad.math.PerlinNoise;
 import com.dazkins.triad.util.Loadable;
+import com.dazkins.triad.util.Loader;
 
 public class World {
 	private static ArrayList<World> worlds;
@@ -37,6 +38,8 @@ public class World {
 	private Weather weather;
 
 	protected String pathToLoad;
+	
+	private int tickCount;
 
 	public void setWeather(Weather w) {
 		w.init(this);
@@ -84,7 +87,13 @@ public class World {
 			if (!c.isVBOGenerated()) {
 				c.generateVBO();
 			}
-			c.render();
+			if (!c.isTileMapGenerated()) {
+				Loader l = new Loader();
+				c.addToLoader(l);
+				l.beginLoading();
+			} else {
+				c.render();
+			}
 		}
 		
 //		entities.sort(Entity.ySorter);
@@ -280,7 +289,11 @@ public class World {
 			cs.get(i).tick();
 		}
 //		weather.tick();
-		chunkm.tick();
+		
+		if (tickCount % 500 == 0)
+			System.gc();
+		
+		tickCount++;
 	}
 
 	public ArrayList<Entity> getEntities() {

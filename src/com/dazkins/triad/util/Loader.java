@@ -10,6 +10,8 @@ public class Loader implements Runnable {
 	
 	private float percent;
 	
+	private boolean isLoadEmpty = true;
+	
 	public synchronized void setPercent(float p) {
 		percent = p;
 	}
@@ -23,9 +25,18 @@ public class Loader implements Runnable {
 	}
 	
 	public void addLoad(Loadable l) {
-		lds.add(l);
+		if (l != null) {
+			lds.add(l);
+			isLoadEmpty = false;
+		}
 	}
-
+	
+	public void beginLoading() {
+		if(!isLoadEmpty) {
+			new Thread(this).run();
+		}
+	}
+	
 	public void run() {
 		for (int i = 0; i < lds.size(); i++) {
 			lds.get(i).load();

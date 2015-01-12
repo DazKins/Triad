@@ -11,32 +11,36 @@ public class ChunkManager {
 	private World world;
 	
 	private Map<Integer, Chunk> chunks;
+	private ArrayList<Integer> loadedChunkI;
+	
+	//TODO : get rid of this
 	private ArrayList<Chunk> allChunks;
 	
-	private int numberChunksGenerated;
+	private int chunkLoadCount;
+	
+	private int chunkLoadCuttoff = 100;
 	
 	public ChunkManager(World w) {
 		allChunks = new ArrayList<Chunk>();
+		loadedChunkI = new ArrayList<Integer>();
 		chunks = new HashMap<Integer, Chunk>();
 		world = w;
 	}
 	
 	public Chunk getChunk(int x, int y) {
-		int i = x + y * 10000;
+		int i = x + y * 100000;
 		
 		Chunk c;
 		
 		if (!chunks.containsKey(i)) {
-			if (numberChunksGenerated <= 1) {
-				c = new Chunk(world, x, y);
-				numberChunksGenerated++;
-				long l = System.currentTimeMillis();
-//				c.generateTileMap();
-//				System.out.println("Regen cunks " + (System.currentTimeMillis() - l));
-//				c.generateVBO();
-				chunks.put(i, c);
-			} else {
-				return null;
+			c = new Chunk(world, x, y);
+			chunkLoadCount++;
+			loadedChunkI.add(i);
+			chunks.put(i, c);
+			if (chunkLoadCount > chunkLoadCuttoff) {
+				chunks.remove(loadedChunkI.get(0));
+				loadedChunkI.remove(0);
+				chunkLoadCount--;
 			}
 		} else {
 			c = chunks.get(i);
@@ -46,10 +50,6 @@ public class ChunkManager {
 			allChunks.add(c);
 		
 		return c;
-	}
-	
-	public void tick() {
-		numberChunksGenerated = 0;
 	}
 	
 	public ArrayList<Chunk> getAllChunks() {
