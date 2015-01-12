@@ -13,15 +13,11 @@ public class ChunkManager {
 	private Map<Integer, Chunk> chunks;
 	private ArrayList<Integer> loadedChunkI;
 	
-	//TODO : get rid of this
-	private ArrayList<Chunk> allChunks;
-	
 	private int chunkLoadCount;
 	
 	private int chunkLoadCuttoff = 100;
 	
 	public ChunkManager(World w) {
-		allChunks = new ArrayList<Chunk>();
 		loadedChunkI = new ArrayList<Integer>();
 		chunks = new HashMap<Integer, Chunk>();
 		world = w;
@@ -46,14 +42,17 @@ public class ChunkManager {
 			c = chunks.get(i);
 		}
 		
-		if(!allChunks.contains(c))
-			allChunks.add(c);
-		
 		return c;
 	}
 	
-	public ArrayList<Chunk> getAllChunks() {
-		return allChunks;
+	public ArrayList<Chunk> getLoadedChunks() {
+		ArrayList<Chunk> r = new ArrayList<Chunk>();
+		
+		for (Integer i : loadedChunkI)  {
+			r.add(chunks.get(i));
+		}
+		
+		return r;
 	}
 	
 	public ArrayList<Chunk> getChunksInAABB(AABB b) {

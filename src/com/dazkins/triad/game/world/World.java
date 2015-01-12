@@ -54,7 +54,7 @@ public class World {
 			entitiesInTiles[i] = new ArrayList<Entity>();
 		}
 		
-		worldNoise = new NoiseMap(0.5f, 16, 1/1024.0f);
+		worldNoise = new NoiseMap(0.24f, 32, 1/1024.0f);
 		
 		entities = new ArrayList<Entity>();
 	}
@@ -284,7 +284,7 @@ public class World {
 //				}
 //			}
 //		}
-		ArrayList<Chunk> cs = chunkm.getAllChunks();
+		ArrayList<Chunk> cs = chunkm.getLoadedChunks();
 		for (int i = 0; i < cs.size(); i++) {
 			cs.get(i).tick();
 		}
