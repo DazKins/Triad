@@ -22,7 +22,7 @@ import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.NoiseRandom;
 
-public class Triad {
+public class Triad implements Runnable {
 	private boolean running;
 	private final String title = "Triad Pre-Alpha";
 	public Window win = new Window(1280, 720);
@@ -33,7 +33,7 @@ public class Triad {
 	
 	public static void main(String args[]) {
 		Triad triad = new Triad();
-		triad.start();
+		new Thread(triad).run();
 	}
 	
 	public Triad() {
@@ -87,12 +87,12 @@ public class Triad {
         win.destroy();
 	}
 
-	private void start() {
+	public void run() {
 		running = true;
-		this.run();
+		this.runLoop();
 	}
 
-	public void run() {
+	private void runLoop() {
 		long lastTime = System.nanoTime();
 		double nsPerTick = 1000000000D / 60D;
 		int frames = 0;

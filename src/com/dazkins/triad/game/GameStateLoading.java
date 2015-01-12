@@ -16,7 +16,7 @@ public class GameStateLoading implements GameState {
 	
 	public void init(Triad triad) {
 		this.triad = triad;
-		loader = new Loader();
+		loader = new Loader("startup_load");
 		loader.addLoad(new ParticlePoolLoader());
 		
 		gui = new GuiLoading(triad, loader);
@@ -25,13 +25,15 @@ public class GameStateLoading implements GameState {
 	public void render() {
 		gui.render(null);
 	}
-
+	
 	public void tick() {
 		if (!started) {
-			new Thread(loader).start();
+			Loader.startThreadLoad(loader);
 			started = true;
 		}
-		if (loader.getPercent() >= 1.0f)
+		if (loader.getPercent() >= 1.0f) {
 			triad.setGameState(new GameStatePlaying());
+			loader.stop();
+		}
 	}
 }

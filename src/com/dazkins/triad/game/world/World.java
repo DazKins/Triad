@@ -19,6 +19,7 @@ import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.NoiseMap;
 import com.dazkins.triad.math.PerlinNoise;
+import com.dazkins.triad.util.ChunkLoader;
 import com.dazkins.triad.util.Loadable;
 import com.dazkins.triad.util.Loader;
 
@@ -40,6 +41,8 @@ public class World {
 	protected String pathToLoad;
 	
 	private int tickCount;
+	
+	private ChunkLoader cLoad;
 
 	public void setWeather(Weather w) {
 		w.init(this);
@@ -54,9 +57,11 @@ public class World {
 			entitiesInTiles[i] = new ArrayList<Entity>();
 		}
 		
-		worldNoise = new NoiseMap(0.24f, 32, 1/1024.0f);
+		worldNoise = new NoiseMap(0.7f, 8, 1/2048.0f);
 		
 		entities = new ArrayList<Entity>();
+		
+		cLoad = new ChunkLoader();
 	}
 	
 	public NoiseMap worldNoise;
@@ -82,15 +87,14 @@ public class World {
 	public void render() {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 
-		ArrayList<Chunk> cs = chunkm.getChunksInAABB(cam.getViewportBounds());
+		AABB b = cam.getViewportBounds().shiftX0(-Chunk.chunkW * 4).shiftX1(Chunk.chunkW * 4).shiftY0(-Chunk.chunkW * 4).shiftY1(Chunk.chunkW * 4);
+		ArrayList<Chunk> cs = chunkm.getChunksInAABB(b);
 		for (Chunk c : cs) {
 			if (!c.isVBOGenerated()) {
 				c.generateVBO();
 			}
 			if (!c.isTileMapGenerated()) {
-				Loader l = new Loader();
-				c.addToLoader(l);
-				l.beginLoading();
+				cLoad.addChunk(c);
 			} else {
 				c.render();
 			}

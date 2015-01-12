@@ -15,6 +15,7 @@ import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.NoiseMap;
+import com.dazkins.triad.util.ChunkLoader;
 import com.dazkins.triad.util.Loadable;
 import com.dazkins.triad.util.Loader;
 
@@ -53,9 +54,9 @@ public class Chunk implements Loadable {
 		tiles = new int[chunkW * chunkH];
 	}
 	
-	public void addToLoader(Loader l) {
+	public void addToLoader(ChunkLoader l) {
 		if (!isBeingLoaded) {
-			l.addLoad(this);
+			l.addChunk(this);
 			isBeingLoaded = true;
 		}
 	}

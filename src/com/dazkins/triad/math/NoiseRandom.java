@@ -13,7 +13,7 @@ public class NoiseRandom {
 		map = new HashMap<Integer, Map<Integer, Float[]>>();
 	}
 	
-	public Float[] generateValue(int x, int y) {
+	public synchronized Float[] generateValue(int x, int y) {
 		if (!map.containsKey(x)) {
 			map.put(x, new HashMap<Integer, Float[]>());
 		}
