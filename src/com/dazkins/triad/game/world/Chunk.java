@@ -20,13 +20,15 @@ import com.dazkins.triad.util.Loadable;
 import com.dazkins.triad.util.Loader;
 
 public class Chunk implements Loadable {
-	public static int chunkW = 16, chunkH = 16;
+	public static int chunkS = 16;
+	public static int chunkSS = chunkS * chunkS;
 	
 	private static float lFadeOut = 0.85f;
 
 	private World world;
 
 	public int chunkX, chunkY;
+	public int rChunkX, rChunkY;
 	private int[] tiles;
 	
 	private Color[] tileColors;
@@ -40,18 +42,27 @@ public class Chunk implements Loadable {
 	private boolean isBeingLoaded;
 
 	private BufferObject tilePlane;
+	
+	private ArrayList<Entity>[] entitiesInTiles;
 
 	public Chunk(World w, int xp, int yp) {
 		this.chunkX = xp;
 		this.chunkY = yp;
 		this.world = w;
+		
+		this.rChunkX = chunkX * chunkS;
+		this.rChunkY = chunkY * chunkS;
 
-		tileColors = new Color[chunkW * chunkH];
-		pTileColors = new Color[chunkW * chunkH];
+		tileColors = new Color[chunkSS];
+		pTileColors = new Color[chunkSS];
 		
 		resetLightLevels();
 		
-		tiles = new int[chunkW * chunkH];
+		tiles = new int[chunkSS];
+		entitiesInTiles = new ArrayList[chunkSS]; 
+		for (int i = 0; i < chunkSS; i++) {
+			entitiesInTiles[i] = new ArrayList<Entity>();
+		}
 	}
 	
 	public void addToLoader(ChunkLoader l) {
@@ -61,10 +72,26 @@ public class Chunk implements Loadable {
 		}
 	}
 	
+	public void addEntity(Entity e) {
+		int xx = (int) (e.getX() / Tile.tileSize);
+		int yy = (int) (e.getY() / Tile.tileSize);
+		
+		if (xx < rChunkX || yy < rChunkY || xx >= rChunkX + chunkS || yy >= rChunkY + chunkS) {
+			System.err.println("OHNOES!!");
+			return;
+		}
+		
+		entitiesInTiles[world.convertToChunkX(xx) + world.convertToChunkY(yy) * chunkS].add(e);
+	}
+	
+	public ArrayList<Entity> getEntitiesInTile(int tx, int ty) {
+		return entitiesInTiles[tx + ty * chunkS];
+	}
+	
 	public void generateTileMap() {
-		for (int x = 0; x < chunkW; x++) {
-			for (int y = 0; y < chunkH; y++) {
-				float s = world.worldNoise.sample(x + chunkX * chunkW, y + chunkY * chunkH);
+		for (int x = 0; x < chunkS; x++) {
+			for (int y = 0; y < chunkS; y++) {
+				float s = world.worldNoise.sample(x + chunkX * chunkS, y + chunkY * chunkS);
 				if (s < 0) setTile(Tile.water, x, y);
 				else if (s < 0.01f) setTile(Tile.sand, x, y);
 				else setTile(Tile.grass, x, y);
@@ -102,28 +129,29 @@ public class Chunk implements Loadable {
 	}
 
 	private boolean isValidTilePos(int x, int y) {
-		if (x < 0 || y < 0 || x >= chunkW || y >= chunkH)
+		if (x < 0 || y < 0 || x >= chunkS || y >= chunkS)
 			return false;
 		return true;
 	}
 
 	public Color getTileColor(int x, int y) {
-		if (!isValidTilePos(x, y))
+		if (!isValidTilePos(x, y)) {
 			return new Color(0);
-		return tileColors[x + y * chunkW];
+		}
+		return tileColors[x + y * chunkS];
 	}
 	
 	public void blendTileColor(Color c, int x, int y) {
 		if (!isValidTilePos(x, y))
 			return;
-		tileColors[x + y * chunkW].blend(c);
+		tileColors[x + y * chunkS].blend(c);
 	}
 
 	public void setTile(Tile t, int x, int y) {
 		if (getTile(x, y) != t) {
 			if (!isValidTilePos(x, y))
 				return;
-			tiles[x + y * chunkW] = t.getID();
+			tiles[x + y * chunkS] = t.getID();
 			vboGenerated = false;
 		}
 	}
@@ -131,7 +159,7 @@ public class Chunk implements Loadable {
 	public Tile getTile(int x, int y) {
 		if (!isValidTilePos(x, y))
 			return null;
-		return Tile.tiles[tiles[x + y * chunkW]];
+		return Tile.tiles[tiles[x + y * chunkS]];
 	}
 
 	public void generateVBO() {
@@ -140,11 +168,11 @@ public class Chunk implements Loadable {
 		tilePlane = new BufferObject(16 * 16 * 4 * 8 * 2 * 2);
 		tilePlane.start();
 		tilePlane.bindImage(Image.getImageFromName("spriteSheet"));
-		for (int x = 0; x < chunkW; x++) {
-			for (int y = 0; y < chunkH; y++) {
-				int tileIndex = tiles[x + y * chunkW];
+		for (int x = 0; x < chunkS; x++) {
+			for (int y = 0; y < chunkS; y++) {
+				int tileIndex = tiles[x + y * chunkS];
 				if (tileIndex != 0) {
-					Tile.tiles[tileIndex].render(tilePlane, world, x * Tile.tileSize + (chunkX * Tile.tileSize * chunkW), y * Tile.tileSize + (chunkY * Tile.tileSize * chunkH));
+					Tile.tiles[tileIndex].render(tilePlane, world, x * Tile.tileSize + (chunkX * Tile.tileSize * chunkS), y * Tile.tileSize + (chunkY * Tile.tileSize * chunkS));
 				}
 			}
 		}
@@ -160,7 +188,7 @@ public class Chunk implements Loadable {
 	}
 
 	public AABB getBounds() {
-		return new AABB(chunkX * Tile.tileSize * chunkW, chunkY * Tile.tileSize * chunkH, chunkX * Tile.tileSize * chunkW + (chunkW * Tile.tileSize), chunkY * Tile.tileSize * chunkH + (chunkH * Tile.tileSize));
+		return new AABB(chunkX * Tile.tileSize * chunkS, chunkY * Tile.tileSize * chunkS, chunkX * Tile.tileSize * chunkS + (chunkS * Tile.tileSize), chunkY * Tile.tileSize * chunkS + (chunkS * Tile.tileSize));
 	}
 
 	public boolean isVBOGenerated() {
@@ -176,6 +204,34 @@ public class Chunk implements Loadable {
 	}
 
 	public void tick() {
+		for (int i = 0; i < chunkSS; i++) {
+			ArrayList<Entity> es = entitiesInTiles[i];
+			for (int u = 0; u < es.size(); u++) {
+				Entity e = es.get(u);
+				
+				if (e.needsToBeRemoved()) {
+					es.remove(e);
+					continue;
+				}
+				
+				int x0 = (int) (e.getX() / Tile.tileSize);
+				int y0 = (int) (e.getY() / Tile.tileSize);
+				
+				e.tick();
+				
+				int x1 = (int) (e.getX() / Tile.tileSize);
+				int y1 = (int) (e.getY() / Tile.tileSize);
+				
+				if (x0 != x1 || y0 != y1) {
+					es.remove(e);
+					world.addEntity(e);
+					u--;
+				}
+			}
+		}
+	}
+	
+	public void postTick() {
 		for (int i = 0; i < tileColors.length; i++) {
 			Color c = tileColors[i];
 			if (c.getR() * lFadeOut > world.ambientLightLevel * lFadeOut) {
@@ -214,10 +270,10 @@ public class Chunk implements Loadable {
 	}
 	
 	public void renderGrid() {
-		int xx0 = chunkX * Tile.tileSize * chunkW;
-		int yy0 = chunkY * Tile.tileSize * chunkH;
-		int ww0 = chunkW * Tile.tileSize;
-		int hh0 = chunkH * Tile.tileSize;
+		int xx0 = chunkX * Tile.tileSize * chunkS;
+		int yy0 = chunkY * Tile.tileSize * chunkS;
+		int ww0 = chunkS * Tile.tileSize;
+		int hh0 = chunkS * Tile.tileSize;
 		
 		GL11.glLineWidth(4);
 		
@@ -239,8 +295,8 @@ public class Chunk implements Loadable {
 		
 		GL11.glLineWidth(0.002f);
 		
-		for (int x = 0; x < chunkW; x++) {
-			for (int y = 0; y < chunkH; y++) {
+		for (int x = 0; x < chunkS; x++) {
+			for (int y = 0; y < chunkS; y++) {
 				int xx1 = xx0 + x * Tile.tileSize;
 				int yy1 = yy0 + y * Tile.tileSize;
 
@@ -261,6 +317,13 @@ public class Chunk implements Loadable {
 
 	public void render() {
 		tilePlane.render();
+		
+		for (int i = 0; i < chunkSS; i++) {
+			ArrayList<Entity> es = entitiesInTiles[i];
+			for (Entity e : es) {
+				world.addToEntityRenderQueue(e);
+			}
+		}
 	}
 
 	public void load() {

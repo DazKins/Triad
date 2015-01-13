@@ -103,17 +103,14 @@ public class GameStatePlaying implements GameState {
 			world.addEntity(new EntityTorch(world, player.getX(), player.getY()));
 		}
 		input.tick();
-		
-		player.tick();
 	}
 	
 	public void render() {
 		GL11.glPushMatrix();
 		cam.attachTranslation();
-//		world.assignCamera(cam);
+		world.assignCamera(cam);
 		world.render();
 		
-		player.render();
 //		world.renderGrid();
 		GL11.glPopMatrix();
 		
@@ -130,7 +127,7 @@ public class GameStatePlaying implements GameState {
 //			GL11.glEnable(GL11.GL_TEXTURE_2D);
 //		}
 //		
-//		currentlyDisplayedGui.render(cam);
+		currentlyDisplayedGui.render(cam);
 	}
 	
 	private void changeGui(Gui g) {

@@ -58,10 +58,10 @@ public class ChunkManager {
 	public ArrayList<Chunk> getChunksInAABB(AABB b) {
 		ArrayList<Chunk> r = new ArrayList<Chunk>();
 		
-		int x0 = (int) ((b.getX0() / Tile.tileSize) / Chunk.chunkW) - 1;
-		int y0 = (int) ((b.getY0() / Tile.tileSize) / Chunk.chunkH) - 1;
-		int x1 = (int) ((b.getX1() / Tile.tileSize) / Chunk.chunkW) + 1;
-		int y1 = (int) ((b.getY1() / Tile.tileSize) / Chunk.chunkH) + 1;
+		int x0 = (int) ((b.getX0() / Tile.tileSize) / Chunk.chunkS) - 1;
+		int y0 = (int) ((b.getY0() / Tile.tileSize) / Chunk.chunkS) - 1;
+		int x1 = (int) ((b.getX1() / Tile.tileSize) / Chunk.chunkS) + 1;
+		int y1 = (int) ((b.getY1() / Tile.tileSize) / Chunk.chunkS) + 1;
 		
 		for (int x = x0; x <= x1; x++) {
 			for (int y = y0; y <= y1; y++) {
