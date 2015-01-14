@@ -44,6 +44,9 @@ public class World {
 	private ChunkLoader cLoad;
 	
 	private ArrayList<Entity> entityRenderQueue;
+	
+	public NoiseMap worldNoise;
+	public NoiseMap treeNoise;
 
 	public void setWeather(Weather w) {
 		w.init(this);
@@ -59,13 +62,12 @@ public class World {
 		}
 		
 		worldNoise = new NoiseMap(0.7f, 8, 1/2048.0f);
+		treeNoise = new NoiseMap(0.7f, 8, 1/2048.0f);
 		
 		cLoad = new ChunkLoader();
 		
 		entityRenderQueue = new ArrayList<Entity>();
 	}
-	
-	public NoiseMap worldNoise;
 
 	public void addEntity(Entity e) {
 		if (e instanceof Particle)
@@ -87,7 +89,7 @@ public class World {
 	public void render() {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 
-		AABB b = cam.getViewportBounds().shiftX0(-Chunk.chunkS * 4).shiftX1(Chunk.chunkS * 4).shiftY0(-Chunk.chunkS * 4).shiftY1(Chunk.chunkS * 4);
+		AABB b = cam.getViewportBounds().shiftX0(-Chunk.chunkS * Tile.tileSize * 4).shiftX1(Chunk.chunkS * Tile.tileSize * 4).shiftY0(-Chunk.chunkS * Tile.tileSize * 4).shiftY1(Chunk.chunkS * Tile.tileSize * 4);
 		ArrayList<Chunk> cs = chunkm.getChunksInAABB(b);
 		for (Chunk c : cs) {
 			if (!c.isVBOGenerated()) {
@@ -95,7 +97,7 @@ public class World {
 			}
 			if (!c.isTileMapGenerated()) {
 				cLoad.addChunk(c);
-			} else {
+			} else if (c.getBounds().intersects(cam.getViewportBounds())) {
 				c.render();
 			}
 		}

@@ -34,7 +34,10 @@ public abstract class Entity {
 		this.name = s;
 		xvm = new ArrayList<Float>();
 		yvm = new ArrayList<Float>();
-		initModel();
+	}
+	
+	protected boolean isModelReady() {
+		return model != null;
 	}
 	
 	public void push(float xa, float ya) {
@@ -92,6 +95,8 @@ public abstract class Entity {
 	public void renderToPlayerGui(Camera c) { }
 	
 	public void render() {
+		if (!isModelReady())
+			initModel();
 		if (model != null) {
 			int xx = (int) x >> 5;
 			int yy = (int) y >> 5;
@@ -184,6 +189,9 @@ public abstract class Entity {
 	protected void onCollide(Entity e) { }
 
 	public void tick() {
+		if (!isModelReady())
+			initModel();
+		
 		lifeTicks++;
 	}
 	

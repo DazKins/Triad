@@ -141,7 +141,6 @@ public abstract class Mob extends Entity {
 	public void tick() {
 		super.tick();
 		
-		
 		ArrayList<Entity> ents = new ArrayList<Entity>();
 		
 		AABB eb = this.getEnemyScanArea();

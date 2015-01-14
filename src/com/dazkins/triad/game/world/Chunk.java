@@ -6,6 +6,7 @@ import java.util.Arrays;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.EntityTree;
 import com.dazkins.triad.game.entity.LightEmitter;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.entity.particle.Particle;
@@ -92,38 +93,25 @@ public class Chunk implements Loadable {
 		for (int x = 0; x < chunkS; x++) {
 			for (int y = 0; y < chunkS; y++) {
 				float s = world.worldNoise.sample(x + chunkX * chunkS, y + chunkY * chunkS);
+				float st = world.treeNoise.sample(x + chunkX * chunkS, y + chunkY * chunkS);
 				if (s < 0) setTile(Tile.water, x, y);
-				else if (s < 0.01f) setTile(Tile.sand, x, y);
-				else setTile(Tile.grass, x, y);
+				else if (s < 0.05f) setTile(Tile.sand, x, y);
+				else {
+					setTile(Tile.grass, x, y);
+					if (st < 0.14f) {
+						if (Math.random() < 0.01f)
+							world.addEntity(new EntityTree(world, (x + rChunkX) * Tile.tileSize, ((y + rChunkY) * Tile.tileSize) + (float) (Math.random() * 0.02f - 0.01f)));
+					}
+				}
 			}
 		}
 		vboGenerated = false;
 		
-		Chunk c0 = world.chunkm.getChunk(chunkX - 1, chunkY);
-		Chunk c1 = world.chunkm.getChunk(chunkX + 1, chunkY);
-		Chunk c2 = world.chunkm.getChunk(chunkX, chunkY + 1);
-		Chunk c3 = world.chunkm.getChunk(chunkX, chunkY - 1);
-		Chunk c4 = world.chunkm.getChunk(chunkX - 1, chunkY -1);
-		Chunk c5 = world.chunkm.getChunk(chunkX + 1, chunkY + 1);
-		Chunk c6 = world.chunkm.getChunk(chunkX - 1, chunkY + 1);
-		Chunk c7 = world.chunkm.getChunk(chunkX + 1, chunkY - 1);
-		
-		if (c0 != null)
-			c0.vboGenerated = false;
-		if (c1 != null)
-			c1.vboGenerated = false;
-		if (c2 != null)
-			c2.vboGenerated = false;
-		if (c3 != null)
-			c3.vboGenerated = false;
-		if (c4 != null)
-			c4.vboGenerated = false;
-		if (c5 != null)
-			c5.vboGenerated = false;
-		if (c6 != null)
-			c6.vboGenerated = false;
-		if (c7 != null)
-			c7.vboGenerated = false;
+		for (int x = chunkX - 1; x < chunkX + 2; x++) {
+			for (int y = chunkY - 1; y < chunkY + 2; y++) {
+				world.chunkm.getChunk(x, y).vboGenerated = false;
+			}
+		}
 		
 		tilesGenerated = true;
 	}

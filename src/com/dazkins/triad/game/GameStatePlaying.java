@@ -10,6 +10,7 @@ import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.EntityButton;
 import com.dazkins.triad.game.entity.EntityDoor;
 import com.dazkins.triad.game.entity.EntityTorch;
+import com.dazkins.triad.game.entity.EntityTree;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.gui.Gui;
@@ -68,6 +69,8 @@ public class GameStatePlaying implements GameState {
 		world.addEntity(d1);
 		world.addEntity(d2);
 		world.addEntity(d3);
+		
+		world.addEntity(new EntityTree(world, 200, 200));
 
 		EntityButton b = new EntityButton(world, 200.0f, 200.0f, a);
 		world.addEntity(b);
