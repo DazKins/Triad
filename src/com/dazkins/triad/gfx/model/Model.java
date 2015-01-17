@@ -29,6 +29,9 @@ public abstract class Model {
 	private float xMin, yMin;
 	private float xMax, yMax;
 	
+	public static ModelTree tree = new ModelTree();
+	public static ModelFlower flower = new ModelFlower();
+	
 	public AABB getRenderAABB() {
 		return new AABB(xMin, yMin, xMax, yMax);
 	}

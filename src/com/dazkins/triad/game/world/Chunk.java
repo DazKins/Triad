@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.EntityFlower;
 import com.dazkins.triad.game.entity.EntityTree;
-import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Color;
@@ -94,8 +94,11 @@ public class Chunk implements Loadable {
 				else {
 					setTile(Tile.grass, x, y);
 					if (st < 0.14f) {
-						if (Math.random() < 0.01f)
+						double r = Math.random();
+						if (r < 0.01f)
 							world.addEntity(new EntityTree(world, (x + rChunkX) * Tile.tileSize, ((y + rChunkY) * Tile.tileSize) + (float) (Math.random() * 0.02f - 0.01f)));
+						else if (r < 0.05f)
+							world.addEntity(new EntityFlower(world, (x + rChunkX) * Tile.tileSize, ((y + rChunkY) * Tile.tileSize) + (float) (Math.random() * 0.02f - 0.01f)));
 					}
 				}
 			}
@@ -206,7 +209,6 @@ public class Chunk implements Loadable {
 				int y1 = (int) (e.getY() / Tile.tileSize);
 				
 				if (x0 != x1 || y0 != y1) {
-					System.out.println("hit");
 					es.remove(e);
 					world.addEntity(e);
 					u--;

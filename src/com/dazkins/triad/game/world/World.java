@@ -84,7 +84,7 @@ public class World {
 					entityLoadQueue.remove(e);
 				}
 			} catch (Exception ex) {
-				System.out.println("Failed to add " + e);
+				System.err.println("Failed to add " + e);
 				if (!entityLoadQueue.contains(e)) {
 					entityLoadQueue.add(e);
 				}
