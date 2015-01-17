@@ -15,7 +15,7 @@ public class ChunkManager {
 	
 	private int chunkLoadCount;
 	
-	private int chunkLoadCuttoff = 10000;
+	private int chunkLoadCuttoff = 100;
 	
 	public ChunkManager(World w) {
 		loadedChunkI = new ArrayList<Integer>();
@@ -23,33 +23,44 @@ public class ChunkManager {
 		world = w;
 	}
 	
-	public Chunk getChunk(int x, int y) {
-		int i = x + y * 100000;
+	public Chunk getChunkWithForceLoad(int x, int y) {
+		Integer i = x + y * 100000;
 		
 		Chunk c;
 		
 		if (!chunks.containsKey(i)) {
 			c = new Chunk(world, x, y);
-			chunkLoadCount++;
-			loadedChunkI.add(i);
 			chunks.put(i, c);
-			if (chunkLoadCount > chunkLoadCuttoff) {
-				chunks.remove(loadedChunkI.get(0));
-				loadedChunkI.remove(0);
-				chunkLoadCount--;
-			}
 		} else {
 			c = chunks.get(i);
+		}
+
+		if (!loadedChunkI.contains(i)) {
+			chunkLoadCount++;
+			loadedChunkI.add(i);
+			if (chunkLoadCount > chunkLoadCuttoff) {
+				Integer ind = loadedChunkI.get(0);
+				loadedChunkI.remove(ind);
+				chunkLoadCount--;
+			}
 		}
 		
 		return c;
 	}
 	
+	public Chunk getChunk(int x, int y) {
+		Integer i = x + y * 100000;
+		if(chunks.containsKey(i))
+			return chunks.get(i);
+		return null;
+	}
+	
 	public ArrayList<Chunk> getLoadedChunks() {
 		ArrayList<Chunk> r = new ArrayList<Chunk>();
 		
-		for (Integer i : loadedChunkI)  {
-			r.add(chunks.get(i));
+		for (int i = 0; i < loadedChunkI.size(); i++)  {
+			Integer ind = loadedChunkI.get(i);
+			r.add(chunks.get(ind));
 		}
 		
 		return r;
@@ -65,7 +76,7 @@ public class ChunkManager {
 		
 		for (int x = x0; x <= x1; x++) {
 			for (int y = y0; y <= y1; y++) {
-				Chunk c = getChunk(x, y);
+				Chunk c = getChunkWithForceLoad(x, y);
 				if (c != null && c.getBounds().intersects(b))
 					r.add(c);
 			}

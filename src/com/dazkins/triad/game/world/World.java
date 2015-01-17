@@ -44,6 +44,7 @@ public class World {
 	private ChunkLoader cLoad;
 	
 	private ArrayList<Entity> entityRenderQueue;
+	private ArrayList<Entity> entityLoadQueue;
 	
 	public NoiseMap worldNoise;
 	public NoiseMap treeNoise;
@@ -67,6 +68,7 @@ public class World {
 		cLoad = new ChunkLoader();
 		
 		entityRenderQueue = new ArrayList<Entity>();
+		entityLoadQueue = new ArrayList<Entity>();
 	}
 
 	public void addEntity(Entity e) {
@@ -78,7 +80,15 @@ public class World {
 			
 			try {
 				getChunkFromWorldTileCoords(tx, ty).addEntity(e);
-			} catch (Exception ex) { }
+				if (entityLoadQueue.contains(e)) {
+					entityLoadQueue.remove(e);
+				}
+			} catch (Exception ex) {
+				System.out.println("Failed to add " + e);
+				if (!entityLoadQueue.contains(e)) {
+					entityLoadQueue.add(e);
+				}
+			}
 		}
 	}
 	
@@ -89,8 +99,10 @@ public class World {
 	public void render() {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 
-		AABB b = cam.getViewportBounds().shiftX0(-Chunk.chunkS * Tile.tileSize * 4).shiftX1(Chunk.chunkS * Tile.tileSize * 4).shiftY0(-Chunk.chunkS * Tile.tileSize * 4).shiftY1(Chunk.chunkS * Tile.tileSize * 4);
+		AABB b = cam.getViewportBounds().shiftX0(-Chunk.chunkS).shiftX1(Chunk.chunkS).shiftY0(-Chunk.chunkS).shiftY1(Chunk.chunkS);
 		ArrayList<Chunk> cs = chunkm.getChunksInAABB(b);
+		
+//		System.out.println(cs.size() + " renders");
 		for (Chunk c : cs) {
 			if (!c.isVBOGenerated()) {
 				c.generateVBO();
@@ -131,15 +143,6 @@ public class World {
 		entityRenderQueue.clear();
 	}
 
-	//TODO : Reimplement
-//	public void renderGrid() {
-//		for (int i = 0; i < chunks.length; i++) {
-//			if (chunks[i].getBounds().intersects(cam.getViewportBounds())) {
-//				chunks[i].renderGrid();
-//			}
-//		}
-//	}
-
 	public ArrayList<Entity> getEntitiesInAABB(AABB b) {
 		ArrayList<Entity> rValue = new ArrayList<Entity>();
 		
@@ -169,7 +172,10 @@ public class World {
 	}
 
 	public ArrayList<Entity> getEntitesInTile(int x, int y) {
-		return getChunkFromWorldTileCoords(x, y).getEntitiesInTile(convertToChunkX(x), convertToChunkY(y));
+		Chunk c = getChunkFromWorldTileCoords(x, y);
+		if (c != null)
+			return c.getEntitiesInTile(convertToChunkX(x), convertToChunkY(y));
+		return null;
 	}
 
 	public void assignCamera(Camera c) {
@@ -250,9 +256,9 @@ public class World {
 	}
 
 	public void setTile(Tile t, int x, int y) {
-		Chunk c = chunkm.getChunk(x / Chunk.chunkS, y / Chunk.chunkS);
+		Chunk c = chunkm.getChunkWithForceLoad(x / Chunk.chunkS, y / Chunk.chunkS);
 		if (c != null)
-			chunkm.getChunk(x / Chunk.chunkS, y / Chunk.chunkS).setTile(t, x % Chunk.chunkS, y % Chunk.chunkS);
+			chunkm.getChunkWithForceLoad(x / Chunk.chunkS, y / Chunk.chunkS).setTile(t, x % Chunk.chunkS, y % Chunk.chunkS);
 	}
 
 	private ArrayList<Entity> ticked = new ArrayList<Entity>();
@@ -297,15 +303,26 @@ public class World {
 //			}
 //		}
 		ArrayList<Chunk> cs = chunkm.getLoadedChunks();
+		
+//		System.out.println(cs.size() + " ticks");
+		
 		for (int i = 0; i < cs.size(); i++) {
-			cs.get(i).tick();
+			Chunk c = cs.get(i);
+			if (c != null)
+				c.tick();
 		}
 //		weather.tick();
 		
 		tickCount++;
 		
 		for (int i = 0; i < cs.size(); i++) {
-			cs.get(i).postTick();
+			Chunk c = cs.get(i);
+			if (c != null)
+				c.postTick();
+		}
+		
+		for (int i = 0; i < entityLoadQueue.size(); i++) {
+			addEntity(entityLoadQueue.get(i));
 		}
 	}
 

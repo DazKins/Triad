@@ -1,24 +1,19 @@
 package com.dazkins.triad.game.world;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.EntityTree;
-import com.dazkins.triad.game.entity.LightEmitter;
-import com.dazkins.triad.game.entity.mob.Mob;
-import com.dazkins.triad.game.entity.particle.Particle;
+import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
-import com.dazkins.triad.math.NoiseMap;
 import com.dazkins.triad.util.ChunkLoader;
 import com.dazkins.triad.util.Loadable;
-import com.dazkins.triad.util.Loader;
 
 public class Chunk implements Loadable {
 	public static int chunkS = 16;
@@ -109,7 +104,7 @@ public class Chunk implements Loadable {
 		
 		for (int x = chunkX - 1; x < chunkX + 2; x++) {
 			for (int y = chunkY - 1; y < chunkY + 2; y++) {
-				world.chunkm.getChunk(x, y).vboGenerated = false;
+				world.chunkm.getChunkWithForceLoad(x, y).vboGenerated = false;
 			}
 		}
 		
@@ -211,6 +206,7 @@ public class Chunk implements Loadable {
 				int y1 = (int) (e.getY() / Tile.tileSize);
 				
 				if (x0 != x1 || y0 != y1) {
+					System.out.println("hit");
 					es.remove(e);
 					world.addEntity(e);
 					u--;

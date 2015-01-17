@@ -52,28 +52,6 @@ public class GameStatePlaying implements GameState {
 		
 		world.assignCamera(cam);
 		world.setWeather(new RainWeather(10));
-		
-		ArrayList<Activeatable> a = new ArrayList<Activeatable>();
-		
-		EntityDoor d0 = new EntityDoor(world, 200.0f, 400.0f, Facing.DOWN);
-		EntityDoor d1 = new EntityDoor(world, 300.0f, 400.0f, Facing.UP);
-		EntityDoor d2 = new EntityDoor(world, 400.0f, 400.0f, Facing.LEFT);
-		EntityDoor d3 = new EntityDoor(world, 500.0f, 400.0f, Facing.RIGHT);
-		
-		a.add(d0);
-		a.add(d1);
-		a.add(d2);
-		a.add(d3);
-		
-		world.addEntity(d0);
-		world.addEntity(d1);
-		world.addEntity(d2);
-		world.addEntity(d3);
-		
-		world.addEntity(new EntityTree(world, 200, 200));
-
-		EntityButton b = new EntityButton(world, 200.0f, 200.0f, a);
-		world.addEntity(b);
 	}
 	
 	public void tick() {
@@ -113,8 +91,6 @@ public class GameStatePlaying implements GameState {
 		cam.attachTranslation();
 		world.assignCamera(cam);
 		world.render();
-		
-//		world.renderGrid();
 		GL11.glPopMatrix();
 		
 //		if (!(currentlyDisplayedGui instanceof PlayerGui)) {
@@ -129,7 +105,7 @@ public class GameStatePlaying implements GameState {
 //			GL11.glEnd();
 //			GL11.glEnable(GL11.GL_TEXTURE_2D);
 //		}
-//		
+		
 		currentlyDisplayedGui.render(cam);
 	}
 	
