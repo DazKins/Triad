@@ -31,6 +31,9 @@ public class Triad implements Runnable {
 	
 	private InputHandler input;
 	
+	public static float zMin = -10000f;
+	public static float zMax = 10000f;
+	
 	public static void main(String args[]) {
 		Triad triad = new Triad();
 		new Thread(triad).run();
@@ -71,7 +74,7 @@ public class Triad implements Runnable {
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GL11.glOrtho(0, win.getW(), 0, win.getH(), -1000f, 1000f);
+		GL11.glOrtho(0, win.getW(), 0, win.getH(), zMin, zMax);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_CULL_FACE);
@@ -177,7 +180,7 @@ public class Triad implements Runnable {
 		win.setH(win.getH());
 		GL11.glLoadIdentity();
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glOrtho(0, win.getW(), 0, win.getH(), -1000.0f, 1000.0f);
+		GL11.glOrtho(0, win.getW(), 0, win.getH(), zMin, zMax);
 		GL11.glViewport(0, 0, win.getW(), win.getH());
 	}
 

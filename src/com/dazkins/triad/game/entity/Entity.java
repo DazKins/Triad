@@ -6,6 +6,8 @@ import java.util.Comparator;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.game.world.tile.Tile;
+import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.model.Model;
@@ -193,6 +195,7 @@ public abstract class Entity {
 			initModel();
 		
 		lifeTicks++;
+		world.registerEntityTick(this);
 	}
 	
 	public String getName() {
@@ -207,5 +210,13 @@ public abstract class Entity {
 		public int compare(Entity o1, Entity o2) {
 			return (o1.getY() > o2.getY()) ? -1 : (o1.getY() < o2.getY()) ? 1 : 0;
 		}
+	}
+	
+	protected void renderShadow(float x, float y, float w, float h) {
+		GL11.glPushMatrix();
+		GL11.glTranslatef(x, y, Tile.yPosToDepth(y) - 0.5f);
+		GL11.glScalef(w / 32.0f, h / 32.0f, 1.0f);
+		BufferObject.shadow.render();
+		GL11.glPopMatrix();
 	}
 }

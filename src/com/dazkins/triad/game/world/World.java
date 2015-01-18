@@ -45,6 +45,7 @@ public class World {
 	
 	private ArrayList<Entity> entityRenderQueue;
 	private ArrayList<Entity> entityLoadQueue;
+	private ArrayList<Entity> tickedEntities;
 	
 	public NoiseMap worldNoise;
 	public NoiseMap treeNoise;
@@ -69,6 +70,7 @@ public class World {
 		
 		entityRenderQueue = new ArrayList<Entity>();
 		entityLoadQueue = new ArrayList<Entity>();
+		tickedEntities = new ArrayList<Entity>();
 	}
 
 	public void addEntity(Entity e) {
@@ -95,7 +97,7 @@ public class World {
 	public void addToEntityRenderQueue(Entity e) {
 		entityRenderQueue.add(e);
 	}
-
+	
 	public void render() {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 
@@ -114,33 +116,26 @@ public class World {
 			}
 		}
 		
-//		entities.sort(Entity.ySorter);
-//		for (Entity e : entities) {
-//			AABB b = e.getBoundsForRendering();
-//			if (b != null) {
-//				if (b.intersects(cam.getViewportBounds()))
-//					e.render();
-//			} else {
-//				e.render();
-//			}
-//		}
-		
-//		for (Particle p : particles) {
-//			if (p.getAABB().intersects(cam.getViewportBounds()))
-//				p.render();
-//		}
-		
 		entityRenderQueue.sort(Entity.ySorter);
 		for (Entity e : entityRenderQueue) {
 			AABB b0 = e.getBoundsForRendering();
 			if (b0 != null) {
-				if (b0.intersects(cam.getViewportBounds()))
+				if (b0.intersects(cam.getViewportBounds())) {
 					e.render();
+				}
 			} else {
 				e.render();
 			}
 		}
 		entityRenderQueue.clear();
+	}
+	
+	public void registerEntityTick(Entity e) {
+		tickedEntities.add(e);
+	}
+	
+	public boolean entityHasBeenTicked(Entity e) {
+		return tickedEntities.contains(e);
 	}
 
 	public ArrayList<Entity> getEntitiesInAABB(AABB b) {
@@ -154,10 +149,12 @@ public class World {
 		for (int x = x0; x < x1; x++) {
 			for (int y = y0; y < y1; y++) {
 				ArrayList<Entity> tmp = getEntitesInTile(x, y);
-				for (Entity e : tmp) {
-					if (e.getAABB() != null) {
-						if (e.getAABB().intersects(b)) {
-							rValue.add(e);
+				if (tmp != null) {
+					for (Entity e : tmp) {
+						if (e.getAABB() != null) {
+							if (e.getAABB().intersects(b)) {
+								rValue.add(e);
+							}
 						}
 					}
 				}
@@ -324,6 +321,8 @@ public class World {
 		for (int i = 0; i < entityLoadQueue.size(); i++) {
 			addEntity(entityLoadQueue.get(i));
 		}
+		
+		tickedEntities.clear();
 	}
 
 	public ArrayList<Entity> getEntities() {

@@ -97,7 +97,7 @@ public class Chunk implements Loadable {
 						double r = Math.random();
 						if (r < 0.01f)
 							world.addEntity(new EntityTree(world, (x + rChunkX) * Tile.tileSize, ((y + rChunkY) * Tile.tileSize) + (float) (Math.random() * 0.02f - 0.01f)));
-						else if (r < 0.05f)
+						else if (r < 0.02f)
 							world.addEntity(new EntityFlower(world, (x + rChunkX) * Tile.tileSize, ((y + rChunkY) * Tile.tileSize) + (float) (Math.random() * 0.02f - 0.01f)));
 					}
 				}
@@ -203,7 +203,9 @@ public class Chunk implements Loadable {
 				int x0 = (int) (e.getX() / Tile.tileSize);
 				int y0 = (int) (e.getY() / Tile.tileSize);
 				
-				e.tick();
+				if (!world.entityHasBeenTicked(e)) {
+					e.tick();
+				}
 				
 				int x1 = (int) (e.getX() / Tile.tileSize);
 				int y1 = (int) (e.getY() / Tile.tileSize);

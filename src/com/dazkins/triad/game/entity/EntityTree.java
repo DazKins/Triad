@@ -10,6 +10,11 @@ public class EntityTree extends Entity {
 		super(w, x, y, "tree");
 	}
 	
+	public void render() {
+		renderShadow(x - 15, y - 5, 30, 10);
+		super.render();
+	}
+	
 	public void initModel() {
 		model = Model.tree;
 	}

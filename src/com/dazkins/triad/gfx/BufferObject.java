@@ -41,8 +41,8 @@ public class BufferObject {
 			shadow.setA(0.2f);
 			shadow.addVertex(0, 0);
 			shadow.addVertex(32, 0);
-			shadow.addVertex(32, 5);
-			shadow.addVertex(0, 5);
+			shadow.addVertex(32, 32);
+			shadow.addVertex(0, 32);
 		shadow.stop();
 	}
 	

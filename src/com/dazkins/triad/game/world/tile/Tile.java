@@ -8,9 +8,12 @@ import javax.swing.ImageIcon;
 
 import org.lwjgl.system.linux.SysIOctl;
 
+import com.dazkins.triad.Triad;
 import com.dazkins.triad.file.MultiLineDatabaseFile;
+import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.BufferObject;
+import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
@@ -32,7 +35,12 @@ public class Tile {
 	private int renderOrderPos;
 
 	public static float yPosToDepth(float y) {
-		return -(y / tileSize) - 3;
+		return -((y / tileSize) % (Triad.zMax - 10)) - 3;
+	}
+	
+	public static float yPosToDepthRelativeToCamera(Camera c, float y) {
+		y = y - c.getY();
+		return yPosToDepth(y);
 	}
 
 	public Tile(int i, String s, int tey, boolean c, int rop) {
@@ -98,6 +106,7 @@ public class Tile {
 		float tymax = (ty * 16.0f + 16) / i.getHeight() - tOffset;
 		
 		bo.bindImage(i);
+//		bo.setDepth(Tile.yPosToDepth(y % (Chunk.chunkS * Tile.tileSize)) - 1.0f);
 		bo.setDepth(Tile.yPosToDepth(y) - 1.0f);
 		bo.setColor(c0);
 		bo.setUV(txmax, tymin);

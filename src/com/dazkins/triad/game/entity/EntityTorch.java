@@ -28,12 +28,8 @@ public class EntityTorch extends Entity implements LightEmitter {
 	}
 	
 	public void render() {
+		renderShadow(x - 5, y - 2, 10, 5);
 		super.render();
-		GL11.glPushMatrix();
-		GL11.glTranslatef(x - (0.3f * 16), y - 2, Tile.yPosToDepth(y) + 0.1f);
-		GL11.glScalef(0.3f, 1.0f, 1.0f);
-		BufferObject.shadow.render();
-		GL11.glPopMatrix();
 	}
 	
 	protected void initModel() {
