@@ -304,7 +304,10 @@ public class Chunk implements Loadable {
 	}
 
 	public void render() {
+		GL11.glPushMatrix();
+		GL11.glTranslatef(0, 0, Tile.yPosToDepthRelativeToCamera(world.getCam(), rChunkY * Tile.tileSize));
 		tilePlane.render();
+		GL11.glPopMatrix();
 		
 		for (int i = 0; i < chunkSS; i++) {
 			ArrayList<Entity> es = entitiesInTiles[i];

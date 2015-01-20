@@ -27,9 +27,9 @@ public class EntityTorch extends Entity implements LightEmitter {
 		return 180;
 	}
 	
-	public void render() {
+	public void render(Camera cam) {
 		renderShadow(x - 5, y - 2, 10, 5);
-		super.render();
+		super.render(cam);
 	}
 	
 	protected void initModel() {

@@ -121,10 +121,10 @@ public class World {
 			AABB b0 = e.getBoundsForRendering();
 			if (b0 != null) {
 				if (b0.intersects(cam.getViewportBounds())) {
-					e.render();
+					e.render(cam);
 				}
 			} else {
-				e.render();
+				e.render(cam);
 			}
 		}
 		entityRenderQueue.clear();

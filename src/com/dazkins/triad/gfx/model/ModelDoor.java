@@ -4,6 +4,7 @@ import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.EntityDoor;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.world.tile.Tile;
+import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Image;
 
 public class ModelDoor extends Model {
@@ -21,16 +22,13 @@ public class ModelDoor extends Model {
 		addQuads(quads);
 	}
 
-	public void render(Entity e) {
+	public void render(Camera cam, Entity e) {
 		setOffset(e.getX(), e.getY());
 		
 		EntityDoor ed = (EntityDoor) e;
 		int d = ed.getDirectionToRender();
 		
-		if (d == Facing.LEFT || d == Facing.RIGHT)
-			setDepth(Tile.yPosToDepth(e.getY()));
-		else
-			setDepth(Tile.yPosToDepth(e.getY()));
+		setDepth(Tile.yPosToDepthRelativeToCamera(cam, e.getY()));
 		
 		enableSelectiveRendering();
 		

@@ -1,6 +1,7 @@
 package com.dazkins.triad.game.entity;
 
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.gfx.model.ModelTree;
 import com.dazkins.triad.math.AABB;
@@ -10,9 +11,9 @@ public class EntityTree extends Entity {
 		super(w, x, y, "tree");
 	}
 	
-	public void render() {
+	public void render(Camera cam) {
 		renderShadow(x - 15, y - 5, 30, 10);
-		super.render();
+		super.render(cam);
 	}
 	
 	public void initModel() {

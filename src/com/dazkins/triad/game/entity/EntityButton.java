@@ -36,8 +36,8 @@ public class EntityButton extends Entity implements Activeatable {
 		
 	}
 
-	public void render() {
-		super.render();
+	public void render(Camera cam) {
+		super.render(cam);
 	}
 	
 	public void tick() {

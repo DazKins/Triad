@@ -96,7 +96,7 @@ public abstract class Entity {
 	
 	public void renderToPlayerGui(Camera c) { }
 	
-	public void render() {
+	public void render(Camera cam) {
 		if (!isModelReady())
 			initModel();
 		if (model != null) {
@@ -104,7 +104,7 @@ public abstract class Entity {
 			int yy = (int) y >> 5;
 			Color c = world.getTileColor(xx, yy);
 			GL11.glColor4f(c.getDR(), c.getDG(), c.getDB(), 1.0f);
-			model.render(this);
+			model.render(cam, this);
 		}
 	}
 	

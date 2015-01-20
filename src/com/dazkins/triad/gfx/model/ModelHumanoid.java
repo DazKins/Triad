@@ -10,6 +10,7 @@ import com.dazkins.triad.game.inventory.item.equipable.armour.head.ItemArmourHea
 import com.dazkins.triad.game.inventory.item.equipable.armour.legs.ItemArmourLegs;
 import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
 import com.dazkins.triad.game.world.tile.Tile;
+import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Image;
 
 public class ModelHumanoid extends Model {
@@ -133,9 +134,9 @@ public class ModelHumanoid extends Model {
 		addQuads(body);
 	}
 		
-	public void render(Entity e) {
+	public void render(Camera c, Entity e) {
 		setOffset(e.getX(), e.getY());
-		setDepth(Tile.yPosToDepth(e.getY()));
+		setDepth(Tile.yPosToDepthRelativeToCamera(c, e.getY()));
 		
 		int f = e.getFacing();
 		

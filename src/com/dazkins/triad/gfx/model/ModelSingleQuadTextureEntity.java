@@ -2,6 +2,7 @@ package com.dazkins.triad.gfx.model;
 
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.world.tile.Tile;
+import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Image;
 
 public class ModelSingleQuadTextureEntity extends Model {
@@ -15,9 +16,9 @@ public class ModelSingleQuadTextureEntity extends Model {
 		addQuad(new Quad(-tw, 0, tw * 2, th * 2, tx, ty, tw, th));
 	}
 
-	public void render(Entity e) {
+	public void render(Camera cam, Entity e) {
 		setOffset(e.getX(), e.getY());
-		setDepth(Tile.yPosToDepth(e.getY()));
+		setDepth(Tile.yPosToDepthRelativeToCamera(cam, e.getY()));
 		
 		super.render();
 	}

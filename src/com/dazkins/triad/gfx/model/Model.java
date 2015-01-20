@@ -8,6 +8,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.model.animation.Animation;
 import com.dazkins.triad.math.AABB;
@@ -112,7 +113,7 @@ public abstract class Model {
 		return true;
 	}
 	
-	public abstract void render(Entity e);
+	public abstract void render(Camera cam, Entity e);
 	
 	public static final RenderSorter rSort = new RenderSorter();
 	

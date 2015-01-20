@@ -1,6 +1,7 @@
 package com.dazkins.triad.game.entity;
 
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.model.ModelDoor;
 import com.dazkins.triad.math.AABB;
 
@@ -38,8 +39,8 @@ public class EntityDoor extends Entity implements Activeatable {
 		return false;
 	}
 	
-	public void render() {
-		super.render();
+	public void render(Camera cam) {
+		super.render(cam);
 		
 //		getAABB().renderBounds(2.0f);
 	}
