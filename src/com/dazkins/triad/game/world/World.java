@@ -17,6 +17,7 @@ import com.dazkins.triad.game.world.weather.Weather;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.math.NoiseMap;
 import com.dazkins.triad.math.PerlinNoise;
 import com.dazkins.triad.util.ChunkLoader;
@@ -121,10 +122,10 @@ public class World {
 			AABB b0 = e.getBoundsForRendering();
 			if (b0 != null) {
 				if (b0.intersects(cam.getViewportBounds())) {
-					e.render(cam);
+					e.render(getCam());
 				}
 			} else {
-				e.render(cam);
+				e.render(getCam());
 			}
 		}
 		entityRenderQueue.clear();
@@ -223,17 +224,11 @@ public class World {
 	}
 	
 	public int convertToChunkX(int x) {
-		if (x < 0)
-			return (Chunk.chunkS - (Math.abs(x) % Chunk.chunkS)) & (Chunk.chunkS - 1);
-		else
-			return x % Chunk.chunkS;
+		return MathHelper.betterMod(x, Chunk.chunkS);
 	}
 	
 	public int convertToChunkY(int y) {
-		if (y < 0)
-			return (Chunk.chunkS - (Math.abs(y) % Chunk.chunkS)) & (Chunk.chunkS - 1);
-		else
-			return y % Chunk.chunkS;
+		return MathHelper.betterMod(y, Chunk.chunkS);
 	}
 	
 	public Color getTileColor(int x, int y) {

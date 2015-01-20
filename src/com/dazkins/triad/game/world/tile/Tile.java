@@ -17,6 +17,7 @@ import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.math.MathHelper;
 
 public class Tile {
 	public static final int tileSize = 32;
@@ -107,7 +108,8 @@ public class Tile {
 		
 		bo.bindImage(i);
 		System.out.println(y % (Chunk.chunkS * Tile.tileSize));
-		bo.setDepth(Tile.yPosToDepth(y % (Chunk.chunkS * Tile.tileSize)) - 1.0f);
+//		bo.setDepth(Tile.yPosToDepth(y % (Chunk.chunkS * Tile.tileSize)) - 1.0f);
+		bo.setDepth(Tile.yPosToDepth(MathHelper.betterMod(y, Chunk.chunkS * Tile.tileSize)) - 1.0f);
 //		bo.setDepth(Tile.yPosToDepth(y) - 1.0f);
 		bo.setColor(c0);
 		bo.setUV(txmax, tymin);

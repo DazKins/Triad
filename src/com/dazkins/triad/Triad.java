@@ -109,14 +109,12 @@ public class Triad implements Runnable {
 			lastTime = now;
 			while (delta >= 1) {
 				ticks++;
-				long l = System.currentTimeMillis();
 				tick();
 				if(running == false)
 					break mainLoop;
 				delta -= 1;
 			}
 			frames++;
-			long l = System.currentTimeMillis();
 			render();
 			checkWindow();
 
