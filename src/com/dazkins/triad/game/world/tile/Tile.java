@@ -36,12 +36,12 @@ public class Tile {
 	private int renderOrderPos;
 
 	public static float yPosToDepth(float y) {
-		return -((y / tileSize) % (Triad.zMax - 10)) - 3;
+//		return -((MathHelper.betterMod(y, Chunk.chunkS * Tile.tileSize) / tileSize) % (Triad.zMax - 10)) - 3;
+		return -((y / tileSize)) - 3;
 	}
 	
 	public static float yPosToDepthRelativeToCamera(Camera c, float y) {
-		y -= c.getY();
-		return yPosToDepth(y);
+		return yPosToDepth(y - c.getY());
 	}
 
 	public Tile(int i, String s, int tey, boolean c, int rop) {
@@ -107,10 +107,7 @@ public class Tile {
 		float tymax = (ty * 16.0f + 16) / i.getHeight() - tOffset;
 		
 		bo.bindImage(i);
-		System.out.println(y % (Chunk.chunkS * Tile.tileSize));
-//		bo.setDepth(Tile.yPosToDepth(y % (Chunk.chunkS * Tile.tileSize)) - 1.0f);
 		bo.setDepth(Tile.yPosToDepth(MathHelper.betterMod(y, Chunk.chunkS * Tile.tileSize)) - 1.0f);
-//		bo.setDepth(Tile.yPosToDepth(y) - 1.0f);
 		bo.setColor(c0);
 		bo.setUV(txmax, tymin);
 		bo.addVertex(x + tileSize, y + tileSize);

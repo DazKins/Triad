@@ -312,7 +312,7 @@ public class Chunk implements Loadable {
 		for (int i = 0; i < chunkSS; i++) {
 			ArrayList<Entity> es = entitiesInTiles[i];
 			for (Entity e : es) {
-				world.addToEntityRenderQueue(e);
+				world.addToEntityToRenderQueue(e);
 			}
 		}
 	}

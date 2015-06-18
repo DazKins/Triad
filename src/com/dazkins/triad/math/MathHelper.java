@@ -4,8 +4,8 @@ import com.dazkins.triad.game.world.Chunk;
 
 public class MathHelper {
 	//Treats negatives better
-	public static int betterMod(int x, int m) {
-		int r = 0;
+	public static int betterMod(float x, int m) {
+		float r = 0;
 		
 		if (x < 0)
 			r = (m - (Math.abs(x) % m));
@@ -17,6 +17,6 @@ public class MathHelper {
 		if (r >= m)
 			r = 0;
 		
-		return r;
+		return (int) r;
 	}
 }

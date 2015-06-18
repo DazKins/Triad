@@ -28,7 +28,7 @@ public class World {
 	private static ArrayList<World> worlds;
 
 	public ChunkManager chunkm;
-	public int ambientLightLevel = 40;
+	public int ambientLightLevel = 127;
 	public float iLightFalloff = 20.0f;
 
 	public ArrayList<Particle> particles = new ArrayList<Particle>();
@@ -95,7 +95,7 @@ public class World {
 		}
 	}
 	
-	public void addToEntityRenderQueue(Entity e) {
+	public void addToEntityToRenderQueue(Entity e) {
 		entityRenderQueue.add(e);
 	}
 	
@@ -104,8 +104,6 @@ public class World {
 
 		AABB b = cam.getViewportBounds().shiftX0(-Chunk.chunkS).shiftX1(Chunk.chunkS).shiftY0(-Chunk.chunkS).shiftY1(Chunk.chunkS);
 		ArrayList<Chunk> cs = chunkm.getChunksInAABB(b);
-		
-//		System.out.println(cs.size() + " renders");
 		for (Chunk c : cs) {
 			if (!c.isVBOGenerated()) {
 				c.generateVBO();
@@ -295,8 +293,6 @@ public class World {
 //			}
 //		}
 		ArrayList<Chunk> cs = chunkm.getLoadedChunks();
-		
-//		System.out.println(cs.size() + " ticks");
 		
 		for (int i = 0; i < cs.size(); i++) {
 			Chunk c = cs.get(i);

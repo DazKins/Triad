@@ -12,7 +12,7 @@ public class EntityTree extends Entity {
 	}
 	
 	public void render(Camera cam) {
-		renderShadow(x - 15, y - 5, 30, 10);
+		renderShadow(cam, x - 15, y - 5, 30, 10);
 		super.render(cam);
 	}
 	
