@@ -20,7 +20,7 @@ import com.dazkins.triad.game.gui.PlayerGui;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
-import com.dazkins.triad.game.world.weather.RainWeather;
+import com.dazkins.triad.game.world.weather.WeatherRain;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
@@ -51,7 +51,7 @@ public class GameStatePlaying implements GameState {
 		world.addEntity(player);
 		
 		world.assignCamera(cam);
-		world.setWeather(new RainWeather(10));
+		world.setWeather(new WeatherRain(10));
 	}
 	
 	public void tick() {

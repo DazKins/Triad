@@ -36,6 +36,8 @@ public class Particle extends Entity implements PoolableObject {
 	
 	private BufferObject bo;
 	
+	protected boolean needsDestruction = false;
+	
 	public Particle() {
 		super(null, 0, 0, "particle");
 	}
@@ -84,6 +86,9 @@ public class Particle extends Entity implements PoolableObject {
 	}
 
 	public void create(float x, float y, float w, float h, float r, float g, float b, float a, float d) {
+		needsDestruction = false;
+		toBeRemoved = false;
+		
 		this.x = x;
 		this.y = y;
 		this.w = w;
@@ -111,10 +116,12 @@ public class Particle extends Entity implements PoolableObject {
 	public void setA(float a) {
 		this.a = a;
 	}
+	
+	public void markForDestruction() {
+		needsDestruction = true;
+	}
 
 	public boolean needDestruction() {
-		if (a <= -1)
-			return true;
-		return false;
+		return needsDestruction;
 	}
 }

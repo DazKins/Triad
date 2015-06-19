@@ -51,7 +51,7 @@ public class World {
 	public World() {
 		chunkm = new ChunkManager(this);
 		
-		ambientLightLevel = new Color(0, 0, 0);
+		ambientLightLevel = new Color(40, 40, 40);
 		
 		entitiesInTiles = new ArrayList[256 * 256];
 		for (int i = 0; i < entitiesInTiles.length; i++) {
@@ -125,6 +125,10 @@ public class World {
 			}
 		}
 		entityRenderQueue.clear();
+		
+		for (Particle p : particles) {
+			p.render();
+		}
 	}
 	
 	public void registerEntityTick(Entity e) {
@@ -259,7 +263,7 @@ public class World {
 			if (c != null)
 				c.tick();
 		}
-//		weather.tick();
+		weather.tick();
 		
 		tickCount++;
 		
@@ -272,6 +276,18 @@ public class World {
 		for (int i = 0; i < entityLoadQueue.size(); i++) {
 			addEntity(entityLoadQueue.get(i));
 		}
+		
+		int ip = 0;
+		for (int i = 0; i < particles.size(); i++) {
+			Particle p = particles.get(i);
+			if (p.needsToBeRemoved()) {
+				particles.remove(p);
+				continue;
+			}
+			p.tick();
+			ip++;
+		}
+//		System.out.println(ip + " particles tickd");
 		
 		tickedEntities.clear();
 	}

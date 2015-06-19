@@ -8,9 +8,13 @@ public class RainParticleBehaviourController extends ParticleBehaviourController
 		long l = operatingParticle.lifeTicks;
 		
 		y -= Math.random() * 4 + 2;
-		
-		if (l > 1 * 60) {
+		if (l > 60) {
 			a -= 0.01f;
+			
+			if (a <= 0.01f) {
+				operatingParticle.markForDestruction();
+				operatingParticle.remove();
+			}
 		}
 		else {
 			if (a < 0.5f)

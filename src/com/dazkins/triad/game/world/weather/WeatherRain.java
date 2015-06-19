@@ -8,10 +8,10 @@ import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.util.pool.ObjectPool;
 import com.dazkins.triad.util.pool.factory.RainParticleFactory;
 
-public class RainWeather extends Weather {
+public class WeatherRain extends Weather {
 	public float intensity;
 	
-	public RainWeather(float i) {
+	public WeatherRain(float i) {
 		intensity = i;
 	}
 	
@@ -26,7 +26,7 @@ public class RainWeather extends Weather {
 				float yp = (float) (Math.random() * (a.getY1() - a.getY0()) + a.getY0()) + 512.0f;
 				Particle p = op.getEmptyObjectForCreation();
 				if (p != null) {
-					pf.create(p, xp, yp, 10, 30, 0.4f, 0.7f, 1.0f);
+					pf.create(p, operatingWorld.getCam(), xp, yp, 10, 30, 0.4f, 0.7f, 1.0f);
 					operatingWorld.addParticle(p);
 				}
 			}

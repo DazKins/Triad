@@ -32,8 +32,9 @@ public class ObjectPool<T> {
 	public T getEmptyObjectForCreation() {
 		int index = -1;
 		for (int i = 0; i < poolSize; i++) {
-			if (usedIDs[i] == false || ((PoolableObject)objs[i]).needDestruction())
+			if (!usedIDs[i] || ((PoolableObject)objs[i]).needDestruction()) {
 				index = i;
+			}
 		}
 		
 		if (index == -1) {
