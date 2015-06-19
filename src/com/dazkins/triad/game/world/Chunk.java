@@ -167,9 +167,12 @@ public class Chunk implements Loadable {
 	}
 	
 	private void resetLightLevels() {
+		Color c = world.getAmbientLight();
+		int r = (int) (c.getR() * lFadeOut);
+		int g = (int) (c.getG() * lFadeOut);
+		int b = (int) (c.getB() * lFadeOut);
 		for (int i = 0; i < tileColors.length; i++) {
-			int c = (int) (world.ambientLightLevel * lFadeOut);
-			tileColors[i] = new Color(c, c, c);
+			tileColors[i] = new Color(r, g, b);
 		}
 	}
 
@@ -220,27 +223,42 @@ public class Chunk implements Loadable {
 	}
 	
 	public void postTick() {
+		Color wc = world.getAmbientLight();
+		int r = (int) (wc.getR() * lFadeOut);
+		int g = (int) (wc.getG() * lFadeOut);
+		int b = (int) (wc.getB() * lFadeOut);
 		for (int i = 0; i < tileColors.length; i++) {
 			Color c = tileColors[i];
-			if (c.getR() * lFadeOut > world.ambientLightLevel * lFadeOut) {
+			if (c.getR() * lFadeOut > r) {
 				c.setR((int) (c.getR() * lFadeOut));
-			} else if (c.getR() > world.ambientLightLevel * lFadeOut) {
-				c.setR((int) (world.ambientLightLevel * lFadeOut));
+			} else if (c.getR() > r) {
+				c.setR(r);
 			}
-			if (c.getG() * lFadeOut > world.ambientLightLevel * lFadeOut) {
+			if (c.getG() * lFadeOut > g) {
 				c.setG((int) (c.getG() * lFadeOut));
-			} else if (c.getG() > world.ambientLightLevel * lFadeOut) {
-				c.setG((int) (world.ambientLightLevel * lFadeOut));
+			} else if (c.getG() > g) {
+				c.setG(g);
 			}
-			if (c.getB() * lFadeOut > world.ambientLightLevel * lFadeOut) {
+			if (c.getB() * lFadeOut > b) {
 				c.setB((int) (c.getB() * lFadeOut));
-			} else if (c.getB() > world.ambientLightLevel * lFadeOut) {
-				c.setB((int) (world.ambientLightLevel * lFadeOut));
+			} else if (c.getB() > b) {
+				c.setB(b);
+			}
+			
+			if (c.getR() < r) {
+				c.setR(r);
+			}
+			if (c.getG() < g) {
+				c.setG(g);
+			}
+			if (c.getB() < b) {
+				c.setB(b);
 			}
 		}
 		
-		if (hasLightChanged())
+		if (hasLightChanged()) {
 			vboGenerated = false;
+		}
 
 		for (int i = 0; i < tileColors.length; i++) {
 			pTileColors[i] = tileColors[i].copyOf();
@@ -299,8 +317,6 @@ public class Chunk implements Loadable {
 		}
 		
 		GL11.glColor4f(1, 1, 1, 1);
-		
-//		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
 	public void render() {

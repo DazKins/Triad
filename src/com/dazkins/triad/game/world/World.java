@@ -1,13 +1,8 @@
 package com.dazkins.triad.game.world;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.lwjgl.opengl.GL11;
 
-import com.dazkins.triad.file.ListFile;
 import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.mob.Mob;
@@ -19,16 +14,13 @@ import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.math.NoiseMap;
-import com.dazkins.triad.math.PerlinNoise;
 import com.dazkins.triad.util.ChunkLoader;
-import com.dazkins.triad.util.Loadable;
-import com.dazkins.triad.util.Loader;
 
 public class World {
-	private static ArrayList<World> worlds;
-
 	public ChunkManager chunkm;
-	public int ambientLightLevel = 127;
+	
+	private Color ambientLightLevel;
+	
 	public float iLightFalloff = 20.0f;
 
 	public ArrayList<Particle> particles = new ArrayList<Particle>();
@@ -58,6 +50,8 @@ public class World {
 	
 	public World() {
 		chunkm = new ChunkManager(this);
+		
+		ambientLightLevel = new Color(0, 0, 0);
 		
 		entitiesInTiles = new ArrayList[256 * 256];
 		for (int i = 0; i < entitiesInTiles.length; i++) {
@@ -97,6 +91,10 @@ public class World {
 	
 	public void addToEntityToRenderQueue(Entity e) {
 		entityRenderQueue.add(e);
+	}
+	
+	public Color getAmbientLight() {
+		return ambientLightLevel;
 	}
 	
 	public void render() {
@@ -254,44 +252,6 @@ public class World {
 	private ArrayList<Entity> ticked = new ArrayList<Entity>();
 	
 	public void tick() {
-//		for (int i = 0; i < particles.size(); i++) {
-//			if (particles.get(i).needDestruction())
-//				particles.remove(i);
-//			else
-//				particles.get(i).tick();
-//		}
-		
-//		ticked = new ArrayList<Entity>();
-//		for (int i = 0; i < entitiesInTiles.length; i++) {
-//			ArrayList<Entity> tmp = entitiesInTiles[i];
-//			for (int u = 0; u < tmp.size(); u++) {
-//				Entity e = tmp.get(u);
-//				if (e.needsToBeRemoved()) {
-//					entitiesInTiles[i].remove(e);
-//					entities.remove(e);
-//				} else {
-//					int tx0 = (int) e.getX() >> 5;
-//					int ty0 = (int) e.getY() >> 5;
-//					
-//					if (!ticked.contains(e)) {
-//						e.tick();
-//					}
-//					
-//					ticked.add(e);
-//					
-//					int tx1 = (int) e.getX() >> 5;
-//					int ty1 = (int) e.getY() >> 5;
-//		
-//					if (tx0 != tx1 || ty0 != ty1) {
-//						entities.remove(e);
-//						entitiesInTiles[i].remove(e);
-//						
-//						addEntity(e);
-//						u--;
-//					}
-//				}
-//			}
-//		}
 		ArrayList<Chunk> cs = chunkm.getLoadedChunks();
 		
 		for (int i = 0; i < cs.size(); i++) {

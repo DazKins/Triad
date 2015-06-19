@@ -51,12 +51,13 @@ public class EntityTorch extends Entity implements LightEmitter {
 				float dist = (float) Math.sqrt(dx * dx + dy * dy) / Tile.tileSize;
 
 				if (dist <= world.iLightFalloff) {
-					int rVal = (int) (getR() + ((world.ambientLightLevel - getR()) * (dist / world.iLightFalloff)));
-					int gVal = (int) (getG() + ((world.ambientLightLevel - getG()) * (dist / world.iLightFalloff)));
-					int bVal = (int) (getB() + ((world.ambientLightLevel - getB()) * (dist / world.iLightFalloff)));
+					Color worldC = world.getAmbientLight();
+					int rVal = (int) (getR() + ((worldC.getR() - getR()) * (dist / world.iLightFalloff)));
+					int gVal = (int) (getG() + ((worldC.getG() - getG()) * (dist / world.iLightFalloff)));
+					int bVal = (int) (getB() + ((worldC.getB() - getB()) * (dist / world.iLightFalloff)));
 					
 					Color c = new Color(rVal, gVal, bVal);
-					c.clip(world.ambientLightLevel);
+					c.blend(worldC);
 					
 					world.getTileColor(ix, iy).blend(c);
 				}
