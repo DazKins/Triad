@@ -119,8 +119,8 @@ public class Triad implements Runnable {
 
 			if (System.currentTimeMillis() - lastTimer > 1000) {
 				lastTimer += 1000;
-				DebugMonitor.setFPS(frames);
-				DebugMonitor.setUPS(ticks);
+				DebugMonitor.setVariableValue("FPS", frames);
+				DebugMonitor.setVariableValue("UPS", ticks);
 				frames = 0;
 				ticks = 0;
 			}

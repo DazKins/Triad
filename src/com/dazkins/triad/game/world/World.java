@@ -36,6 +36,8 @@ public class World {
 	
 	private ChunkLoader cLoad;
 	
+	private TimeCycle time;
+	
 	private ArrayList<Entity> entityRenderQueue;
 	private ArrayList<Entity> entityLoadQueue;
 	private ArrayList<Entity> tickedEntities;
@@ -49,9 +51,9 @@ public class World {
 	}
 	
 	public World() {
-		chunkm = new ChunkManager(this);
+		ambientLightLevel = new Color(0);
 		
-		ambientLightLevel = new Color(40, 40, 40);
+		chunkm = new ChunkManager(this);
 		
 		entitiesInTiles = new ArrayList[256 * 256];
 		for (int i = 0; i < entitiesInTiles.length; i++) {
@@ -66,6 +68,8 @@ public class World {
 		entityRenderQueue = new ArrayList<Entity>();
 		entityLoadQueue = new ArrayList<Entity>();
 		tickedEntities = new ArrayList<Entity>();
+		
+		time = new TimeCycle(this);
 	}
 
 	public void addEntity(Entity e) {
@@ -95,6 +99,10 @@ public class World {
 	
 	public Color getAmbientLight() {
 		return ambientLightLevel;
+	}
+	
+	public void setAmbientLight(Color c) {
+		ambientLightLevel = c;
 	}
 	
 	public void render() {
@@ -256,6 +264,8 @@ public class World {
 	private ArrayList<Entity> ticked = new ArrayList<Entity>();
 	
 	public void tick() {
+		time.tick();
+		
 		ArrayList<Chunk> cs = chunkm.getLoadedChunks();
 		
 		for (int i = 0; i < cs.size(); i++) {

@@ -84,6 +84,13 @@ public class Color {
 			setB(c.getB());
 	}
 	
+	public static Color lerp(Color c1, Color c2, float l) {
+		int r = (int) (((c2.getR() - c1.getR()) * l) + c1.getR());
+		int g = (int) (((c2.getG() - c1.getG()) * l) + c1.getG());
+		int b = (int) (((c2.getB() - c1.getB()) * l) + c1.getB());
+		return new Color(r, g, b);
+	}
+	
 	public String toString() {
 		return "Red: " + getR() + " Green: " + getG() + " Blue: " + getB();
 	}

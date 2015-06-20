@@ -87,6 +87,7 @@ public class GameStatePlaying implements GameState {
 			world.addEntity(new EntityTorch(world, player.getX(), player.getY()));
 			DebugMonitor.addMessage("Torch added at: (" + player.getX() + "," + player.getY() + ")");
 		}
+		DebugMonitor.setVariableValue("Tile light: ", world.getTileColor((int) player.getX() / Tile.tileSize, (int) player.getY() / Tile.tileSize) );
 		input.tick();
 	}
 	
