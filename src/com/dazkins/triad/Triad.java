@@ -3,7 +3,6 @@ package com.dazkins.triad;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -20,7 +19,7 @@ import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
-import com.dazkins.triad.math.NoiseRandom;
+import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 
 public class Triad implements Runnable {
 	private boolean running;
@@ -31,8 +30,8 @@ public class Triad implements Runnable {
 	
 	private InputHandler input;
 	
-	public static float zMin = -10000f;
-	public static float zMax = 10000f;
+	public static float zMin = -1000f;
+	public static float zMax = 1000f;
 	
 	public static void main(String args[]) {
 		Triad triad = new Triad();
@@ -120,7 +119,8 @@ public class Triad implements Runnable {
 
 			if (System.currentTimeMillis() - lastTimer > 1000) {
 				lastTimer += 1000;
-				System.out.println("FPS: " + frames + " UPS: " + ticks);
+				DebugMonitor.setFPS(frames);
+				DebugMonitor.setUPS(ticks);
 				frames = 0;
 				ticks = 0;
 			}
@@ -137,6 +137,8 @@ public class Triad implements Runnable {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
 		currentState.render();
+		
+		DebugMonitor.render();
 		
 		win.update();
 	}

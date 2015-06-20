@@ -2,6 +2,8 @@ package com.dazkins.triad.game;
 
 import java.util.ArrayList;
 
+import jdk.nashorn.internal.runtime.logging.DebugLogger;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.glfw.GLFW;
 
@@ -24,6 +26,7 @@ import com.dazkins.triad.game.world.weather.WeatherRain;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
+import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 
 public class GameStatePlaying implements GameState {
 	private Triad triad;
@@ -82,6 +85,7 @@ public class GameStatePlaying implements GameState {
 		}
 		if (input.isKeyJustDown(GLFW.GLFW_KEY_Q)) {
 			world.addEntity(new EntityTorch(world, player.getX(), player.getY()));
+			DebugMonitor.addMessage("Torch added at: (" + player.getX() + "," + player.getY() + ")");
 		}
 		input.tick();
 	}
@@ -93,18 +97,18 @@ public class GameStatePlaying implements GameState {
 		world.render();
 		GL11.glPopMatrix();
 		
-//		if (!(currentlyDisplayedGui instanceof PlayerGui)) {
-//			GL11.glDisable(GL11.GL_TEXTURE_2D);
-//			GL11.glBegin(GL11.GL_QUADS);
-//				GL11.glColor4f(0.0f, 0.0f, 0.0f, 0.7f);
-//				GL11.glVertex3f(0.0f, 0.0f, -0.1f);
-//				GL11.glVertex3f(win.getW(), 0.0f, -0.1f);
-//				GL11.glVertex3f(win.getW(), win.getH(), -0.1f);
-//				GL11.glVertex3f(0.0f, win.getH(), -0.1f);
-//				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-//			GL11.glEnd();
-//			GL11.glEnable(GL11.GL_TEXTURE_2D);
-//		}
+		if (!(currentlyDisplayedGui instanceof PlayerGui)) {
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			GL11.glBegin(GL11.GL_QUADS);
+				GL11.glColor4f(0.0f, 0.0f, 0.0f, 0.7f);
+				GL11.glVertex3f(0.0f, 0.0f, -0.1f);
+				GL11.glVertex3f(win.getW(), 0.0f, -0.1f);
+				GL11.glVertex3f(win.getW(), win.getH(), -0.1f);
+				GL11.glVertex3f(0.0f, win.getH(), -0.1f);
+				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			GL11.glEnd();
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+		}
 		
 		currentlyDisplayedGui.render(cam);
 	}
