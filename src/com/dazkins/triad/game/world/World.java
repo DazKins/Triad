@@ -107,16 +107,18 @@ public class World {
 	
 	public void render() {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
-
-		AABB b = cam.getViewportBounds().shiftX0(-Chunk.chunkS).shiftX1(Chunk.chunkS).shiftY0(-Chunk.chunkS).shiftY1(Chunk.chunkS);
-		ArrayList<Chunk> cs = chunkm.getChunksInAABB(b);
+		
+		ArrayList<Chunk> cs = chunkm.getChunksInAABB(cam.getViewportBounds());
+		
+		AABB inner = cam.getViewportBounds();
+		
 		for (Chunk c : cs) {
-			if (!c.isVBOGenerated()) {
-				c.generateVBO();
-			}
 			if (!c.isTileMapGenerated()) {
 				cLoad.addChunk(c);
-			} else if (c.getBounds().intersects(cam.getViewportBounds())) {
+			} else {
+				if (!c.isVBOGenerated()) {
+					c.generateVBO();
+				}
 				c.render();
 			}
 		}
@@ -266,7 +268,8 @@ public class World {
 	public void tick() {
 		time.tick();
 		
-		ArrayList<Chunk> cs = chunkm.getLoadedChunks();
+		AABB b = cam.getViewportBounds().shiftX0(2 * -Chunk.chunkS * Tile.tileSize).shiftX1(2 * Chunk.chunkS * Tile.tileSize).shiftY0(2 * -Chunk.chunkS * Tile.tileSize).shiftY1(2 * Chunk.chunkS * Tile.tileSize);
+		ArrayList<Chunk> cs = chunkm.getChunksInAABB(b);
 		
 		for (int i = 0; i < cs.size(); i++) {
 			Chunk c = cs.get(i);
@@ -287,7 +290,6 @@ public class World {
 			addEntity(entityLoadQueue.get(i));
 		}
 		
-		int ip = 0;
 		for (int i = 0; i < particles.size(); i++) {
 			Particle p = particles.get(i);
 			if (p.needsToBeRemoved()) {
@@ -295,9 +297,7 @@ public class World {
 				continue;
 			}
 			p.tick();
-			ip++;
 		}
-//		System.out.println(ip + " particles tickd");
 		
 		tickedEntities.clear();
 	}

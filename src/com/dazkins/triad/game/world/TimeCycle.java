@@ -35,7 +35,7 @@ public class TimeCycle {
 				
 		DebugMonitor.setVariableValue("Time", getTime() + " (" + getRelTime() + ")" +  " (" + getDayOrNight() + ")");
 		
-		curTime++;
+		curTime+=40;
 	}
 	
 	public int getTime() {
