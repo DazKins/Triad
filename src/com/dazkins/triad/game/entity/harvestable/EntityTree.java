@@ -1,4 +1,4 @@
-package com.dazkins.triad.game.entity;
+package com.dazkins.triad.game.entity.harvestable;
 
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
@@ -6,9 +6,9 @@ import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.gfx.model.ModelTree;
 import com.dazkins.triad.math.AABB;
 
-public class EntityTree extends Entity {
+public class EntityTree extends EntityHarvestable {
 	public EntityTree(World w, float x, float y) {
-		super(w, x, y, "tree");
+		super(w, x, y, "tree", 30);
 	}
 	
 	public void render(Camera cam) {
@@ -21,6 +21,6 @@ public class EntityTree extends Entity {
 	}
 
 	public AABB getAABB() {
-		return null;
+		return new AABB(x, y, x + 32, y + 32);
 	}
 }

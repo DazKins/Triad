@@ -8,6 +8,7 @@ import com.dazkins.triad.game.inventory.item.equipable.armour.feet.ItemTestFeet;
 import com.dazkins.triad.game.inventory.item.equipable.armour.head.ItemTestHelmet;
 import com.dazkins.triad.game.inventory.item.equipable.armour.legs.ItemTestLegs;
 import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemTestSword;
+import com.dazkins.triad.game.inventory.item.equipable.weapon.harvestTool.ItemAxe;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
@@ -24,6 +25,7 @@ public class Item {
 	public static ItemTestHelmet testHelmet = new ItemTestHelmet();
 	public static ItemTestLegs testLegs = new ItemTestLegs();
 	public static ItemTestSword testSword = new ItemTestSword();
+	public static ItemAxe axe = new ItemAxe();
 	
 	public Item(String name, boolean s) {
 		this.name = name;
@@ -37,7 +39,6 @@ public class Item {
 	
 	public static void dropItemStack(World w, float x, float y, ItemStack is) {
 		int no = is.getSize();
-		float speed = 7.0f;
 		if (no > 4 && is.getItemType().isStackable()) {
 			dropStackWithVelocity(w, x, y, is, no);
 		} else {

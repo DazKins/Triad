@@ -9,7 +9,9 @@ import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
+import com.dazkins.triad.game.inventory.item.equipable.ItemEquipable;
 import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
+import com.dazkins.triad.game.inventory.item.equipable.weapon.harvestTool.ItemHarvestTool;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -104,6 +106,19 @@ public abstract class Mob extends Entity {
 		} else {
 			return getBaseAttackRange();
 		}
+	}
+	
+	public void tryHarvest() {
+		AABB b = getFacingAttackArea(getFacing());
+		Item i = eInv.getWeaponItem();
+		int d = 0;
+		if (i != null) {
+			if (i instanceof ItemHarvestTool) {
+				ItemHarvestTool h = (ItemHarvestTool) i;
+				d = h.getHarvestDamage();
+			}
+		}
+		world.sendHarvestCommand(b, this, d);
 	}
 	
 	protected boolean attemptAttack(AABB a) {

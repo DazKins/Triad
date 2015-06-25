@@ -16,12 +16,14 @@ public class Window {
 	private int w, h;
 	
 	private boolean resized;
+	private boolean fullscreen;
 	
 	private long winRef;
 	
-	public Window(int w, int h) {
+	public Window(int w, int h, boolean f) {
 		this.w = w;
 		this.h = h;
+		this.fullscreen = f;
 	}
 	
 	public long getWindowReference() {
@@ -38,12 +40,18 @@ public class Window {
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_TRUE);
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL11.GL_TRUE);
  
-        winRef =  GLFW.glfwCreateWindow(w, h, "Triad", MemoryUtil.NULL, MemoryUtil.NULL);
+        if (fullscreen)
+        	winRef =  GLFW.glfwCreateWindow(w, h, "Triad", GLFW.glfwGetPrimaryMonitor(), MemoryUtil.NULL);
+        else
+        	winRef =  GLFW.glfwCreateWindow(w, h, "Triad", MemoryUtil.NULL, MemoryUtil.NULL);
+        
         if (winRef == MemoryUtil.NULL)
             throw new RuntimeException("Failed to create the GLFW window");
         
-        ByteBuffer vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-        GLFW.glfwSetWindowPos(winRef, (GLFWvidmode.width(vidmode) - w) / 2, (GLFWvidmode.height(vidmode) - h) / 2);
+        if (!fullscreen) { 
+            ByteBuffer vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+	        GLFW.glfwSetWindowPos(winRef, (GLFWvidmode.width(vidmode) - w) / 2, (GLFWvidmode.height(vidmode) - h) / 2);
+        }
  
         GLFW.glfwMakeContextCurrent(winRef);
  

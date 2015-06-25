@@ -1,10 +1,12 @@
 package com.dazkins.triad.game.world;
 
 import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.harvestable.EntityHarvestable;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.entity.particle.Particle;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -31,8 +33,6 @@ public class World {
 	private Weather weather;
 
 	protected String pathToLoad;
-	
-	private int tickCount;
 	
 	private ChunkLoader cLoad;
 	
@@ -85,7 +85,6 @@ public class World {
 					entityLoadQueue.remove(e);
 				}
 			} catch (Exception ex) {
-				System.err.println("Failed to add " + e);
 				if (!entityLoadQueue.contains(e)) {
 					entityLoadQueue.add(e);
 				}
@@ -108,9 +107,7 @@ public class World {
 	public void render() {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 		
-		ArrayList<Chunk> cs = chunkm.getChunksInAABB(cam.getViewportBounds());
-		
-		AABB inner = cam.getViewportBounds();
+		ArrayList<Chunk> cs = chunkm.getChunksInAABB(cam.getViewportBounds().shiftX0(-Chunk.chunkS * Tile.tileSize).shiftX1(Chunk.chunkS * Tile.tileSize).shiftY0(-Chunk.chunkS * Tile.tileSize).shiftY1(Chunk.chunkS * Tile.tileSize));
 		
 		for (Chunk c : cs) {
 			if (!c.isTileMapGenerated()) {
@@ -119,7 +116,8 @@ public class World {
 				if (!c.isVBOGenerated()) {
 					c.generateVBO();
 				}
-				c.render();
+				if (c.getBounds().intersects(cam.getViewportBounds()))
+					c.render();
 			}
 		}
 		
@@ -202,11 +200,20 @@ public class World {
 
 	public void sendAttackCommand(AABB b, Mob m, int d, int k) {
 		ArrayList<Entity> ents = getEntitiesInAABB(b);
-		for (int i = 0; i < ents.size(); i++) {
-			Entity e = ents.get(i);
+		for (Entity e : ents) {
 			if (e != m && e instanceof Mob) {
 				Mob tm = (Mob) e;
 				tm.hurt(m, d, k);
+			}
+		}
+	}
+	
+	public void sendHarvestCommand(AABB b, Mob m, int d) {
+		ArrayList<Entity> ents = getEntitiesInAABB(b);
+		for (Entity e : ents) {
+			if (e != m && e instanceof EntityHarvestable) {
+				EntityHarvestable h = (EntityHarvestable) e;
+				h.harvest(d);
 			}
 		}
 	}
@@ -268,7 +275,7 @@ public class World {
 	public void tick() {
 		time.tick();
 		
-		AABB b = cam.getViewportBounds().shiftX0(2 * -Chunk.chunkS * Tile.tileSize).shiftX1(2 * Chunk.chunkS * Tile.tileSize).shiftY0(2 * -Chunk.chunkS * Tile.tileSize).shiftY1(2 * Chunk.chunkS * Tile.tileSize);
+		AABB b = cam.getViewportBounds().shiftX0(4 * -Chunk.chunkS * Tile.tileSize).shiftX1(4 * Chunk.chunkS * Tile.tileSize).shiftY0(4 * -Chunk.chunkS * Tile.tileSize).shiftY1(4 * Chunk.chunkS * Tile.tileSize);
 		ArrayList<Chunk> cs = chunkm.getChunksInAABB(b);
 		
 		for (int i = 0; i < cs.size(); i++) {
@@ -277,8 +284,6 @@ public class World {
 				c.tick();
 		}
 		weather.tick();
-		
-		tickCount++;
 		
 		for (int i = 0; i < cs.size(); i++) {
 			Chunk c = cs.get(i);

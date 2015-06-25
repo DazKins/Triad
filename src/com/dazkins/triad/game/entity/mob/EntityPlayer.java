@@ -28,6 +28,7 @@ public class EntityPlayer extends Mob {
 		inv.addItem(Item.testChest);
 		inv.addItem(Item.testLegs);
 		inv.addItem(Item.testSword);
+		inv.addItem(Item.axe);
 	}
 	
 	public int getMaxHealth() {
@@ -37,28 +38,36 @@ public class EntityPlayer extends Mob {
 	public void tick() {
 		super.tick();
 		model.addAnimation(new AnimationHumanoidIdle(this), 0, false);
+		
+		float moveModifier = 1.0f;
+		
+		if (input.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+			moveModifier = 10.0f;
+		}
+		
 		if (input.isKeyDown(GLFW.GLFW_KEY_W)) {
 			setFacing(Facing.UP);
-			addYAMod(getMovementSpeed());
+			addYAMod(getMovementSpeed() * moveModifier);
 			model.addAnimation(new AnimationHumanoidWalking(this), 1, false);
 		} else if (input.isKeyDown(GLFW.GLFW_KEY_S)) {
 			setFacing(Facing.DOWN);
-			addYAMod(-getMovementSpeed());
+			addYAMod(-getMovementSpeed() * moveModifier);
 			model.addAnimation(new AnimationHumanoidWalking(this), 1, false);
 		}
 		if (input.isKeyDown(GLFW.GLFW_KEY_A)) {
 			setFacing(Facing.LEFT);
-			addXAMod(-getMovementSpeed());
+			addXAMod(-getMovementSpeed() * moveModifier);
 			model.addAnimation(new AnimationHumanoidWalking(this), 1, false);
 		} else if (input.isKeyDown(GLFW.GLFW_KEY_D)) {
 			setFacing(Facing.RIGHT);
-			addXAMod(getMovementSpeed());
+			addXAMod(getMovementSpeed() * moveModifier);
 			model.addAnimation(new AnimationHumanoidWalking(this), 1, false);
 		}
 		
 		if (input.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
 			if (attemptAttack(getFacingAttackArea(getFacing()))) {
 				model.addAnimation(new AnimationHumanoidSlashing(this, this.getAttackCooldown()), 5, true);
+				tryHarvest();
 			}
 		}
 		
@@ -102,6 +111,6 @@ public class EntityPlayer extends Mob {
 	}
 
 	public float getMovementSpeed() {
-		return 5f;
+		return 1f;
 	}
 }

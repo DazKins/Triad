@@ -12,9 +12,10 @@ import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.EntityButton;
 import com.dazkins.triad.game.entity.EntityDoor;
 import com.dazkins.triad.game.entity.EntityTorch;
-import com.dazkins.triad.game.entity.EntityTree;
+import com.dazkins.triad.game.entity.harvestable.EntityTree;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
+import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.GuiEquipMenu;
 import com.dazkins.triad.game.gui.GuiInventory;
@@ -47,9 +48,6 @@ public class GameStatePlaying implements GameState {
 		world = new World();
 		player = new EntityPlayer(world, 100, 100, input);
 		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
-		
-//		for (int i = 0; i < 20; i++)
-//			world.addEntity(new EntityZombie(world, (float) Math.random() * 200 + 100, (float) Math.random() * 200 + 100));
 		
 		world.addEntity(player);
 		
@@ -87,7 +85,9 @@ public class GameStatePlaying implements GameState {
 			world.addEntity(new EntityTorch(world, player.getX(), player.getY()));
 			DebugMonitor.addMessage("Torch added at: (" + player.getX() + "," + player.getY() + ")");
 		}
-		DebugMonitor.setVariableValue("Tile light: ", world.getTileColor((int) player.getX() / Tile.tileSize, (int) player.getY() / Tile.tileSize) );
+		DebugMonitor.setVariableValue("Tile light", world.getTileColor((int) player.getX() / Tile.tileSize, (int) player.getY() / Tile.tileSize));
+		DebugMonitor.setVariableValue("Player position", player.getX() + " " + player.getY());
+		DebugMonitor.setVariableValue("Player chunk", (int) ((player.getX() / Tile.tileSize) / Chunk.chunkS) + " " + (int) ((player.getY() / Tile.tileSize) / Chunk.chunkS));
 		input.tick();
 	}
 	

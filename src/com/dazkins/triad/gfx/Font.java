@@ -33,7 +33,11 @@ public class Font {
 				GL11.glTranslatef(xp + (x * scale) * 16, yp, z);
 				GL11.glColor4f(r, g, b, a);
 				GL11.glScalef(scale, scale, 1.0f);
-				characterToModel.get(cChar).render();
+				BufferObject model = characterToModel.get(cChar);
+				if (model != null)
+					characterToModel.get(cChar).render();
+				else
+					characterToModel.get('?').render();
 				GL11.glColor3f(1.0f, 1.0f, 1.0f);
 				GL11.glPopMatrix();
 			}

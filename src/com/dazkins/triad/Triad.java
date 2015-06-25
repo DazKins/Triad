@@ -24,7 +24,7 @@ import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 public class Triad implements Runnable {
 	private boolean running;
 	private final String title = "Triad Pre-Alpha";
-	public Window win = new Window(1280, 720);
+	public Window win;
 
 	private GameState currentState;
 	
@@ -41,6 +41,9 @@ public class Triad implements Runnable {
 	public Triad() {
 		SoundManager.registerSound("/audio/music/triad_theme.wav", "theme");
 //		SoundManager.getAudio("theme").play();
+		
+//		win = new Window(1920, 1080, true);
+		win = new Window(1280, 720, false);
 
 		Sys.touch();
 		
@@ -103,6 +106,7 @@ public class Triad implements Runnable {
 		double delta = 0;
 
 		mainLoop : while (running) {
+			DebugMonitor.enable();
 			long now = System.nanoTime();
 			delta += (now - lastTime) / nsPerTick;
 			lastTime = now;

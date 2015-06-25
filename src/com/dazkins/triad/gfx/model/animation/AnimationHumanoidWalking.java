@@ -14,7 +14,7 @@ public class AnimationHumanoidWalking extends Animation {
 	}
 	
 	public void firstFrameInit(Entity e) {
-		animSpeed = ((Mob) e).getMovementSpeed() / 2.0f;
+		animSpeed = ((Mob) e).getMovementSpeed() / 4.0f;
 	}
 	
 	public void updateState(Entity e) {

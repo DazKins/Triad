@@ -5,6 +5,7 @@ import java.util.Comparator;
 
 import org.lwjgl.opengl.GL11;
 
+import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;

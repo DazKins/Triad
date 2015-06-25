@@ -12,10 +12,11 @@ public class TimeCycle {
 	private int curTime;
 	private World world;
 	
-	private Color dayLight = new Color(150, 150, 150);
-	private Color nightLight = new Color(40, 40, 40);
+	private Color dayLight = new Color(210, 210, 210);
+	private Color nightLight = new Color(20, 20, 20);
 	
 	public TimeCycle(World w) {
+		curTime = 20000;
 		this.world = w;
 	}
 	
@@ -35,7 +36,7 @@ public class TimeCycle {
 				
 		DebugMonitor.setVariableValue("Time", getTime() + " (" + getRelTime() + ")" +  " (" + getDayOrNight() + ")");
 		
-		curTime+=40;
+		curTime++;
 	}
 	
 	public int getTime() {

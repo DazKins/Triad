@@ -38,26 +38,16 @@ public class EntityItemStack extends Entity {
 		yBounce = (float) (Math.sin((float)lifeTicks / 10.0f) * 4.0f) + 6;
 	}
 
-	public void render() {
-		//Shadow
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		
-		float z = Tile.yPosToDepth(y);
-		
-		GL11.glPushMatrix();
-			GL11.glTranslatef(x, y, z);
-			BufferObject.shadow.render();
-		GL11.glPopMatrix();
-		
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+	public void render(Camera cam) {
+		renderShadow(cam, x - 2, y, 34, 5);
 		
 		int xx = (int) x >> 5;
 		int yy = (int) y >> 5;
 		
 		Color c = world.getTileColor(xx, yy);
 		
-		GL11.glColor3f(c.getR(), c.getG(), c.getB());
-		is.getItemType().renderIcon(x, y + yBounce, Tile.yPosToDepth(y) + 0.001f, 1);
+		GL11.glColor3f(c.getDR(), c.getDG(), c.getDB());
+		is.getItemType().renderIcon(x, y + yBounce, Tile.yPosToDepthRelativeToCamera(cam, y) + 0.001f, 1);
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 	}
 	
@@ -76,6 +66,6 @@ public class EntityItemStack extends Entity {
 	}
 	
 	public AABB getAABB() {
-		return new AABB(x, y, x + 32, y + 32 + yBounce);
+		return new AABB(x, y, x + 32, y + 5 + yBounce);
 	}
 }

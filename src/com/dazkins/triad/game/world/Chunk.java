@@ -6,7 +6,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.EntityFlower;
-import com.dazkins.triad.game.entity.EntityTree;
+import com.dazkins.triad.game.entity.harvestable.EntityTree;
+import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Color;
@@ -40,6 +41,7 @@ public class Chunk implements Loadable {
 	private BufferObject tilePlane;
 	
 	private ArrayList<Entity>[] entitiesInTiles;
+	private int entityCount;
 
 	public Chunk(World w, int xp, int yp) {
 		this.chunkX = xp;
@@ -76,6 +78,8 @@ public class Chunk implements Loadable {
 			System.err.println("OHNOES!!");
 			return;
 		}
+		
+		entityCount++;
 		
 		entitiesInTiles[world.convertToChunkX(xx) + world.convertToChunkY(yy) * chunkS].add(e);
 	}
@@ -193,6 +197,15 @@ public class Chunk implements Loadable {
 	}
 
 	public void tick() {
+		for (int x = 0; x < chunkS; x++) {
+			for (int y = 0; y < chunkS; y++) {
+				if (getTileColor(x, y).getBrightness() < 125 && Math.random() * 20000000.0f < 1) {
+					if (entityCount < 1) {
+						world.addEntity(new EntityZombie(world, (0 + rChunkX) * Tile.tileSize, ((0 + rChunkY) * Tile.tileSize)));
+					}
+				}
+			}
+		}
 		for (int i = 0; i < chunkSS; i++) {
 			ArrayList<Entity> es = entitiesInTiles[i];
 			for (int u = 0; u < es.size(); u++) {
@@ -200,6 +213,7 @@ public class Chunk implements Loadable {
 				
 				if (e.needsToBeRemoved()) {
 					es.remove(e);
+					entityCount--;
 					continue;
 				}
 				
@@ -215,6 +229,7 @@ public class Chunk implements Loadable {
 				
 				if (x0 != x1 || y0 != y1) {
 					es.remove(e);
+					entityCount--;
 					world.addEntity(e);
 					u--;
 				}

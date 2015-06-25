@@ -66,6 +66,10 @@ public class Color {
 		return new Color(r, g, b);
 	}
 	
+	public int getBrightness() {
+		return (int) (getR() + getG() + getB() / 3.0f);
+	}
+	
 	public void clip(int c) {
 		if (getR() < c)
 			setR(c);
