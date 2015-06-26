@@ -15,6 +15,10 @@ public class ModelSingleQuadTextureEntity extends Model {
 		super(i);
 		addQuad(new Quad(-tw, 0, tw * 2, th * 2, tx, ty, tw, th));
 	}
+	
+	public Quad getQuad() {
+		return quads.get(0);
+	}
 
 	public void render(Camera cam, Entity e) {
 		setOffset(e.getX(), e.getY());

@@ -215,7 +215,7 @@ public abstract class Entity {
 	
 	protected void renderShadow(Camera c, float x, float y, float w, float h) {
 		GL11.glPushMatrix();
-		GL11.glTranslatef(x, y, Tile.yPosToDepthRelativeToCamera(c, this.y) - 0.5f);
+		GL11.glTranslatef(x, y, Tile.yPosToDepthRelativeToCamera(c, this.y) - 0.005f);
 		GL11.glScalef(w / 32.0f, h / 32.0f, 1.0f);
 		BufferObject.shadow.render();
 		GL11.glPopMatrix();
