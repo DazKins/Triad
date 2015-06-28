@@ -1,5 +1,6 @@
 package com.dazkins.triad.game.entity.harvestable;
 
+import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.model.Model;
@@ -15,6 +16,10 @@ public class EntityTree extends EntityHarvestable {
 	public void render(Camera cam) {
 		renderShadow(cam, x - 15, y - 5, 30, 10);
 		super.render(cam);
+	}
+	
+	public void dropLoot() {
+		Item.dropItemStack(world, x, y, Item.log, (int) (Math.random() * 3));
 	}
 
 	public void tick() {

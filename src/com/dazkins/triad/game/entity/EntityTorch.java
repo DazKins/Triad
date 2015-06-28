@@ -20,11 +20,11 @@ public class EntityTorch extends Entity implements LightEmitter {
 	}
 	
 	public int getG() {
-		return 180;
+		return 150;
 	}
 	
 	public int getB() {
-		return 180;
+		return 150;
 	}
 	
 	public void render(Camera cam) {

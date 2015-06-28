@@ -5,15 +5,8 @@ import com.dazkins.triad.gfx.model.ModelTree;
 import com.dazkins.triad.gfx.model.Quad;
 
 public class AnimationTreeShake extends Animation {
-	private float sX, sY;
-	
 	public AnimationTreeShake(Entity e) {
 		super(e);
-	}
-
-	public void firstFrameInit(Entity e) {
-		sX = e.getX();
-		sY = e.getY();
 	}
 
 	public void updateState(Entity e) {

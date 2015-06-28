@@ -13,6 +13,10 @@ public class ItemStack {
 		return size;
 	}
 	
+	public void addToQuantity(int a) {
+		size += a;
+	}
+	
 	public void setSize(int s) {
 		size = s;
 	}

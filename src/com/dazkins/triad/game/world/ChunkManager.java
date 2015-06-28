@@ -15,7 +15,7 @@ public class ChunkManager {
 	
 	private int chunkLoadCount;
 	
-	private int chunkLoadCuttoff = 10000;
+	private int chunkLoadCuttoff = 100;
 	
 	public ChunkManager(World w) {
 		loadedChunkI = new ArrayList<Integer>();

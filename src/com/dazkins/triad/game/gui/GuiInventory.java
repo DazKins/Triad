@@ -118,18 +118,20 @@ public class GuiInventory extends Gui {
 				if (i != null) {
 					i.getItemType().renderIcon(windowPosX +  x * (64 + gridSpacingX) + offsetX, windowPosY +  y * (64 + gridSpacingY) + offsetY, 0.2f, 2);
 					if (i.getSize() > 1)
-						Font.drawString(i.getSize() + "", 45 + windowPosX +  x * (64 + gridSpacingX) + offsetX, windowPosY +  y * (64 + gridSpacingY) + offsetY + 3, 1.0f, 1.0f, 1.0f, 1.0f, 5, 1);
+						Font.drawString(i.getSize() + "", windowPosX +  x * (64 + gridSpacingX) + offsetX, windowPosY +  y * (64 + gridSpacingY) + offsetY + 3, 1.0f, 1.0f, 1.0f, 1.0f, 5, 1);
 				}
 			}
 		}
 		if (hoveredItem != null) {
 			hoveredItem.getItemType().renderIcon(previewBoxX + previewBoxW / 4, previewBoxY + 10, 3, 8);
 			Font.drawString(hoveredItem.getItemType().getName(), previewBoxX, previewBoxY - 50, 0.7f, 0.0f, 0.0f, 1.0f, 4, 2);
+			if (hoveredItem.getSize() > 1)
+				Font.drawString("Count: " + hoveredItem.getSize(), previewBoxX, previewBoxY - 100, 1.0f, 1.0f, 1.0f, 1.0f, 4, 1);
 		}
 		if (selectedItem != null) {
 			selectedItem.getItemType().renderIcon(input.mouseX - 32, input.mouseY - 32, 1, 2);
 			if (selectedItem.getSize() > 1)
-				Font.drawString(selectedItem.getSize() + "", 45 + input.mouseX - 32, input.mouseY - 32 + 3, 1.0f, 1.0f, 1.0f, 1.0f, 20, 1);
+				Font.drawString(selectedItem.getSize() + "", input.mouseX - 32, input.mouseY - 32 + 3, 1.0f, 1.0f, 1.0f, 1.0f, 20, 1);
 		}
 	}
 

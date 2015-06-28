@@ -116,9 +116,9 @@ public abstract class Mob extends Entity {
 			if (i instanceof ItemHarvestTool) {
 				ItemHarvestTool h = (ItemHarvestTool) i;
 				d = h.getHarvestDamage();
+				world.sendHarvestCommand(b, this, d);
 			}
 		}
-		world.sendHarvestCommand(b, this, d);
 	}
 	
 	protected boolean attemptAttack(AABB a) {
@@ -259,8 +259,8 @@ public abstract class Mob extends Entity {
 	public void renderToPlayerGui(Camera c) {
 		float trans = 0.5f;
 		healthBar.updateStatus((float) getHealth() / (float) getMaxHealth());
-		healthBar.render(x - (64 / c.getZoom()), y + 50, Tile.yPosToDepth(y) + 500, 1 / c.getZoom(), trans);
-		Font.drawString(name, x - ((8 / 1.5f) * 1/ c.getZoom()) * name.length(), y + 50 + (20 / (c.getZoom())), 1.0f, 1.0f, 1.0f, trans, Tile.yPosToDepth(y) + 500, (1 / c.getZoom()) / 1.5f);
+		healthBar.render(x - (64 / c.getZoom()), y + 50, Tile.yPosToDepthRelativeToCamera(c, y) + 10, 1 / c.getZoom(), trans);
+		Font.drawString(name, x - ((8 / 1.5f) * 1/ c.getZoom()) * name.length(), y + 50 + (20 / (c.getZoom())), 1.0f, 1.0f, 1.0f, trans, Tile.yPosToDepthRelativeToCamera(c, y) + 10, (1 / c.getZoom()) / 1.5f);
 	}
 	
 	public Inventory getInventory() {

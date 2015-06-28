@@ -167,7 +167,7 @@ public class ModelHumanoid extends Model {
 			Quad q0 = null;
 			if (!item.hasEquipQuad(f)) {
 				q0 = new Quad(-27, -30, 64, 64, (f + 1) * 32, 0, 32, 32);
-				q0.setRenderLayer(-0.001f);
+				q0.setRenderLayer(-0.1f);
 				q0.init(item.getImage());
 				q0.generate();
 				item.assignEquipQuad(q0, f);
@@ -185,7 +185,7 @@ public class ModelHumanoid extends Model {
 			Quad q0 = null;
 			if (!item.hasEquipQuad(f)) {
 				q0 = new Quad(-24, -20, 64, 64, (f + 1) * 32, 0, 32, 32);
-				q0.setRenderLayer(0.001f);
+				q0.setRenderLayer(0.1f);
 				q0.init(item.getImage());
 				q0.generate();
 				item.assignEquipQuad(q0, f);
@@ -203,7 +203,7 @@ public class ModelHumanoid extends Model {
 			Quad q0 = null;
 			if (!item.hasEquipQuad(f)) {
 				q0 = new Quad(-24, -20, 64, 64, (f + 1) * 32, 0, 32, 32);
-				q0.setRenderLayer(0.001f);
+				q0.setRenderLayer(0.1f);
 				q0.init(item.getImage());
 				q0.generate();
 				item.assignEquipQuad(q0, f);
@@ -214,7 +214,7 @@ public class ModelHumanoid extends Model {
 			Quad q1 = null;
 			if (!item.hasEquipQuad(f + 4)) {
 				q1 = new Quad(-24, -20, 64, 64, (f + 1) * 32, 32, 32, 32);
-				q1.setRenderLayer(0.001f);
+				q1.setRenderLayer(0.1f);
 				q1.init(item.getImage());
 				q1.generate();
 				item.assignEquipQuad(q1, f + 4);
@@ -232,7 +232,7 @@ public class ModelHumanoid extends Model {
 			Quad q0 = null;
 			if (!item.hasEquipQuad(f)) {
 				q0 = new Quad(-24, -20, 64, 64, (f + 1) * 32, 0, 32, 32);
-				q0.setRenderLayer(0.001f);
+				q0.setRenderLayer(0.1f);
 				q0.init(item.getImage());
 				q0.generate();
 				item.assignEquipQuad(q0, f);
@@ -243,7 +243,7 @@ public class ModelHumanoid extends Model {
 			Quad q1 = null;
 			if (!item.hasEquipQuad(f + 4)) {
 				q1 = new Quad(-24, -20, 64, 64, (f + 1) * 32, 32, 32, 32);
-				q1.setRenderLayer(0.001f);
+				q1.setRenderLayer(0.1f);
 				q1.init(item.getImage());
 				q1.generate();
 				item.assignEquipQuad(q1, f + 4);

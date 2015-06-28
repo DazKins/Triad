@@ -18,6 +18,6 @@ public class ItemTestSword extends ItemWeapon {
 	}
 	
 	public int getAttackRange() {
-		return 50;
+		return 100;
 	}
 }

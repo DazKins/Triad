@@ -8,15 +8,15 @@ public class ItemAxe extends ItemHarvestTool {
 	}
 	
 	public int getDamage() {
-		return 5;
+		return 2;
 	}
 	
 	public int getKnockback() {
-		return 10;
+		return 7;
 	}
 	
 	public int getAttackCooldown() {
-		return 50;
+		return 23;
 	}
 	
 	public int getAttackRange() {

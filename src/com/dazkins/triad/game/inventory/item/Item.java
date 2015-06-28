@@ -26,6 +26,7 @@ public class Item {
 	public static ItemTestLegs testLegs = new ItemTestLegs();
 	public static ItemTestSword testSword = new ItemTestSword();
 	public static ItemAxe axe = new ItemAxe();
+	public static ItemLog log = new ItemLog();
 	
 	public Item(String name, boolean s) {
 		this.name = name;

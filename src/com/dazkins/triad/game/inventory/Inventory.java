@@ -40,10 +40,21 @@ public class Inventory {
 		if (is != null) {
 			if (is.getItemType() != null) {
 				for (int i = 0; i < items.length; i++) {
+					ItemStack itemS = items[i];
+					if (itemS != null) {
+						if (itemS.getItemType() == is.getItemType()) {
+							if (is.getItemType().isStackable()) {
+								itemS.addToQuantity(is.getSize());
+								return true;
+							}
+						}
+					}
+				}
+				for (int i = 0; i < items.length; i++) {
 					if (items[i] == null) {
 						items[i] = is;
 						return true;
-					}
+					} 
 				}
 				return false;
 			} else {
