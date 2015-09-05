@@ -105,7 +105,6 @@ public class Tile {
 		float txmax = (x0 * 16.0f + 16) / i.getWidth() - tOffset;
 		float tymax = (ty * 16.0f + 16) / i.getHeight() - tOffset;
 		
-		bo.bindImage(i);
 		bo.setDepth(Tile.yPosToDepth(MathHelper.betterMod(y, Chunk.chunkS * Tile.tileSize)) - 1.0f);
 		bo.setColor(c0);
 		bo.setUV(txmax, tymin);

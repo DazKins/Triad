@@ -41,9 +41,9 @@ public class Window {
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL11.GL_TRUE);
  
         if (fullscreen)
-        	winRef =  GLFW.glfwCreateWindow(w, h, "Triad", GLFW.glfwGetPrimaryMonitor(), MemoryUtil.NULL);
+        	winRef = GLFW.glfwCreateWindow(w, h, "Triad", GLFW.glfwGetPrimaryMonitor(), MemoryUtil.NULL);
         else
-        	winRef =  GLFW.glfwCreateWindow(w, h, "Triad", MemoryUtil.NULL, MemoryUtil.NULL);
+        	winRef = GLFW.glfwCreateWindow(w, h, "Triad", MemoryUtil.NULL, MemoryUtil.NULL);
         
         if (winRef == MemoryUtil.NULL)
             throw new RuntimeException("Failed to create the GLFW window");
@@ -76,13 +76,17 @@ public class Window {
 	}
 
 	public void setW(int w) {
-		this.w = w;
-		resized = true;
+		if (w != this.w) {
+			this.w = w;
+			resized = true;
+		}
 	}
 
 	public void setH(int h) {
-		this.h = h;
-		resized = true;
+		if (h != this.h) {
+			this.h = h;
+			resized = true;
+		}
 	}
 	
 	public boolean wasResized() {
@@ -95,10 +99,18 @@ public class Window {
 	
 	public void tickState() {
 		resized = false;
-		IntBuffer width = BufferUtils.createIntBuffer(1);
-		IntBuffer height = BufferUtils.createIntBuffer(1);
-		GLFW.glfwGetWindowSize(winRef, width, height);
-		setH(height.get(0));
-		setW(width.get(0));
+		IntBuffer widthB = BufferUtils.createIntBuffer(1);
+		IntBuffer heightB = BufferUtils.createIntBuffer(1);
+		GLFW.glfwGetWindowSize(winRef, widthB, heightB);
+		int width = widthB.get(0);
+		int height = heightB.get(0);
+		if (w !=  width) {
+			resized = true;
+			w = width;
+		}
+		if (h !=  height) {
+			resized = true;
+			h = height;
+		}
 	}
 }

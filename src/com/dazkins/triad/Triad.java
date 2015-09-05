@@ -113,13 +113,13 @@ public class Triad implements Runnable {
 			while (delta >= 1) {
 				ticks++;
 				tick();
+				checkWindow();
 				if(running == false)
 					break mainLoop;
 				delta -= 1;
 			}
 			frames++;
 			render();
-			checkWindow();
 
 			if (System.currentTimeMillis() - lastTimer > 1000) {
 				lastTimer += 1000;
@@ -180,8 +180,6 @@ public class Triad implements Runnable {
 	}
 
 	private void resyncOpenGL() {
-		win.setW(win.getW());
-		win.setH(win.getH());
 		GL11.glLoadIdentity();
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glOrtho(0, win.getW(), 0, win.getH(), zMin, zMax);
@@ -191,12 +189,12 @@ public class Triad implements Runnable {
 	private void tick() {
 		input.tick();
 		
-		win.tickState();
-		
 		currentState.tick();
 		
 		if(win.wasCloseRequested()) {
 			stop();
 		}
+		
+		win.tickState();
 	}
 }
