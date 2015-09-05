@@ -1,25 +1,17 @@
 package com.dazkins.triad.game;
 
-import java.util.ArrayList;
-
-import jdk.nashorn.internal.runtime.logging.DebugLogger;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.Triad;
-import com.dazkins.triad.game.entity.Activeatable;
-import com.dazkins.triad.game.entity.EntityButton;
-import com.dazkins.triad.game.entity.EntityDoor;
+import com.dazkins.triad.game.entity.EntityChest;
 import com.dazkins.triad.game.entity.EntityTorch;
-import com.dazkins.triad.game.entity.harvestable.EntityTree;
-import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
-import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.game.gui.Gui;
+import com.dazkins.triad.game.gui.GuiChest;
 import com.dazkins.triad.game.gui.GuiEquipMenu;
-import com.dazkins.triad.game.gui.GuiPlayerInventory;
 import com.dazkins.triad.game.gui.GuiPlayer;
+import com.dazkins.triad.game.gui.GuiPlayerInventory;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -53,6 +45,8 @@ public class GameStatePlaying implements GameState {
 		
 		world.assignCamera(cam);
 		world.setWeather(new WeatherRain(10));
+		
+		world.addEntity(new EntityChest(world, 0, 0));
 	}
 	
 	public void tick() {
@@ -62,7 +56,7 @@ public class GameStatePlaying implements GameState {
 			else
 				changeGui(new GuiPlayerInventory(triad, input, player));
 		}
-		if (input.isKeyJustDown(GLFW.GLFW_KEY_E)) {
+		if (input.isKeyJustDown(GLFW.GLFW_KEY_O)) {
 			if (currentlyDisplayedGui instanceof GuiEquipMenu)
 				changeGui(new GuiPlayer(triad, input, world, player));
 			else
@@ -71,6 +65,14 @@ public class GameStatePlaying implements GameState {
 		if (input.isKeyJustDown(GLFW.GLFW_KEY_ESCAPE)) {
 			changeGui(new GuiPlayer(triad, input, world, player));
 		}
+		
+		if (!(currentlyDisplayedGui instanceof GuiChest)) {
+			if (player.getInteractingObject() != null && player.getInteractingObject() instanceof EntityChest) {
+				EntityChest chest = (EntityChest) player.getInteractingObject();
+				changeGui(new GuiChest(triad, input, player, chest));
+			}
+		}
+		
 		world.tick();
 		cam.tick();
 		cam.lockCameraToEntity(player);
@@ -81,7 +83,7 @@ public class GameStatePlaying implements GameState {
 			System.err.println("Tile position: " + mx + ", " + my);
 			System.err.println(world.getTileColor(mx, my));
 		}
-		if (input.isKeyJustDown(GLFW.GLFW_KEY_Q)) {
+		if (input.isKeyJustDown(GLFW.GLFW_KEY_G)) {
 			world.addEntity(new EntityTorch(world, player.getX(), player.getY()));
 			DebugMonitor.addMessage("Torch added at: (" + player.getX() + "," + player.getY() + ")");
 		}

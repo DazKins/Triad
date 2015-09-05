@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.entity.harvestable.EntityHarvestable;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.entity.particle.Particle;
@@ -192,6 +193,16 @@ public class World {
 
 	public void assignCamera(Camera c) {
 		this.cam = c;
+	}
+	
+	public ArrayList<Interactable> getInteractablesInAABB(AABB b) {
+		ArrayList<Interactable> rValue = new ArrayList<Interactable>();
+		ArrayList<Entity> ents = getEntitiesInAABB(b);
+		for (Entity e : ents) {
+			if (e instanceof Interactable)
+				rValue.add((Interactable) e);
+		}
+		return rValue;
 	}
 	
 	public ArrayList<Activeatable> getActivatablesInAABB(AABB b) {

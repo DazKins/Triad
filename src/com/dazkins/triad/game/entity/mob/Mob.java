@@ -266,6 +266,16 @@ public abstract class Mob extends Entity {
 	public Inventory getInventory() {
 		return inv;
 	}
+	
+	protected AABB[] getInteractAreas() {
+		AABB[] r = new AABB[4];
+		int ir = 40;
+		r[Facing.DOWN] = new AABB(x - 20, y - ir + 5, x + 20, y + 5);
+		r[Facing.UP] = new AABB(x - 20, y + 5, x + 20, y + 5 + ir);
+		r[Facing.LEFT] = new AABB(x - ir, y - 10, x, y + 20);
+		r[Facing.RIGHT] = new AABB(x, y - 10, x + ir, y + 20);
+		return r;
+	}
 
 	protected AABB[] getAttackAreas() {
 		AABB[] r = new AABB[4];

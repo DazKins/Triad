@@ -6,9 +6,11 @@ import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.Facing;
+import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.gfx.model.animation.AnimationHumanoidIdle;
@@ -19,6 +21,8 @@ import com.dazkins.triad.math.AABB;
 
 public class EntityPlayer extends Mob {
 	private InputHandler input;
+	
+	private Interactable interactingObject;
 	
 	public EntityPlayer(World w, float x, float y, InputHandler input) {
 		super(w, x, y, "player", 1000);
@@ -33,6 +37,14 @@ public class EntityPlayer extends Mob {
 	
 	public int getMaxHealth() {
 		return 1000;
+	}
+	
+	public Interactable getInteractingObject() {
+		return interactingObject;
+	}
+	
+	public void setInteractingObject(Interactable i) {
+		interactingObject = i;
 	}
 
 	public void tick() {
@@ -71,7 +83,14 @@ public class EntityPlayer extends Mob {
 			}
 		}
 		
-		if (input.isKeyJustDown(GLFW.GLFW_KEY_Z)) {
+		if (input.isKeyJustDown(GLFW.GLFW_KEY_Q)) {
+			ArrayList<Interactable> is = world.getInteractablesInAABB(getInteractAreas()[getFacing()]);
+			for (Interactable i : is) {
+				i.onInteract(this);
+			}
+		}
+		
+		if (input.isKeyJustDown(GLFW.GLFW_KEY_E)) {
 			ArrayList<Activeatable> as = world.getActivatablesInAABB(getAABB());
 			for (Activeatable a : as) {
 				a.onActivate(this);
@@ -112,5 +131,10 @@ public class EntityPlayer extends Mob {
 
 	public float getMovementSpeed() {
 		return 1f;
+	}
+	
+	public void render(Camera cam) {
+		getInteractAreas()[getFacing()].renderBounds(2.0f);
+		super.render(cam);
 	}
 }

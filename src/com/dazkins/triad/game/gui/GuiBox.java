@@ -4,8 +4,8 @@ import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
 
 public class GuiBox {
-	private int width, height;
-	private int x, y;
+	private float width, height;
+	private float x, y;
 	
 	private int txOff;
 	
@@ -13,7 +13,7 @@ public class GuiBox {
 	
 	private BufferObject bo;
 	
-	public GuiBox(int x, int y, int width, int height, int layer, boolean simple) {
+	public GuiBox(float x, float y, float width, float height, int layer, boolean simple) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
