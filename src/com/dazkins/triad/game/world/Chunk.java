@@ -155,7 +155,8 @@ public class Chunk implements Loadable {
 	public void generateVBO() {
 		if (tilePlane != null)
 			tilePlane.deleteBuffer();
-		tilePlane = new BufferObject(16 * 16 * 4 * 8 * 2 * 2);
+		else 
+			tilePlane = new BufferObject(16 * 16 * 4 * 8 * 2 * 2);
 		tilePlane.start();
 		tilePlane.bindImage(Image.getImageFromName("spriteSheet"));
 		for (int x = 0; x < chunkS; x++) {
@@ -259,7 +260,6 @@ public class Chunk implements Loadable {
 			} else if (c.getB() > b) {
 				c.setB(b);
 			}
-			
 			if (c.getR() < r) {
 				c.setR(r);
 			}
@@ -273,6 +273,19 @@ public class Chunk implements Loadable {
 		
 		if (hasLightChanged()) {
 			vboGenerated = false;
+			ArrayList<Chunk> chunks = new ArrayList<Chunk>();
+			chunks.add(world.chunkm.getChunk(chunkX, chunkY + 1));
+			chunks.add(world.chunkm.getChunk(chunkX, chunkY - 1));
+			chunks.add(world.chunkm.getChunk(chunkX + 1, chunkY));
+			chunks.add(world.chunkm.getChunk(chunkX - 1, chunkY));
+			chunks.add(world.chunkm.getChunk(chunkX + 1, chunkY + 1));
+			chunks.add(world.chunkm.getChunk(chunkX + 1, chunkY - 1));
+			chunks.add(world.chunkm.getChunk(chunkX - 1, chunkY + 1));
+			chunks.add(world.chunkm.getChunk(chunkX - 1, chunkY - 1));
+			for (Chunk c : chunks) {
+				if (c != null)
+					c.vboGenerated = false;
+			}
 		}
 
 		for (int i = 0; i < tileColors.length; i++) {
@@ -337,7 +350,8 @@ public class Chunk implements Loadable {
 	public void render() {
 		GL11.glPushMatrix();
 		GL11.glTranslatef(0, 0, Tile.yPosToDepthRelativeToCamera(world.getCam(), rChunkY * Tile.tileSize));
-		tilePlane.render();
+		if (tilePlane != null)
+			tilePlane.render();
 		GL11.glPopMatrix();
 		
 		for (int i = 0; i < chunkSS; i++) {

@@ -17,6 +17,7 @@ import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.math.NoiseMap;
 import com.dazkins.triad.util.ChunkLoader;
+import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 
 public class World {
 	public ChunkManager chunkm;
@@ -108,6 +109,7 @@ public class World {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 		
 		ArrayList<Chunk> cs = chunkm.getChunksInAABB(cam.getViewportBounds().shiftX0(-Chunk.chunkS * Tile.tileSize).shiftX1(Chunk.chunkS * Tile.tileSize).shiftY0(-Chunk.chunkS * Tile.tileSize).shiftY1(Chunk.chunkS * Tile.tileSize));
+		int regCount = 0;
 		
 		for (Chunk c : cs) {
 			if (!c.isTileMapGenerated()) {
@@ -115,11 +117,15 @@ public class World {
 			} else {
 				if (!c.isVBOGenerated()) {
 					c.generateVBO();
+					regCount++;
 				}
 				if (c.getBounds().intersects(cam.getViewportBounds()))
 					c.render();
 			}
 		}
+		
+		if (regCount != 0)
+			DebugMonitor.setVariableValue("Chunk Loads", regCount);
 		
 		entityRenderQueue.sort(Entity.ySorter);
 		for (Entity e : entityRenderQueue) {
@@ -269,8 +275,6 @@ public class World {
 		if (c != null)
 			chunkm.getChunkWithForceLoad(x / Chunk.chunkS, y / Chunk.chunkS).setTile(t, x % Chunk.chunkS, y % Chunk.chunkS);
 	}
-
-	private ArrayList<Entity> ticked = new ArrayList<Entity>();
 	
 	public void tick() {
 		time.tick();

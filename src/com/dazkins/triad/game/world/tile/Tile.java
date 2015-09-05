@@ -9,7 +9,6 @@ import javax.swing.ImageIcon;
 import org.lwjgl.system.linux.SysIOctl;
 
 import com.dazkins.triad.Triad;
-import com.dazkins.triad.file.MultiLineDatabaseFile;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.BufferObject;

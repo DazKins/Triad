@@ -19,7 +19,7 @@ public class EntityTree extends EntityHarvestable {
 	}
 	
 	public void dropLoot() {
-		Item.dropItemStack(world, x, y, Item.log, (int) (Math.random() * 3));
+		Item.dropItemStack(world, x, y, Item.log, (int) (Math.random() * 3) + 1);
 	}
 
 	public void tick() {

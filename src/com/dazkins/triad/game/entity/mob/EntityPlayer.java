@@ -23,7 +23,7 @@ public class EntityPlayer extends Mob {
 	public EntityPlayer(World w, float x, float y, InputHandler input) {
 		super(w, x, y, "player", 1000);
 		this.input = input;
-		this.inv = new Inventory(10, 10);
+		this.inv = new Inventory(9, 5);
 		inv.addItem(Item.testHelmet);
 		inv.addItem(Item.testChest);
 		inv.addItem(Item.testLegs);

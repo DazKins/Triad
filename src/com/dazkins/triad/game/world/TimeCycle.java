@@ -16,7 +16,7 @@ public class TimeCycle {
 	private Color nightLight = new Color(20, 20, 20);
 	
 	public TimeCycle(World w) {
-		curTime = 20000;
+		curTime = 0;
 		this.world = w;
 	}
 	

@@ -74,7 +74,7 @@ public class EntityTorch extends Entity implements LightEmitter {
 	}
 	
 	public boolean mayPass(Entity e) {
-		return false;
+		return true;
 	}
 
 	public AABB getAABB() {

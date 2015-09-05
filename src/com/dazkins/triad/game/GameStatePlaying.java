@@ -18,8 +18,8 @@ import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.GuiEquipMenu;
-import com.dazkins.triad.game.gui.GuiInventory;
-import com.dazkins.triad.game.gui.PlayerGui;
+import com.dazkins.triad.game.gui.GuiPlayerInventory;
+import com.dazkins.triad.game.gui.GuiPlayer;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -47,7 +47,7 @@ public class GameStatePlaying implements GameState {
 		cam.lockZoom(0.56f, 500f);
 		world = new World();
 		player = new EntityPlayer(world, 100, 100, input);
-		currentlyDisplayedGui = new PlayerGui(triad, input, world, player);
+		currentlyDisplayedGui = new GuiPlayer(triad, input, world, player);
 		
 		world.addEntity(player);
 		
@@ -57,19 +57,19 @@ public class GameStatePlaying implements GameState {
 	
 	public void tick() {
 		if (input.isKeyJustDown(GLFW.GLFW_KEY_I)) {
-			if (currentlyDisplayedGui instanceof GuiInventory)
-				changeGui(new PlayerGui(triad, input, world, player));
+			if (currentlyDisplayedGui instanceof GuiPlayerInventory)
+				changeGui(new GuiPlayer(triad, input, world, player));
 			else
-				changeGui(new GuiInventory(triad, input, player));
+				changeGui(new GuiPlayerInventory(triad, input, player));
 		}
 		if (input.isKeyJustDown(GLFW.GLFW_KEY_E)) {
 			if (currentlyDisplayedGui instanceof GuiEquipMenu)
-				changeGui(new PlayerGui(triad, input, world, player));
+				changeGui(new GuiPlayer(triad, input, world, player));
 			else
 				changeGui(new GuiEquipMenu(triad, input, player));
 		}
 		if (input.isKeyJustDown(GLFW.GLFW_KEY_ESCAPE)) {
-			changeGui(new PlayerGui(triad, input, world, player));
+			changeGui(new GuiPlayer(triad, input, world, player));
 		}
 		world.tick();
 		cam.tick();
@@ -98,7 +98,7 @@ public class GameStatePlaying implements GameState {
 		world.render();
 		GL11.glPopMatrix();
 		
-		if (!(currentlyDisplayedGui instanceof PlayerGui)) {
+		if (!(currentlyDisplayedGui instanceof GuiPlayer)) {
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			GL11.glBegin(GL11.GL_QUADS);
 				GL11.glColor4f(0.0f, 0.0f, 0.0f, 0.7f);

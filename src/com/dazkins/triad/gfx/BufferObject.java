@@ -92,7 +92,6 @@ public class BufferObject {
 		if (useVBO) {
 			compileVBO();
 			generateVBO();
-			closeVBO();
 		} else {
 			GL11.glEnd();
 			GL11.glEndList();
@@ -108,11 +107,6 @@ public class BufferObject {
 		ID = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dataBuffer, GL15.GL_STATIC_DRAW);
-	}
-
-	private void closeVBO() {
-		rawBuffer = null;
-		dataBuffer = null;
 	}
 
 	public void setRGB(float r, float g, float b) {

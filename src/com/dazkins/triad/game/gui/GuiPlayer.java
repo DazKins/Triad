@@ -15,13 +15,13 @@ import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.input.InputHandler;
 
-public class PlayerGui extends Gui {
+public class GuiPlayer extends Gui {
 	private EntityPlayer player;
 	private World world;
 	
 	private GuiStatusBar statusBar;
 	
-	public PlayerGui(Triad t, InputHandler i, World w, EntityPlayer player) {
+	public GuiPlayer(Triad t, InputHandler i, World w, EntityPlayer player) {
 		super(t, i);
 		world = w;
 		this.player = player;
