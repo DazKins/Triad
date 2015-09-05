@@ -19,7 +19,9 @@ public class Inventory {
 	}
 	
 	public ItemStack getItemStack(int i) {
-		return items[i];
+		if (i >= 0)
+			return items[i];
+		return null;
 	}
 	
 	public void removeItemStack(int i) {

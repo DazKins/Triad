@@ -132,9 +132,4 @@ public class EntityPlayer extends Mob {
 	public float getMovementSpeed() {
 		return 1f;
 	}
-	
-	public void render(Camera cam) {
-		getInteractAreas()[getFacing()].renderBounds(2.0f);
-		super.render(cam);
-	}
 }

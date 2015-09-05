@@ -27,7 +27,7 @@ public class EntityChest extends Entity implements Interactable {
 		return false;
 	}
 	
-	public Inventory getInv() {
+	public Inventory getInventory() {
 		return inv;
 	}
 	

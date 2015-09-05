@@ -1,9 +1,9 @@
-package com.dazkins.triad.game.gui;
+package com.dazkins.triad.game.gui.object;
 
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
 
-public class GuiBox {
+public class GuiObjectBox {
 	private float width, height;
 	private float x, y;
 	
@@ -13,7 +13,7 @@ public class GuiBox {
 	
 	private BufferObject bo;
 	
-	public GuiBox(float x, float y, float width, float height, int layer, boolean simple) {
+	public GuiObjectBox(float x, float y, float width, float height, int layer, boolean simple) {
 		this.x = x;
 		this.y = y;
 		this.width = width;

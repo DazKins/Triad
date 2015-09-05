@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
-import com.dazkins.triad.game.gui.GuiStatusBar;
+import com.dazkins.triad.game.gui.object.GuiObjectStatusBar;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
@@ -26,7 +26,7 @@ public abstract class Mob extends Entity {
 	
 	//I don't really want graphical data stored in Entity classes
 	//This is just a temporary measure
-	protected GuiStatusBar healthBar;
+	protected GuiObjectStatusBar healthBar;
 	
 	private int attackCooldownCounter;
 	
@@ -37,7 +37,7 @@ public abstract class Mob extends Entity {
 		health = h;
 		eInv = new EquipmentInventory();
 		
-		healthBar = new GuiStatusBar(0, 0, 0xFF0000, 128);
+		healthBar = new GuiObjectStatusBar(0, 0, 0xFF0000, 128);
 	}
 
 	public int getMovementState() {

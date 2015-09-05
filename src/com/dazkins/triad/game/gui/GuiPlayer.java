@@ -1,9 +1,6 @@
 package com.dazkins.triad.game.gui;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
@@ -11,6 +8,7 @@ import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.entity.mob.Mob;
+import com.dazkins.triad.game.gui.object.GuiObjectStatusBar;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.input.InputHandler;
@@ -19,13 +17,13 @@ public class GuiPlayer extends Gui {
 	private EntityPlayer player;
 	private World world;
 	
-	private GuiStatusBar statusBar;
+	private GuiObjectStatusBar statusBar;
 	
 	public GuiPlayer(Triad t, InputHandler i, World w, EntityPlayer player) {
 		super(t, i);
 		world = w;
 		this.player = player;
-		statusBar = new GuiStatusBar(0, 0, 0xff0000, 1024);
+		statusBar = new GuiObjectStatusBar(0, 0, 0xff0000, 1024);
 	}
 
 	public void tick() {

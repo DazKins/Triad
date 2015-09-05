@@ -71,6 +71,10 @@ public class GameStatePlaying implements GameState {
 				EntityChest chest = (EntityChest) player.getInteractingObject();
 				changeGui(new GuiChest(triad, input, player, chest));
 			}
+		} else {
+			if (player.getInteractingObject() == null) {
+				changeGui(new GuiPlayer(triad, input, world, player));
+			}
 		}
 		
 		world.tick();

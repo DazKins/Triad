@@ -2,6 +2,7 @@ package com.dazkins.triad.game.gui;
 
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.mob.Mob;
+import com.dazkins.triad.game.gui.object.GuiObjectBox;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.ItemStack;
@@ -9,13 +10,13 @@ import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.input.InputHandler;
 
 public class GuiEquipMenu extends Gui {
-	private GuiBox headSlot;
-	private GuiBox bodySlot;
-	private GuiBox legSlot;
-	private GuiBox weaponSlot;
-	private GuiBox footSlot;
+	private GuiObjectBox headSlot;
+	private GuiObjectBox bodySlot;
+	private GuiObjectBox legSlot;
+	private GuiObjectBox weaponSlot;
+	private GuiObjectBox footSlot;
 	
-	private GuiBox mainBox;
+	private GuiObjectBox mainBox;
 	
 	private int windowWidth = 1200;
 	private int windowHeight = 706;
@@ -99,13 +100,13 @@ public class GuiEquipMenu extends Gui {
 		windowPosX = win.getW() / 2 - windowWidth / 2;
 		windowPosY =  win.getH() / 2 - windowHeight / 2;
 		
-		mainBox = new GuiBox(windowPosX, windowPosY, windowWidth, windowHeight, - 1, false);
+		mainBox = new GuiObjectBox(windowPosX, windowPosY, windowWidth, windowHeight, - 1, false);
 		
-		headSlot = new GuiBox(windowPosX + 200, windowPosY + windowHeight - 200, 128, 128, 0, true);
-		bodySlot = new GuiBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 - gridSpacingY, 128, 128, 0, true);
-		legSlot = new GuiBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 * 2 - gridSpacingY * 2, 128, 128, 0, true);
-		footSlot = new GuiBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 * 3 - gridSpacingY * 3, 128, 128, 0, true);
+		headSlot = new GuiObjectBox(windowPosX + 200, windowPosY + windowHeight - 200, 128, 128, 0, true);
+		bodySlot = new GuiObjectBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 - gridSpacingY, 128, 128, 0, true);
+		legSlot = new GuiObjectBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 * 2 - gridSpacingY * 2, 128, 128, 0, true);
+		footSlot = new GuiObjectBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 * 3 - gridSpacingY * 3, 128, 128, 0, true);
 		
-		weaponSlot = new GuiBox(windowPosX + 200 - 128 - gridSpacingX, windowPosY + windowHeight - 200 - 128 - gridSpacingY, 128, 128, 0, true);
+		weaponSlot = new GuiObjectBox(windowPosX + 200 - 128 - gridSpacingX, windowPosY + windowHeight - 200 - 128 - gridSpacingY, 128, 128, 0, true);
 	}
 }
