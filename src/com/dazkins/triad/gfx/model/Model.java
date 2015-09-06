@@ -52,7 +52,8 @@ public abstract class Model {
 	
 	protected void addQuads(Quad[] q) {
 		for (int i = 0; i < q.length; i++) {
-			addQuad(q[i]);
+			if (q[i] != null)
+				addQuad(q[i]);
 		}
 	}
 	
@@ -82,10 +83,6 @@ public abstract class Model {
 	public void addQuadToRenderQueue(Quad quad) {
 		if (!selectiveRendering) {
 			System.err.println("Warning! Selective rendering is not enabled!");
-		}
-		if (!quads.contains(quad)) {
-			System.err.println("Quad was not added to the model!");
-			System.exit(1);
 		}
 		quadRenders.add(quads.indexOf(quad));
 	}
@@ -127,7 +124,9 @@ public abstract class Model {
 		ArrayList<Quad> quadsToRender = new ArrayList<Quad>();
 		if(selectiveRendering) {
 			for (int i = 0; i < quadRenders.size(); i++) {
-				quadsToRender.add(quads.get(quadRenders.get(i)));
+				int index = quadRenders.get(i);
+				if (index >= 0)
+					quadsToRender.add(quads.get(index));
 			}
 		} else {
 			for (int i = 0; i < quads.size(); i++) {
@@ -177,7 +176,7 @@ public abstract class Model {
 		}
 	}
 	
-	public boolean hasInstanceOfAnim(Class a) {
+	public boolean hasInstanceOfAnim(Class<? extends Animation> a) {
 		for (int i = 0; i < anims.length; i++) {
 			if (anims[i] != null) {
 				if (anims[i].getClass().equals(a))

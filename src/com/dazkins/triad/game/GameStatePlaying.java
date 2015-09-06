@@ -6,6 +6,7 @@ import org.lwjgl.system.glfw.GLFW;
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.EntityChest;
 import com.dazkins.triad.game.entity.EntityTorch;
+import com.dazkins.triad.game.entity.mob.EntityPig;
 import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.GuiChest;
@@ -47,6 +48,7 @@ public class GameStatePlaying implements GameState {
 		world.setWeather(new WeatherRain(10));
 		
 		world.addEntity(new EntityChest(world, 0, 0));
+		world.addEntity(new EntityPig(world, 0, 200, 10));
 	}
 	
 	public void tick() {

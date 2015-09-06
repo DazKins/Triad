@@ -49,7 +49,11 @@ public abstract class Entity {
 	}
 	
 	public boolean mayPass(Entity e) {
-		return true;
+		return false;
+	}
+	
+	public boolean mayBePushedBy(Entity e) {
+		return false;
 	}
 	
 	public boolean needsToBeRemoved() {
@@ -150,14 +154,12 @@ public abstract class Entity {
 		return mag;
 	}
 	
-	public void move(boolean a) {
-		if (!a) {
-			for (Float i : xvm) {
-				this.xa += i;
-			}
-			for (Float i : yvm) {
-				this.ya += i;
-			}
+	public void move() {
+		for (Float i : xvm) {
+			this.xa += i;
+		}
+		for (Float i : yvm) {
+			this.ya += i;
 		}
 		
 		if (this.getAABB() != null) {
@@ -168,16 +170,20 @@ public abstract class Entity {
 			}
 			for (Entity e : world.getEntitiesInAABB(this.getAABB().shifted(xa, 0))) {
 				if (e != this && (!this.mayPass(e) || !e.mayPass(this))) {
-					e.push(xa, 0);
+					if (e.mayBePushedBy(this)) {
+						e.push(xa, 0);
+					} else {
+					}
 					xa = 0;
-					break;
 				}
 			}
 			for (Entity e : world.getEntitiesInAABB(this.getAABB().shifted(0, ya))) {
 				if (e != this && (!this.mayPass(e) || !e.mayPass(this))) {
-					e.push(0, ya);
+					if (e.mayBePushedBy(this)) {
+						e.push(0, ya);
+					} else {
+					}
 					ya = 0;
-					break;
 				}
 			}
 		}

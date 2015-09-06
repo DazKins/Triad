@@ -39,6 +39,26 @@ public abstract class Mob extends Entity {
 		
 		healthBar = new GuiObjectStatusBar(0, 0, 0xFF0000, 128);
 	}
+	
+	protected void moveUp() {
+		setFacing(Facing.UP);
+		addYAMod(getMovementSpeed());
+	}
+	
+	protected void moveDown() {
+		setFacing(Facing.DOWN);
+		addYAMod(-getMovementSpeed());
+	}
+	
+	protected void moveLeft() {
+		setFacing(Facing.LEFT);
+		addXAMod(-getMovementSpeed());
+	}
+	
+	protected void moveRight() {
+		setFacing(Facing.RIGHT);
+		addXAMod(getMovementSpeed());
+	}
 
 	public int getMovementState() {
 		float speedLen = 0.2f;
@@ -205,39 +225,6 @@ public abstract class Mob extends Entity {
 	public void kill() {
 		onDeath();
 		remove();
-	}
-	
-	public void move() {
-		for (Float i : xvm) {
-			this.xa += i;
-		}
-		for (Float i : yvm) {
-			this.ya += i;
-		}
-		
-		AABB aabb = this.getAABB();
-
-		int x0 = ((int) x / Tile.tileSize) - 3;
-		int y0 = ((int) y / Tile.tileSize) - 3;
-		int x1 = ((int) x / Tile.tileSize) + 3;
-		int y1 = ((int) y / Tile.tileSize) + 3;
-
-		for (int x = x0; x < x1; x++) {
-			for (int y = y0; y < y1; y++) {
-				Tile t = world.getTile(x, y);
-				if (t != null && t.isCollidable()) {
-					AABB taabb = world.getTile(x, y).getAABB(world, x, y);
-					if (aabb.shifted(xa, 0).intersects(taabb)) {
-						xa = 0;
-					}
-					if (aabb.shifted(0, ya).intersects(taabb)) {
-						ya = 0;
-					}
-				}
-			}
-		}
-
-		super.move(true);
 	}
 	
 	public boolean mayPass(Entity e) {

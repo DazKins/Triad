@@ -6,6 +6,20 @@ public class AABB {
 	private float x0, y0;
 	private float x1, y1;
 	
+	public float getCX() {
+		return (x1 + x0) / 2.0f;
+	}
+	
+	public float getCY() {
+		return (y1 + y0) / 2.0f;
+	}
+	
+	public float getHalfDiagonal() {
+		float x = x0 - getCX();
+		float y = y0 - getCY();
+		return (float) Math.sqrt(x * x + y * y);
+	}
+	
 	public float getX0() {
 		return x0;
 	}

@@ -23,10 +23,6 @@ public class EntityChest extends Entity implements Interactable {
 		return new AABB(x - 32, y - 3, x + 32, y + 7);
 	}
 	
-	public boolean mayPass(Entity e) {
-		return false;
-	}
-	
 	public Inventory getInventory() {
 		return inv;
 	}
