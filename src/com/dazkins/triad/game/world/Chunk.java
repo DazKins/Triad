@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.EntityFlower;
+import com.dazkins.triad.game.entity.EntitySandGrass;
 import com.dazkins.triad.game.entity.harvestable.EntityTree;
 import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -92,9 +93,16 @@ public class Chunk implements Loadable {
 		for (int x = 0; x < chunkS; x++) {
 			for (int y = 0; y < chunkS; y++) {
 				float s = world.worldNoise.sample(x + chunkX * chunkS, y + chunkY * chunkS);
-				float st = world.treeNoise.sample(x + chunkX * chunkS, y + chunkY * chunkS);
+				float st = world.foliageNoise.sample(x + chunkX * chunkS, y + chunkY * chunkS);
 				if (s < 0) setTile(Tile.water, x, y);
-				else if (s < 0.05f) setTile(Tile.sand, x, y);
+				else if (s < 0.05f) {
+					setTile(Tile.sand, x, y);
+					if (st < 0.14f) {
+						double r = Math.random();
+						if (r < 0.003f)
+							world.addEntity(new EntitySandGrass(world, (x + rChunkX) * Tile.tileSize, ((y + rChunkY) * Tile.tileSize) + (float) (Math.random() * 0.02f - 0.01f)));
+					}
+				}
 				else {
 					setTile(Tile.grass, x, y);
 					if (st < 0.14f) {

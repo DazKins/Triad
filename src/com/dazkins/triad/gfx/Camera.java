@@ -84,10 +84,8 @@ public class Camera {
 	public void tick() {
 		if (input.mWheel != 0) {
 			float zoa = input.mWheel / 25.0f;
-			boolean canChange = ((zoa < 0) && zoom != minZoom) || ((zoa > 0) && zoom != maxZoom);
-			if (canChange) {
-				zoom += zoa;
-			}
+			float zoomRate = 1.2f;
+			zoom *= zoa > 0 ? zoomRate : 1 / zoomRate;
 		}
 		
 		if (input.mouse3JustDown) {

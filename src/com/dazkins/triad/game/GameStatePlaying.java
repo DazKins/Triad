@@ -36,7 +36,7 @@ public class GameStatePlaying implements GameState {
 		win = triad.win;
 		input = new InputHandler(win);
 		cam = new Camera(input, triad.win, 0, 0);
-		cam.lockZoom(0.56f, 500f);
+		cam.lockZoom(0.56f, 8f);
 		world = new World();
 		player = new EntityPlayer(world, 100, 100, input);
 		currentlyDisplayedGui = new GuiPlayer(triad, input, world, player);

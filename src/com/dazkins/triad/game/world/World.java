@@ -45,7 +45,7 @@ public class World {
 	private ArrayList<Entity> tickedEntities;
 	
 	public NoiseMap worldNoise;
-	public NoiseMap treeNoise;
+	public NoiseMap foliageNoise;
 
 	public void setWeather(Weather w) {
 		w.init(this);
@@ -63,7 +63,7 @@ public class World {
 		}
 		
 		worldNoise = new NoiseMap(0.7f, 8, 1/2048.0f);
-		treeNoise = new NoiseMap(0.7f, 8, 1/2048.0f);
+		foliageNoise = new NoiseMap(0.7f, 8, 1/2048.0f);
 		
 		cLoad = new ChunkLoader();
 		

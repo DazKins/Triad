@@ -1,5 +1,10 @@
 package com.dazkins.triad.math;
 
+import java.awt.image.BufferedImage;
+
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+
 public class NoiseMap {
 	private PerlinNoise octs[];
 	
@@ -35,5 +40,31 @@ public class NoiseMap {
 		r /= d;
 		
 		return r;
+	}
+	
+	//DEBUGGING PURPOSES ONLY
+	public void displaySample() {
+		int width = 256;
+		int height = 256;
+		
+		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				float s = sample(x, y) * 2.0f;
+				int col = 0;
+				if (s > 0.3f)
+					col = 0xFF0000;
+				else if (s > 0.05f)
+					col = 0x00FF00;
+				else if (s > -0.05f)
+					col = 0x0000FF;
+				else if (s > -0.3f)
+					col = 0x00FFFF;
+				img.setRGB(x, y, col);
+			}
+		}
+		
+		JOptionPane.showMessageDialog(null, null, "Noise Sample", JOptionPane.YES_NO_OPTION, new ImageIcon(img.getScaledInstance(width * 2, height * 2, BufferedImage.SCALE_AREA_AVERAGING)));
 	}
 }

@@ -30,8 +30,8 @@ public class Triad implements Runnable {
 	
 	private InputHandler input;
 	
-	public static float zMin = -100f;
-	public static float zMax = 100f;
+	public static float zMin = -10f;
+	public static float zMax = 70f;
 	
 	public static void main(String args[]) {
 		Triad triad = new Triad();
