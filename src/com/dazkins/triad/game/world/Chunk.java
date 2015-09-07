@@ -92,27 +92,7 @@ public class Chunk implements Loadable {
 	public void generateTileMap() {
 		for (int x = 0; x < chunkS; x++) {
 			for (int y = 0; y < chunkS; y++) {
-				float s = world.worldNoise.sample(x + chunkX * chunkS, y + chunkY * chunkS);
-				float st = world.foliageNoise.sample(x + chunkX * chunkS, y + chunkY * chunkS);
-				if (s < 0) setTile(Tile.water, x, y);
-				else if (s < 0.05f) {
-					setTile(Tile.sand, x, y);
-					if (st < 0.14f) {
-						double r = Math.random();
-						if (r < 0.003f)
-							world.addEntity(new EntitySandGrass(world, (x + rChunkX) * Tile.tileSize, ((y + rChunkY) * Tile.tileSize) + (float) (Math.random() * 0.02f - 0.01f)));
-					}
-				}
-				else {
-					setTile(Tile.grass, x, y);
-					if (st < 0.14f) {
-						double r = Math.random();
-						if (r < 0.01f)
-							world.addEntity(new EntityTree(world, (x + rChunkX) * Tile.tileSize, ((y + rChunkY) * Tile.tileSize) + (float) (Math.random() * 0.02f - 0.01f)));
-						else if (r < 0.02f)
-							world.addEntity(new EntityFlower(world, (x + rChunkX) * Tile.tileSize, ((y + rChunkY) * Tile.tileSize) + (float) (Math.random() * 0.02f - 0.01f)));
-					}
-				}
+				world.getWorldGenerator().generate(x + rChunkX, y + rChunkY);
 			}
 		}
 		vboGenerated = false;

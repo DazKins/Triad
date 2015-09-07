@@ -37,6 +37,10 @@ public class EntityItemStack extends Entity {
 		
 		yBounce = (float) (Math.sin((float)lifeTicks / 10.0f) * 4.0f) + 6;
 	}
+	
+	public boolean mayPass(Entity e) {
+		return true;
+	}
 
 	public void render(Camera cam) {
 		renderShadow(cam, x - 2, y, 34, 5);

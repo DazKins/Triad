@@ -1,20 +1,15 @@
 package com.dazkins.triad.math;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.util.Random;
-
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-
 public class PerlinNoise {
 	private NoiseRandom rand;
+	
+	private static final float CORRECTION = 1.5822899000102786340980242207541f;
 	
 	public PerlinNoise() {
 		rand = new NoiseRandom();
 	}
 	
-	private int fastfloor(double x) {
+	private int fastFloor(float x) {
 		return x>0 ? (int)x : (int)x-1;
 	}
 	
@@ -23,8 +18,8 @@ public class PerlinNoise {
 	}
 	
 	public float sample(float x, float y) {
-		int gx0 = fastfloor(x);
-		int gy0 = fastfloor(y);
+		int gx0 = fastFloor(x);
+		int gy0 = fastFloor(y);
 		int gx1 = gx0 + 1;
 		int gy1 = gy0 + 1;
 		
@@ -50,11 +45,18 @@ public class PerlinNoise {
 		float b = lerp(sy, w2, w3);
 		float h = lerp(sx, a, b);
 		
-		return h;
+		float v = h * CORRECTION; 
+		
+		if (v < -1.0f)
+			v = -1.0f;
+		if (v > 1.0f)
+			v = 1.0f;
+		
+		return v;
 	}
 	
 	private float weigh(float x) {
-		return 3 * (x * x) - 2 * (x * x * x);
+		return 6 * x * x * x * x * x - 15 * x * x * x * x + 10 * x * x * x;
 	}
 	
 	private float lerp(float w, float a, float b) {

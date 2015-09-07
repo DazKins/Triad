@@ -19,6 +19,7 @@ import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
+import com.dazkins.triad.math.PerlinNoise;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 
 public class Triad implements Runnable {

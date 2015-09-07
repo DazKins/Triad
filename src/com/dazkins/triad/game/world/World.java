@@ -12,11 +12,11 @@ import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.entity.particle.Particle;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.game.world.weather.Weather;
+import com.dazkins.triad.game.world.worldgen.WorldGen;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.MathHelper;
-import com.dazkins.triad.math.NoiseMap;
 import com.dazkins.triad.util.ChunkLoader;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 
@@ -44,13 +44,7 @@ public class World {
 	private ArrayList<Entity> entityLoadQueue;
 	private ArrayList<Entity> tickedEntities;
 	
-	public NoiseMap worldNoise;
-	public NoiseMap foliageNoise;
-
-	public void setWeather(Weather w) {
-		w.init(this);
-		weather = w;
-	}
+	private WorldGen worldGenerator;
 	
 	public World() {
 		ambientLightLevel = new Color(0);
@@ -62,8 +56,7 @@ public class World {
 			entitiesInTiles[i] = new ArrayList<Entity>();
 		}
 		
-		worldNoise = new NoiseMap(0.7f, 8, 1/2048.0f);
-		foliageNoise = new NoiseMap(0.7f, 8, 1/2048.0f);
+		worldGenerator = new WorldGen(this);
 		
 		cLoad = new ChunkLoader();
 		
@@ -72,6 +65,15 @@ public class World {
 		tickedEntities = new ArrayList<Entity>();
 		
 		time = new TimeCycle(this);
+	}
+	
+	public WorldGen getWorldGenerator() {
+		return worldGenerator;
+	}
+
+	public void setWeather(Weather w) {
+		w.init(this);
+		weather = w;
 	}
 
 	public void addEntity(Entity e) {
@@ -282,9 +284,9 @@ public class World {
 	}
 
 	public void setTile(Tile t, int x, int y) {
-		Chunk c = chunkm.getChunkWithForceLoad(x / Chunk.chunkS, y / Chunk.chunkS);
+		Chunk c = getChunkFromWorldTileCoords(x, y);
 		if (c != null)
-			chunkm.getChunkWithForceLoad(x / Chunk.chunkS, y / Chunk.chunkS).setTile(t, x % Chunk.chunkS, y % Chunk.chunkS);
+			c.setTile(t, convertToChunkX(x), convertToChunkY(y));
 	}
 	
 	public void tick() {

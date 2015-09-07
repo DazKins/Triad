@@ -58,7 +58,6 @@ public class EntityPig extends Mob {
 			dir = (float) (Math.random() * Math.PI * 2);
 		}
 
-		moving = false;
 		if (moving) {
 			addXAMod((float) Math.cos(dir) * getMovementSpeed()); 
 			addYAMod((float) Math.sin(dir) * getMovementSpeed()); 

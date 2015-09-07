@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.game.entity.Activeatable;
+import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.inventory.Inventory;
@@ -103,6 +104,10 @@ public class EntityPlayer extends Mob {
 		
 		xa *= 0.75;
 		ya *= 0.75;
+	}
+	
+	public boolean mayPass(Entity e) {
+		return true;
 	}
 	
 	protected int getBaseDamage() {
