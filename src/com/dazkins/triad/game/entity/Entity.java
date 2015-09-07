@@ -32,7 +32,7 @@ public abstract class Entity {
 
 	public Entity(World w, float x, float y, String s) {
 		this.x = x;
-		this.y = y;
+		this.y = y - (float) Math.random() / 100.0f;
 		this.world = w;
 		this.name = s;
 		xvm = new ArrayList<Float>();

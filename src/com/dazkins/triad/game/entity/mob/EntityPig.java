@@ -47,16 +47,20 @@ public class EntityPig extends Mob {
 	
 	public void tick() {
 		super.tick();
-		int r = (int) (Math.random() * (moving ? 250 : 1000));
+		int r = (int) (Math.random() * (moving ? 600 : 1000));
 		if (r == 1) {
 			moving = !moving;
 			dir = (float) (Math.random() * Math.PI * 2);
 		}
 
 		if (moving) {
-			addXAMod((float) Math.cos(dir) * getMovementSpeed()); 
-			addYAMod((float) Math.sin(dir) * getMovementSpeed()); 
+			float xa = (float) Math.cos(dir) * getMovementSpeed();
+			float ya = (float) Math.sin(dir) * getMovementSpeed();
 			
+			addXAMod(xa); 
+			addYAMod(ya); 
+			
+			setFacingBasedOnVelocities(xa, ya);
 			model.addAnimation(new AnimationQuadrupedWalking(this), 1, false);
 		}
 		

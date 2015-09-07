@@ -31,13 +31,22 @@ public abstract class Mob extends Entity {
 	private int attackCooldownCounter;
 	
 	protected Mob target;
+	
+	private boolean healthBarGenerated;
 
 	public Mob(World w, float x, float y, String s, int h) {
 		super(w, x, y, s);
 		health = h;
 		eInv = new EquipmentInventory();
-		
-		healthBar = new GuiObjectStatusBar(0, 0, 0xFF0000, 128);
+	}
+	
+	public void generateHealthBar() {
+		try {
+			healthBar = new GuiObjectStatusBar(0, 0, 0xFF0000, 128);
+			healthBarGenerated = true;
+		} catch (Exception e) {
+			healthBarGenerated = false;
+		}
 	}
 	
 	protected void moveUp() {
@@ -176,6 +185,9 @@ public abstract class Mob extends Entity {
 	public void tick() {
 		super.tick();
 		
+		if (!healthBarGenerated)
+			generateHealthBar();
+		
 		ArrayList<Entity> ents = new ArrayList<Entity>();
 		
 		AABB eb = this.getEnemyScanArea();
@@ -245,9 +257,11 @@ public abstract class Mob extends Entity {
 	
 	public void renderToPlayerGui(Camera c) {
 		float trans = 0.5f;
-		healthBar.updateStatus((float) getHealth() / (float) getMaxHealth());
-		healthBar.render(x - (64 / c.getZoom()), y + 50, Tile.yPosToDepthRelativeToCamera(c, y) + 10, 1 / c.getZoom(), trans);
-		Font.drawString(name, x - ((8 / 1.5f) * 1/ c.getZoom()) * name.length(), y + 50 + (20 / (c.getZoom())), 1.0f, 1.0f, 1.0f, trans, Tile.yPosToDepthRelativeToCamera(c, y) + 10, (1 / c.getZoom()) / 1.5f);
+		if (healthBar != null) {
+			healthBar.updateStatus((float) getHealth() / (float) getMaxHealth());
+			healthBar.render(x - (64 / c.getZoom()), y + 50, Tile.yPosToDepthRelativeToCamera(c, y) + 10, 1 / c.getZoom(), trans);
+			Font.drawString(name, x - ((8 / 1.5f) * 1/ c.getZoom()) * name.length(), y + 50 + (20 / (c.getZoom())), 1.0f, 1.0f, 1.0f, trans, Tile.yPosToDepthRelativeToCamera(c, y) + 10, (1 / c.getZoom()) / 1.5f);
+		}
 	}
 	
 	public Inventory getInventory() {
