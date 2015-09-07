@@ -2,6 +2,9 @@ package com.dazkins.triad.game.world.worldgen;
 
 import java.util.ArrayList;
 
+import com.dazkins.triad.game.entity.EntityFlower;
+import com.dazkins.triad.game.entity.EntitySandGrass;
+import com.dazkins.triad.game.entity.harvestable.EntityTree;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.math.PerlinNoiseMap;
@@ -41,9 +44,19 @@ public class WorldGen {
 		
 		if (ws < waterLimit)
 			world.setTile(Tile.water, x, y);
-		else if (ws < waterLimit + 0.05f)
+		else if (ws < waterLimit + 0.05f) {
+			float r = (float) Math.random() * 1000.0f;
+			if (r < 2)
+				world.addEntity(new EntitySandGrass(world, x * Tile.tileSize, y * Tile.tileSize));
 			world.setTile(Tile.sand, x, y);
-		else
+		}
+		else {
+			float r = (float) Math.random() * 1000.0f;
+			if (r < 2)
+				world.addEntity(new EntityTree(world, x * Tile.tileSize, y * Tile.tileSize));
+			else if (r < 4)
+				world.addEntity(new EntityFlower(world, x * Tile.tileSize, y * Tile.tileSize));
 			world.setTile(Tile.grass, x, y);
+		}
 	}
 }

@@ -37,6 +37,6 @@ public class EntityTree extends EntityHarvestable {
 	}
 
 	public AABB getAABB() {
-		return new AABB(x, y, x + 32, y + 32);
+		return new AABB(x - 16, y - 5, x + 16, y + 10);
 	}
 }

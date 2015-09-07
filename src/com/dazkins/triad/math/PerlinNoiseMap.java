@@ -30,14 +30,14 @@ public class PerlinNoiseMap {
 	
 	//Brute force method, can take time
 	public void checkForConsistencyCorrection() {
-		int width = 1024;
-		int height = 1024;
+		int width = 512;
+		int height = 512;
 		
 		double max = -1;
 		double min = 1;
 		
 		for (int x = -width; x < width; x++) {
-			for (int y = -height; y < height; y++) {
+			for (int y = -width; y < height; y++) {
 				float s = sample(x, y);
 				if (s > max)
 					max = s;

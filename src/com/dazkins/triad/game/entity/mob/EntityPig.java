@@ -37,11 +37,6 @@ public class EntityPig extends Mob {
 			return new AABB(x - 8, y, x + 8, y + 18);
 	}
 	
-	public void render(Camera cam) {
-		getAABB().renderBounds(2.0f);
-		super.render(cam);
-	}
-	
 	public void initModel() {
 		model = new ModelPig();
 	}
