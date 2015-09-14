@@ -1,6 +1,7 @@
 package com.dazkins.triad.game.entity.mob;
 
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.EntityIDStorage;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
@@ -13,7 +14,7 @@ public class EntityPig extends Mob {
 	private float dir;
 	
 	public EntityPig(World w, float x, float y, int h) {
-		super(w, x, y, "pig", h);
+		super(w, EntityIDStorage.PIG, x, y, "pig", h);
 		moving = true;
 		dir = (float) (Math.random() * Math.PI * 2);
 	}
@@ -37,10 +38,6 @@ public class EntityPig extends Mob {
 			return new AABB(x - 8, y, x + 8, y + 18);
 	}
 	
-	public void initModel() {
-		model = new ModelPig();
-	}
-	
 	public boolean mayBePushedBy(Entity e) {
 		return true;
 	}
@@ -61,10 +58,7 @@ public class EntityPig extends Mob {
 			addYAMod(ya); 
 			
 			setFacingBasedOnVelocities(xa, ya);
-			model.addAnimation(new AnimationQuadrupedWalking(this), 1, false);
 		}
-		
-		model.updateAnimationState(this);
 		
 		xa *= 0.75;
 		ya *= 0.75;

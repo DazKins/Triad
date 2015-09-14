@@ -20,7 +20,7 @@ public class ChunkLoader {
 				lds[i] = new Loader("Chunk");
 				lds[i].addLoad(c);
 				Loader.startThreadLoad(lds[i]);
-				break;
+				return;
 			}
 		}
 	}

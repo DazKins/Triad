@@ -13,31 +13,19 @@ public class EntityButton extends Entity implements Activeatable {
 	private ArrayList<Activeatable> triggers;
 	
 	public EntityButton(World w, float x, float y) {
-		super(w, x, y, "button");
+		super(w, EntityIDStorage.BUTTON, x, y, "button");
 		triggers = new ArrayList<Activeatable>();
 	}
 	
 	public EntityButton(World w, float x, float y, Activeatable a) {
-		super(w, x, y, "button");
+		super(w, EntityIDStorage.BUTTON, x, y, "button");
 		triggers = new ArrayList<Activeatable>();
 		triggers.add(a);
 	}
 	
 	public EntityButton(World w, float x, float y, ArrayList<Activeatable> a) {
-		super(w, x, y, "button");
+		super(w, EntityIDStorage.BUTTON, x, y, "button");
 		triggers = a;
-	}
-	
-	protected void initModel() {
-		model = new ModelButton();
-	}
-
-	public void renderToPlayerGui(Camera c) {
-		
-	}
-
-	public void render(Camera cam) {
-		super.render(cam);
 	}
 	
 	public void tick() {

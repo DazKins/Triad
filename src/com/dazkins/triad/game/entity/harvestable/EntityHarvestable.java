@@ -7,8 +7,8 @@ import com.dazkins.triad.math.AABB;
 public class EntityHarvestable extends Entity {
 	int harvestMax;
 	
-	public EntityHarvestable(World w, float x, float y, String s, int max) {
-		super(w, x, y, s);
+	public EntityHarvestable(World w, int id, float x, float y, String s, int max) {
+		super(w, id, x, y, s);
 		harvestMax = max;
 	}
 	

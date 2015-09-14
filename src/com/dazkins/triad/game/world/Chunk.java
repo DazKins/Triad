@@ -14,6 +14,7 @@ import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.util.ChunkLoader;
 import com.dazkins.triad.util.Loadable;
 
@@ -22,24 +23,23 @@ public class Chunk implements Loadable {
 	public static int chunkSS = chunkS * chunkS;
 	
 	private static float lFadeOut = 0.85f;
+	
+	//Individual for each chunk
+	private ChunkCoordinate chunkCoord;
 
 	private World world;
 
 	public int chunkX, chunkY;
 	public int rChunkX, rChunkY;
-	private int[] tiles;
+	private byte[] tiles;
 	
 	private Color[] tileColors;
-	
-	//Store light value from the previous frame
+	//Store light value from the previous tick
 	private Color[] pTileColors;
 	
-	private boolean vboGenerated;
 	private boolean tilesGenerated;
 	
 	private boolean isBeingLoaded;
-
-	private BufferObject tilePlane;
 	
 	private ArrayList<Entity>[] entitiesInTiles;
 	private int entityCount;
@@ -57,11 +57,25 @@ public class Chunk implements Loadable {
 		
 		resetLightLevels();
 		
-		tiles = new int[chunkSS];
+		tiles = new byte[chunkSS];
 		entitiesInTiles = new ArrayList[chunkSS]; 
 		for (int i = 0; i < chunkSS; i++) {
 			entitiesInTiles[i] = new ArrayList<Entity>();
 		}
+		
+		chunkCoord = new ChunkCoordinate(xp ,yp);
+	}
+	
+	public ChunkCoordinate getChunkCoord() {
+		return chunkCoord;
+	}
+	
+	public byte[] getTiles() {
+		return tiles;
+	}
+	
+	public Color[] getLights() {
+		return tileColors;
 	}
 	
 	public void addToLoader(ChunkLoader l) {
@@ -82,24 +96,25 @@ public class Chunk implements Loadable {
 		
 		entityCount++;
 		
-		entitiesInTiles[world.convertToChunkX(xx) + world.convertToChunkY(yy) * chunkS].add(e);
+		entitiesInTiles[MathHelper.convertToChunkTileX(xx) + MathHelper.convertToChunkTileY(yy) * chunkS].add(e);
 	}
 	
 	public ArrayList<Entity> getEntitiesInTile(int tx, int ty) {
 		return entitiesInTiles[tx + ty * chunkS];
 	}
 	
+	public ArrayList<Entity> getEntities() {
+		ArrayList<Entity> ents = new ArrayList<Entity>();
+		for (ArrayList<Entity> e : entitiesInTiles) {
+			ents.addAll(e);
+		}
+		return ents;
+	}
+	
 	public void generateTileMap() {
 		for (int x = 0; x < chunkS; x++) {
 			for (int y = 0; y < chunkS; y++) {
 				world.getWorldGenerator().generate(x + rChunkX, y + rChunkY);
-			}
-		}
-		vboGenerated = false;
-		
-		for (int x = chunkX - 1; x < chunkX + 2; x++) {
-			for (int y = chunkY - 1; y < chunkY + 2; y++) {
-				world.chunkm.getChunkWithForceLoad(x, y).vboGenerated = false;
 			}
 		}
 		
@@ -130,7 +145,6 @@ public class Chunk implements Loadable {
 			if (!isValidTilePos(x, y))
 				return;
 			tiles[x + y * chunkS] = t.getID();
-			vboGenerated = false;
 		}
 	}
 
@@ -138,25 +152,6 @@ public class Chunk implements Loadable {
 		if (!isValidTilePos(x, y))
 			return null;
 		return Tile.tiles[tiles[x + y * chunkS]];
-	}
-
-	public void generateVBO() {
-		if (tilePlane != null)
-			tilePlane.deleteBuffer();
-		else 
-			tilePlane = new BufferObject(16 * 16 * 4 * 8 * 2 * 2);
-		tilePlane.start();
-		tilePlane.bindImage(Image.getImageFromName("spriteSheet"));
-		for (int x = 0; x < chunkS; x++) {
-			for (int y = 0; y < chunkS; y++) {
-				int tileIndex = tiles[x + y * chunkS];
-				if (tileIndex != 0) {
-					Tile.tiles[tileIndex].render(tilePlane, world, x * Tile.tileSize + (chunkX * Tile.tileSize * chunkS), y * Tile.tileSize + (chunkY * Tile.tileSize * chunkS));
-				}
-			}
-		}
-		tilePlane.stop();
-		vboGenerated = true;
 	}
 	
 	private void resetLightLevels() {
@@ -171,10 +166,6 @@ public class Chunk implements Loadable {
 
 	public AABB getBounds() {
 		return new AABB(chunkX * Tile.tileSize * chunkS, chunkY * Tile.tileSize * chunkS, chunkX * Tile.tileSize * chunkS + (chunkS * Tile.tileSize), chunkY * Tile.tileSize * chunkS + (chunkS * Tile.tileSize));
-	}
-
-	public boolean isVBOGenerated() {
-		return vboGenerated;
 	}
 	
 	public synchronized boolean isTileMapGenerated() {
@@ -258,23 +249,6 @@ public class Chunk implements Loadable {
 				c.setB(b);
 			}
 		}
-		
-		if (hasLightChanged()) {
-			vboGenerated = false;
-			ArrayList<Chunk> chunks = new ArrayList<Chunk>();
-			chunks.add(world.chunkm.getChunk(chunkX, chunkY + 1));
-			chunks.add(world.chunkm.getChunk(chunkX, chunkY - 1));
-			chunks.add(world.chunkm.getChunk(chunkX + 1, chunkY));
-			chunks.add(world.chunkm.getChunk(chunkX - 1, chunkY));
-			chunks.add(world.chunkm.getChunk(chunkX + 1, chunkY + 1));
-			chunks.add(world.chunkm.getChunk(chunkX + 1, chunkY - 1));
-			chunks.add(world.chunkm.getChunk(chunkX - 1, chunkY + 1));
-			chunks.add(world.chunkm.getChunk(chunkX - 1, chunkY - 1));
-			for (Chunk c : chunks) {
-				if (c != null)
-					c.vboGenerated = false;
-			}
-		}
 
 		for (int i = 0; i < tileColors.length; i++) {
 			pTileColors[i] = tileColors[i].copyOf();
@@ -289,65 +263,6 @@ public class Chunk implements Loadable {
 				return true;
 		}
 		return false;
-	}
-	
-	public void renderGrid() {
-		int xx0 = chunkX * Tile.tileSize * chunkS;
-		int yy0 = chunkY * Tile.tileSize * chunkS;
-		int ww0 = chunkS * Tile.tileSize;
-		int hh0 = chunkS * Tile.tileSize;
-		
-		GL11.glLineWidth(4);
-		
-		GL11.glColor4f(0.8f, 0.8f, 0.8f, 1.0f);
-		
-		GL11.glBegin(GL11.GL_LINES);
-		GL11.glVertex2f(xx0, yy0);
-		GL11.glVertex2f(xx0 + ww0, yy0);
-		
-		GL11.glVertex2f(xx0 + ww0, yy0);
-		GL11.glVertex2f(xx0 + ww0, yy0 + hh0);
-		
-		GL11.glVertex2f(xx0 + ww0, yy0 + hh0);
-		GL11.glVertex2f(xx0, yy0 + hh0);
-		
-		GL11.glVertex2f(xx0, yy0 + hh0);
-		GL11.glVertex2f(xx0, yy0);
-		GL11.glEnd();
-		
-		GL11.glLineWidth(0.002f);
-		
-		for (int x = 0; x < chunkS; x++) {
-			for (int y = 0; y < chunkS; y++) {
-				int xx1 = xx0 + x * Tile.tileSize;
-				int yy1 = yy0 + y * Tile.tileSize;
-
-				GL11.glBegin(GL11.GL_LINES);
-				GL11.glVertex2f(xx1, yy1);
-				GL11.glVertex2f(xx1 + Tile.tileSize, yy1);
-
-				GL11.glVertex2f(xx1, yy1);
-				GL11.glVertex2f(xx1, yy1 + Tile.tileSize);
-				GL11.glEnd();
-			}
-		}
-		
-		GL11.glColor4f(1, 1, 1, 1);
-	}
-
-	public void render() {
-		GL11.glPushMatrix();
-		GL11.glTranslatef(0, 0, Tile.yPosToDepthRelativeToCamera(world.getCam(), rChunkY * Tile.tileSize));
-		if (tilePlane != null)
-			tilePlane.render();
-		GL11.glPopMatrix();
-		
-		for (int i = 0; i < chunkSS; i++) {
-			ArrayList<Entity> es = entitiesInTiles[i];
-			for (Entity e : es) {
-				world.addToEntityToRenderQueue(e);
-			}
-		}
 	}
 
 	public void load() {

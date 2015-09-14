@@ -15,32 +15,48 @@ import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.math.AABB;
 
 public abstract class Entity {
+	private static int globalIDIterator;
+	
 	protected float x, y;
 	protected float xa, ya;
 	public long lifeTicks;
 	protected String name;
 	protected World world;
 	
-	protected int globalID; // TODO Implement working solution to generating globalID
+	protected int globalID; //Individual to each entity
+	protected int typeID; //Individual to each type of entity
 	
 	protected boolean toBeRemoved;
 	
 	protected ArrayList<Float> xvm;
 	protected ArrayList<Float> yvm;
-	
-	protected Model model;
 
-	public Entity(World w, float x, float y, String s) {
+	public Entity(World w, int id, float x, float y, String s) {
 		this.x = x;
 		this.y = y - (float) Math.random() / 100.0f;
 		this.world = w;
 		this.name = s;
 		xvm = new ArrayList<Float>();
 		yvm = new ArrayList<Float>();
+		
+		this.typeID = id;
+		globalID = ++globalIDIterator;
 	}
 	
-	protected boolean isModelReady() {
-		return model != null;
+	public int getTypeID() {
+		return typeID;
+	}
+	
+	public int getGlobalID() {
+		return globalID;
+	}
+	
+	public void setXA(float xa) {
+		this.xa = xa;
+	}
+	
+	public void setYA(float ya) {
+		this.ya = ya;
 	}
 	
 	public void push(float xa, float ya) {
@@ -66,12 +82,6 @@ public abstract class Entity {
 	
 	public void initWorld(World w) {
 		world = w;
-	}
-	
-	public AABB getBoundsForRendering() {
-		if (model != null)
-			return model.getRenderAABB().shifted(x, y);
-		return null;
 	}
 	
 	//Stores the last known direction the entity was facing
@@ -100,18 +110,6 @@ public abstract class Entity {
 	}
 	
 	public void renderToPlayerGui(Camera c) { }
-	
-	public void render(Camera cam) {
-		if (!isModelReady())
-			initModel();
-		if (model != null) {
-			int xx = (int) x >> 5;
-			int yy = (int) y >> 5;
-			Color c = world.getTileColor(xx, yy);
-			GL11.glColor4f(c.getDR(), c.getDG(), c.getDB(), 1.0f);
-			model.render(cam, this);
-		}
-	}
 	
 	protected void initModel() { }
 	
@@ -162,28 +160,30 @@ public abstract class Entity {
 			this.ya += i;
 		}
 		
-		if (this.getAABB() != null) {
-			for (Entity e : world.getEntitiesInAABB(this.getAABB())) {
-				if (e != this) {
-					this.onCollide(e);
-				}
-			}
-			for (Entity e : world.getEntitiesInAABB(this.getAABB().shifted(xa, 0))) {
-				if (e != this && (!this.mayPass(e) || !e.mayPass(this))) {
-					if (e.mayBePushedBy(this)) {
-						e.push(xa, 0);
-					} else {
+		if (world != null) {
+			if (this.getAABB() != null) {
+				for (Entity e : world.getEntitiesInAABB(this.getAABB())) {
+					if (e != this) {
+						this.onCollide(e);
 					}
-					xa = 0;
 				}
-			}
-			for (Entity e : world.getEntitiesInAABB(this.getAABB().shifted(0, ya))) {
-				if (e != this && (!this.mayPass(e) || !e.mayPass(this))) {
-					if (e.mayBePushedBy(this)) {
-						e.push(0, ya);
-					} else {
+				for (Entity e : world.getEntitiesInAABB(this.getAABB().shifted(xa, 0))) {
+					if (e != this && (!this.mayPass(e) || !e.mayPass(this))) {
+						if (e.mayBePushedBy(this)) {
+							e.push(xa, 0);
+						} else {
+						}
+						xa = 0;
 					}
-					ya = 0;
+				}
+				for (Entity e : world.getEntitiesInAABB(this.getAABB().shifted(0, ya))) {
+					if (e != this && (!this.mayPass(e) || !e.mayPass(this))) {
+						if (e.mayBePushedBy(this)) {
+							e.push(0, ya);
+						} else {
+						}
+						ya = 0;
+					}
 				}
 			}
 		}
@@ -198,11 +198,10 @@ public abstract class Entity {
 	protected void onCollide(Entity e) { }
 
 	public void tick() {
-		if (!isModelReady())
-			initModel();
-		
 		lifeTicks++;
-		world.registerEntityTick(this);
+		
+		if (world != null)
+			world.registerEntityTick(this);
 	}
 	
 	public String getName() {

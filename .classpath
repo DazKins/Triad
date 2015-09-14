@@ -11,5 +11,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="libs/disruptor.jar"/>
 	<classpathentry kind="lib" path="libs/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="libs/kryonet-2.21-all.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

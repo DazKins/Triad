@@ -34,8 +34,8 @@ public abstract class Mob extends Entity {
 	
 	private boolean healthBarGenerated;
 
-	public Mob(World w, float x, float y, String s, int h) {
-		super(w, x, y, s);
+	public Mob(World w, int id, float x, float y, String s, int h) {
+		super(w, id, x, y, s);
 		health = h;
 		eInv = new EquipmentInventory();
 	}

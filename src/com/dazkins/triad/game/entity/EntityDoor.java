@@ -11,7 +11,7 @@ public class EntityDoor extends Entity implements Activeatable {
 	private int closedOrientation;
 
 	public EntityDoor(World w, float x, float y, int o) {
-		super(w, x, y, "door");
+		super(w, EntityIDStorage.DOOR, x, y, "door");
 		closedOrientation = o;
 	}
 	
@@ -38,12 +38,6 @@ public class EntityDoor extends Entity implements Activeatable {
 	public boolean mayPass(Entity e) {
 		return false;
 	}
-	
-	public void render(Camera cam) {
-		super.render(cam);
-		
-//		getAABB().renderBounds(2.0f);
-	}
 
 	public void onActivate(Entity e) {
 		open = !open;
@@ -56,9 +50,5 @@ public class EntityDoor extends Entity implements Activeatable {
 		} else {
 			return new AABB(x, y - 16, x + 5, y + 1);
 		}
-	}
-	
-	public void initModel() {
-		model = new ModelDoor();
 	}
 }

@@ -6,6 +6,7 @@ import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.EntityIDStorage;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.inventory.Inventory;
@@ -20,13 +21,15 @@ import com.dazkins.triad.gfx.model.animation.AnimationHumanoidWalking;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
 
-public class EntityPlayer extends Mob {
+public class EntityPlayerClient extends Mob {
 	private InputHandler input;
 	
 	private Interactable interactingObject;
 	
-	public EntityPlayer(World w, float x, float y, InputHandler input) {
-		super(w, x, y, "player", 1000);
+	private String name;
+	
+	public EntityPlayerClient(String n, float x, float y, InputHandler input) {
+		super(null, EntityIDStorage.PLAYER, x, y, "player", 1000);
 		this.input = input;
 		this.inv = new Inventory(9, 5);
 		inv.addItem(Item.testHelmet);
@@ -34,6 +37,12 @@ public class EntityPlayer extends Mob {
 		inv.addItem(Item.testLegs);
 		inv.addItem(Item.testSword);
 		inv.addItem(Item.axe);
+		
+		name = n;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public int getMaxHealth() {
@@ -50,60 +59,56 @@ public class EntityPlayer extends Mob {
 
 	public void tick() {
 		super.tick();
-		model.addAnimation(new AnimationHumanoidIdle(this), 0, false);
 		
 		float moveModifier = 1.0f;
 		
-		if (input.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
-			moveModifier = 10.0f;
-		}
-		
-		if (input.isKeyDown(GLFW.GLFW_KEY_W)) {
-			setFacing(Facing.UP);
-			addYAMod(getMovementSpeed() * moveModifier);
-			model.addAnimation(new AnimationHumanoidWalking(this), 1, false);
-		} else if (input.isKeyDown(GLFW.GLFW_KEY_S)) {
-			setFacing(Facing.DOWN);
-			addYAMod(-getMovementSpeed() * moveModifier);
-			model.addAnimation(new AnimationHumanoidWalking(this), 1, false);
-		}
-		if (input.isKeyDown(GLFW.GLFW_KEY_A)) {
-			setFacing(Facing.LEFT);
-			addXAMod(-getMovementSpeed() * moveModifier);
-			model.addAnimation(new AnimationHumanoidWalking(this), 1, false);
-		} else if (input.isKeyDown(GLFW.GLFW_KEY_D)) {
-			setFacing(Facing.RIGHT);
-			addXAMod(getMovementSpeed() * moveModifier);
-			model.addAnimation(new AnimationHumanoidWalking(this), 1, false);
-		}
-		
-		if (input.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
-			if (attemptAttack(getFacingAttackArea(getFacing()))) {
-				model.addAnimation(new AnimationHumanoidSlashing(this, this.getAttackCooldown()), 5, true);
-				tryHarvest();
+		if (input != null) {
+			if (input.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+				moveModifier = 10.0f;
+			}
+			
+			if (input.isKeyDown(GLFW.GLFW_KEY_W)) {
+				setFacing(Facing.UP);
+				addYAMod(getMovementSpeed() * moveModifier);
+			} else if (input.isKeyDown(GLFW.GLFW_KEY_S)) {
+				setFacing(Facing.DOWN);
+				addYAMod(-getMovementSpeed() * moveModifier);
+			}
+			if (input.isKeyDown(GLFW.GLFW_KEY_A)) {
+				setFacing(Facing.LEFT);
+				addXAMod(-getMovementSpeed() * moveModifier);
+			} else if (input.isKeyDown(GLFW.GLFW_KEY_D)) {
+				setFacing(Facing.RIGHT);
+				addXAMod(getMovementSpeed() * moveModifier);
+			}
+			
+			if (input.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
+				if (attemptAttack(getFacingAttackArea(getFacing()))) {
+					tryHarvest();
+				}
 			}
 		}
 		
-		if (input.isKeyJustDown(GLFW.GLFW_KEY_Q)) {
-			ArrayList<Interactable> is = world.getInteractablesInAABB(getInteractAreas()[getFacing()]);
-			for (Interactable i : is) {
-				i.onInteract(this);
-			}
-		}
 		
-		if (input.isKeyJustDown(GLFW.GLFW_KEY_E)) {
-			ArrayList<Activeatable> as = world.getActivatablesInAABB(getAABB());
-			for (Activeatable a : as) {
-				a.onActivate(this);
-			}
-		}
+		//TODO Reimplement
+//		if (input.isKeyJustDown(GLFW.GLFW_KEY_Q)) {
+//			ArrayList<Interactable> is = world.getInteractablesInAABB(getInteractAreas()[getFacing()]);
+//			for (Interactable i : is) {
+//				i.onInteract(this);
+//			}
+//		}
+//		
+//		if (input.isKeyJustDown(GLFW.GLFW_KEY_E)) {
+//			ArrayList<Activeatable> as = world.getActivatablesInAABB(getAABB());
+//			for (Activeatable a : as) {
+//				a.onActivate(this);
+//			}
+//		}
 		
 		move();
-
-		model.updateAnimationState(this);
 		
-		xa *= 0.75;
-		ya *= 0.75;
+		xa *= 0.75f;
+		ya *= 0.75f;
 	}
 	
 	public boolean mayPass(Entity e) {
@@ -124,10 +129,6 @@ public class EntityPlayer extends Mob {
 	
 	protected int getBaseAttackRange() {
 		return 50;
-	}
-	
-	protected void initModel() {
-		model = new ModelHumanoid(Image.getImageFromName("player"));
 	}
 
 	public AABB getAABB() {

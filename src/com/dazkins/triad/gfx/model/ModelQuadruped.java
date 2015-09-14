@@ -100,11 +100,9 @@ public class ModelQuadruped extends Model {
 	}
 
 
-	public void render(Camera cam, Entity e) {
-		setOffset(e.getX() - 8, e.getY() + 12);
-		setDepth(Tile.yPosToDepthRelativeToCamera(cam, e.getY()));
-		
-		int f = e.getFacing();
+	public void render() {
+		//TODO remove this
+		int f = Facing.DOWN;
 		
 		super.enableSelectiveRendering();
 		

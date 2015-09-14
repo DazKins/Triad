@@ -4,7 +4,7 @@ import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.EntityChest;
-import com.dazkins.triad.game.entity.mob.EntityPlayer;
+import com.dazkins.triad.game.entity.mob.EntityPlayerClient;
 import com.dazkins.triad.game.gui.object.GuiObjectInventory;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
@@ -14,7 +14,7 @@ import com.dazkins.triad.input.InputHandler;
 
 public class GuiChest extends Gui {
 	private EntityChest chest;
-	private EntityPlayer player;
+	private EntityPlayerClient player;
 	
 	private Inventory pInv;
 	private Inventory cInv;
@@ -25,7 +25,7 @@ public class GuiChest extends Gui {
 	
 	private ItemStack selectedItem;
 	
-	public GuiChest(Triad t, InputHandler i, EntityPlayer p, EntityChest c) {
+	public GuiChest(Triad t, InputHandler i, EntityPlayerClient p, EntityChest c) {
 		super(t, i);
 		chest = c;
 		player = p;

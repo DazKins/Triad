@@ -1,7 +1,7 @@
 package  com.dazkins.triad.game.gui;
 
 import com.dazkins.triad.Triad;
-import com.dazkins.triad.game.entity.mob.EntityPlayer;
+import com.dazkins.triad.game.entity.mob.EntityPlayerClient;
 import com.dazkins.triad.game.gui.object.GuiObjectInventory;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
@@ -10,7 +10,7 @@ import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.input.InputHandler;
 
 public class GuiPlayerInventory extends Gui {
-	private EntityPlayer player;
+	private EntityPlayerClient player;
 	private Inventory inv;
 	private EquipmentInventory eInv;
 	
@@ -18,7 +18,7 @@ public class GuiPlayerInventory extends Gui {
 	
 	private ItemStack selectedItem;
 	
-	public GuiPlayerInventory(Triad t, InputHandler i, EntityPlayer e) {
+	public GuiPlayerInventory(Triad t, InputHandler i, EntityPlayerClient e) {
 		super(t, i);
 		player = e;
 		inv = e.getInventory();

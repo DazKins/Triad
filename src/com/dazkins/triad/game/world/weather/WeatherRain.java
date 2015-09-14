@@ -15,6 +15,7 @@ public class WeatherRain extends Weather {
 		intensity = i;
 	}
 	
+	//TODO reimplement weather
 	public void tick() {
 		ArrayList<Chunk> cs = operatingWorld.chunkm.getChunksInAABB(operatingWorld.getCam().getViewportBounds());
 		ObjectPool<Particle> op = Particle.particlesPool;
@@ -27,7 +28,7 @@ public class WeatherRain extends Weather {
 				Particle p = op.getEmptyObjectForCreation();
 				if (p != null) {
 					pf.create(p, operatingWorld.getCam(), xp, yp, 10, 30, 0.4f, 0.7f, 1.0f);
-					operatingWorld.addParticle(p);
+//					operatingWorld.addParticle(p);
 				}
 			}
 		}

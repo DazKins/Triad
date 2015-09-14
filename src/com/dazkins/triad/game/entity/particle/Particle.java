@@ -12,6 +12,8 @@ import com.dazkins.triad.util.pool.PoolableObject;
 import com.dazkins.triad.util.pool.factory.ParticleFactory;
 import com.dazkins.triad.util.pool.factory.RainParticleFactory;
 
+
+//TODO rethink particle implementation
 public class Particle extends Entity implements PoolableObject {
 	public static ObjectPool<Particle> particlesPool;
 	private static ParticleFactory pf;
@@ -39,7 +41,7 @@ public class Particle extends Entity implements PoolableObject {
 	protected boolean needsDestruction = false;
 	
 	public Particle() {
-		super(null, 0, 0, "particle");
+		super(null, -1, 0, 0, "particle");
 	}
 	
 	public void assignPBC(ParticleBehaviourController p) {
@@ -72,7 +74,7 @@ public class Particle extends Entity implements PoolableObject {
 		GL11.glPopMatrix();
 	}
 	
-	public int getID() {
+	public int getTypeID() {
 		return id;
 	}
 

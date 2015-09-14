@@ -41,12 +41,12 @@ public abstract class Model {
 		return quads.get(i);
 	}
 	
-	protected void setOffset(float x, float y) {
+	public void setOffset(float x, float y) {
 		offsetX = x;
 		offsetY = y;
 	}
 	
-	protected void setDepth(float d) {
+	public void setDepth(float d) {
 		depth = d;
 	}
 	
@@ -109,8 +109,6 @@ public abstract class Model {
 		}
 		return true;
 	}
-	
-	public abstract void render(Camera cam, Entity e);
 	
 	public static final RenderSorter rSort = new RenderSorter();
 	

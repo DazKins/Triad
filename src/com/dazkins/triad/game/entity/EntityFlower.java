@@ -8,16 +8,7 @@ import com.dazkins.triad.math.AABB;
 
 public class EntityFlower extends Entity {
 	public EntityFlower(World w, float x, float y) {
-		super(w, x, y, "flower");
-	}
-	
-	public void initModel() {
-		model = Model.flower;
-	}
-
-	public void render(Camera cam) {
-		renderShadow(cam, x - 6, y - 2, 10, 4);
-		super.render(cam);
+		super(w, EntityIDStorage.FLOWER, x, y, "flower");
 	}
 
 	public AABB getAABB() {

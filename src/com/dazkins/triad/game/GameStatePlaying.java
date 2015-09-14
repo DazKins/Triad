@@ -1,36 +1,32 @@
 package com.dazkins.triad.game;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.Triad;
-import com.dazkins.triad.game.entity.EntityChest;
-import com.dazkins.triad.game.entity.EntityTorch;
-import com.dazkins.triad.game.entity.mob.EntityPig;
-import com.dazkins.triad.game.entity.mob.EntityPlayer;
+import com.dazkins.triad.game.entity.mob.EntityPlayerClient;
+import com.dazkins.triad.game.entity.renderer.EntityRendererPlayer;
 import com.dazkins.triad.game.gui.Gui;
-import com.dazkins.triad.game.gui.GuiChest;
-import com.dazkins.triad.game.gui.GuiEquipMenu;
-import com.dazkins.triad.game.gui.GuiPlayer;
-import com.dazkins.triad.game.gui.GuiPlayerInventory;
-import com.dazkins.triad.game.world.Chunk;
-import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.game.world.tile.Tile;
-import com.dazkins.triad.game.world.weather.WeatherRain;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
-import com.dazkins.triad.util.debugmonitor.DebugMonitor;
+import com.dazkins.triad.networking.client.ClientWorldManager;
+import com.dazkins.triad.networking.client.TriadClient;
 
 public class GameStatePlaying implements GameState {
 	private Triad triad;
-	private World world;
+	
+	private ClientWorldManager cwm;
+	
 	private InputHandler input;
-	private EntityPlayer player;
 	private Camera cam;
 	
 	private Gui currentlyDisplayedGui;
 	private Window win;
+	
+	private TriadClient client;
+	
+	private EntityPlayerClient player;
+	private EntityRendererPlayer playerRenderer;
 	
 	public void init(Triad triad) {
 		this.triad = triad;
@@ -38,88 +34,56 @@ public class GameStatePlaying implements GameState {
 		input = new InputHandler(win);
 		cam = new Camera(input, triad.win, 0, 0);
 		cam.lockZoom(0.56f, 8f);
-		world = new World();
-		player = new EntityPlayer(world, 100, 100, input);
-		currentlyDisplayedGui = new GuiPlayer(triad, input, world, player);
 		
-		world.addEntity(player);
-		
-		world.assignCamera(cam);
-		world.setWeather(new WeatherRain(10));
-		
-		world.addEntity(new EntityChest(world, 0, 0));
-		world.addEntity(new EntityPig(world, 0, 200, 10));
+		player = new EntityPlayerClient("DazKins", 0, 0, input);
+		playerRenderer = new EntityRendererPlayer();
+	}
+	
+	public void initClient(TriadClient c) {
+		client = c;
+		cwm = new ClientWorldManager(client, cam, player);
+		playerRenderer.setWorld(cwm.getCRM());
+		cwm.setPlayerEntityRenderer(playerRenderer);
 	}
 	
 	public void tick() {
-		if (input.isKeyJustDown(GLFW.GLFW_KEY_I)) {
-			if (currentlyDisplayedGui instanceof GuiPlayerInventory)
-				changeGui(new GuiPlayer(triad, input, world, player));
-			else
-				changeGui(new GuiPlayerInventory(triad, input, player));
-		}
-		if (input.isKeyJustDown(GLFW.GLFW_KEY_O)) {
-			if (currentlyDisplayedGui instanceof GuiEquipMenu)
-				changeGui(new GuiPlayer(triad, input, world, player));
-			else
-				changeGui(new GuiEquipMenu(triad, input, player));
-		}
-		if (input.isKeyJustDown(GLFW.GLFW_KEY_ESCAPE)) {
-			changeGui(new GuiPlayer(triad, input, world, player));
-		}
-		
-		if (!(currentlyDisplayedGui instanceof GuiChest)) {
-			if (player.getInteractingObject() != null && player.getInteractingObject() instanceof EntityChest) {
-				EntityChest chest = (EntityChest) player.getInteractingObject();
-				changeGui(new GuiChest(triad, input, player, chest));
-			}
-		} else {
-			if (player.getInteractingObject() == null) {
-				changeGui(new GuiPlayer(triad, input, world, player));
-			}
-		}
-		
-		world.tick();
+		if (!client.isRunning())
+			client.start();
 		cam.tick();
+		
+		player.tick();
+		
+		client.updatePlayerLocation(player);
+		
 		cam.lockCameraToEntity(player);
+		if (currentlyDisplayedGui != null)
 		currentlyDisplayedGui.tick();
-		if (input.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL) && input.mouse1JustDown) {
-			int mx = (int) ((input.mouseX / cam.getZoom()) + cam.getX()) >> 5;
-			int my = (int) ((input.mouseY / cam.getZoom()) + cam.getY()) >> 5;
-			System.err.println("Tile position: " + mx + ", " + my);
-			System.err.println(world.getTileColor(mx, my));
-		}
-		if (input.isKeyJustDown(GLFW.GLFW_KEY_G)) {
-			world.addEntity(new EntityTorch(world, player.getX(), player.getY()));
-			DebugMonitor.addMessage("Torch added at: (" + player.getX() + "," + player.getY() + ")");
-		}
-		DebugMonitor.setVariableValue("Tile light", world.getTileColor((int) player.getX() / Tile.tileSize, (int) player.getY() / Tile.tileSize));
-		DebugMonitor.setVariableValue("Player position", player.getX() + " " + player.getY());
-		DebugMonitor.setVariableValue("Player chunk", (int) ((player.getX() / Tile.tileSize) / Chunk.chunkS) + " " + (int) ((player.getY() / Tile.tileSize) / Chunk.chunkS));
+//		if (input.isKeyJustDown(GLFW.GLFW_KEY_G)) {
+//			world.addEntity(new EntityTorch(world, player.getX(), player.getY()));
+//			DebugMonitor.addMessage("Torch added at: (" + player.getX() + "," + player.getY() + ")");
+//		}
+//		DebugMonitor.setVariableValue("Tile light", world.getTileColor((int) player.getX() / Tile.tileSize, (int) player.getY() / Tile.tileSize));
+//		DebugMonitor.setVariableValue("Player position", player.getX() + " " + player.getY());
+//		DebugMonitor.setVariableValue("Player chunk", (int) ((player.getX() / Tile.tileSize) / Chunk.chunkS) + " " + (int) ((player.getY() / Tile.tileSize) / Chunk.chunkS));
 		input.tick();
+		
+		cwm.tick();
 	}
 	
 	public void render() {
 		GL11.glPushMatrix();
 		cam.attachTranslation();
-		world.assignCamera(cam);
-		world.render();
+		
+		cwm.render();
+		//TODO player render
+
+		playerRenderer.setX(player.getX());
+		playerRenderer.setY(player.getY());
+		
 		GL11.glPopMatrix();
 		
-		if (!(currentlyDisplayedGui instanceof GuiPlayer)) {
-			GL11.glDisable(GL11.GL_TEXTURE_2D);
-			GL11.glBegin(GL11.GL_QUADS);
-				GL11.glColor4f(0.0f, 0.0f, 0.0f, 0.7f);
-				GL11.glVertex3f(0.0f, 0.0f, -0.1f);
-				GL11.glVertex3f(win.getW(), 0.0f, -0.1f);
-				GL11.glVertex3f(win.getW(), win.getH(), -0.1f);
-				GL11.glVertex3f(0.0f, win.getH(), -0.1f);
-				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-			GL11.glEnd();
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
-		}
-		
-		currentlyDisplayedGui.render(cam);
+		if (currentlyDisplayedGui != null)
+			currentlyDisplayedGui.render(cam);
 	}
 	
 	private void changeGui(Gui g) {

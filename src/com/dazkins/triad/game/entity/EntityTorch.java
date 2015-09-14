@@ -12,7 +12,7 @@ import com.dazkins.triad.math.AABB;
 
 public class EntityTorch extends Entity implements LightEmitter {
 	public EntityTorch(World w, float x, float y) {
-		super(w, x, y, "torch");
+		super(w, EntityIDStorage.TORCH, x, y, "torch");
 	}
 
 	public int getR() {
@@ -25,15 +25,6 @@ public class EntityTorch extends Entity implements LightEmitter {
 	
 	public int getB() {
 		return 150;
-	}
-	
-	public void render(Camera cam) {
-		renderShadow(cam, x - 5, y - 2, 10, 5);
-		super.render(cam);
-	}
-	
-	protected void initModel() {
-		model = new ModelTorch();
 	}
 	
 	public void tick() {

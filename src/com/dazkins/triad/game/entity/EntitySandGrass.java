@@ -8,19 +8,10 @@ import com.dazkins.triad.math.AABB;
 public class EntitySandGrass extends Entity {
 
 	public EntitySandGrass(World w, float x, float y) {
-		super(w, x, y, "sandGrass");
+		super(w, EntityIDStorage.SANDGRASS, x, y, "sandGrass");
 	}
 
 	public AABB getAABB() {
 		return null;
-	}
-	
-	public void initModel() {
-		model = Model.sandGrass;
-	}
-	
-	public void render(Camera cam) {
-		super.renderShadow(cam, x - 8, y - 3, 16, 5);
-		super.render(cam);
 	}
 }

@@ -19,4 +19,26 @@ public class MathHelper {
 		
 		return (int) r;
 	}
+	
+	public static int convertToChunkTileX(int x) {
+		return MathHelper.betterMod(x, Chunk.chunkS);
+	}
+	
+	public static int convertToChunkTileY(int y) {
+		return MathHelper.betterMod(y, Chunk.chunkS);
+	}
+	
+	public static int getChunkXFromTileX(int x) {
+		if (x >= 0)
+			return x / Chunk.chunkS;
+		else
+			return (int) Math.floor((float) x / (float) Chunk.chunkS);
+	}
+	
+	public static int getChunkYFromTileY(int y) {
+		if (y >= 0)
+			return y / Chunk.chunkS;
+		else
+			return (int) Math.floor((float) y / (float) Chunk.chunkS);
+	}
 }

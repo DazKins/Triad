@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.Entity;
-import com.dazkins.triad.game.entity.mob.EntityPlayer;
+import com.dazkins.triad.game.entity.mob.EntityPlayerClient;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.gui.object.GuiObjectStatusBar;
 import com.dazkins.triad.game.world.World;
@@ -14,12 +14,12 @@ import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.input.InputHandler;
 
 public class GuiPlayer extends Gui {
-	private EntityPlayer player;
+	private EntityPlayerClient player;
 	private World world;
 	
 	private GuiObjectStatusBar statusBar;
 	
-	public GuiPlayer(Triad t, InputHandler i, World w, EntityPlayer player) {
+	public GuiPlayer(Triad t, InputHandler i, World w, EntityPlayerClient player) {
 		super(t, i);
 		world = w;
 		this.player = player;

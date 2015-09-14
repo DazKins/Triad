@@ -2,7 +2,7 @@ package com.dazkins.triad.game.entity;
 
 import org.lwjgl.opengl.GL11;
 
-import com.dazkins.triad.game.entity.mob.EntityPlayer;
+import com.dazkins.triad.game.entity.mob.EntityPlayerClient;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -21,7 +21,7 @@ public class EntityItemStack extends Entity {
 	private float yBounce;
 	
 	public EntityItemStack(World w, float x, float y, ItemStack is) {
-		super(w, x, y, null);
+		super(w, EntityIDStorage.ITEMSTACK, x, y, null);
 		this.is = is;
 	}
 
@@ -56,9 +56,9 @@ public class EntityItemStack extends Entity {
 	}
 	
 	protected void onCollide(Entity e) {
-		if (e instanceof EntityPlayer) {
+		if (e instanceof EntityPlayerClient) {
 			if (getSpeed() < 0.2f && lifeTicks > 30) {
-				EntityPlayer ep = (EntityPlayer) e;
+				EntityPlayerClient ep = (EntityPlayerClient) e;
 				if (ep.getInventory().addItemStack(is))
 					this.remove();
 			}

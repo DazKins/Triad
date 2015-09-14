@@ -8,6 +8,7 @@ public class Color {
 		this.c = c;
 	}
 	
+	//TODO Switch this to bytes
 	public Color(int r, int g, int b) {
 		c += r << 16;
 		c += g << 8;
@@ -30,15 +31,15 @@ public class Color {
 	}
 	
 	public int getR() {
-		return (c >> 16) & 0xFF;
+		return ((c >> 16) & 0xFF);
 	}
 	
 	public int getG() {
-		return (c >> 8) & 0xFF;
+		return ((c >> 8) & 0xFF);
 	}
 	
 	public int getB() {
-		return c & 0xFF;
+		return (c & 0xFF);
 	}
 	
 	public float getDR() {

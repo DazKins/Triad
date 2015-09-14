@@ -7,9 +7,10 @@ import java.util.Map;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.math.AABB;
 
-public class ChunkManager {
+public class ServerChunkManager {
 	private World world;
 	
+	//TODO Use Chunks Coordinate system
 	private Map<Integer, Chunk> chunks;
 	private ArrayList<Integer> loadedChunkI;
 	
@@ -17,14 +18,14 @@ public class ChunkManager {
 	
 	private int chunkLoadCuttoff = 100;
 	
-	public ChunkManager(World w) {
+	public ServerChunkManager(World w) {
 		loadedChunkI = new ArrayList<Integer>();
 		chunks = new HashMap<Integer, Chunk>();
 		world = w;
 	}
 	
 	public Chunk getChunkWithForceLoad(int x, int y) {
-		Integer i = x + y * 100000;
+		Integer i = x + y * 1000000;
 		
 		Chunk c;
 		
@@ -49,7 +50,7 @@ public class ChunkManager {
 	}
 	
 	public Chunk getChunk(int x, int y) {
-		Integer i = x + y * 100000;
+		Integer i = x + y * 1000000;
 		if(chunks.containsKey(i))
 			return chunks.get(i);
 		return null;

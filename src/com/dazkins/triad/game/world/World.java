@@ -2,14 +2,11 @@ package com.dazkins.triad.game.world;
 
 import java.util.ArrayList;
 
-import org.lwjgl.opengl.GL11;
-
 import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.entity.harvestable.EntityHarvestable;
 import com.dazkins.triad.game.entity.mob.Mob;
-import com.dazkins.triad.game.entity.particle.Particle;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.game.world.weather.Weather;
 import com.dazkins.triad.game.world.worldgen.WorldGen;
@@ -18,17 +15,13 @@ import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.util.ChunkLoader;
-import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 
 public class World {
-	public ChunkManager chunkm;
+	public ServerChunkManager chunkm;
 	
 	private Color ambientLightLevel;
 	
 	public float iLightFalloff = 20.0f;
-
-	public ArrayList<Particle> particles = new ArrayList<Particle>();
-	public ArrayList<Entity>[] entitiesInTiles;
 
 	private Camera cam;
 
@@ -40,27 +33,20 @@ public class World {
 	
 	private TimeCycle time;
 	
-	private ArrayList<Entity> entityRenderQueue;
 	private ArrayList<Entity> entityLoadQueue;
 	private ArrayList<Entity> tickedEntities;
 	
 	private WorldGen worldGenerator;
 	
 	public World() {
-		ambientLightLevel = new Color(0);
+		ambientLightLevel = new Color(126, 126, 126);
 		
-		chunkm = new ChunkManager(this);
-		
-		entitiesInTiles = new ArrayList[256 * 256];
-		for (int i = 0; i < entitiesInTiles.length; i++) {
-			entitiesInTiles[i] = new ArrayList<Entity>();
-		}
+		chunkm = new ServerChunkManager(this);
 		
 		worldGenerator = new WorldGen(this);
 		
 		cLoad = new ChunkLoader();
 		
-		entityRenderQueue = new ArrayList<Entity>();
 		entityLoadQueue = new ArrayList<Entity>();
 		tickedEntities = new ArrayList<Entity>();
 		
@@ -77,27 +63,19 @@ public class World {
 	}
 
 	public void addEntity(Entity e) {
-		if (e instanceof Particle)
-			addParticle((Particle) e);
-		else {
-			int tx = (int) (e.getX() / Tile.tileSize);
-			int ty = (int) (e.getY() / Tile.tileSize);
-			
-			try {
-				getChunkFromWorldTileCoords(tx, ty).addEntity(e);
-				if (entityLoadQueue.contains(e)) {
-					entityLoadQueue.remove(e);
-				}
-			} catch (Exception ex) {
-				if (!entityLoadQueue.contains(e)) {
-					entityLoadQueue.add(e);
-				}
+		int tx = (int) (e.getX() / Tile.tileSize);
+		int ty = (int) (e.getY() / Tile.tileSize);
+		
+		try {
+			getChunkFromWorldTileCoords(tx, ty).addEntity(e);
+			if (entityLoadQueue.contains(e)) {
+				entityLoadQueue.remove(e);
+			}
+		} catch (Exception ex) {
+			if (!entityLoadQueue.contains(e)) {
+				entityLoadQueue.add(e);
 			}
 		}
-	}
-	
-	public void addToEntityToRenderQueue(Entity e) {
-		entityRenderQueue.add(e);
 	}
 	
 	public Color getAmbientLight() {
@@ -108,44 +86,13 @@ public class World {
 		ambientLightLevel = c;
 	}
 	
-	public void render() {
-		GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		
-		ArrayList<Chunk> cs = chunkm.getChunksInAABB(cam.getViewportBounds().shiftX0(-Chunk.chunkS * Tile.tileSize).shiftX1(Chunk.chunkS * Tile.tileSize).shiftY0(-Chunk.chunkS * Tile.tileSize).shiftY1(Chunk.chunkS * Tile.tileSize));
-		int regCount = 0;
-		
-		for (Chunk c : cs) {
-			if (!c.isTileMapGenerated()) {
-				cLoad.addChunk(c);
-			} else {
-				if (!c.isVBOGenerated()) {
-					c.generateVBO();
-					regCount++;
-				}
-				if (c.getBounds().intersects(cam.getViewportBounds()))
-					c.render();
-			}
+	public ArrayList<Entity> getLoadedEntities() {
+		ArrayList<Chunk> lc = chunkm.getLoadedChunks();
+		ArrayList<Entity> ents = new ArrayList<Entity>();
+		for (Chunk c : lc) {
+			ents.addAll(c.getEntities());
 		}
-		
-		if (regCount != 0)
-			DebugMonitor.setVariableValue("Chunk Loads", regCount);
-		
-		entityRenderQueue.sort(Entity.ySorter);
-		for (Entity e : entityRenderQueue) {
-			AABB b0 = e.getBoundsForRendering();
-			if (b0 != null) {
-				if (b0.intersects(cam.getViewportBounds())) {
-					e.render(getCam());
-				}
-			} else {
-				e.render(getCam());
-			}
-		}
-		entityRenderQueue.clear();
-		
-		for (Particle p : particles) {
-			p.render();
-		}
+		return ents;
 	}
 	
 	public void registerEntityTick(Entity e) {
@@ -189,7 +136,7 @@ public class World {
 	public ArrayList<Entity> getEntitesInTile(int x, int y) {
 		Chunk c = getChunkFromWorldTileCoords(x, y);
 		if (c != null)
-			return c.getEntitiesInTile(convertToChunkX(x), convertToChunkY(y));
+			return c.getEntitiesInTile(MathHelper.convertToChunkTileX(x), MathHelper.convertToChunkTileY(y));
 		return null;
 	}
 
@@ -216,6 +163,14 @@ public class World {
 		}
 		return rValue;
 	}
+	
+	public Chunk getChunkWithForceLoad(int x, int y) {
+		return chunkm.getChunkWithForceLoad(x, y);
+	}
+	
+	public void forceChunkTileMapLoad(int x, int y) {
+		chunkm.getChunkWithForceLoad(x, y).addToLoader(cLoad);
+	}
 
 	public void sendAttackCommand(AABB b, Mob m, int d, int k) {
 		ArrayList<Entity> ents = getEntitiesInAABB(b);
@@ -236,41 +191,18 @@ public class World {
 			}
 		}
 	}
-
-	public void addParticle(Particle p) {
-		p.initWorld(this);
-		particles.add(p);
-	}
 	
 	public Chunk getChunkFromWorldTileCoords(int x, int y) {
-		int cx = 0;
-		int cy = 0;
-		
-		if (x >= 0)
-			cx = x /= Chunk.chunkS;
-		else
-			cx = (int) Math.floor((float) x / (float) Chunk.chunkS);
-
-		if (y >= 0)
-			cy = y /= Chunk.chunkS;
-		else
-			cy = (int) Math.floor((float) y / (float) Chunk.chunkS);
+		int cx = MathHelper.getChunkXFromTileX(x);
+		int cy = MathHelper.getChunkYFromTileY(y);
 		
 		return chunkm.getChunk(cx, cy);
-	}
-	
-	public int convertToChunkX(int x) {
-		return MathHelper.betterMod(x, Chunk.chunkS);
-	}
-	
-	public int convertToChunkY(int y) {
-		return MathHelper.betterMod(y, Chunk.chunkS);
 	}
 	
 	public Color getTileColor(int x, int y) {
 		Chunk c = getChunkFromWorldTileCoords(x, y);
 		if (c != null)
-			return c.getTileColor(convertToChunkX(x), convertToChunkY(y));
+			return c.getTileColor(MathHelper.convertToChunkTileX(x), MathHelper.convertToChunkTileY(y));
 		else
 			return new Color(255, 255, 255);
 	}
@@ -278,29 +210,26 @@ public class World {
 	public Tile getTile(int x, int y) {
 		Chunk c = getChunkFromWorldTileCoords(x, y);
 		if (c != null)
-			return c.getTile(convertToChunkX(x), convertToChunkY(y));
-		else
-			return null;
+			return c.getTile(MathHelper.convertToChunkTileX(x), MathHelper.convertToChunkTileY(y));
+		return null;
 	}
 
 	public void setTile(Tile t, int x, int y) {
 		Chunk c = getChunkFromWorldTileCoords(x, y);
 		if (c != null)
-			c.setTile(t, convertToChunkX(x), convertToChunkY(y));
+			c.setTile(t, MathHelper.convertToChunkTileX(x), MathHelper.convertToChunkTileY(y));
 	}
 	
 	public void tick() {
 		time.tick();
 		
-		AABB b = cam.getViewportBounds().shiftX0(4 * -Chunk.chunkS * Tile.tileSize).shiftX1(4 * Chunk.chunkS * Tile.tileSize).shiftY0(4 * -Chunk.chunkS * Tile.tileSize).shiftY1(4 * Chunk.chunkS * Tile.tileSize);
-		ArrayList<Chunk> cs = chunkm.getChunksInAABB(b);
+		ArrayList<Chunk> cs = chunkm.getLoadedChunks();
 		
 		for (int i = 0; i < cs.size(); i++) {
 			Chunk c = cs.get(i);
 			if (c != null)
 				c.tick();
 		}
-		weather.tick();
 		
 		for (int i = 0; i < cs.size(); i++) {
 			Chunk c = cs.get(i);
@@ -312,26 +241,6 @@ public class World {
 			addEntity(entityLoadQueue.get(i));
 		}
 		
-		for (int i = 0; i < particles.size(); i++) {
-			Particle p = particles.get(i);
-			if (p.needsToBeRemoved()) {
-				particles.remove(p);
-				continue;
-			}
-			p.tick();
-		}
-		
 		tickedEntities.clear();
-	}
-
-	public ArrayList<Entity> getEntities() {
-		ArrayList<Entity> rValue = new ArrayList<Entity>();
-		for (int i = 0; i < entitiesInTiles.length; i++) {
-			ArrayList<Entity> tmp = entitiesInTiles[i];
-			for (Entity e : tmp) {
-				rValue.add(e);
-			}
-		}
-		return rValue;
 	}
 }

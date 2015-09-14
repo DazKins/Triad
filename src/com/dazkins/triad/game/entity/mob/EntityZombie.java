@@ -1,5 +1,6 @@
 package com.dazkins.triad.game.entity.mob;
 
+import com.dazkins.triad.game.entity.EntityIDStorage;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
@@ -14,7 +15,7 @@ import com.dazkins.triad.math.AABB;
 
 public class EntityZombie extends Mob {
 	public EntityZombie(World w, float x, float y) {
-		super(w, x, y, "zombie", 100);
+		super(w, EntityIDStorage.ZOMBIE, x, y, "zombie", 100);
 	}
 
 	public float getMovementSpeed() {
@@ -28,8 +29,6 @@ public class EntityZombie extends Mob {
 	public void tick() {
 		super.tick();
 		
-		model.addAnimation(new AnimationHumanoidIdle(this), 0, false);
-		
 		if (target != null) {
 			float tx = target.getX() - this.getX();
 			float ty = target.getY() - this.getY();
@@ -39,9 +38,7 @@ public class EntityZombie extends Mob {
 			float yv = (ty / mag) * getMovementSpeed();
 			
 			if (getFacingAttackArea(getFacing()).intersects(target.getAABB())) {
-				if (attemptAttack(getFacingAttackArea(getFacing()))) {
-					model.addAnimation(new AnimationZombieSlashing(this, getAttackCooldown()), 5, true);
-				}
+				attemptAttack(getFacingAttackArea(getFacing()));
 			}
 			
 			setFacingBasedOnVelocities(xv, yv);
@@ -52,16 +49,7 @@ public class EntityZombie extends Mob {
 		xa *= 0.75;
 		ya *= 0.75;
 		
-		if (getSpeed() > 0.0001f)
-			model.addAnimation(new AnimationZombieWalking(this, getSpeed()), 1, false);
-		
 		super.move();
-		
-		model.updateAnimationState(this);
-	}
-	
-	protected void initModel() {
-		model = new ModelZombie(Image.getImageFromName("zombie"));
 	}
 	
 	protected int getBaseDamage() {
@@ -93,7 +81,7 @@ public class EntityZombie extends Mob {
 	
 	public Class<? extends Mob>[] getHostileMobs() {
 		Class<? extends Mob>[] r = new Class[1];
-		r[0] = EntityPlayer.class;
+		r[0] = EntityPlayerClient.class;
 		return r;
 	}
 	
