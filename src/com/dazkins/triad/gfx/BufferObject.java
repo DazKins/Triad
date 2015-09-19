@@ -6,9 +6,10 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 
-public class BufferObject {
+public class BufferObject
+{
 	public static BufferObject shadow;
-	
+
 	private static boolean useVBO;
 
 	private float[] rawBuffer;
@@ -34,40 +35,48 @@ public class BufferObject {
 	private float u;
 	private float v;
 
-	private static void initStaticVBOs() {
+	private static void initStaticVBOs()
+	{
 		shadow = new BufferObject(36);
 		shadow.start();
-			shadow.setRGB(0.0f, 0.0f, 0.0f);
-			shadow.setA(0.2f);
-			shadow.addVertex(0, 0);
-			shadow.addVertex(32, 0);
-			shadow.addVertex(32, 32);
-			shadow.addVertex(0, 32);
+		shadow.setRGB(0.0f, 0.0f, 0.0f);
+		shadow.setA(0.2f);
+		shadow.addVertex(0, 0);
+		shadow.addVertex(32, 0);
+		shadow.addVertex(32, 32);
+		shadow.addVertex(0, 32);
 		shadow.stop();
 	}
-	
-	public static void init() {
+
+	public static void init()
+	{
 		float version = Float.parseFloat(GL11.glGetString(GL11.GL_VERSION).substring(0, 3));
 		System.err.println("OpenGL version: " + version);
-		if (version <= 1.5) {
+		if (version <= 1.5)
+		{
 			useVBO = false;
 			System.err.println("VBOs disabled");
-		} else {
+		} else
+		{
 			useVBO = true;
 			System.err.println("VBOs enabled");
 		}
 		initStaticVBOs();
 	}
-	
-	public void deleteBuffer() {
+
+	public void deleteBuffer()
+	{
 		GL15.glDeleteBuffers(ID);
 	}
 
-	public BufferObject(int size) {
-		if (useVBO) {
+	public BufferObject(int size)
+	{
+		if (useVBO)
+		{
 			rawBuffer = new float[size];
 			dataBuffer = BufferUtils.createFloatBuffer(size);
-		} else {
+		} else
+		{
 			if (ID == 0)
 				ID = GL11.glGenLists(1);
 		}
@@ -75,10 +84,12 @@ public class BufferObject {
 		setRGB(1.0f, 1.0f, 1.0f);
 	}
 
-	public void start() {
+	public void start()
+	{
 		if (useVBO)
 			vertexCount = 0;
-		else {
+		else
+		{
 			GL11.glNewList(ID, GL11.GL_COMPILE);
 			GL11.glBegin(GL11.GL_QUADS);
 		}
@@ -87,59 +98,70 @@ public class BufferObject {
 		useTextures = false;
 	}
 
-	public void stop() {
+	public void stop()
+	{
 		editing = false;
-		if (useVBO) {
+		if (useVBO)
+		{
 			compileVBO();
 			generateVBO();
-		} else {
+		} else
+		{
 			GL11.glEnd();
 			GL11.glEndList();
 		}
 	}
 
-	private void compileVBO() {
+	private void compileVBO()
+	{
 		dataBuffer.put(rawBuffer);
 		dataBuffer.flip();
 	}
 
-	private void generateVBO() {
+	private void generateVBO()
+	{
 		ID = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dataBuffer, GL15.GL_STATIC_DRAW);
 	}
 
-	public void setRGB(float r, float g, float b) {
+	public void setRGB(float r, float g, float b)
+	{
 		useColors = true;
 		this.r = r;
 		this.g = g;
 		this.b = b;
 	}
-	
-	public void setColor(Color c) {
+
+	public void setColor(Color c)
+	{
 		useColors = true;
 		this.r = c.getDR();
 		this.g = c.getDG();
 		this.b = c.getDB();
 	}
-	
-	public void setA(float a) {
+
+	public void setA(float a)
+	{
 		useColors = true;
 		this.a = a;
 	}
 
-	public void setUV(float u, float v) {
+	public void setUV(float u, float v)
+	{
 		if (!useTextures)
 			System.err.println("WARNING! No image assigned");
 		this.u = u;
 		this.v = v;
 	}
 
-	public void setDepth(float z) {
+	public void setDepth(float z)
+	{
 		this.z = z;
 	}
 
-	public void addVertex(float x, float y) {
+	public void addVertex(float x, float y)
+	{
 		this.x = x;
 		this.y = y;
 		loadVertexDataIntoArray();
@@ -150,12 +172,14 @@ public class BufferObject {
 	// addVertexWithUV(x, y, 0.0f, u, v);
 	// }
 
-	public void loadVertexDataIntoArray() {
-		if (useVBO) {
+	public void loadVertexDataIntoArray()
+	{
+		if (useVBO)
+		{
 			rawBuffer[vertexCount * 9] = x;
 			rawBuffer[vertexCount * 9 + 1] = y;
 			rawBuffer[vertexCount * 9 + 2] = z;
-			
+
 			rawBuffer[vertexCount * 9 + 3] = r;
 			rawBuffer[vertexCount * 9 + 4] = g;
 			rawBuffer[vertexCount * 9 + 5] = b;
@@ -163,7 +187,8 @@ public class BufferObject {
 
 			rawBuffer[vertexCount * 9 + 7] = u;
 			rawBuffer[vertexCount * 9 + 8] = v;
-		} else {
+		} else
+		{
 			// TODO reconsider Display List loading
 			GL11.glTexCoord2f(u, v);
 			if (useColors)
@@ -172,30 +197,35 @@ public class BufferObject {
 		}
 	}
 
-	public void bindImage(Image i) {
+	public void bindImage(Image i)
+	{
 		if (!editing)
 			throw new RuntimeException("Buffer object not editable!");
 
-		if (!useTextures) {
+		if (!useTextures)
+		{
 			this.useTextures = true;
 			img = i;
-		} else if (!useTextures && i != img) {
+		} else if (!useTextures && i != img)
+		{
 			throw new RuntimeException("Only one texture per buffer is supported!");
 		}
 	}
 
-	public void render() {
+	public void render()
+	{
 		if (editing)
 			throw new RuntimeException("Buffer is still being edited!");
 
-		if (useTextures) {
+		if (useTextures)
+		{
 			img.bindGLTexture();
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
-		}
-		else
+		} else
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
 
-		if (useVBO) {
+		if (useVBO)
+		{
 			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 			if (useColors)
 				GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
@@ -203,12 +233,12 @@ public class BufferObject {
 				GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
-			
+
 			GL11.glVertexPointer(3, GL11.GL_FLOAT, 4 * 9, 0);
-				
+
 			if (useColors)
 				GL11.glColorPointer(4, GL11.GL_FLOAT, 4 * 9, 4 * 3);
-			
+
 			if (useTextures)
 				GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 4 * 9, 4 * 7);
 
@@ -220,7 +250,8 @@ public class BufferObject {
 			if (useColors)
 				GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
 			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-		} else {
+		} else
+		{
 			GL11.glCallList(ID);
 		}
 	}

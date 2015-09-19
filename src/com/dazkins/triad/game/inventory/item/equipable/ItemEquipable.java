@@ -6,23 +6,28 @@ import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.model.NormalisedRenderable;
 import com.dazkins.triad.gfx.model.Quad;
 
-public abstract class ItemEquipable extends Item {
+public abstract class ItemEquipable extends Item
+{
 	private Quad equipQuads[];
-	
-	public ItemEquipable(String name) {
+
+	public ItemEquipable(String name)
+	{
 		super(name, false);
 		equipQuads = new Quad[20];
 	}
-	
-	public Quad getEquipQuad(int f) {
+
+	public Quad getEquipQuad(int f)
+	{
 		return equipQuads[f];
 	}
-	
-	public boolean hasEquipQuad(int f) {
+
+	public boolean hasEquipQuad(int f)
+	{
 		return equipQuads[f] != null;
 	}
-	
-	public void assignEquipQuad(Quad q, int f) {
+
+	public void assignEquipQuad(Quad q, int f)
+	{
 		equipQuads[f] = q;
 	}
 }

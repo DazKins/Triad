@@ -8,8 +8,10 @@ import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
 
-public class ModelZombie extends ModelHumanoid {
-	public ModelZombie(Image i) {
+public class ModelZombie extends ModelHumanoid
+{
+	public ModelZombie(Image i)
+	{
 		super(i);
 	}
 }

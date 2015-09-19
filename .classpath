@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="res"/>
+	<classpathentry kind="src" path="src" />
+	<classpathentry kind="con"
+		path="org.eclipse.jdt.launching.JRE_CONTAINER" />
+	<classpathentry kind="lib" path="res" />
 	<classpathentry kind="lib" path="libs/lwjgl.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/G:/dev/Triad/doc/javadoc.zip!/"/>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Triad/libs/native/windows/x64"/>
+			<attribute name="javadoc_location" value="jar:file:/G:/dev/Triad/doc/javadoc.zip!/" />
+			<attribute
+				name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY"
+				value="Triad/libs/native/windows/x64" />
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="libs/disruptor.jar"/>
-	<classpathentry kind="lib" path="libs/lwjgl_util.jar"/>
-	<classpathentry kind="lib" path="libs/kryonet-2.21-all.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="lib" path="libs/disruptor.jar" />
+	<classpathentry kind="lib" path="libs/lwjgl_util.jar" />
+	<classpathentry kind="lib" path="libs/kryonet-2.21-all.jar" />
+	<classpathentry kind="output" path="bin" />
 </classpath>

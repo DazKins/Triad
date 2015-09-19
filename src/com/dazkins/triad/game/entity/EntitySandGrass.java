@@ -5,13 +5,16 @@ import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.math.AABB;
 
-public class EntitySandGrass extends Entity {
+public class EntitySandGrass extends Entity
+{
 
-	public EntitySandGrass(World w, float x, float y) {
+	public EntitySandGrass(World w, float x, float y)
+	{
 		super(w, EntityIDStorage.SANDGRASS, x, y, "sandGrass");
 	}
 
-	public AABB getAABB() {
+	public AABB getAABB()
+	{
 		return null;
 	}
 }

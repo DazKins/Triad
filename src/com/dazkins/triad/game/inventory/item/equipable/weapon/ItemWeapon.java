@@ -2,24 +2,30 @@ package com.dazkins.triad.game.inventory.item.equipable.weapon;
 
 import com.dazkins.triad.game.inventory.item.equipable.ItemEquipable;
 
-public abstract class ItemWeapon extends ItemEquipable {
-	public ItemWeapon(String name) {
+public abstract class ItemWeapon extends ItemEquipable
+{
+	public ItemWeapon(String name)
+	{
 		super(name);
 	}
-	
-	public int getDamage() {
+
+	public int getDamage()
+	{
 		return 0;
 	}
-	
-	public int getKnockback() {
+
+	public int getKnockback()
+	{
 		return 0;
 	}
-	
-	public int getAttackCooldown() {
+
+	public int getAttackCooldown()
+	{
 		return 0;
 	}
-	
-	public int getAttackRange() {
+
+	public int getAttackRange()
+	{
 		return 0;
 	}
 }

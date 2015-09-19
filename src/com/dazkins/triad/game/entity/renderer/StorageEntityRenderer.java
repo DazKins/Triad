@@ -3,20 +3,24 @@ package com.dazkins.triad.game.entity.renderer;
 import com.dazkins.triad.game.entity.EntityIDStorage;
 
 @SuppressWarnings("unchecked")
-
-public class StorageEntityRenderer {
+public class StorageEntityRenderer
+{
 	private static Class<? extends EntityRenderer>[] renderers = new Class[10];
-	
-	static {
+
+	static
+	{
 		renderers[EntityIDStorage.PLAYER] = EntityRendererPlayer.class;
 		renderers[EntityIDStorage.TREE] = EntityRendererTree.class;
 		renderers[EntityIDStorage.PIG] = EntityRendererPig.class;
 	}
-	
-	public static EntityRenderer recieveRenderer(int id) {
-		try {
+
+	public static EntityRenderer recieveRenderer(int id)
+	{
+		try
+		{
 			return (EntityRenderer) renderers[id].newInstance();
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			return null;
 		}
 	}

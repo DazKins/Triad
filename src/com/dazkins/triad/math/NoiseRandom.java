@@ -4,28 +4,33 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class NoiseRandom {
+public class NoiseRandom
+{
 	private Random r = new Random();
-	
+
 	private Map<Integer, Map<Integer, Float[]>> map;
-	
-	public NoiseRandom() {
+
+	public NoiseRandom()
+	{
 		map = new HashMap<Integer, Map<Integer, Float[]>>();
 	}
-	
-	public synchronized Float[] generateValue(int x, int y) {
-		if (!map.containsKey(x)) {
+
+	public synchronized Float[] generateValue(int x, int y)
+	{
+		if (!map.containsKey(x))
+		{
 			map.put(x, new HashMap<Integer, Float[]>());
 		}
-		
+
 		Map<Integer, Float[]> m = map.get(x);
-		
+
 		if (m == null)
 			map.put(x, new HashMap<Integer, Float[]>());
-		
+
 		m = map.get(x);
-		
-		if (!m.containsKey(y)) {
+
+		if (!m.containsKey(y))
+		{
 			float xx = r.nextFloat() * 2 - 1;
 			float yy = r.nextFloat() * 2 - 1;
 			float mag = (float) Math.sqrt(xx * xx + yy * yy);
@@ -37,7 +42,7 @@ public class NoiseRandom {
 			m.put(y, v);
 			return v;
 		}
-		
+
 		return map.get(x).get(y);
 	}
 }

@@ -11,70 +11,84 @@ import com.dazkins.triad.game.inventory.item.equipable.armour.head.ItemArmourHea
 import com.dazkins.triad.game.inventory.item.equipable.armour.legs.ItemArmourLegs;
 import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
 
-public class EquipmentInventory extends Inventory {
+public class EquipmentInventory extends Inventory
+{
 	public static final int HEAD = 0, BODY = 1, LEGS = 2, FEET = 3, WEAPON = 4;
-	
-	public boolean addItemStack(ItemStack is) {
+
+	public boolean addItemStack(ItemStack is)
+	{
 		Item it = is.getItemType();
-		if (it instanceof ItemArmourHead) {
+		if (it instanceof ItemArmourHead)
+		{
 			return addItemStack(is, HEAD);
-		}
-		else if (it instanceof ItemArmourBody) {
+		} else if (it instanceof ItemArmourBody)
+		{
 			return addItemStack(is, BODY);
-		}
-		else if (it instanceof ItemArmourLegs) {
+		} else if (it instanceof ItemArmourLegs)
+		{
 			return addItemStack(is, LEGS);
-		}
-		else if (it instanceof ItemArmourFeet) {
+		} else if (it instanceof ItemArmourFeet)
+		{
 			return addItemStack(is, FEET);
-		}
-		else if (it instanceof ItemWeapon) {
+		} else if (it instanceof ItemWeapon)
+		{
 			return addItemStack(is, WEAPON);
 		}
 		return false;
 	}
-	
-	public ItemArmourHead getHeadItem() {
+
+	public ItemArmourHead getHeadItem()
+	{
 		ItemStack is = getItemStack(HEAD);
-		if (is != null) {
+		if (is != null)
+		{
 			return (ItemArmourHead) is.getItemType();
 		}
 		return null;
 	}
-	
-	public ItemArmourBody getBodyItem() {
+
+	public ItemArmourBody getBodyItem()
+	{
 		ItemStack is = getItemStack(BODY);
-		if (is != null) {
+		if (is != null)
+		{
 			return (ItemArmourBody) is.getItemType();
 		}
 		return null;
 	}
-	
-	public ItemArmourLegs getLegsItem() {
+
+	public ItemArmourLegs getLegsItem()
+	{
 		ItemStack is = getItemStack(LEGS);
-		if (is != null) {
+		if (is != null)
+		{
 			return (ItemArmourLegs) is.getItemType();
 		}
 		return null;
 	}
-	
-	public ItemArmourFeet getFeetItem() {
+
+	public ItemArmourFeet getFeetItem()
+	{
 		ItemStack is = getItemStack(FEET);
-		if (is != null) {
+		if (is != null)
+		{
 			return (ItemArmourFeet) is.getItemType();
 		}
 		return null;
 	}
-	
-	public ItemWeapon getWeaponItem() {
+
+	public ItemWeapon getWeaponItem()
+	{
 		ItemStack is = getItemStack(WEAPON);
-		if (is != null) {
+		if (is != null)
+		{
 			return (ItemWeapon) is.getItemType();
 		}
 		return null;
 	}
-	
-	public ArrayList<ItemArmour> getArmour(){
+
+	public ArrayList<ItemArmour> getArmour()
+	{
 		ArrayList<ItemArmour> rValue = new ArrayList<ItemArmour>();
 		if (getHeadItem() != null)
 			rValue.add(getHeadItem());
@@ -84,23 +98,26 @@ public class EquipmentInventory extends Inventory {
 			rValue.add(getLegsItem());
 		if (getFeetItem() != null)
 			rValue.add(getFeetItem());
-		
+
 		return rValue;
 	}
-	
-	public boolean addItemStack(ItemStack is, int i) {
-		if (getItemStack(i) == null) {
-			if (is.getItemType() != null) {
+
+	public boolean addItemStack(ItemStack is, int i)
+	{
+		if (getItemStack(i) == null)
+		{
+			if (is.getItemType() != null)
+			{
 				items[i] = is;
 				return true;
-			}
-			else
+			} else
 				System.err.println("Item type added was null!");
 		}
 		return false;
 	}
-	
-	public EquipmentInventory() {
+
+	public EquipmentInventory()
+	{
 		super(5, 5);
 	}
 }

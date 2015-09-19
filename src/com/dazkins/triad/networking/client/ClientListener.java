@@ -11,20 +11,26 @@ import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-public class ClientListener extends Listener {
+public class ClientListener extends Listener
+{
 	private TriadClient client;
-	
-	public ClientListener(TriadClient tc) {
+
+	public ClientListener(TriadClient tc)
+	{
 		client = tc;
 	}
 
-	public void received(Connection con, Object o) {
-		if (o instanceof Packet) {
+	public void received(Connection con, Object o)
+	{
+		if (o instanceof Packet)
+		{
 			Packet p = (Packet) o;
-			if (p instanceof Packet000RawMessage) {
-				System.out.println("[CLIENT] Recieved raw message from server: " + ((Packet000RawMessage)p).getMsg());
+			if (p instanceof Packet000RawMessage)
+			{
+				System.out.println("[CLIENT] Recieved raw message from server: " + ((Packet000RawMessage) p).getMsg());
 			}
-			if (p instanceof Packet003ChunkData) {
+			if (p instanceof Packet003ChunkData)
+			{
 				Packet003ChunkData p0 = (Packet003ChunkData) p;
 				int x = p0.getX();
 				int y = p0.getY();
@@ -34,36 +40,45 @@ public class ClientListener extends Listener {
 				ChunkData d = new ChunkData(c, tileData, lightData);
 				client.addRecievedChunk(d);
 			}
-			if (p instanceof Packet004LoginRequestResponse) {
+			if (p instanceof Packet004LoginRequestResponse)
+			{
 				Packet004LoginRequestResponse p0 = (Packet004LoginRequestResponse) p;
 				client.registerPlayerID(p0.getChosenPlayerID());
-				if (p0.isAccepted()) {
+				if (p0.isAccepted())
+				{
 					System.out.println("[CLIENT] Login accepted");
 				}
 			}
-			if (p instanceof Packet006EntityPositionUpdate) {
+			if (p instanceof Packet006EntityPositionUpdate)
+			{
 				Packet006EntityPositionUpdate p0 = (Packet006EntityPositionUpdate) p;
 				int gID = p0.getgID();
 				int tID = p0.gettID();
 				float x = p0.getX();
 				float y = p0.getY();
-				if (gID != client.getPlayerID()) {
-					client.addEntityUpdate(new EntityUpdate(gID, tID, x, y));
+				int facing = p0.getFacing();
+				if (gID != client.getPlayerID())
+				{
+					client.addEntityUpdate(new EntityUpdate(gID, tID, x, y, facing));
 				}
 			}
 		}
 	}
-	
-	public void connected(Connection c) {
+
+	public void connected(Connection c)
+	{
 		System.out.println("[CLIENT] Connected");
 		Packet001LoginRequest p = new Packet001LoginRequest();
 		p.setUsername(client.getUsername());
 		client.sendPacket(p);
 	}
-	
-	public void disconnected(Connection c) {
+
+	public void disconnected(Connection c)
+	{
 		System.out.println("[CLIENT] Disconnected");
 	}
-	
-	public void idle (Connection c) { }
+
+	public void idle(Connection c)
+	{
+	}
 }

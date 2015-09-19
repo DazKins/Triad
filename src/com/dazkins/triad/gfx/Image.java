@@ -13,77 +13,95 @@ import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-public class Image {
+public class Image
+{
 	private static Map<String, Image> nameToImage;
-	
+
 	private BufferedImage img;
 	private int width, height;
 	private int texID;
 
-	public BufferedImage getRawImage() {
+	public BufferedImage getRawImage()
+	{
 		return img;
 	}
 
-	public int getWidth() {
+	public int getWidth()
+	{
 		return width;
 	}
 
-	public int getHeight() {
+	public int getHeight()
+	{
 		return height;
 	}
-	
-	public static void processAndLoadFile(File f) {
-		try {
-			if (f.isFile()) {
-				if (f.getAbsolutePath().endsWith(".png")) {
+
+	public static void processAndLoadFile(File f)
+	{
+		try
+		{
+			if (f.isFile())
+			{
+				if (f.getAbsolutePath().endsWith(".png"))
+				{
 					Image im = new Image(f);
 					nameToImage.put(f.getName().replace(".png", ""), im);
 				}
-			} else if (f.isDirectory()) {
+			} else if (f.isDirectory())
+			{
 				File[] files = f.listFiles();
 				for (int i = 0; i < files.length; i++)
 					processAndLoadFile(files[i]);
 			}
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
 
-	public static boolean init() {
+	public static boolean init()
+	{
 		nameToImage = new HashMap<String, Image>();
-		try {
+		try
+		{
 			String imageFolder = "/art";
 			File imageDir = new File(Image.class.getResource(imageFolder).toURI());
-			
+
 			processAndLoadFile(imageDir);
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			return false;
 		}
 		return true;
 	}
 
-	public static Image getImageFromName(String name) {
+	public static Image getImageFromName(String name)
+	{
 		return nameToImage.get(name);
 	}
 
-	public void bindGLTexture() {
-		if (GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) != texID) {
+	public void bindGLTexture()
+	{
+		if (GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) != texID)
+		{
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
 		}
 	}
 
-	public Image(File f) throws IOException {
+	public Image(File f) throws IOException
+	{
 		loadSpriteSheet(f);
 	}
 
-	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z, float b) {
+	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z, float b)
+	{
 		float offset = 0.01f;
 
 		float tx0 = (tx / (float) width) + 0.001f;
 		float ty0 = (ty / (float) height) + 0.001f;
 		float tx1 = ((tx + tw) / (float) width) - 0.001f;
 		float ty1 = ((ty + th) / (float) height) - 0.001f;
-		
+
 		bo.bindImage(this);
 		bo.setDepth(z);
 		if (b != 0)
@@ -98,7 +116,8 @@ public class Image {
 		bo.addVertex(x + w, y);
 	}
 
-	private void loadSpriteSheet(File f) throws IOException {
+	private void loadSpriteSheet(File f) throws IOException
+	{
 		img = ImageIO.read(f);
 
 		width = img.getWidth();
@@ -108,8 +127,10 @@ public class Image {
 		ByteBuffer b = BufferUtils.createByteBuffer((width * height) * 4);
 		texID = GL11.glGenTextures();
 
-		for (int i = 0; i < pixels.length; i++) {
-			if (pixels[i] != 0xFFFF00FF) {
+		for (int i = 0; i < pixels.length; i++)
+		{
+			if (pixels[i] != 0xFFFF00FF)
+			{
 				byte aa = (byte) ((pixels[i] >> 24) & 0xFF);
 				byte rr = (byte) ((pixels[i] >> 16) & 0xFF);
 				byte gg = (byte) ((pixels[i] >> 8) & 0xFF);
@@ -119,7 +140,8 @@ public class Image {
 				b.put(gg);
 				b.put(bb);
 				b.put(aa);
-			} else {
+			} else
+			{
 				b.put((byte) 0);
 				b.put((byte) 0);
 				b.put((byte) 0);
@@ -130,8 +152,8 @@ public class Image {
 		b.flip();
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
 
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,GL11.GL_NEAREST);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER,GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
 		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, b);

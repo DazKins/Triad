@@ -13,46 +13,54 @@ import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Image;
 
-public class ModelHumanoid extends Model {
+public class ModelHumanoid extends Model
+{
 	protected Quad head[] = new Quad[4];
 	protected Quad rightArm[] = new Quad[4];
 	protected Quad leftArm[] = new Quad[4];
 	protected Quad body[] = new Quad[4];
 	protected Quad leftLeg[] = new Quad[4];
 	protected Quad rightLeg[] = new Quad[4];
-	
-	public Quad[] getHead() {
+
+	public Quad[] getHead()
+	{
 		return head;
 	}
 
-	public Quad[] getRightArm() {
+	public Quad[] getRightArm()
+	{
 		return rightArm;
 	}
 
-	public Quad[] getLeftArm() {
+	public Quad[] getLeftArm()
+	{
 		return leftArm;
 	}
 
-	public Quad[] getBody() {
+	public Quad[] getBody()
+	{
 		return body;
 	}
 
-	public Quad[] getLeftLeg() {
+	public Quad[] getLeftLeg()
+	{
 		return leftLeg;
 	}
 
-	public Quad[] getRightLeg() {
+	public Quad[] getRightLeg()
+	{
 		return rightLeg;
 	}
 
-	public ModelHumanoid(Image i) {
+	public ModelHumanoid(Image i)
+	{
 		super(i);
-		
+
 		int up = Facing.UP;
 		int down = Facing.DOWN;
 		int left = Facing.LEFT;
 		int right = Facing.RIGHT;
-		
+
 		head[up] = new Quad(-9, 32, 18, 16, 27, 0, 9, 8);
 		head[up].setRenderLayer(3);
 		head[down] = new Quad(-9, 32, 18, 16, 0, 0, 9, 8);
@@ -76,8 +84,7 @@ public class ModelHumanoid extends Model {
 		rightArm[right].setCenterOfRotation(1, 30);
 		rightArm[right].setRenderLayer(6);
 		addQuads(rightArm);
-		
-		
+
 		rightLeg[up] = new Quad(-1, 0, 10, 18, 20, 8, 5, 9);
 		rightLeg[up].setCenterOfRotation(4, 18);
 		rightLeg[up].setRenderLayer(-4);
@@ -91,8 +98,7 @@ public class ModelHumanoid extends Model {
 		rightLeg[right].setCenterOfRotation(1, 18);
 		rightLeg[right].setRenderLayer(2);
 		addQuads(rightLeg);
-		
-		
+
 		leftArm[up] = new Quad(-14, 16, 10, 18, 0, 17, 5, 9);
 		leftArm[up].setCenterOfRotation(-9, 30);
 		leftArm[up].setRenderLayer(-2);
@@ -106,8 +112,7 @@ public class ModelHumanoid extends Model {
 		leftArm[right].setCenterOfRotation(1, 30);
 		leftArm[right].setRenderLayer(-3);
 		addQuads(leftArm);
-		
-		
+
 		leftLeg[up] = new Quad(-9, 0, 10, 18, 20, 17, 5, 9);
 		leftLeg[up].setCenterOfRotation(-4, 18);
 		leftLeg[up].setRenderLayer(-3);
@@ -121,8 +126,7 @@ public class ModelHumanoid extends Model {
 		leftLeg[right].setCenterOfRotation(1, 18);
 		leftLeg[right].setRenderLayer(-2);
 		addQuads(leftLeg);
-		
-		
+
 		body[up] = new Quad(-9, 16, 18, 18, 0, 26, 9, 9);
 		body[up].setRenderLayer(0);
 		body[down] = new Quad(-9, 16, 18, 18, 9, 26, 9, 9);
@@ -133,13 +137,10 @@ public class ModelHumanoid extends Model {
 		body[right].setRenderLayer(0);
 		addQuads(body);
 	}
-		
-	public void render(Camera c, Entity e) {
-		setOffset(e.getX(), e.getY());
-		setDepth(Tile.yPosToDepthRelativeToCamera(c, e.getY()));
-		
-		int f = e.getFacing();
-		
+
+	public void render(int f)
+	{
+
 		enableSelectiveRendering();
 
 		addQuadToRenderQueue(body[f]);
@@ -148,117 +149,140 @@ public class ModelHumanoid extends Model {
 		addQuadToRenderQueue(leftLeg[f]);
 		addQuadToRenderQueue(rightArm[f]);
 		addQuadToRenderQueue(leftArm[f]);
-		
-		Mob m = (Mob) e;
-		EquipmentInventory einv = m.getEquipmentInventory();
-		
-		addHeadPiece(head[f], f, einv);
-		addBodyPiece(body[f], rightArm[f], leftArm[f], f, einv);
-		addLegPiece(rightLeg[f], leftLeg[f], f, einv);
-		addWeapon(rightArm[f], f, einv);
-		
+
+		//TODO reimplement
+//		Mob m = (Mob) e;
+//		EquipmentInventory einv = m.getEquipmentInventory();
+//
+//		addHeadPiece(head[f], f, einv);
+//		addBodyPiece(body[f], rightArm[f], leftArm[f], f, einv);
+//		addLegPiece(rightLeg[f], leftLeg[f], f, einv);
+//		addWeapon(rightArm[f], f, einv);
+
 		super.render();
 	}
-	
-	public void addWeapon(Quad q, int f, EquipmentInventory einv) {
+
+	public void addWeapon(Quad q, int f, EquipmentInventory einv)
+	{
 		ItemStack is = einv.getItemStack(EquipmentInventory.WEAPON);
-		if (is != null) {
+		if (is != null)
+		{
 			ItemWeapon item = (ItemWeapon) is.getItemType();
 			Quad q0 = null;
-			if (!item.hasEquipQuad(f)) {
+			if (!item.hasEquipQuad(f))
+			{
 				q0 = new Quad(-27, -30, 64, 64, (f + 1) * 32, 0, 32, 32);
 				q0.setRenderLayer(-0.1f);
 				q0.init(item.getImage());
 				q0.generate();
 				item.assignEquipQuad(q0, f);
-			} else {
+			} else
+			{
 				q0 = item.getEquipQuad(f);
 			}
 			q.addTemporaryChildQuad(q0);
 		}
 	}
-	
-	public void addHeadPiece(Quad q, int f, EquipmentInventory einv) {
+
+	public void addHeadPiece(Quad q, int f, EquipmentInventory einv)
+	{
 		ItemStack is = einv.getItemStack(EquipmentInventory.HEAD);
-		if (is != null) {
+		if (is != null)
+		{
 			ItemArmourHead item = (ItemArmourHead) is.getItemType();
 			Quad q0 = null;
-			if (!item.hasEquipQuad(f)) {
+			if (!item.hasEquipQuad(f))
+			{
 				q0 = new Quad(-24, -20, 64, 64, (f + 1) * 32, 0, 32, 32);
 				q0.setRenderLayer(0.1f);
 				q0.init(item.getImage());
 				q0.generate();
 				item.assignEquipQuad(q0, f);
-			} else {
+			} else
+			{
 				q0 = item.getEquipQuad(f);
 			}
 			q.addTemporaryChildQuad(q0);
 		}
 	}
-	
-	public void addLegPiece(Quad rl, Quad ll, int f, EquipmentInventory einv) {
+
+	public void addLegPiece(Quad rl, Quad ll, int f, EquipmentInventory einv)
+	{
 		ItemStack is = einv.getItemStack(EquipmentInventory.LEGS);
-		if (is != null) {
+		if (is != null)
+		{
 			ItemArmourLegs item = (ItemArmourLegs) is.getItemType();
 			Quad q0 = null;
-			if (!item.hasEquipQuad(f)) {
+			if (!item.hasEquipQuad(f))
+			{
 				q0 = new Quad(-24, -20, 64, 64, (f + 1) * 32, 0, 32, 32);
 				q0.setRenderLayer(0.1f);
 				q0.init(item.getImage());
 				q0.generate();
 				item.assignEquipQuad(q0, f);
-			} else {
+			} else
+			{
 				q0 = item.getEquipQuad(f);
 			}
 			rl.addTemporaryChildQuad(q0);
 			Quad q1 = null;
-			if (!item.hasEquipQuad(f + 4)) {
+			if (!item.hasEquipQuad(f + 4))
+			{
 				q1 = new Quad(-24, -20, 64, 64, (f + 1) * 32, 32, 32, 32);
 				q1.setRenderLayer(0.1f);
 				q1.init(item.getImage());
 				q1.generate();
 				item.assignEquipQuad(q1, f + 4);
-			} else {
+			} else
+			{
 				q1 = item.getEquipQuad(f + 4);
 			}
 			ll.addTemporaryChildQuad(q1);
 		}
 	}
-	
-	public void addBodyPiece(Quad b, Quad ra, Quad la, int f, EquipmentInventory einv) {
+
+	public void addBodyPiece(Quad b, Quad ra, Quad la, int f, EquipmentInventory einv)
+	{
 		ItemStack is = einv.getItemStack(EquipmentInventory.BODY);
-		if (is != null) {
+		if (is != null)
+		{
 			ItemArmourBody item = (ItemArmourBody) is.getItemType();
 			Quad q0 = null;
-			if (!item.hasEquipQuad(f)) {
+			if (!item.hasEquipQuad(f))
+			{
 				q0 = new Quad(-24, -20, 64, 64, (f + 1) * 32, 0, 32, 32);
 				q0.setRenderLayer(0.1f);
 				q0.init(item.getImage());
 				q0.generate();
 				item.assignEquipQuad(q0, f);
-			} else {
+			} else
+			{
 				q0 = item.getEquipQuad(f);
 			}
 			b.addTemporaryChildQuad(q0);
 			Quad q1 = null;
-			if (!item.hasEquipQuad(f + 4)) {
+			if (!item.hasEquipQuad(f + 4))
+			{
 				q1 = new Quad(-24, -20, 64, 64, (f + 1) * 32, 32, 32, 32);
 				q1.setRenderLayer(0.1f);
 				q1.init(item.getImage());
 				q1.generate();
 				item.assignEquipQuad(q1, f + 4);
-			} else {
+			} else
+			{
 				q1 = item.getEquipQuad(f + 4);
 			}
 			ra.addTemporaryChildQuad(q1);
 			Quad q2 = null;
-			if (!item.hasEquipQuad(f + 8)) {
+			if (!item.hasEquipQuad(f + 8))
+			{
 				q2 = new Quad(-24, -20, 64, 64, (f + 1) * 32, 64, 32, 32);
 				q2.setRenderLayer(0.1f);
 				q2.init(item.getImage());
 				q2.generate();
 				item.assignEquipQuad(q2, f + 8);
-			} else {
+			} else
+			{
 				q2 = item.getEquipQuad(f + 8);
 			}
 			la.addTemporaryChildQuad(q2);

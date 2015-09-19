@@ -2,24 +2,29 @@ package com.dazkins.triad.networking;
 
 import com.esotericsoftware.kryonet.Connection;
 
-public class TriadConnection {
+public class TriadConnection
+{
 	private String username;
 	private Connection connection;
-	
-	public TriadConnection(Connection c, String s) {
+
+	public TriadConnection(Connection c, String s)
+	{
 		connection = c;
 		username = s;
 	}
-	
-	public Connection getConnection() {
+
+	public Connection getConnection()
+	{
 		return connection;
 	}
-	
-	public String getUsername() {
+
+	public String getUsername()
+	{
 		return username;
 	}
-	
-	public String getIP() {
+
+	public String getIP()
+	{
 		return connection.getRemoteAddressTCP().getHostName();
 	}
 }

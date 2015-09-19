@@ -3,24 +3,27 @@ package com.dazkins.triad.game.world;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 
-public class TimeCycle {
+public class TimeCycle
+{
 	private static final int DAY = 60 * 60 * 10;
 	private static final int HALFDAY = DAY / 2;
-	
+
 	private static final int TRANSTIME = 60 * 30;
-	
+
 	private int curTime;
 	private World world;
-	
+
 	private Color dayLight = new Color(210, 210, 210);
 	private Color nightLight = new Color(20, 20, 20);
-	
-	public TimeCycle(World w) {
+
+	public TimeCycle(World w)
+	{
 		curTime = 16000;
 		this.world = w;
 	}
-	
-	public void tick() {
+
+	public void tick()
+	{
 		int relTime = curTime % DAY;
 
 		if (relTime >= HALFDAY - TRANSTIME / 2 && relTime <= HALFDAY + TRANSTIME / 2)
@@ -33,25 +36,28 @@ public class TimeCycle {
 			world.setAmbientLight(dayLight);
 		else if (relTime > HALFDAY + TRANSTIME / 2)
 			world.setAmbientLight(nightLight);
-				
-		DebugMonitor.setVariableValue("Time", getTime() + " (" + getRelTime() + ")" +  " (" + getDayOrNight() + ")");
-		
+
+		DebugMonitor.setVariableValue("Time", getTime() + " (" + getRelTime() + ")" + " (" + getDayOrNight() + ")");
+
 		curTime++;
 	}
-	
-	public int getTime() {
+
+	public int getTime()
+	{
 		return curTime;
 	}
-	
-	public int getRelTime() {
+
+	public int getRelTime()
+	{
 		return curTime % DAY;
 	}
-	
-	public String getDayOrNight() {
+
+	public String getDayOrNight()
+	{
 		int relTime = curTime % DAY;
 		if (relTime < HALFDAY)
 			return "day";
-		else 
+		else
 			return "night";
 	}
 }

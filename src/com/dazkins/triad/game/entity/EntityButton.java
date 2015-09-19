@@ -9,36 +9,44 @@ import com.dazkins.triad.gfx.OpenGLHelper;
 import com.dazkins.triad.gfx.model.ModelButton;
 import com.dazkins.triad.math.AABB;
 
-public class EntityButton extends Entity implements Activeatable {
+public class EntityButton extends Entity implements Activeatable
+{
 	private ArrayList<Activeatable> triggers;
-	
-	public EntityButton(World w, float x, float y) {
+
+	public EntityButton(World w, float x, float y)
+	{
 		super(w, EntityIDStorage.BUTTON, x, y, "button");
 		triggers = new ArrayList<Activeatable>();
 	}
-	
-	public EntityButton(World w, float x, float y, Activeatable a) {
+
+	public EntityButton(World w, float x, float y, Activeatable a)
+	{
 		super(w, EntityIDStorage.BUTTON, x, y, "button");
 		triggers = new ArrayList<Activeatable>();
 		triggers.add(a);
 	}
-	
-	public EntityButton(World w, float x, float y, ArrayList<Activeatable> a) {
+
+	public EntityButton(World w, float x, float y, ArrayList<Activeatable> a)
+	{
 		super(w, EntityIDStorage.BUTTON, x, y, "button");
 		triggers = a;
 	}
-	
-	public void tick() {
-		
+
+	public void tick()
+	{
+
 	}
 
-	public AABB getAABB() {
+	public AABB getAABB()
+	{
 		return new AABB(x - 16, y, x + 16, y + 32);
 	}
 
-	public void onActivate(Entity e) {
+	public void onActivate(Entity e)
+	{
 		System.out.println(this + " is triggered by " + e + "!");
-		for (int i = 0; i < triggers.size(); i++) {
+		for (int i = 0; i < triggers.size(); i++)
+		{
 			triggers.get(i).onActivate(e);
 		}
 	}

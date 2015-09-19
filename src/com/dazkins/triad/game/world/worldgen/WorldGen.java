@@ -8,48 +8,55 @@ import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.math.PerlinNoiseMap;
 
-public class WorldGen {
+public class WorldGen
+{
 	private World world;
-	
+
 	private PerlinNoiseMap worldNoise;
 	private PerlinNoiseMap foliageNoise;
-	
+
 	private float waterLimit;
-	
-	public WorldGen(World w) {
+
+	public WorldGen(World w)
+	{
 		worldNoise = new PerlinNoiseMap(0.6f, 8, 1 / 2048.0f);
 		worldNoise.checkForConsistencyCorrection();
 		foliageNoise = new PerlinNoiseMap(0.6f, 4, 1 / 2048.0f);
-		
+
 		world = w;
-		
+
 		waterLimit = 0.2f;
 	}
-	
-	public float getWaterLimit() {
+
+	public float getWaterLimit()
+	{
 		return waterLimit;
 	}
-	
-	public PerlinNoiseMap getWorldNoise() {
+
+	public PerlinNoiseMap getWorldNoise()
+	{
 		return worldNoise;
 	}
-	
-	public PerlinNoiseMap getFoliageNoise() {
+
+	public PerlinNoiseMap getFoliageNoise()
+	{
 		return foliageNoise;
 	}
-	
-	public void generate(int x, int y) {
+
+	public void generate(int x, int y)
+	{
 		float ws = worldNoise.sample(x, y);
-		
+
 		if (ws < waterLimit)
 			world.setTile(Tile.water, x, y);
-		else if (ws < waterLimit + 0.05f) {
+		else if (ws < waterLimit + 0.05f)
+		{
 			float r = (float) Math.random() * 1000.0f;
 			if (r < 2)
 				world.addEntity(new EntitySandGrass(world, x * Tile.tileSize, y * Tile.tileSize));
 			world.setTile(Tile.sand, x, y);
-		}
-		else {
+		} else
+		{
 			float r = (float) Math.random() * 10000.0f;
 			if (r < 10)
 				world.addEntity(new EntityTree(world, x * Tile.tileSize, y * Tile.tileSize));

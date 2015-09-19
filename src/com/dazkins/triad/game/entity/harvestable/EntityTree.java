@@ -9,23 +9,29 @@ import com.dazkins.triad.gfx.model.ModelTree;
 import com.dazkins.triad.gfx.model.animation.AnimationTreeShake;
 import com.dazkins.triad.math.AABB;
 
-public class EntityTree extends EntityHarvestable {
-	public EntityTree(World w, float x, float y) {
+public class EntityTree extends EntityHarvestable
+{
+	public EntityTree(World w, float x, float y)
+	{
 		super(w, EntityIDStorage.TREE, x, y, "tree", 30);
 	}
-	
-	public void dropLoot() {
+
+	public void dropLoot()
+	{
 		Item.dropItemStack(world, x, y, Item.log, (int) (Math.random() * 3) + 1);
 	}
 
-	public void tick() {
+	public void tick()
+	{
 	}
 
-	public void harvest(int d) {
+	public void harvest(int d)
+	{
 		super.harvest(d);
 	}
 
-	public AABB getAABB() {
+	public AABB getAABB()
+	{
 		return new AABB(x - 16, y - 5, x + 16, y + 10);
 	}
 }

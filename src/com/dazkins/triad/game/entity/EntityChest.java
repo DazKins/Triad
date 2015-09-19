@@ -7,24 +7,30 @@ import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.model.ModelChest;
 import com.dazkins.triad.math.AABB;
 
-public class EntityChest extends Entity implements Interactable {
+public class EntityChest extends Entity implements Interactable
+{
 	private Inventory inv;
-	
-	public EntityChest(World w, float x, float y) {
+
+	public EntityChest(World w, float x, float y)
+	{
 		super(w, EntityIDStorage.CHEST, x, y, "chest");
 		inv = new Inventory(9, 5);
 	}
 
-	public AABB getAABB() {
+	public AABB getAABB()
+	{
 		return new AABB(x - 32, y - 3, x + 32, y + 7);
 	}
-	
-	public Inventory getInventory() {
+
+	public Inventory getInventory()
+	{
 		return inv;
 	}
 
-	public void onInteract(Entity e) {
-		if (e instanceof EntityPlayerClient) {
+	public void onInteract(Entity e)
+	{
+		if (e instanceof EntityPlayerClient)
+		{
 			((EntityPlayerClient) e).setInteractingObject(this);
 		}
 	}

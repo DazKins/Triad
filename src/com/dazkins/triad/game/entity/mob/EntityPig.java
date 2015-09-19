@@ -9,25 +9,30 @@ import com.dazkins.triad.gfx.model.ModelPig;
 import com.dazkins.triad.gfx.model.animation.AnimationQuadrupedWalking;
 import com.dazkins.triad.math.AABB;
 
-public class EntityPig extends Mob {
+public class EntityPig extends Mob
+{
 	private boolean moving;
 	private float dir;
-	
-	public EntityPig(World w, float x, float y, int h) {
+
+	public EntityPig(World w, float x, float y, int h)
+	{
 		super(w, EntityIDStorage.PIG, x, y, "pig", h);
 		moving = true;
 		dir = (float) (Math.random() * Math.PI * 2);
 	}
 
-	public float getMovementSpeed() {
+	public float getMovementSpeed()
+	{
 		return 0.25f;
 	}
 
-	public int getMaxHealth() {
+	public int getMaxHealth()
+	{
 		return 10;
 	}
 
-	public AABB getAABB() {
+	public AABB getAABB()
+	{
 		if (getFacing() == Facing.RIGHT)
 			return new AABB(x - 24, y, x, y + 10);
 		if (getFacing() == Facing.LEFT)
@@ -37,32 +42,36 @@ public class EntityPig extends Mob {
 		else
 			return new AABB(x - 8, y, x + 8, y + 18);
 	}
-	
-	public boolean mayBePushedBy(Entity e) {
+
+	public boolean mayBePushedBy(Entity e)
+	{
 		return true;
 	}
-	
-	public void tick() {
+
+	public void tick()
+	{
 		super.tick();
 		int r = (int) (Math.random() * (moving ? 600 : 1000));
-		if (r == 1) {
+		if (r == 1)
+		{
 			moving = !moving;
 			dir = (float) (Math.random() * Math.PI * 2);
 		}
 
-		if (moving) {
+		if (moving)
+		{
 			float xa = (float) Math.cos(dir) * getMovementSpeed();
 			float ya = (float) Math.sin(dir) * getMovementSpeed();
-			
-			addXAMod(xa); 
-			addYAMod(ya); 
-			
+
+			addXAMod(xa);
+			addYAMod(ya);
+
 			setFacingBasedOnVelocities(xa, ya);
 		}
-		
+
 		xa *= 0.75;
 		ya *= 0.75;
-		
+
 		move();
 	}
 }

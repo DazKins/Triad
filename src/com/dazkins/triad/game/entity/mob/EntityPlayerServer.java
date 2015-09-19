@@ -10,60 +10,73 @@ import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.gfx.model.animation.AnimationHumanoidIdle;
 import com.dazkins.triad.math.AABB;
 
-public class EntityPlayerServer extends Mob {
+public class EntityPlayerServer extends Mob
+{
 	private Interactable interactingObject;
-	
-	public EntityPlayerServer(World w, float x, float y) {
+
+	public EntityPlayerServer(World w, float x, float y)
+	{
 		super(w, EntityIDStorage.PLAYER, x, y, "player", 1000);
 		this.inv = new Inventory(9, 5);
 	}
-	
-	public int getMaxHealth() {
+
+	public int getMaxHealth()
+	{
 		return 1000;
 	}
-	
-	public Interactable getInteractingObject() {
+
+	public Interactable getInteractingObject()
+	{
 		return interactingObject;
 	}
-	
-	public void setInteractingObject(Interactable i) {
+
+	public void setInteractingObject(Interactable i)
+	{
 		interactingObject = i;
 	}
 
-	public void tick() {
+	public void tick()
+	{
 		super.tick();
-		
+
 		move();
-		
+
 		xa *= 0.75;
 		ya *= 0.75;
 	}
-	
-	public boolean mayPass(Entity e) {
+
+	public boolean mayPass(Entity e)
+	{
 		return true;
 	}
-	
-	protected int getBaseDamage() {
+
+	protected int getBaseDamage()
+	{
 		return 5;
 	}
-	
-	protected int getBaseKnockback() {
+
+	protected int getBaseKnockback()
+	{
 		return 5;
 	}
-	
-	protected int getBaseAttackCooldown() {
+
+	protected int getBaseAttackCooldown()
+	{
 		return 40;
 	}
-	
-	protected int getBaseAttackRange() {
+
+	protected int getBaseAttackRange()
+	{
 		return 50;
 	}
 
-	public AABB getAABB() {
+	public AABB getAABB()
+	{
 		return new AABB(x - 8, y, x + 8, y + 10);
 	}
 
-	public float getMovementSpeed() {
+	public float getMovementSpeed()
+	{
 		return 1f;
 	}
 }

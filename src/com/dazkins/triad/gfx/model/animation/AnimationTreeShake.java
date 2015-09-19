@@ -4,21 +4,26 @@ import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.gfx.model.ModelTree;
 import com.dazkins.triad.gfx.model.Quad;
 
-public class AnimationTreeShake extends Animation {
-	public AnimationTreeShake(Entity e) {
+public class AnimationTreeShake extends Animation
+{
+	public AnimationTreeShake(Entity e)
+	{
 		super(e);
 	}
 
-	public void updateState(Entity e) {
+	public void updateState(Entity e)
+	{
 		super.updateState(e);
-		
-		if (verifyModel(ModelTree.class)) {
+
+		if (verifyModel(ModelTree.class))
+		{
 			ModelTree m = (ModelTree) parentModel;
 			Quad q = m.getQuad();
-			
+
 			q.setOffset((float) (Math.random() * 5) - 2.5f, (float) (Math.random() * 5) - 2.5f);
-			
-			if (animationTicks > 6) {
+
+			if (animationTicks > 6)
+			{
 				q.setOffset(0, 0);
 				stop();
 			}
