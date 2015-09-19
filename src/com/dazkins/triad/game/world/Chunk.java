@@ -41,7 +41,7 @@ public class Chunk implements Loadable
 	// Store light value from the previous tick
 	private Color[] pTileColors;
 
-	private boolean tilesGenerated;
+	private boolean tilesGenerated = false;
 
 	private boolean isBeingLoaded;
 

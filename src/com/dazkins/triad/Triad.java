@@ -49,7 +49,7 @@ public class Triad implements Runnable
 		SoundManager.registerSound("/audio/music/triad_theme.wav", "theme");
 		// SoundManager.getAudio("theme").play();
 
-		// win = new Window(1920, 1080, true);
+//		win = new Window(1920, 1080, true);
 		win = new Window(1280, 720, false);
 
 		Sys.touch();

@@ -8,6 +8,7 @@ import java.util.Map;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.mob.EntityPlayerServer;
 import com.dazkins.triad.game.world.Chunk;
+import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.networking.Network;
@@ -28,6 +29,8 @@ public class TriadServer
 
 	private ArrayList<ServerChunkRequest> chunkRequests;
 	private ArrayList<Chunk> chunksToUpdate;
+	
+	private ArrayList<Chunk> spawnChunks;
 
 	private int port;
 
@@ -44,13 +47,32 @@ public class TriadServer
 
 		port = 54555;
 
-		world = new World(this);
-
 		chunkRequests = new ArrayList<ServerChunkRequest>();
 		players = new HashMap<TriadConnection, EntityPlayerServer>();
 		chunksToUpdate = new ArrayList<Chunk>();
+		spawnChunks = new ArrayList<Chunk>();
 
 		Network.register(server);
+	}
+	
+	public void startup()
+	{
+		generateSpawn();
+	}
+	
+	private void generateSpawn() 
+	{
+		int x0 = -20;
+		int y0 = -20;
+		int x1 = 20;
+		int y1 = 20;
+		
+		for (int x = x0; x <= x1; x++) {
+			for (int y = y0; y <= y1; y++) {
+				world.forceChunkTileMapLoad(x, y);
+				spawnChunks.add(world.getChunkWithForceLoad(x, y));
+			}
+		}
 	}
 	
 	public void addChunkUpdate(Chunk c) 
@@ -121,10 +143,27 @@ public class TriadServer
 		{
 			e.printStackTrace();
 		}
+		
+		System.out.println("[SERVER] Generating spawn...");
 
-		System.out.println("[SERVER] >> Started on " + port);
+		world = new World(this);
+		generateSpawn();
+		
+		startupCheck : while (true)
+		{
+			for (Chunk c : spawnChunks)
+			{
+				if (!c.isTileMapGenerated())
+					continue startupCheck;
+			}
+			break;
+		}
+		
+		System.out.println("[SERVER] Spawn generated");
 
 		server.start();
+
+		System.out.println("[SERVER] Started on port: " + port);
 
 		runLoop();
 	}
@@ -150,6 +189,17 @@ public class TriadServer
 				c.getConnection().sendTCP(p0);
 			}
 		}
+		
+		ArrayList<ChunkCoordinate> anchors = new ArrayList<ChunkCoordinate>();
+		
+		for (Map.Entry<TriadConnection, EntityPlayerServer> mapE : players.entrySet())
+		{
+			EntityPlayerServer p = mapE.getValue();
+			int cx = (int) (p.getX() / (Tile.tileSize * Chunk.chunkS));
+			int cy = (int) (p.getY() / (Tile.tileSize * Chunk.chunkS));
+			
+			anchors.add(new ChunkCoordinate(cx, cy));
+		}
 
 		for (int i = 0; i < chunkRequests.size(); i++)
 		{
@@ -166,33 +216,19 @@ public class TriadServer
 			}
 		}
 		
-		for (Map.Entry<TriadConnection, EntityPlayerServer> mapE : players.entrySet())
-		{
-			EntityPlayerServer p = mapE.getValue();
-			int cx = (int) (p.getX() / (Tile.tileSize * Chunk.chunkS));
-			int cy = (int) (p.getY() / (Tile.tileSize * Chunk.chunkS));
-			
-			System.out.println(cx + " " + cy);
-			
-			int x0 = cx - 2;
-			int y0 = cy - 2;
-			int x1 = x0 + 5;
-			int y1 = y0 + 5;
-			
-			for (int x = x0; x < x1; x++) {
-				for (int y = y0; y < y1; y++) {
-					world.getChunkWithForceLoad(x, y);
-				}
-			}
-		}
+		world.handleChunkLoadsFromAchors(anchors);
 		
 		world.tick();
 		
 		//Chunk updates that need to be sent to all clients
-		if (runningTicks % 60 == 0) {
+		if (runningTicks % 60 == 0) 
+		{
 			for (Chunk c : chunksToUpdate) 
 			{
-				sendPacketToAll(c.compressToPacket());
+				if (c.isTileMapGenerated())
+				{
+					sendPacketToAll(c.compressToPacket());
+				}
 			}
 			chunksToUpdate.clear();
 		}

@@ -1,6 +1,5 @@
 package com.dazkins.triad.networking.server;
 
-import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.networking.TriadConnection;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet000RawMessage;

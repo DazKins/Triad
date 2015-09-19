@@ -6,7 +6,7 @@ public class ChunkLoader
 {
 	private Loader[] lds;
 
-	private int topThreadcount = 8;
+	private int topThreadcount = 900;
 
 	public ChunkLoader()
 	{

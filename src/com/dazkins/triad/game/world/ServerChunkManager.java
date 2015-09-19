@@ -15,10 +15,6 @@ public class ServerChunkManager
 	private Map<ChunkCoordinate, Chunk> chunks;
 	private ArrayList<ChunkCoordinate> loadedChunks;
 
-	private int chunkLoadCount;
-
-	private int chunkLoadCuttoff = 100;
-
 	public ServerChunkManager(World w)
 	{
 		loadedChunks = new ArrayList<ChunkCoordinate>();
@@ -43,16 +39,26 @@ public class ServerChunkManager
 
 		if (!loadedChunks.contains(c))
 		{
-			chunkLoadCount++;
 			loadedChunks.add(c);
-			if (chunkLoadCount > chunkLoadCuttoff)
-			{
-				loadedChunks.remove(0);
-				chunkLoadCount--;
-			}
 		}
 
 		return ch;
+	}
+	
+	public int getNoOfLoadedChunks()
+	{
+		return loadedChunks.size();
+	}
+	
+	public boolean isChunkLoaded(int x, int y) 
+	{
+		ChunkCoordinate c = new ChunkCoordinate(x, y);
+		return loadedChunks.contains(c);
+	}
+	
+	public void unloadAllChunks() 
+	{
+		loadedChunks.clear();
 	}
 
 	public Chunk getChunk(int x, int y)

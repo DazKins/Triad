@@ -151,11 +151,6 @@ public class World
 	{
 		return cam;
 	}
-	
-	public void handleChunkAnchor(float x, float y)
-	{
-		
-	}
 
 	public ArrayList<Entity> getEntitesInTile(int x, int y)
 	{
@@ -197,6 +192,29 @@ public class World
 	public Chunk getChunkWithForceLoad(int x, int y)
 	{
 		return chunkm.getChunkWithForceLoad(x, y);
+	}
+	
+	private int anchorRange = 10;
+	
+	public void handleChunkLoadsFromAchors(ArrayList<ChunkCoordinate> coords) 
+	{
+		chunkm.unloadAllChunks();
+		for (ChunkCoordinate c : coords)
+		{
+			int cx = c.getX();
+			int cy = c.getY();
+			
+			int x0 = cx - anchorRange;
+			int y0 = cy - anchorRange;
+			int x1 = x0 + 2 * anchorRange;
+			int y1 = y0 + 2 * anchorRange;
+			
+			for (int x = x0; x <= x1; x++) {
+				for (int y = y0; y <= y1; y++) {
+					getChunkWithForceLoad(x, y);
+				}
+			}
+		}
 	}
 
 	public void forceChunkTileMapLoad(int x, int y)
