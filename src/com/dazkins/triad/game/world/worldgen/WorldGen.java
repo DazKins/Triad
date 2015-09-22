@@ -53,17 +53,17 @@ public class WorldGen
 		{
 			float r = (float) Math.random() * 1000.0f;
 			if (r < 2)
-				world.addEntity(new EntitySandGrass(world, x * Tile.tileSize, y * Tile.tileSize));
+				world.addEntity(new EntitySandGrass(world, x * Tile.TILESIZE, y * Tile.TILESIZE));
 			world.setTile(Tile.sand, x, y);
 		} else
 		{
 			float r = (float) Math.random() * 10000.0f;
 			if (r < 10)
-				world.addEntity(new EntityTree(world, x * Tile.tileSize, y * Tile.tileSize));
+				world.addEntity(new EntityTree(world, x * Tile.TILESIZE, y * Tile.TILESIZE));
 			else if (r < 30)
-				world.addEntity(new EntityFlower(world, x * Tile.tileSize, y * Tile.tileSize));
+				world.addEntity(new EntityFlower(world, x * Tile.TILESIZE, y * Tile.TILESIZE));
 			else if (r > 9998 && ws > 0.4f)
-				world.addEntity(new EntityPig(world, x * Tile.tileSize, y * Tile.tileSize, 10));
+				world.addEntity(new EntityPig(world, x * Tile.TILESIZE, y * Tile.TILESIZE, 10));
 			world.setTile(Tile.grass, x, y);
 		}
 	}

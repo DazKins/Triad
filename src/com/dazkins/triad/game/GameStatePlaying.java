@@ -44,7 +44,7 @@ public class GameStatePlaying implements GameState
 	public void initClient(TriadClient c)
 	{
 		client = c;
-		cwm = new ClientWorldManager(client, cam, player);
+		cwm = new ClientWorldManager(client, cam);
 		playerRenderer.setWorld(cwm.getCRM());
 		cwm.setPlayerEntityRenderer(playerRenderer);
 	}

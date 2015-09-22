@@ -22,11 +22,11 @@ public class GuiLoading extends Gui
 		bScreen = new BufferObject(36);
 		bScreen.start();
 
-		bScreen.setRGB(0.3f, 0.0f, 0.0f);
-		bScreen.addVertex(0, 0);
-		bScreen.addVertex(t.win.getW(), 0);
-		bScreen.addVertex(t.win.getW(), t.win.getH());
-		bScreen.addVertex(0, t.win.getH());
+		bScreen.getData().setRGB(0.3f, 0.0f, 0.0f);
+		bScreen.getData().addVertex(0, 0);
+		bScreen.getData().addVertex(t.win.getW(), 0);
+		bScreen.getData().addVertex(t.win.getW(), t.win.getH());
+		bScreen.getData().addVertex(0, t.win.getH());
 
 		bScreen.stop();
 	}

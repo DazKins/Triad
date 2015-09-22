@@ -114,11 +114,11 @@ public class Particle extends Entity implements PoolableObject
 
 		bo = new BufferObject(36);
 		bo.start();
-		bo.setDepth(d);
-		bo.addVertex(0, 0);
-		bo.addVertex(w, 0);
-		bo.addVertex(w, h);
-		bo.addVertex(0, h);
+		bo.getData().setDepth(d);
+		bo.getData().addVertex(0, 0);
+		bo.getData().addVertex(w, 0);
+		bo.getData().addVertex(w, h);
+		bo.getData().addVertex(0, h);
 		bo.stop();
 	}
 

@@ -14,7 +14,7 @@ import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.networking.server.TriadServer;
-import com.dazkins.triad.util.ChunkLoader;
+import com.dazkins.triad.util.ServerChunkLoader;
 
 public class World
 {
@@ -30,7 +30,7 @@ public class World
 
 	protected String pathToLoad;
 
-	private ChunkLoader cLoad;
+	private ServerChunkLoader cLoad;
 
 	private TimeCycle time;
 
@@ -47,7 +47,7 @@ public class World
 
 		worldGenerator = new WorldGen(this);
 
-		cLoad = new ChunkLoader();
+		cLoad = new ServerChunkLoader();
 
 		entityLoadQueue = new ArrayList<Entity>();
 		tickedEntities = new ArrayList<Entity>();
@@ -64,8 +64,8 @@ public class World
 
 	public void addEntity(Entity e)
 	{
-		int tx = (int) (e.getX() / Tile.tileSize);
-		int ty = (int) (e.getY() / Tile.tileSize);
+		int tx = (int) (e.getX() / Tile.TILESIZE);
+		int ty = (int) (e.getY() / Tile.TILESIZE);
 
 		try
 		{
@@ -118,10 +118,10 @@ public class World
 	{
 		ArrayList<Entity> rValue = new ArrayList<Entity>();
 
-		int x0 = ((int) b.getX0() / Tile.tileSize) - 2;
-		int y0 = ((int) b.getY0() / Tile.tileSize) - 2;
-		int x1 = ((int) b.getX1() / Tile.tileSize) + 2;
-		int y1 = ((int) b.getY1() / Tile.tileSize) + 2;
+		int x0 = ((int) b.getX0() / Tile.TILESIZE) - 2;
+		int y0 = ((int) b.getY0() / Tile.TILESIZE) - 2;
+		int x1 = ((int) b.getX1() / Tile.TILESIZE) + 2;
+		int y1 = ((int) b.getY1() / Tile.TILESIZE) + 2;
 
 		for (int x = x0; x < x1; x++)
 		{
@@ -191,7 +191,7 @@ public class World
 
 	public Chunk getChunkWithForceLoad(int x, int y)
 	{
-		return chunkm.getChunkWithForceLoad(x, y);
+		return chunkm.getChunkWithForceLoad(new ChunkCoordinate(x, y));
 	}
 	
 	private int anchorRange = 10;
@@ -216,10 +216,15 @@ public class World
 			}
 		}
 	}
+	
+	private ArrayList<Chunk> chunksToLoad = new ArrayList<Chunk>();
 
-	public void forceChunkTileMapLoad(int x, int y)
+	public void addChunkToLoadQueue(Chunk c)
 	{
-		chunkm.getChunkWithForceLoad(x, y).addToLoader(cLoad);
+		if (!c.addToLoader(cLoad) && !chunksToLoad.contains(c))
+		{
+			chunksToLoad.add(c);
+		}
 	}
 
 	public void sendAttackCommand(AABB b, Mob m, int d, int k)
@@ -279,9 +284,20 @@ public class World
 		if (c != null)
 			c.setTile(t, MathHelper.convertToChunkTileX(x), MathHelper.convertToChunkTileY(y));
 	}
+	
+	public void processWaitingChunkLoads()
+	{
+		for (int i = 0; i < chunksToLoad.size(); i++)
+		{
+			Chunk c = chunksToLoad.get(i);
+			addChunkToLoadQueue(c);
+		}
+	}
 
 	public void tick()
 	{
+		processWaitingChunkLoads();
+		
 		time.tick();
 
 		ArrayList<Chunk> cs = chunkm.getLoadedChunks();

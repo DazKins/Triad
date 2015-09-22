@@ -2,6 +2,7 @@ package com.dazkins.triad.networking.client;
 
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.ChunkCoordinate;
+import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Color;
 
 public class ChunkData
@@ -24,9 +25,26 @@ public class ChunkData
 		decompressLight(col);
 	}
 
+	public ChunkData(ChunkCoordinate c)
+	{
+		coords = c;
+		tileData = new byte[Chunk.CHUNKSS];
+		light = new Color[Chunk.CHUNKSS];
+	}
+
 	public ChunkCoordinate getCoords()
 	{
 		return coords;
+	}
+	
+	public ChunkCoordinate getTileCoords()
+	{
+		return coords.multiply(Chunk.CHUNKS);
+	}
+	
+	public ChunkCoordinate getWorldCoords()
+	{
+		return coords.multiply(Tile.TILESIZE * Chunk.CHUNKS);
 	}
 
 	public byte[] getTileData()
@@ -41,7 +59,7 @@ public class ChunkData
 
 	private void decompressLight(byte[] l)
 	{
-		light = new Color[Chunk.chunkSS];
+		light = new Color[Chunk.CHUNKSS];
 		for (int i = 0; i < l.length; i += 3)
 		{
 			int index = i / 3;
@@ -55,7 +73,7 @@ public class ChunkData
 	// For packet sending
 	public byte[] compressLight()
 	{
-		byte[] r = new byte[Chunk.chunkSS * 3];
+		byte[] r = new byte[Chunk.CHUNKSS * 3];
 
 		for (int i = 0; i < light.length; i++)
 		{
@@ -70,7 +88,7 @@ public class ChunkData
 	
 	public static byte[] compressLight(Color[] cs)
 	{
-		byte[] r = new byte[Chunk.chunkSS * 3];
+		byte[] r = new byte[Chunk.CHUNKSS * 3];
 
 		for (int i = 0; i < cs.length; i++)
 		{

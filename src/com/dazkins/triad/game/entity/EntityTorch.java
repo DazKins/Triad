@@ -43,11 +43,11 @@ public class EntityTorch extends Entity implements LightEmitter
 
 		for (int ix = xx - halfScanRange; ix < xx + halfScanRange; ix++)
 		{
-			float dx = (float) Math.abs(x - ix * Tile.tileSize);
+			float dx = (float) Math.abs(x - ix * Tile.TILESIZE);
 			for (int iy = yy - halfScanRange; iy < yy + halfScanRange; iy++)
 			{
-				float dy = (float) Math.abs(y - iy * Tile.tileSize);
-				float dist = (float) Math.sqrt(dx * dx + dy * dy) / Tile.tileSize;
+				float dy = (float) Math.abs(y - iy * Tile.TILESIZE);
+				float dist = (float) Math.sqrt(dx * dx + dy * dy) / Tile.TILESIZE;
 
 				if (dist <= world.iLightFalloff)
 				{

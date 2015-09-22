@@ -2,13 +2,13 @@ package com.dazkins.triad.util;
 
 import com.dazkins.triad.game.world.Chunk;
 
-public class ChunkLoader
+public class ServerChunkLoader
 {
 	private Loader[] lds;
 
-	private int topThreadcount = 900;
+	private int topThreadcount = 8;
 
-	public ChunkLoader()
+	public ServerChunkLoader()
 	{
 		lds = new Loader[topThreadcount];
 		for (int i = 0; i < topThreadcount; i++)
@@ -17,7 +17,7 @@ public class ChunkLoader
 		}
 	}
 
-	public void addChunk(Chunk c)
+	public boolean addChunk(Chunk c)
 	{
 		for (int i = 0; i < topThreadcount; i++)
 		{
@@ -26,8 +26,9 @@ public class ChunkLoader
 				lds[i] = new Loader("Chunk");
 				lds[i].addLoad(c);
 				Loader.startThreadLoad(lds[i]);
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
 }

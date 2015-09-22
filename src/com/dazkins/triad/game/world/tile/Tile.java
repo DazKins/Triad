@@ -3,7 +3,7 @@ package com.dazkins.triad.game.world.tile;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.IWorldAccess;
 import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.gfx.BufferObject;
+import com.dazkins.triad.gfx.BufferObjectData;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.Image;
@@ -12,7 +12,7 @@ import com.dazkins.triad.math.MathHelper;
 
 public class Tile
 {
-	public static final int tileSize = 32;
+	public static final int TILESIZE = 32;
 	public static Tile[] tiles = new Tile[256];
 
 	public static TileGrass grass = new TileGrass((byte) 1);
@@ -31,7 +31,7 @@ public class Tile
 	{
 		// return -((MathHelper.betterMod(y, Chunk.chunkS * Tile.tileSize) /
 		// tileSize) % (Triad.zMax - 10)) - 3;
-		return -((y / (float) tileSize)) - 3;
+		return -((y / (float) TILESIZE)) - 3;
 	}
 
 	public static float yPosToDepthRelativeToCamera(Camera c, float y)
@@ -70,12 +70,12 @@ public class Tile
 		return renderOrderPos;
 	}
 
-	public void render(IWorldAccess wo, BufferObject bo, int x, int y)
+	public void render(IWorldAccess wo, BufferObjectData bd, int x, int y)
 	{
 		byte x0 = 15;
 
-		int xt = x / tileSize;
-		int yt = y / tileSize;
+		int xt = x / TILESIZE;
+		int yt = y / TILESIZE;
 
 		Tile no = wo.getTile(xt, yt + 1);
 		Tile ea = wo.getTile(xt + 1, yt);
@@ -101,28 +101,24 @@ public class Tile
 		float tymax = (ty * 16.0f + 16) / i.getHeight() - tOffset;
 
 		Color c = wo.getTileColor(xt, yt);
-		Color c0 = Color.averageColors(new Color[]
-		{ wo.getTileColor(xt + 1, yt + 1), wo.getTileColor(xt, yt + 1), wo.getTileColor(xt + 1, yt), c });
-		Color c1 = Color.averageColors(new Color[]
-		{ wo.getTileColor(xt - 1, yt + 1), wo.getTileColor(xt, yt + 1), wo.getTileColor(xt - 1, yt), c });
-		Color c2 = Color.averageColors(new Color[]
-		{ wo.getTileColor(xt + 1, yt - 1), wo.getTileColor(xt, yt - 1), wo.getTileColor(xt + 1, yt), c });
-		Color c3 = Color.averageColors(new Color[]
-		{ wo.getTileColor(xt - 1, yt - 1), wo.getTileColor(xt, yt - 1), wo.getTileColor(xt - 1, yt), c });
+		Color c0 = Color.averageColors(new Color[]{ wo.getTileColor(xt + 1, yt + 1), wo.getTileColor(xt, yt + 1), wo.getTileColor(xt + 1, yt), c });
+		Color c1 = Color.averageColors(new Color[]{ wo.getTileColor(xt - 1, yt + 1), wo.getTileColor(xt, yt + 1), wo.getTileColor(xt - 1, yt), c });
+		Color c2 = Color.averageColors(new Color[]{ wo.getTileColor(xt + 1, yt - 1), wo.getTileColor(xt, yt - 1), wo.getTileColor(xt + 1, yt), c });
+		Color c3 = Color.averageColors(new Color[]{ wo.getTileColor(xt - 1, yt - 1), wo.getTileColor(xt, yt - 1), wo.getTileColor(xt - 1, yt), c });
 
-		bo.setDepth(Tile.yPosToDepth(MathHelper.betterMod(y, Chunk.chunkS * Tile.tileSize)) - 1.0f);
-		bo.setColor(c0);
-		bo.setUV(txmax, tymin);
-		bo.addVertex(x + tileSize, y + tileSize);
-		bo.setColor(c1);
-		bo.setUV(txmin, tymin);
-		bo.addVertex(x, y + tileSize);
-		bo.setColor(c3);
-		bo.setUV(txmin, tymax);
-		bo.addVertex(x, y);
-		bo.setColor(c2);
-		bo.setUV(txmax, tymax);
-		bo.addVertex(x + tileSize, y);
+		bd.setDepth(Tile.yPosToDepth(MathHelper.betterMod(y, Chunk.CHUNKS * Tile.TILESIZE)) - 1.0f);
+		bd.setColor(c0);
+		bd.setUV(txmax, tymin);
+		bd.addVertex(x + TILESIZE, y + TILESIZE);
+		bd.setColor(c1);
+		bd.setUV(txmin, tymin);
+		bd.addVertex(x, y + TILESIZE);
+		bd.setColor(c3);
+		bd.setUV(txmin, tymax);
+		bd.addVertex(x, y);
+		bd.setColor(c2);
+		bd.setUV(txmax, tymax);
+		bd.addVertex(x + TILESIZE, y);
 	}
 
 	public byte getID()

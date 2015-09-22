@@ -20,6 +20,11 @@ public class ChunkCoordinate
 	{
 		return y;
 	}
+	
+	public ChunkCoordinate multiply(int s)
+	{
+		return new ChunkCoordinate(x * s, y * s);
+	}
 
 	public ChunkCoordinate addX(int x)
 	{

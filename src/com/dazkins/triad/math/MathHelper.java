@@ -4,6 +4,8 @@ import com.dazkins.triad.game.world.Chunk;
 
 public class MathHelper
 {
+	public static final int SIZE_OF_FLOAT = 4;
+	
 	// Treats negatives better
 	public static int betterMod(float x, int m)
 	{
@@ -24,27 +26,27 @@ public class MathHelper
 
 	public static int convertToChunkTileX(int x)
 	{
-		return MathHelper.betterMod(x, Chunk.chunkS);
+		return MathHelper.betterMod(x, Chunk.CHUNKS);
 	}
 
 	public static int convertToChunkTileY(int y)
 	{
-		return MathHelper.betterMod(y, Chunk.chunkS);
+		return MathHelper.betterMod(y, Chunk.CHUNKS);
 	}
 
 	public static int getChunkXFromTileX(int x)
 	{
 		if (x >= 0)
-			return x / Chunk.chunkS;
+			return x / Chunk.CHUNKS;
 		else
-			return (int) Math.floor((float) x / (float) Chunk.chunkS);
+			return (int) Math.floor((float) x / (float) Chunk.CHUNKS);
 	}
 
 	public static int getChunkYFromTileY(int y)
 	{
 		if (y >= 0)
-			return y / Chunk.chunkS;
+			return y / Chunk.CHUNKS;
 		else
-			return (int) Math.floor((float) y / (float) Chunk.chunkS);
+			return (int) Math.floor((float) y / (float) Chunk.CHUNKS);
 	}
 }

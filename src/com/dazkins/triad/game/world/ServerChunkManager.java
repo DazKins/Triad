@@ -22,15 +22,13 @@ public class ServerChunkManager
 		world = w;
 	}
 
-	public Chunk getChunkWithForceLoad(int x, int y)
+	public Chunk getChunkWithForceLoad(ChunkCoordinate c)
 	{
-		ChunkCoordinate c = new ChunkCoordinate(x, y);
-
 		Chunk ch;
 
 		if (!chunks.containsKey(c))
 		{
-			ch = new Chunk(world, x, y);
+			ch = new Chunk(world, c);
 			chunks.put(c, ch);
 		} else
 		{
@@ -86,16 +84,16 @@ public class ServerChunkManager
 	{
 		ArrayList<Chunk> r = new ArrayList<Chunk>();
 
-		int x0 = (int) ((b.getX0() / Tile.tileSize) / Chunk.chunkS) - 1;
-		int y0 = (int) ((b.getY0() / Tile.tileSize) / Chunk.chunkS) - 1;
-		int x1 = (int) ((b.getX1() / Tile.tileSize) / Chunk.chunkS) + 1;
-		int y1 = (int) ((b.getY1() / Tile.tileSize) / Chunk.chunkS) + 1;
+		int x0 = (int) ((b.getX0() / Tile.TILESIZE) / Chunk.CHUNKS) - 1;
+		int y0 = (int) ((b.getY0() / Tile.TILESIZE) / Chunk.CHUNKS) - 1;
+		int x1 = (int) ((b.getX1() / Tile.TILESIZE) / Chunk.CHUNKS) + 1;
+		int y1 = (int) ((b.getY1() / Tile.TILESIZE) / Chunk.CHUNKS) + 1;
 
 		for (int x = x0; x <= x1; x++)
 		{
 			for (int y = y0; y <= y1; y++)
 			{
-				Chunk c = getChunkWithForceLoad(x, y);
+				Chunk c = getChunkWithForceLoad(new ChunkCoordinate(x, y));
 				if (c != null && c.getBounds().intersects(b))
 					r.add(c);
 			}

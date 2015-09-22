@@ -61,7 +61,7 @@ public class ClientChunkManager implements IWorldAccess
 				ChunkRenderer r = renderers.get(new ChunkCoordinate(x, y));
 				if (r != null)
 				{
-					r.markForRegeneration();
+					r.handleUpdate();
 				}
 			}
 		}
@@ -82,7 +82,7 @@ public class ClientChunkManager implements IWorldAccess
 		float y0 = b.getY0();
 		float y1 = b.getY1();
 
-		float div = Chunk.chunkS * Tile.tileSize;
+		float div = Chunk.CHUNKS * Tile.TILESIZE;
 
 		int ix0 = (int) Math.floor((x0 / div) - 2.0f);
 		int ix1 = (int) Math.floor((x1 / div) + 2.0f);
@@ -111,7 +111,7 @@ public class ClientChunkManager implements IWorldAccess
 		}
 	}
 
-	public Tile getTile(int x, int y)
+	public synchronized Tile getTile(int x, int y)
 	{
 		int cx = MathHelper.getChunkXFromTileX(x);
 		int cy = MathHelper.getChunkYFromTileY(y);
@@ -128,11 +128,11 @@ public class ClientChunkManager implements IWorldAccess
 			return null;
 		} else
 		{
-			return Tile.tiles[d.getTileData()[rx + ry * Chunk.chunkS]];
+			return Tile.tiles[d.getTileData()[rx + ry * Chunk.CHUNKS]];
 		}
 	}
 
-	public Color getTileColor(int x, int y)
+	public synchronized Color getTileColor(int x, int y)
 	{
 		int cx = MathHelper.getChunkXFromTileX(x);
 		int cy = MathHelper.getChunkYFromTileY(y);
@@ -149,7 +149,7 @@ public class ClientChunkManager implements IWorldAccess
 			return new Color(1, 1, 1);
 		} else
 		{
-			return d.getLight()[rx + ry * Chunk.chunkS];
+			return d.getLight()[rx + ry * Chunk.CHUNKS];
 		}
 	}
 }

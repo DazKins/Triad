@@ -69,8 +69,9 @@ public class TriadServer
 		
 		for (int x = x0; x <= x1; x++) {
 			for (int y = y0; y <= y1; y++) {
-				world.forceChunkTileMapLoad(x, y);
-				spawnChunks.add(world.getChunkWithForceLoad(x, y));
+				Chunk c = world.getChunkWithForceLoad(x, y);
+				world.addChunkToLoadQueue(c);
+				spawnChunks.add(c);
 			}
 		}
 	}
@@ -149,11 +150,13 @@ public class TriadServer
 		world = new World(this);
 		generateSpawn();
 		
+		//Yes, this loop makes me vomit aswell...
 		startupCheck : while (true)
 		{
+			world.processWaitingChunkLoads();
 			for (Chunk c : spawnChunks)
 			{
-				if (!c.isTileMapGenerated())
+				if (!c.isLoaded())
 					continue startupCheck;
 			}
 			break;
@@ -195,8 +198,8 @@ public class TriadServer
 		for (Map.Entry<TriadConnection, EntityPlayerServer> mapE : players.entrySet())
 		{
 			EntityPlayerServer p = mapE.getValue();
-			int cx = (int) (p.getX() / (Tile.tileSize * Chunk.chunkS));
-			int cy = (int) (p.getY() / (Tile.tileSize * Chunk.chunkS));
+			int cx = (int) (p.getX() / (Tile.TILESIZE * Chunk.CHUNKS));
+			int cy = (int) (p.getY() / (Tile.TILESIZE * Chunk.CHUNKS));
 			
 			anchors.add(new ChunkCoordinate(cx, cy));
 		}
@@ -205,7 +208,7 @@ public class TriadServer
 		{
 			ServerChunkRequest c = chunkRequests.get(i);
 			Chunk cs = c.getChunk();
-			if (cs.isTileMapGenerated())
+			if (cs.isLoaded())
 			{
 				TriadConnection tc = c.getConnection();
 				Connection con = tc.getConnection();
@@ -225,7 +228,7 @@ public class TriadServer
 		{
 			for (Chunk c : chunksToUpdate) 
 			{
-				if (c.isTileMapGenerated())
+				if (c.isLoaded())
 				{
 					sendPacketToAll(c.compressToPacket());
 				}

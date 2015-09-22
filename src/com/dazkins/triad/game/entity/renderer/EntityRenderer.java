@@ -87,7 +87,7 @@ public abstract class EntityRenderer
 		{
 			model.setOffset(x, y);
 			model.setDepth(Tile.yPosToDepthRelativeToCamera(cam, y));
-			Color t = world.getTileColor((int) (x / Tile.tileSize), (int) (y / Tile.tileSize));
+			Color t = world.getTileColor((int) (x / Tile.TILESIZE), (int) (y / Tile.TILESIZE));
 			if (t != null)
 				GL11.glColor3f(t.getDR(), t.getDG(), t.getDB());
 			model.render(facing);

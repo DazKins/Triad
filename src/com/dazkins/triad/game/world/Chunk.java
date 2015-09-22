@@ -18,26 +18,20 @@ import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.networking.client.ChunkData;
 import com.dazkins.triad.networking.packet.Packet003ChunkData;
 import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
-import com.dazkins.triad.util.ChunkLoader;
+import com.dazkins.triad.util.ServerChunkLoader;
 import com.dazkins.triad.util.Loadable;
 
 public class Chunk implements Loadable
 {
-	public static int chunkS = 16;
-	public static int chunkSS = chunkS * chunkS;
+	public static final int CHUNKS = 16;
+	public static final int CHUNKSS = CHUNKS * CHUNKS;
 
 	private static float lFadeOut = 0.85f;
 
-	// Individual for each chunk
-	private ChunkCoordinate chunkCoord;
-
 	private World world;
-
-	public int chunkX, chunkY;
-	public int rChunkX, rChunkY;
-	private byte[] tiles;
-
-	private Color[] tileColors;
+	
+	private ChunkData data;
+	
 	// Store light value from the previous tick
 	private Color[] pTileColors;
 
@@ -48,70 +42,62 @@ public class Chunk implements Loadable
 	private ArrayList<Entity>[] entitiesInTiles;
 	private int entityCount;
 
-	public Chunk(World w, int xp, int yp)
+	public Chunk(World w, ChunkCoordinate c)
 	{
-		this.chunkX = xp;
-		this.chunkY = yp;
+		data = new ChunkData(c);
+		
 		this.world = w;
 
-		this.rChunkX = chunkX * chunkS;
-		this.rChunkY = chunkY * chunkS;
-
-		tileColors = new Color[chunkSS];
-		pTileColors = new Color[chunkSS];
+		pTileColors = new Color[CHUNKSS];
 
 		resetLightLevels();
 
-		tiles = new byte[chunkSS];
-		entitiesInTiles = new ArrayList[chunkSS];
-		for (int i = 0; i < chunkSS; i++)
+		entitiesInTiles = new ArrayList[CHUNKSS];
+		for (int i = 0; i < CHUNKSS; i++)
 		{
 			entitiesInTiles[i] = new ArrayList<Entity>();
 		}
-
-		chunkCoord = new ChunkCoordinate(xp, yp);
 	}
-
-	public ChunkCoordinate getChunkCoord()
+	
+	public ChunkData getData()
 	{
-		return chunkCoord;
-	}
-
-	public byte[] getTiles()
-	{
-		return tiles;
-	}
-
-	public Color[] getLights()
-	{
-		return tileColors;
+		return data;
 	}
 	
 	public Packet003ChunkData compressToPacket() 
 	{
 		Packet003ChunkData p = new Packet003ChunkData();
-		p.setTiles(getTiles());
-		p.setLight(ChunkData.compressLight(getLights()));
-		p.setX(chunkX);
-		p.setY(chunkY);
+		p.setTiles(data.getTileData());
+		p.setLight(ChunkData.compressLight(data.getLight()));
+		p.setX(data.getCoords().getX());
+		p.setY(data.getCoords().getY());
 		return p;
 	}
 
-	public void addToLoader(ChunkLoader l)
+	public boolean addToLoader(ServerChunkLoader l)
 	{
 		if (!isBeingLoaded)
 		{
-			l.addChunk(this);
-			isBeingLoaded = true;
+			if (l.addChunk(this)) 
+			{
+				isBeingLoaded = true;
+				return true;
+			}
 		}
+		return false;
 	}
 
 	public void addEntity(Entity e)
 	{
-		int xx = (int) (e.getX() / Tile.tileSize);
-		int yy = (int) (e.getY() / Tile.tileSize);
+		int xx = (int) (e.getX() / Tile.TILESIZE);
+		int yy = (int) (e.getY() / Tile.TILESIZE);
+		
+		int x0 = data.getTileCoords().getX();
+		int y0 = data.getTileCoords().getY();
+		int x1 = x0 + CHUNKS;
+		int y1 = y0 + CHUNKS;
 
-		if (xx < rChunkX || yy < rChunkY || xx >= rChunkX + chunkS || yy >= rChunkY + chunkS)
+		if (xx < x0 || yy < y0 || xx >= x1|| yy >= y1)
 		{
 			System.err.println("OHNOES!!");
 			return;
@@ -119,12 +105,12 @@ public class Chunk implements Loadable
 
 		entityCount++;
 
-		entitiesInTiles[MathHelper.convertToChunkTileX(xx) + MathHelper.convertToChunkTileY(yy) * chunkS].add(e);
+		entitiesInTiles[MathHelper.convertToChunkTileX(xx) + MathHelper.convertToChunkTileY(yy) * CHUNKS].add(e);
 	}
 
 	public ArrayList<Entity> getEntitiesInTile(int tx, int ty)
 	{
-		return entitiesInTiles[tx + ty * chunkS];
+		return entitiesInTiles[tx + ty * CHUNKS];
 	}
 
 	public ArrayList<Entity> getEntities()
@@ -139,11 +125,11 @@ public class Chunk implements Loadable
 
 	public void generateTileMap()
 	{
-		for (int x = 0; x < chunkS; x++)
+		for (int x = 0; x < CHUNKS; x++)
 		{
-			for (int y = 0; y < chunkS; y++)
+			for (int y = 0; y < CHUNKS; y++)
 			{
-				world.getWorldGenerator().generate(x + rChunkX, y + rChunkY);
+				world.getWorldGenerator().generate(x + data.getTileCoords().getX(), y + data.getTileCoords().getY());
 			}
 		}
 
@@ -152,7 +138,7 @@ public class Chunk implements Loadable
 
 	private boolean isValidTilePos(int x, int y)
 	{
-		if (x < 0 || y < 0 || x >= chunkS || y >= chunkS)
+		if (x < 0 || y < 0 || x >= CHUNKS || y >= CHUNKS)
 			return false;
 		return true;
 	}
@@ -163,14 +149,14 @@ public class Chunk implements Loadable
 		{
 			return new Color(0);
 		}
-		return tileColors[x + y * chunkS];
+		return data.getLight()[x + y * CHUNKS];
 	}
 
 	public void blendTileColor(Color c, int x, int y)
 	{
 		if (!isValidTilePos(x, y))
 			return;
-		tileColors[x + y * chunkS].blend(c);
+		data.getLight()[x + y * CHUNKS].blend(c);
 	}
 
 	public void setTile(Tile t, int x, int y)
@@ -179,7 +165,7 @@ public class Chunk implements Loadable
 		{
 			if (!isValidTilePos(x, y))
 				return;
-			tiles[x + y * chunkS] = t.getID();
+			data.getTileData()[x + y * CHUNKS] = t.getID();
 		}
 	}
 
@@ -187,27 +173,30 @@ public class Chunk implements Loadable
 	{
 		if (!isValidTilePos(x, y))
 			return null;
-		return Tile.tiles[tiles[x + y * chunkS]];
+		return Tile.tiles[data.getTileData()[x + y * CHUNKS]];
 	}
 
 	private void resetLightLevels()
 	{
-		Color c = world.getAmbientLight();
-		int r = (int) (c.getR() * lFadeOut);
-		int g = (int) (c.getG() * lFadeOut);
-		int b = (int) (c.getB() * lFadeOut);
-		for (int i = 0; i < tileColors.length; i++)
+		Color col = world.getAmbientLight();
+		int r = (int) (col.getR() * lFadeOut);
+		int g = (int) (col.getG() * lFadeOut);
+		int b = (int) (col.getB() * lFadeOut);
+		Color[] c = data.getLight();
+		for (int i = 0; i < c.length; i++)
 		{
-			tileColors[i] = new Color(r, g, b);
+			c[i] = new Color(r, g, b);
 		}
 	}
 
 	public AABB getBounds()
 	{
-		return new AABB(chunkX * Tile.tileSize * chunkS, chunkY * Tile.tileSize * chunkS, chunkX * Tile.tileSize * chunkS + (chunkS * Tile.tileSize), chunkY * Tile.tileSize * chunkS + (chunkS * Tile.tileSize));
+		int x = data.getCoords().getX();
+		int y = data.getCoords().getY();
+		return new AABB(x * Tile.TILESIZE * CHUNKS, y * Tile.TILESIZE * CHUNKS, x * Tile.TILESIZE * CHUNKS + (CHUNKS * Tile.TILESIZE), y * Tile.TILESIZE * CHUNKS + (CHUNKS * Tile.TILESIZE));
 	}
 
-	public synchronized boolean isTileMapGenerated()
+	public synchronized boolean isLoaded()
 	{
 		return tilesGenerated;
 	}
@@ -219,21 +208,21 @@ public class Chunk implements Loadable
 
 	public void tick()
 	{
-		for (int x = 0; x < chunkS; x++)
+		for (int x = 0; x < CHUNKS; x++)
 		{
-			for (int y = 0; y < chunkS; y++)
+			for (int y = 0; y < CHUNKS; y++)
 			{
 				if (getTileColor(x, y).getBrightness() < 125 && Math.random() * 20000000.0f < 1)
 				{
 					if (entityCount < 1)
 					{
-						world.addEntity(new EntityZombie(world, (0 + rChunkX) * Tile.tileSize, ((0 + rChunkY) * Tile.tileSize)));
+						world.addEntity(new EntityZombie(world, data.getWorldCoords().getX(), data.getWorldCoords().getY()));
 					}
 				}
 			}
 		}
 		
-		for (int i = 0; i < chunkSS; i++)
+		for (int i = 0; i < CHUNKSS; i++)
 		{
 			ArrayList<Entity> es = entitiesInTiles[i];
 			for (int u = 0; u < es.size(); u++)
@@ -247,16 +236,16 @@ public class Chunk implements Loadable
 					continue;
 				}
 
-				int x0 = (int) (e.getX() / Tile.tileSize);
-				int y0 = (int) (e.getY() / Tile.tileSize);
+				int x0 = (int) (e.getX() / Tile.TILESIZE);
+				int y0 = (int) (e.getY() / Tile.TILESIZE);
 
 				if (!world.entityHasBeenTicked(e))
 				{
 					e.tick();
 				}
 
-				int x1 = (int) (e.getX() / Tile.tileSize);
-				int y1 = (int) (e.getY() / Tile.tileSize);
+				int x1 = (int) (e.getX() / Tile.TILESIZE);
+				int y1 = (int) (e.getY() / Tile.TILESIZE);
 
 				if (x0 != x1 || y0 != y1)
 				{
@@ -272,9 +261,10 @@ public class Chunk implements Loadable
 		int r = (int) (wc.getR() * lFadeOut);
 		int g = (int) (wc.getG() * lFadeOut);
 		int b = (int) (wc.getB() * lFadeOut);
-		for (int i = 0; i < tileColors.length; i++)
+		Color[] col = data.getLight();
+		for (int i = 0; i < col.length; i++)
 		{
-			Color c = tileColors[i];
+			Color c = col[i];
 			if (c.getR() * lFadeOut > r)
 			{
 				c.setR((int) (c.getR() * lFadeOut));
@@ -313,17 +303,19 @@ public class Chunk implements Loadable
 
 	public void postTick()
 	{
-		for (int i = 0; i < tileColors.length; i++)
+		Color[] col = data.getLight();
+		for (int i = 0; i < col.length; i++)
 		{
-			pTileColors[i] = tileColors[i].copyOf();
+			pTileColors[i] = col[i].copyOf();
 		}
 	}
 
 	public boolean hasLightChanged()
 	{
-		for (int i = 0; i < tileColors.length; i++)
+		Color[] col = data.getLight();
+		for (int i = 0; i < col.length; i++)
 		{
-			Color c = tileColors[i];
+			Color c = col[i];
 			Color pc = pTileColors[i];
 			if (!c.equals(pc))
 				return true;
@@ -333,7 +325,7 @@ public class Chunk implements Loadable
 
 	public void load()
 	{
-		if (!isTileMapGenerated())
+		if (!isLoaded())
 		{
 			this.generateTileMap();
 		}

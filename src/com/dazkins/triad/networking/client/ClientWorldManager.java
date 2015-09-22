@@ -15,8 +15,6 @@ public class ClientWorldManager
 	private EntityRendererManager erm;
 
 	private Map<Integer, EntityPlayerClient> players;
-
-	private EntityPlayerClient player;
 	private int myPlayerID;
 
 	private Camera cam;
@@ -25,7 +23,7 @@ public class ClientWorldManager
 
 	private ArrayList<ChunkCoordinate> requestedChunks;
 
-	public ClientWorldManager(TriadClient cl, Camera c, EntityPlayerClient p)
+	public ClientWorldManager(TriadClient cl, Camera c)
 	{
 		crm = new ClientChunkManager();
 		erm = new EntityRendererManager();
@@ -37,8 +35,6 @@ public class ClientWorldManager
 		cam = c;
 
 		players = new HashMap<Integer, EntityPlayerClient>();
-
-		player = p;
 
 		myPlayerID = -1;
 	}

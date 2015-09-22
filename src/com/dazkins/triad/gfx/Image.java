@@ -95,25 +95,25 @@ public class Image
 
 	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z, float b)
 	{
-		float offset = 0.01f;
+		float offset = 0.001f;
 
-		float tx0 = (tx / (float) width) + 0.001f;
-		float ty0 = (ty / (float) height) + 0.001f;
-		float tx1 = ((tx + tw) / (float) width) - 0.001f;
-		float ty1 = ((ty + th) / (float) height) - 0.001f;
+		float tx0 = (tx / (float) width) + offset;
+		float ty0 = (ty / (float) height) + offset;
+		float tx1 = ((tx + tw) / (float) width) - offset;
+		float ty1 = ((ty + th) / (float) height) - offset;
 
-		bo.bindImage(this);
-		bo.setDepth(z);
+		bo.getData().bindImage(this);
+		bo.getData().setDepth(z);
 		if (b != 0)
-			bo.setRGB(b, b, b);
-		bo.setUV(tx1, ty0);
-		bo.addVertex(x + w, y + h);
-		bo.setUV(tx0, ty0);
-		bo.addVertex(x, y + h);
-		bo.setUV(tx0, ty1);
-		bo.addVertex(x, y);
-		bo.setUV(tx1, ty1);
-		bo.addVertex(x + w, y);
+			bo.getData().setRGB(b, b, b);
+		bo.getData().setUV(tx1, ty0);
+		bo.getData().addVertex(x + w, y + h);
+		bo.getData().setUV(tx0, ty0);
+		bo.getData().addVertex(x, y + h);
+		bo.getData().setUV(tx0, ty1);
+		bo.getData().addVertex(x, y);
+		bo.getData().setUV(tx1, ty1);
+		bo.getData().addVertex(x + w, y);
 	}
 
 	private void loadSpriteSheet(File f) throws IOException

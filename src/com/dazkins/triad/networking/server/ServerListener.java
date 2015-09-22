@@ -1,5 +1,6 @@
 package com.dazkins.triad.networking.server;
 
+import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.networking.TriadConnection;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet000RawMessage;
@@ -44,8 +45,9 @@ public class ServerListener extends Listener
 				Packet002ChunkDataRequest p0 = (Packet002ChunkDataRequest) p;
 				int x = p0.getCX();
 				int y = p0.getCY();
-				server.addChunkRequest(server.getFromConnection(con), server.getWorld().getChunkWithForceLoad(x, y));
-				server.getWorld().forceChunkTileMapLoad(x, y);
+				Chunk c =  server.getWorld().getChunkWithForceLoad(x, y);
+				server.addChunkRequest(server.getFromConnection(con), c);
+				server.getWorld().addChunkToLoadQueue(c);
 			}
 			if (p instanceof Packet005UpdatePlayerPosition)
 			{
