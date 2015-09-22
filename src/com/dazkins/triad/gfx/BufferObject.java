@@ -26,14 +26,14 @@ public class BufferObject
 	private static void initStaticVBOs()
 	{
 		shadow = new BufferObject(36);
-		shadow.start();
+		shadow.resetData();
 		shadow.getData().setRGB(0.0f, 0.0f, 0.0f);
 		shadow.getData().setA(0.2f);
 		shadow.getData().addVertex(0, 0);
 		shadow.getData().addVertex(32, 0);
 		shadow.getData().addVertex(32, 32);
 		shadow.getData().addVertex(0, 32);
-		shadow.stop();
+		shadow.compileVBO();
 	}
 	
 	public static boolean useVBOS() 
@@ -91,20 +91,21 @@ public class BufferObject
 		renderProps = new BufferObjectRenderProperties();
 	}
 
-	public void start()
+	public void resetData()
 	{
 		data.reset();
 	}
 
-	public void stop()
+	public void compileVBO()
 	{
+		dataBuffer.clear();
 		dataBuffer.put(data.getRawData());
 		dataBuffer.flip();
 		renderProps = data.getRenderProperties().clone();
 		
 		ID = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dataBuffer, GL15.GL_STATIC_DRAW);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dataBuffer, GL15.GL_DYNAMIC_DRAW);
 	}
 
 	public void render()
@@ -136,7 +137,6 @@ public class BufferObject
 				GL11.glTexCoordPointer(2, GL11.GL_FLOAT, MathHelper.SIZE_OF_FLOAT * 9, MathHelper.SIZE_OF_FLOAT * 7);
 
 			GL11.glDrawArrays(GL11.GL_QUADS, 0, renderProps.getVertexCount());
-			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
 			if (renderProps.isUseTextures())
 				GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);

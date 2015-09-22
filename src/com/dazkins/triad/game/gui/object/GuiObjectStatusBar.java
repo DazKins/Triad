@@ -24,14 +24,14 @@ public class GuiObjectStatusBar
 
 		int len0 = len >> 3;
 		model = new BufferObject(len0 * 36);
-		model.start();
+		model.resetData();
 		for (int x = 0; x < len0; x++)
 		{
 			int sx = x == 0 ? 0 : (x == len0 - 1 ? 2 : 1);
 			Image.getImageFromName("iconSheet").renderSprite(model, x * 8 + this.x, this.y, 16, 16, sx * 8, 0, 8, 8, 1.0f, 1.0f);
 		}
 
-		model.stop();
+		model.compileVBO();
 	}
 
 	public void updateStatus(float perc)

@@ -224,17 +224,14 @@ public class TriadServer
 		world.tick();
 		
 		//Chunk updates that need to be sent to all clients
-		if (runningTicks % 60 == 0) 
+		for (Chunk c : chunksToUpdate) 
 		{
-			for (Chunk c : chunksToUpdate) 
+			if (c.isLoaded())
 			{
-				if (c.isLoaded())
-				{
-					sendPacketToAll(c.compressToPacket());
-				}
+				sendPacketToAll(c.compressToPacket());
 			}
-			chunksToUpdate.clear();
 		}
+		chunksToUpdate.clear();
 
 		sendPlayerUpdates();
 		

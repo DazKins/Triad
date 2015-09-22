@@ -7,7 +7,7 @@ public class ClientChunkGraphicsLoader
 {
 	private Loader[] lds;
 
-	private int topThreadcount = 500;
+	private int topThreadcount = 5;
 
 	public ClientChunkGraphicsLoader()
 	{
@@ -20,7 +20,6 @@ public class ClientChunkGraphicsLoader
 	
 	public boolean hasSpace()
 	{
-
 		for (int i = 0; i < topThreadcount; i++)
 		{
 			if (lds[i].isDone())

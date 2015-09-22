@@ -20,7 +20,7 @@ public class GuiLoading extends Gui
 		loader = l;
 
 		bScreen = new BufferObject(36);
-		bScreen.start();
+		bScreen.resetData();
 
 		bScreen.getData().setRGB(0.3f, 0.0f, 0.0f);
 		bScreen.getData().addVertex(0, 0);
@@ -28,7 +28,7 @@ public class GuiLoading extends Gui
 		bScreen.getData().addVertex(t.win.getW(), t.win.getH());
 		bScreen.getData().addVertex(0, t.win.getH());
 
-		bScreen.stop();
+		bScreen.compileVBO();
 	}
 
 	public void tick()

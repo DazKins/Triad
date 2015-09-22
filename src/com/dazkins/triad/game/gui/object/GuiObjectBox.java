@@ -37,7 +37,7 @@ public class GuiObjectBox
 	{
 		float z = layer * 0.001f;
 		bo = new BufferObject(350);
-		bo.start();
+		bo.resetData();
 
 		// Top left corner
 		Image.getImageFromName("iconSheet").renderSprite(bo, x, y + height - 16, 16, 16, 24 + txOff, 0, 8, 8, z, 1.0f);
@@ -60,7 +60,7 @@ public class GuiObjectBox
 		// Right band
 		Image.getImageFromName("iconSheet").renderSprite(bo, x + width - 16, y + 16, 16, height - 32, 40 + txOff, 8, 8, 8, z, 1.0f);
 
-		bo.stop();
+		bo.compileVBO();
 	}
 
 	public void render()

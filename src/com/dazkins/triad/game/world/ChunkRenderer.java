@@ -18,7 +18,6 @@ public class ChunkRenderer implements Loadable
 
 	private ChunkData data;
 
-	private boolean vboGenerated;
 	private boolean vboNeedsGenerating;
 	private boolean needsUpdating;
 	private boolean isLoading;
@@ -50,7 +49,8 @@ public class ChunkRenderer implements Loadable
 	
 	public void handleUpdate() 
 	{
-		needsUpdating = true;
+		if (!isLoading)
+			needsUpdating = true;
 	}
 
 	public void render(Camera cam)
@@ -67,10 +67,10 @@ public class ChunkRenderer implements Loadable
 		if (vboNeedsGenerating)
 		{
 			tilePlane.deleteBuffer();
-			tilePlane.stop();
+			tilePlane.compileVBO();
 			vboNeedsGenerating = false;
 		}
-		if (vboGenerated)
+		if (tilePlane != null)
 		{
 			GL11.glPushMatrix();
 			GL11.glTranslatef(0, 0, Tile.yPosToDepthRelativeToCamera(cam, getChunkY() * Chunk.CHUNKS * Tile.TILESIZE));
@@ -81,7 +81,7 @@ public class ChunkRenderer implements Loadable
 
 	public void load()
 	{
-		tilePlane.start();
+		tilePlane.resetData();
 		tilePlane.getData().bindImage(Image.getImageFromName("spriteSheet"));
 		for (int x = 0; x < Chunk.CHUNKS; x++)
 		{
@@ -94,7 +94,6 @@ public class ChunkRenderer implements Loadable
 				}
 			}
 		}
-		vboGenerated = true;
 		vboNeedsGenerating = true;
 		isLoading = false;
 	}
