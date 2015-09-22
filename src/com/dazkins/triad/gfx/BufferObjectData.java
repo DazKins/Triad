@@ -129,6 +129,7 @@ public class BufferObjectData
 	public void loadVertexDataIntoArray()
 	{
 		int vert = props.getVertexCount();
+		
 		data[vert * 9 + 0] = x;
 		data[vert * 9 + 1] = y;
 		data[vert * 9 + 2] = z;

@@ -19,6 +19,9 @@ public class ChunkRenderer implements Loadable
 	private ChunkData data;
 
 	private boolean vboGenerated;
+	private boolean vboNeedsGenerating;
+	private boolean needsUpdating;
+	private boolean isLoading;
 
 	private BufferObject tilePlane;
 
@@ -26,6 +29,7 @@ public class ChunkRenderer implements Loadable
 	{
 		this.data = data;
 		world = w;
+		tilePlane = new BufferObject(16 * 16 * 4 * 9);
 	}
 
 	public void updateData(ChunkData d)
@@ -46,15 +50,27 @@ public class ChunkRenderer implements Loadable
 	
 	public void handleUpdate() 
 	{
-		vboGenerated = false;
+		needsUpdating = true;
 	}
 
 	public void render(Camera cam)
 	{
-		if (!vboGenerated)
+		if (needsUpdating && !isLoading)
 		{
-			generateVBO();
-		} else
+			if (cg.hasSpace())
+			{
+				cg.addChunk(this);
+				isLoading = true;
+				needsUpdating = false;
+			}
+		}
+		if (vboNeedsGenerating)
+		{
+			tilePlane.deleteBuffer();
+			tilePlane.stop();
+			vboNeedsGenerating = false;
+		}
+		if (vboGenerated)
 		{
 			GL11.glPushMatrix();
 			GL11.glTranslatef(0, 0, Tile.yPosToDepthRelativeToCamera(cam, getChunkY() * Chunk.CHUNKS * Tile.TILESIZE));
@@ -62,12 +78,9 @@ public class ChunkRenderer implements Loadable
 			GL11.glPopMatrix();
 		}
 	}
-	
-	public void generateVBO()
+
+	public void load()
 	{
-		if (tilePlane != null)
-			tilePlane.deleteBuffer();
-		tilePlane = new BufferObject(16 * 16 * 4 * 9);
 		tilePlane.start();
 		tilePlane.getData().bindImage(Image.getImageFromName("spriteSheet"));
 		for (int x = 0; x < Chunk.CHUNKS; x++)
@@ -81,25 +94,9 @@ public class ChunkRenderer implements Loadable
 				}
 			}
 		}
-		tilePlane.stop();
 		vboGenerated = true;
-	}
-
-	public void load()
-	{
-//		bufferData.reset();
-//		for (int x = 0; x < Chunk.CHUNKS; x++)
-//		{
-//			for (int y = 0; y < Chunk.CHUNKS; y++)
-//			{
-//				int tileIndex = data.getTileData()[x + y * Chunk.CHUNKS];
-//				if (tileIndex != 0)
-//				{
-//					Tile.tiles[tileIndex].render(world, bufferData, x * Tile.TILESIZE + (getChunkX() * Tile.TILESIZE * Chunk.CHUNKS), y * Tile.TILESIZE + (getChunkY() * Tile.TILESIZE * Chunk.CHUNKS));
-//				}
-//			}
-//		}
-//		vboReadyForGeneration = true;
+		vboNeedsGenerating = true;
+		isLoading = false;
 	}
 
 	public synchronized boolean isLoaded()
