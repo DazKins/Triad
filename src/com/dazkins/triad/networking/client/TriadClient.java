@@ -20,8 +20,8 @@ public class TriadClient
 	private String ip;
 
 	private ArrayList<ChunkData> recievedChunks;
-
 	private ArrayList<EntityUpdate> entityUpdates;
+	private ArrayList<AnimationUpdate> animUpdates;
 
 	private boolean running;
 
@@ -40,6 +40,8 @@ public class TriadClient
 		ip = "localhost";
 
 		entityUpdates = new ArrayList<EntityUpdate>();
+		
+		animUpdates = new ArrayList<AnimationUpdate>();
 
 		Network.register(client);
 	}
@@ -62,6 +64,19 @@ public class TriadClient
 	public void addEntityUpdate(EntityUpdate e)
 	{
 		entityUpdates.add(e);
+	}
+	
+	public void addAnimationUpdate(AnimationUpdate a)
+	{
+		animUpdates.add(a);
+	}
+	
+	//TODO compress these into a generic get and purge object
+	public ArrayList<AnimationUpdate> getAndPurgeAnimationUpdates() 
+	{
+		ArrayList<AnimationUpdate> r = (ArrayList<AnimationUpdate>) animUpdates.clone();
+		animUpdates.clear();
+		return r;
 	}
 
 	public ArrayList<EntityUpdate> getAndPurgeEntityUpdates()

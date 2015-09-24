@@ -1,7 +1,7 @@
 package com.dazkins.triad.game.entity.mob;
 
 import com.dazkins.triad.game.entity.Entity;
-import com.dazkins.triad.game.entity.EntityIDStorage;
+import com.dazkins.triad.game.entity.StorageEntityID;
 import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.world.World;
@@ -16,7 +16,7 @@ public class EntityPlayerServer extends Mob
 
 	public EntityPlayerServer(World w, float x, float y)
 	{
-		super(w, EntityIDStorage.PLAYER, x, y, "player", 1000);
+		super(w, StorageEntityID.PLAYER, x, y, "player", 1000);
 		this.inv = new Inventory(9, 5);
 	}
 

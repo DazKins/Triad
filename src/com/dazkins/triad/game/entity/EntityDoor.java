@@ -13,7 +13,7 @@ public class EntityDoor extends Entity implements Activeatable
 
 	public EntityDoor(World w, float x, float y, int o)
 	{
-		super(w, EntityIDStorage.DOOR, x, y, "door");
+		super(w, StorageEntityID.DOOR, x, y, "door");
 		closedOrientation = o;
 	}
 

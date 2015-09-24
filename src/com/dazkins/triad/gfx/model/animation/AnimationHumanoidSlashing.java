@@ -1,7 +1,7 @@
 package com.dazkins.triad.gfx.model.animation;
 
-import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
+import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.gfx.model.Quad;
 
@@ -9,19 +9,25 @@ public class AnimationHumanoidSlashing extends Animation
 {
 	private int time;
 
-	public AnimationHumanoidSlashing(Entity e, int t)
+	public AnimationHumanoidSlashing(EntityRenderer e, int t)
 	{
-		super(e);
+		super(StorageAnimationID.HUMANOID_SLASHING, e);
 		time = t;
 	}
 
-	public void updateState(Entity e)
+	public AnimationHumanoidSlashing(int id, EntityRenderer e, int t)
 	{
-		super.updateState(e);
+		super(id, e);
+		time = t;
+	}
+
+	public void updateState()
+	{
+		super.updateState();
 		if (verifyModel(ModelHumanoid.class))
 		{
 			ModelHumanoid model = (ModelHumanoid) parentModel;
-			int f = e.getFacing();
+			int f = eRenderer.getFacing();
 
 			Quad rArm = model.getRightArm()[f];
 

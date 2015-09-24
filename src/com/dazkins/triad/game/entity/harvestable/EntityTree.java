@@ -1,6 +1,6 @@
 package com.dazkins.triad.game.entity.harvestable;
 
-import com.dazkins.triad.game.entity.EntityIDStorage;
+import com.dazkins.triad.game.entity.StorageEntityID;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
@@ -13,7 +13,7 @@ public class EntityTree extends EntityHarvestable
 {
 	public EntityTree(World w, float x, float y)
 	{
-		super(w, EntityIDStorage.TREE, x, y, "tree", 30);
+		super(w, StorageEntityID.TREE, x, y, "tree", 30);
 	}
 
 	public void dropLoot()

@@ -57,6 +57,7 @@ public class GameStatePlaying implements GameState
 
 		player.tick();
 
+		playerRenderer.setFacing(player.getFacing());
 		playerRenderer.setX(player.getX());
 		playerRenderer.setY(player.getY());
 

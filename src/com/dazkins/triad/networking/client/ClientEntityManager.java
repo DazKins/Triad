@@ -11,10 +11,10 @@ import com.dazkins.triad.game.entity.renderer.StorageEntityRenderer;
 import com.dazkins.triad.game.world.IWorldAccess;
 import com.dazkins.triad.gfx.Camera;
 
-public class EntityRendererManager
+public class ClientEntityManager
 {
 	private Map<Integer, EntityRenderer> renderers = new HashMap<Integer, EntityRenderer>();
-	private ArrayList<Integer> entitiesToRender = new ArrayList<Integer>();
+	private ArrayList<Integer> loadedEntities = new ArrayList<Integer>();
 
 	private EntityRendererPlayer player;
 
@@ -37,7 +37,7 @@ public class EntityRendererManager
 
 		renderers.put(gID, r);
 
-		entitiesToRender.add(gID);
+		loadedEntities.add(gID);
 	}
 
 	public void setPlayerEntityRenderer(EntityRendererPlayer p)
@@ -65,11 +65,33 @@ public class EntityRendererManager
 			return (o1.getY() > o2.getY()) ? -1 : (o1.getY() < o2.getY()) ? 1 : 0;
 		}
 	}
+	
+	public void handleAnimationUpdate(AnimationUpdate a)
+	{
+		int eID = a.getEntityGID();
+		int aID = a.getAnimID();
+		int index = a.getIndex();
+		boolean overwrite = a.getOverwrite();
+		EntityRenderer e = renderers.get(eID);
+		if (e != null)
+			e.addAnimation(aID, index, overwrite);
+	}
+	
+	public void tick()
+	{
+		for (int i : loadedEntities)
+		{
+			EntityRenderer e = renderers.get(i);
+			//TODO investigate null instances of this
+			if (e != null)
+				e.tick();
+		}
+	}
 
 	public void render(Camera cam)
 	{
 		ArrayList<EntityRenderer> render = new ArrayList<EntityRenderer>();
-		for (int i : entitiesToRender)
+		for (int i : loadedEntities)
 		{
 			EntityRenderer r = renderers.get(i);
 			if (r != null)
@@ -85,6 +107,6 @@ public class EntityRendererManager
 
 	public boolean hasAlreadyEntity(int gID)
 	{
-		return entitiesToRender.contains(gID);
+		return loadedEntities.contains(gID);
 	}
 }

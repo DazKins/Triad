@@ -24,7 +24,7 @@ public class EntityItemStack extends Entity
 
 	public EntityItemStack(World w, float x, float y, ItemStack is)
 	{
-		super(w, EntityIDStorage.ITEMSTACK, x, y, null);
+		super(w, StorageEntityID.ITEMSTACK, x, y, null);
 		this.is = is;
 	}
 

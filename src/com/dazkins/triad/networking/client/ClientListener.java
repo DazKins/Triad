@@ -8,6 +8,7 @@ import com.dazkins.triad.networking.packet.Packet001LoginRequest;
 import com.dazkins.triad.networking.packet.Packet003ChunkData;
 import com.dazkins.triad.networking.packet.Packet004LoginRequestResponse;
 import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
+import com.dazkins.triad.networking.packet.Packet007EntityAnimationStart;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
@@ -61,6 +62,16 @@ public class ClientListener extends Listener
 				{
 					client.addEntityUpdate(new EntityUpdate(gID, tID, x, y, facing));
 				}
+			}
+			if (p instanceof Packet007EntityAnimationStart)
+			{
+				Packet007EntityAnimationStart p0 = (Packet007EntityAnimationStart) p;
+				int gID = p0.getEntityGID();
+				int aID = p0.getAnimID();
+				int ind = p0.getIndex();
+				boolean over = p0.getOverwrite();
+				AnimationUpdate a = new AnimationUpdate(gID, aID, ind, over);
+				client.addAnimationUpdate(a);
 			}
 		}
 	}

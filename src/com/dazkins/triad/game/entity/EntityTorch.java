@@ -14,7 +14,7 @@ public class EntityTorch extends Entity implements LightEmitter
 {
 	public EntityTorch(World w, float x, float y)
 	{
-		super(w, EntityIDStorage.TORCH, x, y, "torch");
+		super(w, StorageEntityID.TORCH, x, y, "torch");
 	}
 
 	public int getR()

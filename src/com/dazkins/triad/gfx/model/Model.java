@@ -115,12 +115,12 @@ public abstract class Model
 		img = i;
 	}
 
-	public void updateAnimationState(Entity e)
+	public void updateAnimationState()
 	{
 		for (int i = 0; i < anims.length; i++)
 		{
 			if (anims[i] != null)
-				anims[i].updateState(e);
+				anims[i].updateState();
 		}
 	}
 

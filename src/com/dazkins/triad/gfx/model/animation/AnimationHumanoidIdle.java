@@ -1,14 +1,15 @@
 package com.dazkins.triad.gfx.model.animation;
 
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.gfx.model.Quad;
 
 public class AnimationHumanoidIdle extends Animation
 {
-	public AnimationHumanoidIdle(Entity e)
+	public AnimationHumanoidIdle(EntityRenderer e)
 	{
-		super(e);
+		super(StorageAnimationID.HUMANOID_IDLE, e);
 	}
 
 	public void updateState(Entity e)

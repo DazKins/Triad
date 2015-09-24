@@ -82,7 +82,12 @@ public class World
 			}
 		}
 	}
-
+	
+	public TriadServer getServer()
+	{
+		return server;
+	}
+	
 	public Color getAmbientLight()
 	{
 		return ambientLightLevel;

@@ -1,6 +1,6 @@
 package com.dazkins.triad.game.entity.renderer;
 
-import com.dazkins.triad.game.entity.EntityIDStorage;
+import com.dazkins.triad.game.entity.StorageEntityID;
 
 @SuppressWarnings("unchecked")
 public class StorageEntityRenderer
@@ -9,9 +9,9 @@ public class StorageEntityRenderer
 
 	static
 	{
-		renderers[EntityIDStorage.PLAYER] = EntityRendererPlayer.class;
-		renderers[EntityIDStorage.TREE] = EntityRendererTree.class;
-		renderers[EntityIDStorage.PIG] = EntityRendererPig.class;
+		renderers[StorageEntityID.PLAYER] = EntityRendererPlayer.class;
+		renderers[StorageEntityID.TREE] = EntityRendererTree.class;
+		renderers[StorageEntityID.PIG] = EntityRendererPig.class;
 	}
 
 	public static EntityRenderer recieveRenderer(int id)

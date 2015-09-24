@@ -1,20 +1,18 @@
 package com.dazkins.triad.gfx.model.animation;
 
-import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.gfx.model.ModelTree;
 import com.dazkins.triad.gfx.model.Quad;
 
 public class AnimationTreeShake extends Animation
 {
-	public AnimationTreeShake(Entity e)
+	public AnimationTreeShake(EntityRenderer e)
 	{
-		super(e);
+		super(StorageAnimationID.TREE_SHAKE, e);
 	}
 
-	public void updateState(Entity e)
+	public void updateState()
 	{
-		super.updateState(e);
-
 		if (verifyModel(ModelTree.class))
 		{
 			ModelTree m = (ModelTree) parentModel;

@@ -6,7 +6,7 @@ import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.Entity;
-import com.dazkins.triad.game.entity.EntityIDStorage;
+import com.dazkins.triad.game.entity.StorageEntityID;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.inventory.Inventory;
@@ -31,7 +31,7 @@ public class EntityPlayerClient extends Mob
 
 	public EntityPlayerClient(String n, float x, float y, InputHandler input)
 	{
-		super(null, EntityIDStorage.PLAYER, x, y, "player", 1000);
+		super(null, StorageEntityID.PLAYER, x, y, "player", 1000);
 		this.input = input;
 		this.inv = new Inventory(9, 5);
 		inv.addItem(Item.testHelmet);

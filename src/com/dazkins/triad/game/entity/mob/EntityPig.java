@@ -1,12 +1,13 @@
 package com.dazkins.triad.game.entity.mob;
 
 import com.dazkins.triad.game.entity.Entity;
-import com.dazkins.triad.game.entity.EntityIDStorage;
+import com.dazkins.triad.game.entity.StorageEntityID;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.model.ModelPig;
 import com.dazkins.triad.gfx.model.animation.AnimationQuadrupedWalking;
+import com.dazkins.triad.gfx.model.animation.StorageAnimationID;
 import com.dazkins.triad.math.AABB;
 
 public class EntityPig extends Mob
@@ -16,7 +17,7 @@ public class EntityPig extends Mob
 
 	public EntityPig(World w, float x, float y, int h)
 	{
-		super(w, EntityIDStorage.PIG, x, y, "pig", h);
+		super(w, StorageEntityID.PIG, x, y, "pig", h);
 		moving = true;
 		dir = (float) (Math.random() * Math.PI * 2);
 	}
@@ -68,6 +69,8 @@ public class EntityPig extends Mob
 
 			setFacingBasedOnVelocities(xa, ya);
 		}
+		
+		addNewAnimation(StorageAnimationID.QUADRUPED_WALKING, 1, false);
 
 		xa *= 0.75;
 		ya *= 0.75;

@@ -15,20 +15,20 @@ public class EntityButton extends Entity implements Activeatable
 
 	public EntityButton(World w, float x, float y)
 	{
-		super(w, EntityIDStorage.BUTTON, x, y, "button");
+		super(w, StorageEntityID.BUTTON, x, y, "button");
 		triggers = new ArrayList<Activeatable>();
 	}
 
 	public EntityButton(World w, float x, float y, Activeatable a)
 	{
-		super(w, EntityIDStorage.BUTTON, x, y, "button");
+		super(w, StorageEntityID.BUTTON, x, y, "button");
 		triggers = new ArrayList<Activeatable>();
 		triggers.add(a);
 	}
 
 	public EntityButton(World w, float x, float y, ArrayList<Activeatable> a)
 	{
-		super(w, EntityIDStorage.BUTTON, x, y, "button");
+		super(w, StorageEntityID.BUTTON, x, y, "button");
 		triggers = a;
 	}
 

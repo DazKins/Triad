@@ -1,33 +1,26 @@
 package com.dazkins.triad.gfx.model.animation;
 
-import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
-import com.dazkins.triad.game.entity.mob.Mob;
+import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.gfx.model.Quad;
 
 public class AnimationHumanoidWalking extends Animation
 {
+	public AnimationHumanoidWalking(EntityRenderer e)
+	{
+		super(StorageAnimationID.HUMANOID_WALKING, e);
+	}
+
 	private float animSpeed;
 
-	public AnimationHumanoidWalking(Entity e)
+	public void updateState()
 	{
-		super(e);
-	}
-
-	public void firstFrameInit(Entity e)
-	{
-		animSpeed = ((Mob) e).getMovementSpeed() / 4.0f;
-	}
-
-	public void updateState(Entity e)
-	{
-		super.updateState(e);
 		if (verifyModel(ModelHumanoid.class))
 		{
 			ModelHumanoid model = (ModelHumanoid) parentModel;
 
-			int f = e.getFacing();
+			int f = eRenderer.getFacing();
 
 			Quad cRightArm = model.getRightArm()[f];
 			Quad cLeftArm = model.getLeftArm()[f];
@@ -48,9 +41,9 @@ public class AnimationHumanoidWalking extends Animation
 				cLeftLeg.setOffset(0, (float) (-Math.sin((float) animationTicks * animSpeed) + 1.0f) * 3.0f);
 			}
 		}
-		if (e.getSpeed() < 0.01f)
-		{
-			stop();
-		}
+//		if (e.getSpeed() < 0.01f)
+//		{
+//			stop();
+//		}
 	}
 }

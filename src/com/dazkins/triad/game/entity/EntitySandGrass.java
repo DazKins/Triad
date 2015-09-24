@@ -10,7 +10,7 @@ public class EntitySandGrass extends Entity
 
 	public EntitySandGrass(World w, float x, float y)
 	{
-		super(w, EntityIDStorage.SANDGRASS, x, y, "sandGrass");
+		super(w, StorageEntityID.SANDGRASS, x, y, "sandGrass");
 	}
 
 	public AABB getAABB()

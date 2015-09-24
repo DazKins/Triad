@@ -10,7 +10,7 @@ public class EntityFlower extends Entity
 {
 	public EntityFlower(World w, float x, float y)
 	{
-		super(w, EntityIDStorage.FLOWER, x, y, "flower");
+		super(w, StorageEntityID.FLOWER, x, y, "flower");
 	}
 
 	public AABB getAABB()

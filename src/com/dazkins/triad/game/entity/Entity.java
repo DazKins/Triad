@@ -5,14 +5,13 @@ import java.util.Comparator;
 
 import org.lwjgl.opengl.GL11;
 
-import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Camera;
-import com.dazkins.triad.gfx.Color;
-import com.dazkins.triad.gfx.model.Model;
+import com.dazkins.triad.gfx.model.animation.Animation;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.networking.client.AnimationUpdate;
 
 public abstract class Entity
 {
@@ -180,6 +179,11 @@ public abstract class Entity
 		float y0 = Math.abs(getYA());
 		float mag = (float) Math.sqrt(x0 * x0 + y0 * y0);
 		return mag;
+	}
+	
+	public void addNewAnimation(int aID, int ind, boolean over)
+	{
+		world.getServer().addAnimUpdate(new AnimationUpdate(globalID, aID, ind, over));
 	}
 
 	public void move()

@@ -1,6 +1,6 @@
 package com.dazkins.triad.game.entity.mob;
 
-import com.dazkins.triad.game.entity.EntityIDStorage;
+import com.dazkins.triad.game.entity.StorageEntityID;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
@@ -17,7 +17,7 @@ public class EntityZombie extends Mob
 {
 	public EntityZombie(World w, float x, float y)
 	{
-		super(w, EntityIDStorage.ZOMBIE, x, y, "zombie", 100);
+		super(w, StorageEntityID.ZOMBIE, x, y, "zombie", 100);
 	}
 
 	public float getMovementSpeed()

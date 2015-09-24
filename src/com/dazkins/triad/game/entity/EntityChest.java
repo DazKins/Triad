@@ -13,7 +13,7 @@ public class EntityChest extends Entity implements Interactable
 
 	public EntityChest(World w, float x, float y)
 	{
-		super(w, EntityIDStorage.CHEST, x, y, "chest");
+		super(w, StorageEntityID.CHEST, x, y, "chest");
 		inv = new Inventory(9, 5);
 	}
 

@@ -12,7 +12,7 @@ import com.dazkins.triad.gfx.Camera;
 public class ClientWorldManager
 {
 	private ClientChunkManager crm;
-	private EntityRendererManager erm;
+	private ClientEntityManager cem;
 
 	private Map<Integer, EntityPlayerClient> players;
 	private int myPlayerID;
@@ -26,7 +26,7 @@ public class ClientWorldManager
 	public ClientWorldManager(TriadClient cl, Camera c)
 	{
 		crm = new ClientChunkManager();
-		erm = new EntityRendererManager();
+		cem = new ClientEntityManager();
 
 		requestedChunks = new ArrayList<ChunkCoordinate>();
 
@@ -47,12 +47,12 @@ public class ClientWorldManager
 	public void render()
 	{
 		crm.render(cam);
-		erm.render(cam);
+		cem.render(cam);
 	}
 
 	public void setPlayerEntityRenderer(EntityRendererPlayer p)
 	{
-		erm.setPlayerEntityRenderer(p);
+		cem.setPlayerEntityRenderer(p);
 	}
 
 	public void tick()
@@ -86,13 +86,19 @@ public class ClientWorldManager
 				float y = c.getY();
 				int facing = c.getFacing();
 
-				if (!erm.hasAlreadyEntity(gID))
+				if (!cem.hasAlreadyEntity(gID))
 				{
-					erm.initRenderer(crm, gID, tID);
+					cem.initRenderer(crm, gID, tID);
 				}
 
-				erm.updateRenderer(x, y, gID, tID, facing);
+				cem.updateRenderer(x, y, gID, tID, facing);
 			}
+		}
+		
+		ArrayList<AnimationUpdate> animUpdates = client.getAndPurgeAnimationUpdates();
+		for (AnimationUpdate a : animUpdates)
+		{
+			cem.handleAnimationUpdate(a);
 		}
 
 		ArrayList<ChunkData> chunks = client.getAndPurgeRecievedChunks();
@@ -100,5 +106,7 @@ public class ClientWorldManager
 		{
 			crm.updateData(c);
 		}
+		
+		cem.tick();
 	}
 }

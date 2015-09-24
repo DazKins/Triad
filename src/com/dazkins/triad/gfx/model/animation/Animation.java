@@ -1,33 +1,38 @@
 package com.dazkins.triad.gfx.model.animation;
 
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.gfx.model.Model;
 
 public abstract class Animation
 {
+	private int id;
+	
 	protected Model parentModel;
 
-	protected long tickStart;
 	protected int animationTicks;
 
 	protected boolean modelOK;
+	
+	protected EntityRenderer eRenderer;
 
-	public Animation(Entity e)
+	public Animation(int i, EntityRenderer e)
 	{
-		tickStart = e.lifeTicks;
+		eRenderer = e;
+		id = i;
 	}
-
+	
 	public void init(Model m)
 	{
 		parentModel = m;
 	}
-
-	public void updateState(Entity e)
+	
+	public int getID()
 	{
-		if (animationTicks++ == 0)
-			firstFrameInit(e);
+		return id;
 	}
 
+	//TODO fix this
 	public void firstFrameInit(Entity e)
 	{
 	}
@@ -40,5 +45,10 @@ public abstract class Animation
 	public boolean verifyModel(Class<? extends Model> m)
 	{
 		return m.isInstance(parentModel);
+	}
+
+	public void updateState()
+	{
+		animationTicks++;
 	}
 }

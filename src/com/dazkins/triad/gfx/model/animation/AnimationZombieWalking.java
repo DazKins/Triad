@@ -1,22 +1,20 @@
 package com.dazkins.triad.gfx.model.animation;
 
-import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
+import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.gfx.model.Quad;
 
 public class AnimationZombieWalking extends AnimationHumanoidWalking
 {
-	public AnimationZombieWalking(Entity e, float a)
+	public AnimationZombieWalking(EntityRenderer e)
 	{
 		super(e);
 	}
 
-	public void updateState(Entity e)
+	public void updateState()
 	{
-		super.updateState(e);
-
-		int f = e.getFacing();
+		int f = eRenderer.getFacing();
 
 		ModelHumanoid model = (ModelHumanoid) parentModel;
 

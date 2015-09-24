@@ -1,6 +1,6 @@
 package com.dazkins.triad.game.entity;
 
-public class EntityIDStorage
+public class StorageEntityID
 {
 	public static final int PLAYER = 0;
 	public static final int TREE = 1;

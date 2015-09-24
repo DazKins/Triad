@@ -3,17 +3,18 @@ package com.dazkins.triad.gfx.model.animation;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.mob.Mob;
+import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.gfx.model.ModelQuadruped;
 import com.dazkins.triad.gfx.model.Quad;
 
 public class AnimationQuadrupedWalking extends Animation
 {
-	float animSpeed;
-
-	public AnimationQuadrupedWalking(Entity e)
+	public AnimationQuadrupedWalking(EntityRenderer e)
 	{
-		super(e);
+		super(StorageAnimationID.QUADRUPED_WALKING, e);
 	}
+
+	float animSpeed = 1;
 
 	public void firstFrameInit(Entity e)
 	{
@@ -21,12 +22,12 @@ public class AnimationQuadrupedWalking extends Animation
 		// animSpeed = 0.125f;
 	}
 
-	public void updateState(Entity e)
+	public void updateState()
 	{
-		super.updateState(e);
+		super.updateState();
 		if (verifyModel(ModelQuadruped.class))
 		{
-			int f = e.getFacing();
+			int f = eRenderer.getFacing();
 			ModelQuadruped m = (ModelQuadruped) parentModel;
 
 			Quad cFrontLeftLeg = m.getFrontLeftLeg()[f];
@@ -50,9 +51,9 @@ public class AnimationQuadrupedWalking extends Animation
 				cFrontRightLeg.setOffset(0, (float) (-Math.sin((float) animationTicks * animSpeed) + 1.0f) * 1.0f);
 			}
 		}
-		if (e.getSpeed() < 0.01f)
-		{
-			stop();
-		}
+//		if (e.getSpeed() < 0.01f)
+//		{
+//			stop();
+//		}
 	}
 }

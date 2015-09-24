@@ -13,9 +13,11 @@ import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.networking.Network;
 import com.dazkins.triad.networking.TriadConnection;
+import com.dazkins.triad.networking.client.AnimationUpdate;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet003ChunkData;
 import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
+import com.dazkins.triad.networking.packet.Packet007EntityAnimationStart;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
@@ -30,6 +32,8 @@ public class TriadServer
 	private ArrayList<ServerChunkRequest> chunkRequests;
 	private ArrayList<Chunk> chunksToUpdate;
 	
+	private ArrayList<AnimationUpdate> animUpdates; 
+	
 	private ArrayList<Chunk> spawnChunks;
 
 	private int port;
@@ -40,7 +44,7 @@ public class TriadServer
 
 	public TriadServer()
 	{
-		server = new Server(65536 * 16 * 16, 65536 * 16 * 16);
+		server = new Server(65536, 65536);
 		server.addListener(new ServerListener(this));
 
 		connections = new ArrayList<TriadConnection>();
@@ -51,6 +55,7 @@ public class TriadServer
 		players = new HashMap<TriadConnection, EntityPlayerServer>();
 		chunksToUpdate = new ArrayList<Chunk>();
 		spawnChunks = new ArrayList<Chunk>();
+		animUpdates = new ArrayList<AnimationUpdate>();
 
 		Network.register(server);
 	}
@@ -74,6 +79,11 @@ public class TriadServer
 				spawnChunks.add(c);
 			}
 		}
+	}
+	
+	public void addAnimUpdate(AnimationUpdate a)
+	{
+		animUpdates.add(a);
 	}
 	
 	public void addChunkUpdate(Chunk c) 
@@ -218,6 +228,19 @@ public class TriadServer
 				i--;
 			}
 		}
+		
+		for (int i = 0; i < animUpdates.size(); i++)
+		{
+			AnimationUpdate a = animUpdates.get(i);
+			Packet007EntityAnimationStart p = new Packet007EntityAnimationStart();
+			p.setAnimID(a.getAnimID());
+			p.setEntityGID(a.getEntityGID());
+			p.setIndex(a.getIndex());
+			p.setOverwrite(a.getOverwrite());
+			sendPacketToAll(p);
+		}
+		
+		animUpdates.clear();
 		
 		world.handleChunkLoadsFromAchors(anchors);
 		
