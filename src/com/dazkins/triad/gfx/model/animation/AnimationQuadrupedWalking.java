@@ -1,26 +1,18 @@
 package com.dazkins.triad.gfx.model.animation;
 
-import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
-import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.gfx.model.ModelQuadruped;
 import com.dazkins.triad.gfx.model.Quad;
 
 public class AnimationQuadrupedWalking extends Animation
 {
-	public AnimationQuadrupedWalking(EntityRenderer e)
+	public AnimationQuadrupedWalking(EntityRenderer e, float s)
 	{
-		super(StorageAnimationID.QUADRUPED_WALKING, e);
+		super(StorageAnimationID.QUADRUPED_WALKING, e, s);
 	}
 
-	float animSpeed = 1;
-
-	public void firstFrameInit(Entity e)
-	{
-		animSpeed = ((Mob) e).getMovementSpeed() / 2.0f;
-		// animSpeed = 0.125f;
-	}
+	float animSpeed = 0.125f;
 
 	public void updateState()
 	{

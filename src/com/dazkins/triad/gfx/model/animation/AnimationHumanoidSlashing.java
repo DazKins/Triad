@@ -7,18 +7,14 @@ import com.dazkins.triad.gfx.model.Quad;
 
 public class AnimationHumanoidSlashing extends Animation
 {
-	private int time;
-
-	public AnimationHumanoidSlashing(EntityRenderer e, int t)
+	public AnimationHumanoidSlashing(EntityRenderer e, float s)
 	{
-		super(StorageAnimationID.HUMANOID_SLASHING, e);
-		time = t;
+		super(StorageAnimationID.HUMANOID_SLASHING, e, s);
 	}
 
-	public AnimationHumanoidSlashing(int id, EntityRenderer e, int t)
+	public AnimationHumanoidSlashing(int id, EntityRenderer e, float s)
 	{
-		super(id, e);
-		time = t;
+		super(id, e, s);
 	}
 
 	public void updateState()
@@ -33,8 +29,8 @@ public class AnimationHumanoidSlashing extends Animation
 
 			float multiplier;
 
-			if (time != 0)
-				multiplier = 50 / time;
+			if (animSpeed != 0)
+				multiplier = 50 / animSpeed;
 			else
 				multiplier = 50;
 

@@ -181,9 +181,9 @@ public abstract class Entity
 		return mag;
 	}
 	
-	public void addNewAnimation(int aID, int ind, boolean over)
+	public void addNewAnimation(int aID, int ind, boolean over, float speed)
 	{
-		world.getServer().addAnimUpdate(new AnimationUpdate(globalID, aID, ind, over));
+		world.getServer().addAnimUpdate(new AnimationUpdate(globalID, aID, ind, over, speed));
 	}
 
 	public void move()

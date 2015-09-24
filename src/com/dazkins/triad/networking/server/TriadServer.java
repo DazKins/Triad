@@ -3,7 +3,9 @@ package com.dazkins.triad.networking.server;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.mob.EntityPlayerServer;
@@ -18,12 +20,15 @@ import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet003ChunkData;
 import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
 import com.dazkins.triad.networking.packet.Packet007EntityAnimationStart;
+import com.dazkins.triad.networking.packet.PacketSend;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
 public class TriadServer
 {
+	private static final int PACKET_CUTOFF = 1000;
+	
 	private Server server;
 
 	private ArrayList<TriadConnection> connections;
@@ -34,6 +39,8 @@ public class TriadServer
 	
 	private ArrayList<AnimationUpdate> animUpdates; 
 	
+	private Queue<PacketSend> packetSendQueue;
+	
 	private ArrayList<Chunk> spawnChunks;
 
 	private int port;
@@ -41,10 +48,11 @@ public class TriadServer
 	private World world;
 	
 	private int runningTicks;
+	private int packetCount;
 
 	public TriadServer()
 	{
-		server = new Server(65536, 65536);
+		server = new Server(1677216, 1677216);
 		server.addListener(new ServerListener(this));
 
 		connections = new ArrayList<TriadConnection>();
@@ -56,6 +64,7 @@ public class TriadServer
 		chunksToUpdate = new ArrayList<Chunk>();
 		spawnChunks = new ArrayList<Chunk>();
 		animUpdates = new ArrayList<AnimationUpdate>();
+		packetSendQueue = new LinkedList<PacketSend>();
 
 		Network.register(server);
 	}
@@ -95,12 +104,22 @@ public class TriadServer
 	{
 		return world;
 	}
+	
+	public void addPacketToSendQueue(Packet p, Connection c)
+	{
+		if (packetCount < PACKET_CUTOFF)
+		{
+			c.sendTCP(p);
+			packetCount++;
+		} else {
+			packetSendQueue.add(new PacketSend(p, c));
+		}
+	}
 
 	public void sendPlayerUpdates()
 	{
 		for (TriadConnection c : connections)
 		{
-			Connection con = c.getConnection();
 			for (Map.Entry<TriadConnection, EntityPlayerServer> e : players.entrySet())
 			{
 				EntityPlayerServer p = e.getValue();
@@ -109,7 +128,7 @@ public class TriadServer
 				p0.settID(p.getTypeID());
 				p0.setX(p.getX());
 				p0.setY(p.getY());
-				con.sendTCP(p0);
+				c.sendPacket(p0);
 			}
 		}
 	}
@@ -127,7 +146,7 @@ public class TriadServer
 	{
 		for (TriadConnection t : connections)
 		{
-			if (t.getConnection().equals(c))
+			if (t.isConnection(c))
 			{
 				return t;
 			}
@@ -188,6 +207,20 @@ public class TriadServer
 
 	public void tick()
 	{
+		while (!packetSendQueue.isEmpty())
+		{
+			if (packetCount < PACKET_CUTOFF) 
+			{
+				PacketSend p = packetSendQueue.remove();
+				
+				if (p != null)
+				{
+					p.getCon().sendTCP(p.getPacket());
+					packetCount++;
+				}
+			} else { break; }
+		}
+		
 		ArrayList<Entity> ents = world.getLoadedEntities();
 		for (Entity e : ents)
 		{
@@ -199,7 +232,7 @@ public class TriadServer
 			p0.setFacing(e.getFacing());
 			for (TriadConnection c : connections)
 			{
-				c.getConnection().sendTCP(p0);
+				c.sendPacket(p0);
 			}
 		}
 		
@@ -221,9 +254,8 @@ public class TriadServer
 			if (cs.isLoaded())
 			{
 				TriadConnection tc = c.getConnection();
-				Connection con = tc.getConnection();
 				Packet003ChunkData p = cs.compressToPacket();
-				con.sendTCP(p);
+				tc.sendPacket(p);
 				chunkRequests.remove(c);
 				i--;
 			}
@@ -247,25 +279,29 @@ public class TriadServer
 		world.tick();
 		
 		//Chunk updates that need to be sent to all clients
-		for (Chunk c : chunksToUpdate) 
+		if (runningTicks % 10 == 0)
 		{
-			if (c.isLoaded())
+			for (Chunk c : chunksToUpdate) 
 			{
-				sendPacketToAll(c.compressToPacket());
+				if (c.isLoaded())
+				{
+					sendPacketToAll(c.compressToPacket());
+				}
 			}
+			chunksToUpdate.clear();
 		}
-		chunksToUpdate.clear();
 
 		sendPlayerUpdates();
 		
 		runningTicks++;
+		packetCount = 0;
 	}
 	
 	public void sendPacketToAll(Packet p) 
 	{
 		for (TriadConnection t : connections) 
 		{
-			t.getConnection().sendTCP(p);
+			t.sendPacket(p);
 		}
 	}
 

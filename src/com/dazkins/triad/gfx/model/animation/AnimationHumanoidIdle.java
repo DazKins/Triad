@@ -7,9 +7,9 @@ import com.dazkins.triad.gfx.model.Quad;
 
 public class AnimationHumanoidIdle extends Animation
 {
-	public AnimationHumanoidIdle(EntityRenderer e)
+	public AnimationHumanoidIdle(EntityRenderer e, float s)
 	{
-		super(StorageAnimationID.HUMANOID_IDLE, e);
+		super(StorageAnimationID.HUMANOID_IDLE, e, s);
 	}
 
 	public void updateState(Entity e)

@@ -6,9 +6,9 @@ import com.dazkins.triad.gfx.model.Quad;
 
 public class AnimationTreeShake extends Animation
 {
-	public AnimationTreeShake(EntityRenderer e)
+	public AnimationTreeShake(EntityRenderer e, float s)
 	{
-		super(StorageAnimationID.TREE_SHAKE, e);
+		super(StorageAnimationID.TREE_SHAKE, e, s);
 	}
 
 	public void updateState()

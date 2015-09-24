@@ -1,6 +1,5 @@
 package com.dazkins.triad.gfx.model.animation;
 
-import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.gfx.model.Model;
 
@@ -15,11 +14,14 @@ public abstract class Animation
 	protected boolean modelOK;
 	
 	protected EntityRenderer eRenderer;
+	
+	protected float animSpeed;
 
-	public Animation(int i, EntityRenderer e)
+	public Animation(int i, EntityRenderer e, float s)
 	{
 		eRenderer = e;
 		id = i;
+		animSpeed = s;
 	}
 	
 	public void init(Model m)
@@ -30,11 +32,6 @@ public abstract class Animation
 	public int getID()
 	{
 		return id;
-	}
-
-	//TODO fix this
-	public void firstFrameInit(Entity e)
-	{
 	}
 
 	public void stop()

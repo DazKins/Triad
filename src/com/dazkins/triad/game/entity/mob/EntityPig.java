@@ -70,7 +70,7 @@ public class EntityPig extends Mob
 			setFacingBasedOnVelocities(xa, ya);
 		}
 		
-		addNewAnimation(StorageAnimationID.QUADRUPED_WALKING, 1, false);
+		addNewAnimation(StorageAnimationID.QUADRUPED_WALKING, 1, false, 0.125f);
 
 		xa *= 0.75;
 		ya *= 0.75;

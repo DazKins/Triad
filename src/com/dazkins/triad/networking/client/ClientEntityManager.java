@@ -72,9 +72,10 @@ public class ClientEntityManager
 		int aID = a.getAnimID();
 		int index = a.getIndex();
 		boolean overwrite = a.getOverwrite();
+		float speed = a.getAnimSpeed();
 		EntityRenderer e = renderers.get(eID);
 		if (e != null)
-			e.addAnimation(aID, index, overwrite);
+			e.addAnimation(aID, index, overwrite, speed);
 	}
 	
 	public void tick()

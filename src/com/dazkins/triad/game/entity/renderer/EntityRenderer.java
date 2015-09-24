@@ -41,11 +41,11 @@ public abstract class EntityRenderer
 		}
 	}
 	
-	public void addAnimation(int aID, int i, boolean o)
+	public void addAnimation(int aID, int i, boolean o, float s)
 	{
 		if (isModelReady)
 		{
-			model.addAnimation(StorageAnimation.getAndInstantiateAnimation(aID, this), i, o);
+			model.addAnimation(StorageAnimation.getAndInstantiateAnimation(aID, this, s), i, o);
 		}
 	}
 

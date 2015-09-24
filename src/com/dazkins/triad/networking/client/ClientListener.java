@@ -70,7 +70,8 @@ public class ClientListener extends Listener
 				int aID = p0.getAnimID();
 				int ind = p0.getIndex();
 				boolean over = p0.getOverwrite();
-				AnimationUpdate a = new AnimationUpdate(gID, aID, ind, over);
+				float s = p0.getAnimSpeed();
+				AnimationUpdate a = new AnimationUpdate(gID, aID, ind, over, s);
 				client.addAnimationUpdate(a);
 			}
 		}

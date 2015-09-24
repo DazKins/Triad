@@ -7,7 +7,7 @@ public class StorageAnimation
 {
 	private static Class<? extends Animation>[] animations = new Class[100];
 	@SuppressWarnings("rawtypes")
-	private static Class[] args = new Class[]{EntityRenderer.class};
+	private static Class[] args = new Class[]{EntityRenderer.class, float.class};
 
 	static
 	{
@@ -15,12 +15,12 @@ public class StorageAnimation
 		animations[StorageAnimationID.QUADRUPED_WALKING] = AnimationQuadrupedWalking.class;
 	}
 
-	public static Animation getAndInstantiateAnimation(int id, EntityRenderer er)
+	public static Animation getAndInstantiateAnimation(int id, EntityRenderer er, float speed)
 	{
 		try
 		{
 			Class<? extends Animation> c = animations[id];
-			return c.getDeclaredConstructor(args).newInstance(er);
+			return c.getDeclaredConstructor(args).newInstance(er, speed);
 		} catch (Exception e)
 		{
 			e.printStackTrace();

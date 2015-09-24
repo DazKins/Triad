@@ -7,12 +7,12 @@ import com.dazkins.triad.gfx.model.Quad;
 
 public class AnimationHumanoidWalking extends Animation
 {
-	public AnimationHumanoidWalking(EntityRenderer e)
+	public AnimationHumanoidWalking(EntityRenderer e, float s)
 	{
-		super(StorageAnimationID.HUMANOID_WALKING, e);
+		super(StorageAnimationID.HUMANOID_WALKING, e, s);
 	}
 
-	private float animSpeed;
+	private float animSpeed = 1;
 
 	public void updateState()
 	{

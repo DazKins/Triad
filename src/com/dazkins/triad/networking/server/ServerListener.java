@@ -34,11 +34,11 @@ public class ServerListener extends Listener
 			if (p instanceof Packet001LoginRequest)
 			{
 				Packet001LoginRequest p0 = (Packet001LoginRequest) p;
-				int id = server.registerNewConnection(new TriadConnection(con, p0.getUsername()));
+				int id = server.registerNewConnection(new TriadConnection(server, con, p0.getUsername()));
 				Packet004LoginRequestResponse p1 = new Packet004LoginRequestResponse();
 				p1.setAccepted(true);
 				p1.setPlayerID(id);
-				con.sendTCP(p1);
+				server.getFromConnection(con).sendPacket(p1);
 			}
 			if (p instanceof Packet002ChunkDataRequest)
 			{
@@ -62,6 +62,11 @@ public class ServerListener extends Listener
 		{
 			System.out.println("[SERVER] Just received some wierd data here! " + o);
 		}
+	}
+	
+	private void handlePacketReceive(TriadConnection c, Object o)
+	{
+		
 	}
 
 	public void connected(Connection c)

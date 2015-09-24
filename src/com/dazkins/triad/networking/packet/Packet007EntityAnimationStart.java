@@ -6,6 +6,7 @@ public class Packet007EntityAnimationStart extends Packet
 	private int animID;
 	private int index;
 	private boolean overwrite;
+	private float animSpeed;
 	
 	public int getEntityGID()
 	{
@@ -45,5 +46,15 @@ public class Packet007EntityAnimationStart extends Packet
 	public void setOverwrite(boolean overwrite)
 	{
 		this.overwrite = overwrite;
+	}
+
+	public float getAnimSpeed()
+	{
+		return animSpeed;
+	}
+
+	public void setAnimSpeed(float animSpeed)
+	{
+		this.animSpeed = animSpeed;
 	}
 }
