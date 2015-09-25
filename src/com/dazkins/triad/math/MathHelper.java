@@ -6,6 +6,8 @@ public class MathHelper
 {
 	public static final int SIZE_OF_FLOAT = 4;
 	
+	public static final float PI = (float) Math.PI;
+	
 	// Treats negatives better
 	public static int betterMod(float x, int m)
 	{

@@ -4,6 +4,7 @@ import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.gfx.model.ModelQuadruped;
 import com.dazkins.triad.gfx.model.Quad;
+import com.dazkins.triad.math.MathHelper;
 
 public class AnimationQuadrupedWalking extends Animation
 {
@@ -12,40 +13,42 @@ public class AnimationQuadrupedWalking extends Animation
 		super(StorageAnimationID.QUADRUPED_WALKING, e, s);
 	}
 
-	float animSpeed = 0.125f;
-
 	public void updateState()
 	{
 		super.updateState();
 		if (verifyModel(ModelQuadruped.class))
 		{
 			int f = eRenderer.getFacing();
-			ModelQuadruped m = (ModelQuadruped) parentModel;
+			ModelQuadruped mod = (ModelQuadruped) parentModel;
 
-			Quad cFrontLeftLeg = m.getFrontLeftLeg()[f];
-			Quad cFrontRightLeg = m.getFrontRightLeg()[f];
-			Quad cBackLeftLeg = m.getBackLeftLeg()[f];
-			Quad cBackRightLeg = m.getBackRightLeg()[f];
+			Quad cFrontLeftLeg = mod.getFrontLeftLeg()[f];
+			Quad cFrontRightLeg = mod.getFrontRightLeg()[f];
+			Quad cBackLeftLeg = mod.getBackLeftLeg()[f];
+			Quad cBackRightLeg = mod.getBackRightLeg()[f];
+			
+			int tickTime = 60;
 
+			float a = ((float) animationTicks / (float) tickTime) * 2.0f * MathHelper.PI * animSpeed;
 			if (f == Facing.LEFT || f == Facing.RIGHT)
 			{
-				cFrontLeftLeg.setRotation((float) Math.cos(animationTicks * animSpeed) * 50.0f);
-				cFrontRightLeg.setRotation((float) -Math.cos(animationTicks * animSpeed) * 50.0f);
-				cBackLeftLeg.setRotation((float) Math.sin(animationTicks * animSpeed) * 50.0f);
-				cBackRightLeg.setRotation((float) -Math.sin(animationTicks * animSpeed) * 50.0f);
+				float maxSwing = 50.0f;
+				cFrontLeftLeg.setRotation((float) Math.cos(a) * maxSwing);
+				cFrontRightLeg.setRotation((float) -Math.cos(a) * maxSwing);
+				cBackLeftLeg.setRotation((float) Math.sin(a) * maxSwing);
+				cBackRightLeg.setRotation((float) -Math.sin(a) * maxSwing);
 			} else if (f == Facing.UP)
 			{
-				cBackLeftLeg.setOffset(0, (float) (Math.sin((float) animationTicks * animSpeed) + 1.0f) * 1.0f);
-				cBackRightLeg.setOffset(0, (float) (-Math.sin((float) animationTicks * animSpeed) + 1.0f) * 1.0f);
+				cBackLeftLeg.setOffset(0, (float) (Math.sin(a) + 1.0f));
+				cBackRightLeg.setOffset(0, (float) (-Math.sin(a) + 1.0f));
 			} else if (f == Facing.DOWN)
 			{
-				cFrontLeftLeg.setOffset(0, (float) (Math.sin((float) animationTicks * animSpeed) + 1.0f) * 1.0f);
-				cFrontRightLeg.setOffset(0, (float) (-Math.sin((float) animationTicks * animSpeed) + 1.0f) * 1.0f);
+				cFrontLeftLeg.setOffset(0, (float) (Math.sin(a) + 1.0f));
+				cFrontRightLeg.setOffset(0, (float) (-Math.sin(a) + 1.0f));
+			}
+			if (a >= Math.PI * 2)
+			{
+				super.stop();
 			}
 		}
-//		if (e.getSpeed() < 0.01f)
-//		{
-//			stop();
-//		}
 	}
 }

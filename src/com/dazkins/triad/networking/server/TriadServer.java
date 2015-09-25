@@ -269,6 +269,7 @@ public class TriadServer
 			p.setEntityGID(a.getEntityGID());
 			p.setIndex(a.getIndex());
 			p.setOverwrite(a.getOverwrite());
+			p.setAnimSpeed(a.getAnimSpeed());
 			sendPacketToAll(p);
 		}
 		

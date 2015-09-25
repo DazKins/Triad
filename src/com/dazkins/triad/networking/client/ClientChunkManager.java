@@ -25,7 +25,9 @@ public class ClientChunkManager implements IWorldAccess
 
 	public void updateData(ChunkData d)
 	{
-		chunkUpdates.put(d.getCoords(), d);
+		//TODO check this null instance
+		if (d != null)
+			chunkUpdates.put(d.getCoords(), d);
 	}
 	
 	public void handleChunkUpdate(ChunkCoordinate coords) 

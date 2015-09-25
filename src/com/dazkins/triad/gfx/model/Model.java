@@ -213,13 +213,13 @@ public abstract class Model
 		}
 	}
 
-	public boolean hasInstanceOfAnim(Class<? extends Animation> a)
+	public boolean hasInstanceOfAnim(Animation a)
 	{
 		for (int i = 0; i < anims.length; i++)
 		{
 			if (anims[i] != null)
 			{
-				if (anims[i].getClass().equals(a))
+				if (anims[i].getID() == a.getID())
 					return true;
 			}
 		}
@@ -234,7 +234,7 @@ public abstract class Model
 			anims[i] = a;
 		} else
 		{
-			if (!hasInstanceOfAnim(a.getClass()))
+			if (!hasInstanceOfAnim(a))
 			{
 				a.init(this);
 				anims[i] = a;
@@ -257,8 +257,9 @@ public abstract class Model
 		for (int i = 0; i < anims.length; i++)
 		{
 			if (anims[i] == a)
+			{
 				anims[i] = null;
+			}
 		}
-		a = null;
 	}
 }
