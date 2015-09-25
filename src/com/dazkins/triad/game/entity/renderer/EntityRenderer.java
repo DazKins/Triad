@@ -8,6 +8,7 @@ import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.gfx.model.animation.StorageAnimation;
+import com.dazkins.triad.util.TriadLogger;
 
 public abstract class EntityRenderer
 {
@@ -37,7 +38,7 @@ public abstract class EntityRenderer
 			idAssigned = true;
 		} else
 		{
-			System.err.println("ID has already been assigned to this entity");
+			TriadLogger.log("ID has already been assigned to this entity", true);
 		}
 	}
 	

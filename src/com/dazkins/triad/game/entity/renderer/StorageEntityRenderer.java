@@ -1,6 +1,7 @@
 package com.dazkins.triad.game.entity.renderer;
 
 import com.dazkins.triad.game.entity.StorageEntityID;
+import com.dazkins.triad.util.TriadLogger;
 
 @SuppressWarnings("unchecked")
 public class StorageEntityRenderer
@@ -21,6 +22,7 @@ public class StorageEntityRenderer
 			return (EntityRenderer) renderers[id].newInstance();
 		} catch (Exception e)
 		{
+			TriadLogger.log("No entity renderer for id : " + id, true);
 			return null;
 		}
 	}

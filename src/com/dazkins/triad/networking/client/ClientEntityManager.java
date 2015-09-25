@@ -10,6 +10,7 @@ import com.dazkins.triad.game.entity.renderer.EntityRendererPlayer;
 import com.dazkins.triad.game.entity.renderer.StorageEntityRenderer;
 import com.dazkins.triad.game.world.IWorldAccess;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.util.TriadLogger;
 
 public class ClientEntityManager
 {
@@ -24,7 +25,7 @@ public class ClientEntityManager
 	{
 		if (renderers.containsKey(gID))
 		{
-			System.err.println("Entity renderer has already been registered");
+			TriadLogger.log("Entity renderer has already been registered", true);
 			return;
 		}
 

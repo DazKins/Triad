@@ -1,6 +1,7 @@
 package com.dazkins.triad.gfx.model.animation;
 
 import com.dazkins.triad.game.entity.renderer.EntityRenderer;
+import com.dazkins.triad.util.TriadLogger;
 
 @SuppressWarnings("unchecked")
 public class StorageAnimation
@@ -23,7 +24,7 @@ public class StorageAnimation
 			return c.getDeclaredConstructor(args).newInstance(er, speed);
 		} catch (Exception e)
 		{
-			e.printStackTrace();
+			TriadLogger.log(e.getMessage(), true);
 			return null;
 		}
 	}

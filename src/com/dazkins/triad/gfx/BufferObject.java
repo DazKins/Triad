@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 
 import com.dazkins.triad.math.MathHelper;
+import com.dazkins.triad.util.TriadLogger;
 
 public class BufferObject
 {
@@ -55,15 +56,15 @@ public class BufferObject
 	public static void init()
 	{
 		float version = Float.parseFloat(GL11.glGetString(GL11.GL_VERSION).substring(0, 3));
-		System.err.println("OpenGL version: " + version);
+		TriadLogger.log("OpenGL version: " + version, false);
 		if (version <= 1.5)
 		{
 			useVBO = false;
-			System.err.println("VBOs disabled");
+			TriadLogger.log("VBOs disabled", false);
 		} else
 		{
 			useVBO = true;
-			System.err.println("VBOs enabled");
+			TriadLogger.log("VBOs enabled", false);
 		}
 		initStaticVBOs();
 	}

@@ -21,6 +21,7 @@ import com.dazkins.triad.networking.packet.Packet003ChunkData;
 import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
 import com.dazkins.triad.networking.packet.Packet007EntityAnimationStart;
 import com.dazkins.triad.networking.packet.PacketSend;
+import com.dazkins.triad.util.TriadLogger;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
@@ -160,7 +161,7 @@ public class TriadServer
 		connections.add(c);
 		EntityPlayerServer p = new EntityPlayerServer(world, 0, 0);
 		players.put(c, p);
-		System.out.println("[SERVER] Registered new connection: " + c.getUsername() + " from: " + c.getIP());
+		TriadLogger.log("Registered new connection: " + c.getUsername() + " from: " + c.getIP(), false);
 		return p.getGlobalID();
 	}
 
@@ -171,10 +172,10 @@ public class TriadServer
 			server.bind(port);
 		} catch (IOException e)
 		{
-			e.printStackTrace();
+			TriadLogger.log(e.getMessage(), true);
 		}
 		
-		System.out.println("[SERVER] Generating spawn...");
+		TriadLogger.log("Generating spawn...", false);
 
 		world = new World(this);
 		generateSpawn();
@@ -191,11 +192,11 @@ public class TriadServer
 			break;
 		}
 		
-		System.out.println("[SERVER] Spawn generated");
+		TriadLogger.log("Spawn generated", false);
 
 		server.start();
 
-		System.out.println("[SERVER] Started on port: " + port);
+		TriadLogger.log("Started on port: " + port, false);
 
 		runLoop();
 	}
@@ -341,6 +342,7 @@ public class TriadServer
 
 	public static void main(String args[])
 	{
+		TriadLogger.initServerLog();
 		TriadServer t = new TriadServer();
 		t.start();
 	}

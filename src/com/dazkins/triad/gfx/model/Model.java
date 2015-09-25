@@ -12,6 +12,7 @@ import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.model.animation.Animation;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.util.TriadLogger;
 
 public abstract class Model
 {
@@ -101,7 +102,7 @@ public abstract class Model
 	{
 		if (!selectiveRendering)
 		{
-			System.err.println("Warning! Selective rendering is not enabled!");
+			TriadLogger.log("Warning! Selective rendering is not enabled!", true);
 		}
 		quadRenders.add(quads.indexOf(quad));
 	}

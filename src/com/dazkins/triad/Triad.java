@@ -14,6 +14,7 @@ import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.networking.client.TriadClient;
+import com.dazkins.triad.util.TriadLogger;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 
 public class Triad implements Runnable
@@ -33,6 +34,7 @@ public class Triad implements Runnable
 
 	public static void main(String args[])
 	{
+		TriadLogger.initClientLog();
 		Triad triad = new Triad();
 		new Thread(triad).run();
 	}
@@ -95,7 +97,7 @@ public class Triad implements Runnable
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-		System.err.println("OpenGL Context Succefully Created!");
+		TriadLogger.log("OpenGL Context Succefully Created!", false);
 	}
 
 	private void stop()

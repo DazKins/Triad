@@ -12,6 +12,8 @@ import org.lwjgl.system.glfw.GLFWvidmode;
 import org.lwjgl.system.glfw.WindowCallback;
 import org.lwjgl.system.glfw.WindowCallbackAdapter;
 
+import com.dazkins.triad.util.TriadLogger;
+
 public class Window
 {
 	private int w, h;
@@ -38,7 +40,10 @@ public class Window
 		GLFW.glfwSetErrorCallback(ErrorCallback.Util.getDefault());
 
 		if (GLFW.glfwInit() != GL11.GL_TRUE)
-			throw new IllegalStateException("Unable to initialize GLFW");
+		{
+			TriadLogger.log("GLFW did not initialize!", true);
+			System.exit(-1);
+		}
 
 		GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 16);
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_TRUE);
@@ -50,7 +55,10 @@ public class Window
 			winRef = GLFW.glfwCreateWindow(w, h, "Triad", MemoryUtil.NULL, MemoryUtil.NULL);
 
 		if (winRef == MemoryUtil.NULL)
-			throw new RuntimeException("Failed to create the GLFW window");
+		{
+			TriadLogger.log("Failed to create the GLFW window", true);
+			System.exit(-1);
+		}
 
 		if (!fullscreen)
 		{

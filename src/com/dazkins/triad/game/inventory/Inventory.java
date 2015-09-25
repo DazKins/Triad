@@ -2,6 +2,7 @@ package com.dazkins.triad.game.inventory;
 
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
+import com.dazkins.triad.util.TriadLogger;
 
 public class Inventory
 {
@@ -77,7 +78,7 @@ public class Inventory
 				return false;
 			} else
 			{
-				System.err.println("Item type added was null!");
+				TriadLogger.log("Item type added was null!", true);
 			}
 		}
 		return false;
@@ -88,7 +89,7 @@ public class Inventory
 		if (is.getItemType() != null)
 			items[x + y * width] = is;
 		else
-			System.err.println("Item type added was null!");
+			TriadLogger.log("Item type added was null!", true);
 	}
 
 	public boolean addItemStack(ItemStack is, int i)
@@ -99,7 +100,7 @@ public class Inventory
 			return true;
 		} else
 		{
-			System.err.println("Item type added was null!");
+			TriadLogger.log("Item type added was null!", true);
 			return false;
 		}
 	}

@@ -2,6 +2,8 @@ package com.dazkins.triad.audio;
 
 import javax.sound.sampled.*;
 
+import com.dazkins.triad.util.TriadLogger;
+
 public class AudioFile
 {
 	private Clip clip;
@@ -15,7 +17,7 @@ public class AudioFile
 			clip.open(ais);
 		} catch (Exception e)
 		{
-			e.printStackTrace();
+			TriadLogger.log(e.getMessage(), true);
 		}
 	}
 
@@ -29,7 +31,7 @@ public class AudioFile
 			clip.loop(3);
 		} catch (Exception e)
 		{
-			System.out.println(e);
+			TriadLogger.log(e.getMessage(), true);
 		}
 	}
 }

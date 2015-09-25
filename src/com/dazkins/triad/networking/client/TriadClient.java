@@ -9,6 +9,7 @@ import com.dazkins.triad.networking.Network;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet002ChunkDataRequest;
 import com.dazkins.triad.networking.packet.Packet005UpdatePlayerPosition;
+import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Client;
 
 public class TriadClient
@@ -106,7 +107,7 @@ public class TriadClient
 			client.connect(5000, ip, 54555);
 		} catch (IOException e)
 		{
-			e.printStackTrace();
+			TriadLogger.log(e.getMessage(), true);
 		}
 
 		running = true;

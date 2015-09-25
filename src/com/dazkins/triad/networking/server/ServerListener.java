@@ -8,6 +8,7 @@ import com.dazkins.triad.networking.packet.Packet001LoginRequest;
 import com.dazkins.triad.networking.packet.Packet002ChunkDataRequest;
 import com.dazkins.triad.networking.packet.Packet004LoginRequestResponse;
 import com.dazkins.triad.networking.packet.Packet005UpdatePlayerPosition;
+import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive;
 import com.esotericsoftware.kryonet.Listener;
@@ -29,7 +30,7 @@ public class ServerListener extends Listener
 
 			if (p instanceof Packet000RawMessage)
 			{
-				System.out.println("[SERVER] Recieved raw message from: " + con + " saying: " + ((Packet000RawMessage) p).getMsg());
+				TriadLogger.log("Recieved raw message from: " + con + " saying: " + ((Packet000RawMessage) p).getMsg(), false);
 			}
 			if (p instanceof Packet001LoginRequest)
 			{
@@ -60,10 +61,11 @@ public class ServerListener extends Listener
 			}
 		} else if (!(o instanceof KeepAlive))
 		{
-			System.out.println("[SERVER] Just received some wierd data here! " + o);
+			TriadLogger.log("Just received some weird data here! " + o, false);
 		}
 	}
 	
+	//TODO look into implementing this system
 	private void handlePacketReceive(TriadConnection c, Object o)
 	{
 		
@@ -71,7 +73,7 @@ public class ServerListener extends Listener
 
 	public void connected(Connection c)
 	{
-		System.out.println("[SERVER] New connection from: " + c.getRemoteAddressTCP().getHostName() + " on " + c);
+		TriadLogger.log("New connection from: " + c.getRemoteAddressTCP().getHostName() + " on " + c, false);
 		Packet000RawMessage p = new Packet000RawMessage();
 		p.setMessage("Hello " + c.getRemoteAddressTCP().getHostName() + "!");
 		c.sendTCP(p);
@@ -79,7 +81,7 @@ public class ServerListener extends Listener
 
 	public void disconnected(Connection c)
 	{
-		System.out.println("[SERVER] " + c + " has disconnected");
+		TriadLogger.log(c + " has disconnected", false);
 	}
 
 	public void idle(Connection c)

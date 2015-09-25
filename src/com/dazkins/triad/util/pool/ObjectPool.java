@@ -4,6 +4,7 @@ import java.awt.List;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import com.dazkins.triad.util.TriadLogger;
 import com.dazkins.triad.util.pool.factory.ObjectFactory;
 
 public class ObjectPool<T>
@@ -28,7 +29,7 @@ public class ObjectPool<T>
 				objs[i] = (T) c.newInstance();
 			} catch (Exception e)
 			{
-				e.printStackTrace();
+				TriadLogger.log(e.getMessage(), true);
 			}
 		}
 		factory = of;

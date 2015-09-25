@@ -13,6 +13,8 @@ import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
+import com.dazkins.triad.util.TriadLogger;
+
 public class Image
 {
 	private static Map<String, Image> nameToImage;
@@ -55,7 +57,7 @@ public class Image
 			}
 		} catch (Exception e)
 		{
-			e.printStackTrace();
+			TriadLogger.log(e.getMessage(), true);
 		}
 	}
 
@@ -70,7 +72,7 @@ public class Image
 			processAndLoadFile(imageDir);
 		} catch (Exception e)
 		{
-			return false;
+			TriadLogger.log(e.getMessage(), true);
 		}
 		return true;
 	}

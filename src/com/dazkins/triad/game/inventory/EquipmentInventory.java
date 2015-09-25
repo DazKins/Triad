@@ -10,6 +10,7 @@ import com.dazkins.triad.game.inventory.item.equipable.armour.feet.ItemArmourFee
 import com.dazkins.triad.game.inventory.item.equipable.armour.head.ItemArmourHead;
 import com.dazkins.triad.game.inventory.item.equipable.armour.legs.ItemArmourLegs;
 import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
+import com.dazkins.triad.util.TriadLogger;
 
 public class EquipmentInventory extends Inventory
 {
@@ -111,7 +112,9 @@ public class EquipmentInventory extends Inventory
 				items[i] = is;
 				return true;
 			} else
-				System.err.println("Item type added was null!");
+			{
+				TriadLogger.log("Item type added was null!", true);
+			}
 		}
 		return false;
 	}

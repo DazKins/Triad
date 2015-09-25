@@ -13,8 +13,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
+
+import com.dazkins.triad.util.TriadLogger;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -58,7 +58,7 @@ public class FileEncrypter
 					textArea.setText(text);
 				} catch (Exception e1)
 				{
-					e1.printStackTrace();
+					TriadLogger.log(e1.getMessage(), true);
 				}
 			}
 		});
@@ -111,7 +111,7 @@ public class FileEncrypter
 					pr.close();
 				} catch (FileNotFoundException e)
 				{
-					e.printStackTrace();
+					TriadLogger.log(e.getMessage(), true);
 				}
 			}
 		} else
@@ -125,7 +125,7 @@ public class FileEncrypter
 				pr.close();
 			} catch (Exception e)
 			{
-				e.printStackTrace();
+				TriadLogger.log(e.getMessage(), true);
 			}
 		}
 	}
@@ -134,7 +134,7 @@ public class FileEncrypter
 	{
 		if (!s.startsWith("enc "))
 		{
-			System.err.println("File not correctly encrypted, please use the provided encrypter!");
+			TriadLogger.log("File not correctly encrypted, please use the provided encrypter!", true);
 		}
 		s = s.replace("enc ", "");
 		BASE64Decoder be = new BASE64Decoder();

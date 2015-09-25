@@ -9,6 +9,7 @@ import com.dazkins.triad.networking.packet.Packet003ChunkData;
 import com.dazkins.triad.networking.packet.Packet004LoginRequestResponse;
 import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
 import com.dazkins.triad.networking.packet.Packet007EntityAnimationStart;
+import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
@@ -28,7 +29,7 @@ public class ClientListener extends Listener
 			Packet p = (Packet) o;
 			if (p instanceof Packet000RawMessage)
 			{
-				System.out.println("[CLIENT] Recieved raw message from server: " + ((Packet000RawMessage) p).getMsg());
+				TriadLogger.log("Recieved raw message from server: " + ((Packet000RawMessage) p).getMsg(), false);
 			}
 			if (p instanceof Packet003ChunkData)
 			{
@@ -47,7 +48,7 @@ public class ClientListener extends Listener
 				client.registerPlayerID(p0.getChosenPlayerID());
 				if (p0.isAccepted())
 				{
-					System.out.println("[CLIENT] Login accepted");
+					TriadLogger.log("Login accepted", false);
 				}
 			}
 			if (p instanceof Packet006EntityPositionUpdate)
@@ -79,7 +80,7 @@ public class ClientListener extends Listener
 
 	public void connected(Connection c)
 	{
-		System.out.println("[CLIENT] Connected");
+		TriadLogger.log("Connected", false);
 		Packet001LoginRequest p = new Packet001LoginRequest();
 		p.setUsername(client.getUsername());
 		client.sendPacket(p);
@@ -87,7 +88,7 @@ public class ClientListener extends Listener
 
 	public void disconnected(Connection c)
 	{
-		System.out.println("[CLIENT] Disconnected");
+		TriadLogger.log("Disconnected", false);
 	}
 
 	public void idle(Connection c)

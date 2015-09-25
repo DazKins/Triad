@@ -64,6 +64,6 @@ public class TriadProfiler
 
 	public void output()
 	{
-		System.out.println(cName + ": " + cTime);
+		TriadLogger.log(cName + ": " + cTime, false);
 	}
 }

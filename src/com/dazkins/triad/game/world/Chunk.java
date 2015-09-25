@@ -20,6 +20,7 @@ import com.dazkins.triad.networking.packet.Packet003ChunkData;
 import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
 import com.dazkins.triad.util.ServerChunkLoader;
 import com.dazkins.triad.util.Loadable;
+import com.dazkins.triad.util.TriadLogger;
 
 public class Chunk implements Loadable
 {
@@ -99,7 +100,7 @@ public class Chunk implements Loadable
 
 		if (xx < x0 || yy < y0 || xx >= x1|| yy >= y1)
 		{
-			System.err.println("OHNOES!!");
+			TriadLogger.log("Attempted to add entity that was out of range of the chunk boundaries!", true);
 			return;
 		}
 

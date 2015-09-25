@@ -8,6 +8,7 @@ import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.OpenGLHelper;
 import com.dazkins.triad.gfx.model.ModelButton;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.util.TriadLogger;
 
 public class EntityButton extends Entity implements Activeatable
 {
@@ -44,7 +45,7 @@ public class EntityButton extends Entity implements Activeatable
 
 	public void onActivate(Entity e)
 	{
-		System.out.println(this + " is triggered by " + e + "!");
+		TriadLogger.log(this + " is triggered by " + e + "!", false);
 		for (int i = 0; i < triggers.size(); i++)
 		{
 			triggers.get(i).onActivate(e);
