@@ -8,10 +8,4 @@ public class ParticlePoolLoader implements Loadable
 	{
 		Particle.setUpParticlePool();
 	}
-
-	public boolean isLoaded()
-	{
-		// TODO Sort this out
-		return false;
-	}
 }

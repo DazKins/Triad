@@ -18,7 +18,7 @@ public class GameStateLoading implements GameState
 	public void init(Triad triad)
 	{
 		this.triad = triad;
-		loader = new Loader("startup_load");
+		loader = new Loader();
 		loader.addLoad(new ParticlePoolLoader());
 
 		gui = new GuiLoading(triad, loader);

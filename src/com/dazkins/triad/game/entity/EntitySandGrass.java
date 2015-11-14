@@ -7,10 +7,9 @@ import com.dazkins.triad.math.AABB;
 
 public class EntitySandGrass extends Entity
 {
-
 	public EntitySandGrass(World w, float x, float y)
 	{
-		super(w, StorageEntityID.SANDGRASS, x, y, "sandGrass");
+		super(w, StorageEntityID.SAND_GRASS, x, y, "sandGrass");
 	}
 
 	public AABB getAABB()

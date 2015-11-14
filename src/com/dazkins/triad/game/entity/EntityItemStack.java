@@ -24,7 +24,7 @@ public class EntityItemStack extends Entity
 
 	public EntityItemStack(World w, float x, float y, ItemStack is)
 	{
-		super(w, StorageEntityID.ITEMSTACK, x, y, null);
+		super(w, StorageEntityID.ITEM_STACK, x, y, null);
 		this.is = is;
 	}
 
@@ -47,20 +47,6 @@ public class EntityItemStack extends Entity
 	public boolean mayPass(Entity e)
 	{
 		return true;
-	}
-
-	public void render(Camera cam)
-	{
-		renderShadow(cam, x - 2, y, 34, 5);
-
-		int xx = (int) x >> 5;
-		int yy = (int) y >> 5;
-
-		Color c = world.getTileColor(xx, yy);
-
-		GL11.glColor3f(c.getDR(), c.getDG(), c.getDB());
-		is.getItemType().renderIcon(x, y + yBounce, Tile.yPosToDepthRelativeToCamera(cam, y) + 0.001f, 1);
-		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 	}
 
 	protected void onCollide(Entity e)

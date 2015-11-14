@@ -35,16 +35,6 @@ public class EntityPlayerServer extends Mob
 		interactingObject = i;
 	}
 
-	public void tick()
-	{
-		super.tick();
-
-		move();
-
-		xa *= 0.75;
-		ya *= 0.75;
-	}
-
 	public boolean mayPass(Entity e)
 	{
 		return true;

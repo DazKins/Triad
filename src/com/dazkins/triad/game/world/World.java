@@ -14,7 +14,7 @@ import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.networking.server.TriadServer;
-import com.dazkins.triad.util.ServerChunkLoader;
+import com.dazkins.triad.util.LoaderManager;
 
 public class World
 {
@@ -30,7 +30,7 @@ public class World
 
 	protected String pathToLoad;
 
-	private ServerChunkLoader cLoad;
+	private LoaderManager cLoad;
 
 	private TimeCycle time;
 
@@ -47,7 +47,7 @@ public class World
 
 		worldGenerator = new WorldGen(this);
 
-		cLoad = new ServerChunkLoader();
+		cLoad = new LoaderManager(8);
 
 		entityLoadQueue = new ArrayList<Entity>();
 		tickedEntities = new ArrayList<Entity>();

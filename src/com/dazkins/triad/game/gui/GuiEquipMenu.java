@@ -3,6 +3,7 @@ package com.dazkins.triad.game.gui;
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.gui.object.GuiObjectBox;
+import com.dazkins.triad.game.gui.renderformat.RenderFormatManager;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.ItemStack;
@@ -107,14 +108,14 @@ public class GuiEquipMenu extends Gui
 	{
 		windowPosX = win.getW() / 2 - windowWidth / 2;
 		windowPosY = win.getH() / 2 - windowHeight / 2;
+		
+		mainBox = new GuiObjectBox(this, windowPosX, windowPosY, windowWidth, windowHeight, -1);
+		
+		headSlot = new GuiObjectBox(this, windowPosX + 200, windowPosY + windowHeight - 200, 128, 128, 0);
+		bodySlot = new GuiObjectBox(this, windowPosX + 200, windowPosY + windowHeight - 200 - 128 - gridSpacingY, 128, 128, 0);
+		legSlot = new GuiObjectBox(this, windowPosX + 200, windowPosY + windowHeight - 200 - 128 * 2 - gridSpacingY * 2, 128, 128, 0);
+		footSlot = new GuiObjectBox(this, windowPosX + 200, windowPosY + windowHeight - 200 - 128 * 3 - gridSpacingY * 3, 128, 128, 0);
 
-		mainBox = new GuiObjectBox(windowPosX, windowPosY, windowWidth, windowHeight, -1, false);
-
-		headSlot = new GuiObjectBox(windowPosX + 200, windowPosY + windowHeight - 200, 128, 128, 0, true);
-		bodySlot = new GuiObjectBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 - gridSpacingY, 128, 128, 0, true);
-		legSlot = new GuiObjectBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 * 2 - gridSpacingY * 2, 128, 128, 0, true);
-		footSlot = new GuiObjectBox(windowPosX + 200, windowPosY + windowHeight - 200 - 128 * 3 - gridSpacingY * 3, 128, 128, 0, true);
-
-		weaponSlot = new GuiObjectBox(windowPosX + 200 - 128 - gridSpacingX, windowPosY + windowHeight - 200 - 128 - gridSpacingY, 128, 128, 0, true);
+		weaponSlot = new GuiObjectBox(this, windowPosX + 200 - 128 - gridSpacingX, windowPosY + windowHeight - 200 - 128 - gridSpacingY, 128, 128, 0);
 	}
 }

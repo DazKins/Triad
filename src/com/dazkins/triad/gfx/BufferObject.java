@@ -13,7 +13,6 @@ public class BufferObject
 {
 	public static BufferObject shadow;
 
-	//TODO reimplement display lists
 	private static boolean useVBO;
 
 	private BufferObjectData data;
@@ -34,7 +33,7 @@ public class BufferObject
 		shadow.getData().addVertex(32, 0);
 		shadow.getData().addVertex(32, 32);
 		shadow.getData().addVertex(0, 32);
-		shadow.compileVBO();
+		shadow.compile();
 	}
 	
 	public static boolean useVBOS() 
@@ -76,19 +75,19 @@ public class BufferObject
 
 	public void deleteBuffer()
 	{
-		GL15.glDeleteBuffers(ID);
+		if (useVBO)
+			GL15.glDeleteBuffers(ID);
+		else
+			GL11.glDeleteLists(ID, 1);
 	}
 
 	public BufferObject(int size)
 	{
 		if (useVBO)
 		{
-			data = new BufferObjectData(size);
 			dataBuffer = BufferUtils.createFloatBuffer(size);
-		} else
-		{
-			ID = GL11.glGenLists(1);
 		}
+		data = new BufferObjectData(size);
 		renderProps = new BufferObjectRenderProperties();
 	}
 
@@ -97,16 +96,55 @@ public class BufferObject
 		data.reset();
 	}
 
-	public void compileVBO()
+	public void compile()
 	{
+		if (useVBO)
+		{
 		dataBuffer.clear();
 		dataBuffer.put(data.getRawData());
 		dataBuffer.flip();
-		renderProps = data.getRenderProperties().clone();
 		
 		ID = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dataBuffer, GL15.GL_DYNAMIC_DRAW);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dataBuffer, GL15.GL_STATIC_DRAW);
+		} else 
+		{
+			ID = GL11.glGenLists(1);
+			float[] raw = data.getRawData();
+			BufferObjectRenderProperties prop = data.getRenderProperties();
+			int vCount = prop.getVertexCount();
+			
+			GL11.glNewList(ID, GL11.GL_COMPILE);
+			GL11.glBegin(GL11.GL_QUADS);
+			for (int i = 0; i < vCount; i++)
+			{
+				if (prop.isUseColours())
+				{
+					float r = raw[i * 9 + 3];
+					float g = raw[i * 9 + 4];
+					float b = raw[i * 9 + 5];
+					float a = raw[i * 9 + 6];
+					
+					GL11.glColor4f(r, g, b, a);
+				}
+				if (prop.isUseTextures())
+				{
+					float u = raw[i * 9 + 7];
+					float v = raw[i * 9 + 8];
+					
+					GL11.glTexCoord2f(u, v);
+				}
+				
+				float x = raw[i * 9 + 0];
+				float y = raw[i * 9 + 1];
+				float z = raw[i * 9 + 2];
+				
+				GL11.glVertex3f(x, y, z);
+			}
+			GL11.glEnd();
+			GL11.glEndList();
+		}
+		renderProps = data.getRenderProperties().clone();
 	}
 
 	public void render()

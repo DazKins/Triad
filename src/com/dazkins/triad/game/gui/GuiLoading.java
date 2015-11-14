@@ -28,7 +28,7 @@ public class GuiLoading extends Gui
 		bScreen.getData().addVertex(t.win.getW(), t.win.getH());
 		bScreen.getData().addVertex(0, t.win.getH());
 
-		bScreen.compileVBO();
+		bScreen.compile();
 	}
 
 	public void tick()
@@ -44,7 +44,7 @@ public class GuiLoading extends Gui
 
 		String msg = "Loading...";
 
-		Font.drawString(msg, ((float) triad.win.getW() / 2.0f) - ((float) msg.length() * 8), triad.win.getH() / 2 + 16, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+		Font.drawString(msg, ((float) triad.win.getW() / 2.0f) - ((float) msg.length() * 8), triad.win.getH() / 2 + 16, 1.0f, 1.0f);
 	}
 
 	public void onExit()

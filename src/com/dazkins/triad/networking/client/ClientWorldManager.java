@@ -14,7 +14,6 @@ public class ClientWorldManager
 	private ClientChunkManager crm;
 	private ClientEntityManager cem;
 
-	private Map<Integer, EntityPlayerClient> players;
 	private int myPlayerID;
 
 	private Camera cam;
@@ -34,12 +33,10 @@ public class ClientWorldManager
 
 		cam = c;
 
-		players = new HashMap<Integer, EntityPlayerClient>();
-
 		myPlayerID = -1;
 	}
 
-	public ClientChunkManager getCRM()
+	public ClientChunkManager getCCM()
 	{
 		return crm;
 	}
@@ -59,11 +56,8 @@ public class ClientWorldManager
 	{
 		if (myPlayerID == -1)
 			myPlayerID = client.getPlayerID();
-
-		for (Map.Entry<Integer, EntityPlayerClient> v : players.entrySet())
-		{
-			v.getValue().tick();
-		}
+		
+		ClientUpdate update = client.getAndPurgeUpdate();
 
 		ArrayList<ChunkCoordinate> cs = crm.getRequestsForMissingChunks();
 		for (ChunkCoordinate c : cs)
@@ -75,7 +69,7 @@ public class ClientWorldManager
 			}
 		}
 
-		ArrayList<EntityUpdate> eUpdates = client.getAndPurgeEntityUpdates();
+		ArrayList<EntityUpdate> eUpdates = update.getEntityUpdates();
 		for (EntityUpdate c : eUpdates)
 		{
 			if (c != null)
@@ -95,13 +89,13 @@ public class ClientWorldManager
 			}
 		}
 		
-		ArrayList<AnimationUpdate> animUpdates = client.getAndPurgeAnimationUpdates();
+		ArrayList<AnimationUpdate> animUpdates = update.getAnimUpdates();
 		for (AnimationUpdate a : animUpdates)
 		{
 			cem.handleAnimationUpdate(a);
 		}
 
-		ArrayList<ChunkData> chunks = client.getAndPurgeRecievedChunks();
+		ArrayList<ChunkData> chunks = update.getChunkUpdates();
 		for (ChunkData c : chunks)
 		{
 			crm.updateData(c);

@@ -107,6 +107,19 @@ public class AABB
 			return false;
 		return true;
 	}
+	
+	public boolean intersects(float x, float y)
+	{
+		if (x > x1)
+			return false;
+		if (x < x0)
+			return false;
+		if (y < y0)
+			return false;
+		if (y > y1)
+			return false;
+		return true;
+	}
 
 	public void renderBounds(float width)
 	{

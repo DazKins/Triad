@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dazkins.triad.game.gui.renderformat.RenderFormatManager;
+import com.dazkins.triad.game.gui.renderformat.TextRenderFormat;
+import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.Font;
 
 public class DebugMonitor
@@ -68,7 +71,7 @@ public class DebugMonitor
 			for (int i = 0; i < variables.size(); i += 2)
 			{
 				String msg = variables.get(i).toString() + ": " + variables.get(i + 1).toString();
-				Font.drawString(msg, 0, yInc * 16, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+				Font.drawString(msg, 0, yInc * 16, 1.0f, 1.0f);
 				yInc++;
 			}
 
@@ -80,7 +83,9 @@ public class DebugMonitor
 					messages.remove(i);
 					continue;
 				}
-				Font.drawString(s.getMsg(), 0, yInc * 16, 0.7f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+				RenderFormatManager.TEXT.reset().setColour(new Color(200, 0, 0)).setA(1.0f);
+				Font.drawString(s.getMsg(), 0, yInc * 16, 1.0f, 1.0f);
+				RenderFormatManager.TEXT.reset();
 				yInc++;
 			}
 		}

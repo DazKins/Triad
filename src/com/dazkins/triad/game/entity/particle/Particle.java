@@ -119,7 +119,7 @@ public class Particle extends Entity implements PoolableObject
 		bo.getData().addVertex(w, 0);
 		bo.getData().addVertex(w, h);
 		bo.getData().addVertex(0, h);
-		bo.compileVBO();
+		bo.compile();
 	}
 
 	public float getA()

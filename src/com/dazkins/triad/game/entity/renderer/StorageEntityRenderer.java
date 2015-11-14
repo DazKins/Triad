@@ -13,6 +13,8 @@ public class StorageEntityRenderer
 		renderers[StorageEntityID.PLAYER] = EntityRendererPlayer.class;
 		renderers[StorageEntityID.TREE] = EntityRendererTree.class;
 		renderers[StorageEntityID.PIG] = EntityRendererPig.class;
+		renderers[StorageEntityID.FLOWER] = EntityRendererFlower.class;
+		renderers[StorageEntityID.SAND_GRASS] = EntityRendererSandGrass.class;
 	}
 
 	public static EntityRenderer recieveRenderer(int id)

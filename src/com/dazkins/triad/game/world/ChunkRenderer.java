@@ -4,15 +4,15 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
-import com.dazkins.triad.gfx.BufferObjectData;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.networking.client.ChunkData;
 import com.dazkins.triad.util.Loadable;
+import com.dazkins.triad.util.LoaderManager;
 
 public class ChunkRenderer implements Loadable
 {
-	private static ClientChunkGraphicsLoader cg = new ClientChunkGraphicsLoader();
+	private static LoaderManager cg = new LoaderManager(1);
 	
 	private IWorldAccess world;
 
@@ -59,7 +59,7 @@ public class ChunkRenderer implements Loadable
 		{
 			if (cg.hasSpace())
 			{
-				cg.addChunk(this);
+				cg.addLoadable(this);
 				isLoading = true;
 				needsUpdating = false;
 			}
@@ -67,7 +67,7 @@ public class ChunkRenderer implements Loadable
 		if (vboNeedsGenerating)
 		{
 			tilePlane.deleteBuffer();
-			tilePlane.compileVBO();
+			tilePlane.compile();
 			vboNeedsGenerating = false;
 		}
 		if (tilePlane != null)
@@ -96,10 +96,5 @@ public class ChunkRenderer implements Loadable
 		}
 		vboNeedsGenerating = true;
 		isLoading = false;
-	}
-
-	public synchronized boolean isLoaded()
-	{
-		return false;
 	}
 }

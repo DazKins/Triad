@@ -117,30 +117,11 @@ public class TriadServer
 		}
 	}
 
-	public void sendPlayerUpdates()
-	{
-		for (TriadConnection c : connections)
-		{
-			for (Map.Entry<TriadConnection, EntityPlayerServer> e : players.entrySet())
-			{
-				EntityPlayerServer p = e.getValue();
-				Packet006EntityPositionUpdate p0 = new Packet006EntityPositionUpdate();
-				p0.setgID(p.getGlobalID());
-				p0.settID(p.getTypeID());
-				p0.setX(p.getX());
-				p0.setY(p.getY());
-				c.sendPacket(p0);
-			}
-		}
-	}
-
-	public void updatePlayer(TriadConnection c, float x, float y, float xa, float ya)
+	public void updatePlayer(TriadConnection c, float x, float y)
 	{
 		EntityPlayerServer p = players.get(c);
 		p.setX(x);
 		p.setY(y);
-		p.setXA(xa);
-		p.setXA(ya);
 	}
 
 	public TriadConnection getFromConnection(Connection c)
@@ -161,6 +142,7 @@ public class TriadServer
 		connections.add(c);
 		EntityPlayerServer p = new EntityPlayerServer(world, 0, 0);
 		players.put(c, p);
+		world.addEntity(p);
 		TriadLogger.log("Registered new connection: " + c.getUsername() + " from: " + c.getIP(), false);
 		return p.getGlobalID();
 	}
@@ -180,7 +162,7 @@ public class TriadServer
 		world = new World(this);
 		generateSpawn();
 		
-		//Yes, this loop makes me vomit aswell...
+		//Yes, this loop makes me vomit as well...
 		startupCheck : while (true)
 		{
 			world.processWaitingChunkLoads();
@@ -231,10 +213,7 @@ public class TriadServer
 			p0.setX(e.getX());
 			p0.setY(e.getY());
 			p0.setFacing(e.getFacing());
-			for (TriadConnection c : connections)
-			{
-				c.sendPacket(p0);
-			}
+			sendPacketToAll(p0);
 		}
 		
 		ArrayList<ChunkCoordinate> anchors = new ArrayList<ChunkCoordinate>();
@@ -247,6 +226,8 @@ public class TriadServer
 			
 			anchors.add(new ChunkCoordinate(cx, cy));
 		}
+		
+		world.handleChunkLoadsFromAchors(anchors);
 
 		for (int i = 0; i < chunkRequests.size(); i++)
 		{
@@ -276,8 +257,6 @@ public class TriadServer
 		
 		animUpdates.clear();
 		
-		world.handleChunkLoadsFromAchors(anchors);
-		
 		world.tick();
 		
 		//Chunk updates that need to be sent to all clients
@@ -292,8 +271,6 @@ public class TriadServer
 			}
 			chunksToUpdate.clear();
 		}
-
-		sendPlayerUpdates();
 		
 		runningTicks++;
 		packetCount = 0;

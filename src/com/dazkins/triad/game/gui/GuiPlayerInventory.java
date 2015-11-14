@@ -31,7 +31,7 @@ public class GuiPlayerInventory extends Gui
 
 	public void setupGraphics()
 	{
-		gInv = new GuiObjectInventory(inv, win, input);
+		gInv = new GuiObjectInventory(this, inv, win, input, 1);
 	}
 
 	public void tick()

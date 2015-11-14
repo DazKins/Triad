@@ -25,7 +25,7 @@ public class GuiPlayer extends Gui
 		super(t, i);
 		world = w;
 		this.player = player;
-		statusBar = new GuiObjectStatusBar(0, 0, 0xff0000, 1024);
+		statusBar = new GuiObjectStatusBar(this, 0, 0, 0xff0000, 1024, 1);
 	}
 
 	public void tick()

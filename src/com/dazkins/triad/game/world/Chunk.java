@@ -2,24 +2,16 @@ package com.dazkins.triad.game.world;
 
 import java.util.ArrayList;
 
-import org.lwjgl.opengl.GL11;
-
 import com.dazkins.triad.game.entity.Entity;
-import com.dazkins.triad.game.entity.EntityFlower;
-import com.dazkins.triad.game.entity.EntitySandGrass;
-import com.dazkins.triad.game.entity.harvestable.EntityTree;
 import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.game.world.tile.Tile;
-import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Color;
-import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.networking.client.ChunkData;
 import com.dazkins.triad.networking.packet.Packet003ChunkData;
-import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
-import com.dazkins.triad.util.ServerChunkLoader;
 import com.dazkins.triad.util.Loadable;
+import com.dazkins.triad.util.LoaderManager;
 import com.dazkins.triad.util.TriadLogger;
 
 public class Chunk implements Loadable
@@ -75,11 +67,11 @@ public class Chunk implements Loadable
 		return p;
 	}
 
-	public boolean addToLoader(ServerChunkLoader l)
+	public boolean addToLoader(LoaderManager l)
 	{
 		if (!isBeingLoaded)
 		{
-			if (l.addChunk(this)) 
+			if (l.addLoadable(this)) 
 			{
 				isBeingLoaded = true;
 				return true;

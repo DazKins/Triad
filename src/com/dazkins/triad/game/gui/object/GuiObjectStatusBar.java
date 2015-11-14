@@ -2,10 +2,11 @@ package com.dazkins.triad.game.gui.object;
 
 import org.lwjgl.opengl.GL11;
 
+import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
 
-public class GuiObjectStatusBar
+public class GuiObjectStatusBar extends GuiObject
 {
 	private BufferObject model;
 
@@ -15,8 +16,10 @@ public class GuiObjectStatusBar
 
 	private float fill;
 
-	public GuiObjectStatusBar(int xp, int yp, int color, int length)
+	public GuiObjectStatusBar(Gui g, int xp, int yp, int color, int length, int l)
 	{
+		super(g, l);
+		
 		this.x = xp;
 		this.y = yp;
 		this.col = color;
@@ -31,7 +34,7 @@ public class GuiObjectStatusBar
 			Image.getImageFromName("iconSheet").renderSprite(model, x * 8 + this.x, this.y, 16, 16, sx * 8, 0, 8, 8, 1.0f, 1.0f);
 		}
 
-		model.compileVBO();
+		model.compile();
 	}
 
 	public void updateStatus(float perc)

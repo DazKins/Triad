@@ -1,7 +1,6 @@
 package com.dazkins.triad.game.gui.object;
 
-import org.lwjgl.opengl.GL11;
-
+import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.gfx.Camera;
@@ -9,7 +8,7 @@ import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
 
-public class GuiObjectInventory
+public class GuiObjectInventory extends GuiObject
 {
 	private Window win;
 
@@ -40,8 +39,10 @@ public class GuiObjectInventory
 
 	private ItemStack hoveredItem;
 
-	public GuiObjectInventory(Inventory i, Window w, InputHandler inp, int x, int y)
+	public GuiObjectInventory(Gui g, Inventory i, Window w, InputHandler inp, int x, int y, int l)
 	{
+		super(g, l);
+		
 		inv = i;
 		win = w;
 		input = inp;
@@ -49,45 +50,7 @@ public class GuiObjectInventory
 		winOffsetX = x;
 		winOffsetY = y;
 
-		generate();
-	}
 
-	public GuiObjectInventory(Inventory i, Window w, InputHandler inp)
-	{
-		inv = i;
-		win = w;
-		input = inp;
-
-		winOffsetX = 0;
-		winOffsetY = 0;
-
-		generate();
-	}
-
-	public float getWinW()
-	{
-		return windowWidth;
-	}
-
-	public float getWinH()
-	{
-		return windowHeight;
-	}
-
-	public void setOffsetX(float x)
-	{
-		winOffsetX = x;
-		generate();
-	}
-
-	public void setOffsetY(float y)
-	{
-		winOffsetY = y;
-		generate();
-	}
-
-	private void generate()
-	{
 		float winWR = (float) win.getW() / 1920.0f;
 
 		gridSpacingX = (int) (4.0f * winWR);
@@ -104,16 +67,48 @@ public class GuiObjectInventory
 		windowPosX = (win.getW() / 2.0f - windowWidth / 2.0f) + winOffsetX;
 		windowPosY = (win.getH() / 2.0f - windowHeight / 2.0f) + winOffsetY;
 
-		mainBox = new GuiObjectBox(windowPosX, windowPosY, windowWidth, windowHeight, 0, false);
+		mainBox = new GuiObjectBox(g, windowPosX, windowPosY, windowWidth, windowHeight, 0);
 		slotSheet = new GuiObjectBox[inv.width * inv.height];
 
-		for (int x = 0; x < inv.width; x++)
+		for (int ix = 0; x < inv.width; x++)
 		{
-			for (int y = 0; y < inv.height; y++)
+			for (int iy = 0; y < inv.height; y++)
 			{
-				slotSheet[x + y * inv.width] = new GuiObjectBox(windowPosX + x * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + y * (slotSize + gridSpacingY) + gridOffsetY, slotSize, slotSize, 3, true);
+				slotSheet[ix + iy * inv.width] = new GuiObjectBox(g, windowPosX + ix * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + iy * (slotSize + gridSpacingY) + gridOffsetY, slotSize, slotSize, 3);
 			}
 		}
+	}
+
+	public GuiObjectInventory(Gui g, Inventory i, Window w, InputHandler inp, int l)
+	{
+		super(g, l);
+		
+		inv = i;
+		win = w;
+		input = inp;
+
+		winOffsetX = 0;
+		winOffsetY = 0;
+	}
+
+	public float getWinW()
+	{
+		return windowWidth;
+	}
+
+	public float getWinH()
+	{
+		return windowHeight;
+	}
+
+	public void setOffsetX(float x)
+	{
+		winOffsetX = x;
+	}
+
+	public void setOffsetY(float y)
+	{
+		winOffsetY = y;
 	}
 
 	public void render(Camera cam)
@@ -135,7 +130,7 @@ public class GuiObjectInventory
 				{
 					i.getItemType().renderIcon(windowPosX + x * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + y * (slotSize + gridSpacingY) + gridOffsetY, 0.2f, slotSize / 32.0f);
 					if (i.getSize() > 1)
-						Font.drawString(i.getSize() + "", windowPosX + x * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + y * (slotSize + gridSpacingY) + gridOffsetY + 3, 1.0f, 1.0f, 1.0f, 1.0f, 5, 1);
+						Font.drawString(i.getSize() + "", windowPosX + x * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + y * (slotSize + gridSpacingY) + gridOffsetY + 3, 5, 1);
 				}
 			}
 		}

@@ -74,7 +74,7 @@ public class Item
 		icon = new BufferObject(36);
 		icon.resetData();
 		img.renderSprite(icon, 0, 0, 32, 32, 0, 0, 32, 32, 0.0f, 0.0f);
-		icon.compileVBO();
+		icon.compile();
 	}
 
 	public String getName()

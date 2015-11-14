@@ -95,13 +95,14 @@ public class EntityPlayerClient extends Mob
 				addXAMod(getMovementSpeed() * moveModifier);
 			}
 
-			if (input.isKeyDown(GLFW.GLFW_KEY_SPACE))
-			{
-				if (attemptAttack(getFacingAttackArea(getFacing())))
-				{
-					tryHarvest();
-				}
-			}
+			//TODO reimplement
+//			if (input.isKeyDown(GLFW.GLFW_KEY_SPACE))
+//			{
+//				if (attemptAttack(getFacingAttackArea(getFacing())))
+//				{
+//					tryHarvest();
+//				}
+//			}
 		}
 
 		// TODO Reimplement

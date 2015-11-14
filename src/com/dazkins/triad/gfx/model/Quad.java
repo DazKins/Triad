@@ -16,6 +16,8 @@ public class Quad
 	private float cRotX, cRotY;
 
 	private float offsetX, offsetY;
+	
+	private float scaleX, scaleY;
 
 	private Image img;
 
@@ -41,6 +43,9 @@ public class Quad
 		this.ty = ty;
 		this.tw = tw;
 		this.th = th;
+		
+		scaleX = 1.0f;
+		scaleY = 1.0f;
 
 		childQuads = new ArrayList<Quad>();
 		temporaryChildQuads = new ArrayList<Quad>();
@@ -81,8 +86,8 @@ public class Quad
 	{
 		bufferObject = new BufferObject(36);
 		bufferObject.resetData();
-		img.renderSprite(bufferObject, 0, 0, w, h, tx, ty, tw, th, 0.0f, 0.0f);
-		bufferObject.compileVBO();
+		img.renderSprite(bufferObject, x, y, w, h, tx, ty, tw, th, 0.0f, 0.0f);
+		bufferObject.compile();
 	}
 
 	public void setCenterOfRotation(float x, float y)
@@ -131,13 +136,26 @@ public class Quad
 	{
 		if ((cRotX != 0 || cRotY != 0) && rot != 0)
 			GL11.glTranslatef(cRotX, cRotY, 0);
+		
 		if (rot != 0)
 			GL11.glRotatef(rot, 0, 0, 1);
+		
 		if ((cRotX != 0 || cRotY != 0) && rot != 0)
 			GL11.glTranslatef(-cRotX, -cRotY, 0);
 
-		if (x + offsetX != 0 || y + offsetY != 0 || renderLayer * 0.001f != 0)
-			GL11.glTranslatef(x + offsetX, y + offsetY, renderLayer * 0.001f);
+		float z = renderLayer * 0.001f;
+		
+		if (offsetX != 0 || offsetY != 0 || z != 0)
+			GL11.glTranslatef(offsetX, offsetY, z);
+		
+		if (scaleX != 1 || scaleY != 1)
+			GL11.glScalef(scaleX, scaleY, 1.0f);
+	}
+	
+	public void stretch(float nH, float nW)
+	{
+		scaleX = nH / h;
+		scaleY = nW / w;
 	}
 
 	public void render()

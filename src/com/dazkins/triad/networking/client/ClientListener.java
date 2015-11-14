@@ -40,7 +40,7 @@ public class ClientListener extends Listener
 				byte[] lightData = p0.getLight();
 				ChunkCoordinate c = new ChunkCoordinate(x, y);
 				ChunkData d = new ChunkData(c, tileData, lightData);
-				client.addRecievedChunk(d);
+				client.addChunkUpdate(d);
 			}
 			if (p instanceof Packet004LoginRequestResponse)
 			{

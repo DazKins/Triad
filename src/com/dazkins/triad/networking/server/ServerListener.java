@@ -55,20 +55,12 @@ public class ServerListener extends Listener
 				Packet005UpdatePlayerPosition p0 = (Packet005UpdatePlayerPosition) p;
 				float x = p0.getX();
 				float y = p0.getY();
-				float xa = p0.getXA();
-				float ya = p0.getYA();
-				server.updatePlayer(server.getFromConnection(con), x, y, xa, ya);
+				server.updatePlayer(server.getFromConnection(con), x, y);
 			}
 		} else if (!(o instanceof KeepAlive))
 		{
 			TriadLogger.log("Just received some weird data here! " + o, false);
 		}
-	}
-	
-	//TODO look into implementing this system
-	private void handlePacketReceive(TriadConnection c, Object o)
-	{
-		
 	}
 
 	public void connected(Connection c)

@@ -110,8 +110,8 @@ public class GuiChest extends Gui
 
 	public void setupGraphics()
 	{
-		gInvP = new GuiObjectInventory(pInv, win, input);
-		gInvC = new GuiObjectInventory(cInv, win, input);
+		gInvP = new GuiObjectInventory(this, pInv, win, input, 1);
+		gInvC = new GuiObjectInventory(this, cInv, win, input, 1);
 		gInvP.setOffsetY(-gInvP.getWinH() / 2.0f);
 		gInvC.setOffsetY(gInvC.getWinH() / 2.0f);
 	}

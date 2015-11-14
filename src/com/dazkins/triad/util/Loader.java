@@ -7,8 +7,6 @@ import org.lwjgl.opengl.GLContext;
 
 public class Loader implements Runnable
 {
-	private String name;
-
 	protected List<Loadable> lds;
 
 	private float percent;
@@ -34,9 +32,8 @@ public class Loader implements Runnable
 		return percent;
 	}
 
-	public Loader(String s)
+	public Loader()
 	{
-		name = s;
 		lds = new ArrayList<Loadable>();
 	}
 

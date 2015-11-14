@@ -7,7 +7,9 @@ import org.lwjgl.opengl.GLContext;
 import com.dazkins.triad.audio.SoundManager;
 import com.dazkins.triad.game.GameState;
 import com.dazkins.triad.game.GameStateLoading;
+import com.dazkins.triad.game.GameStateMainMenu;
 import com.dazkins.triad.game.GameStatePlaying;
+import com.dazkins.triad.game.gui.object.GuiObjectBox;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
@@ -67,8 +69,11 @@ public class Triad implements Runnable
 		BufferObject.init();
 
 		Font.initializeFont();
+		
+		GuiObjectBox.init();
 
-		setGameState(new GameStateLoading());
+//		setGameState(new GameStateLoading());
+		setGameState(new GameStateMainMenu());
 	}
 
 	public void setGameState(GameState g)

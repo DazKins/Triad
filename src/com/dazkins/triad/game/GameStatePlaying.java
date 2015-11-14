@@ -45,7 +45,7 @@ public class GameStatePlaying implements GameState
 	{
 		client = c;
 		cwm = new ClientWorldManager(client, cam);
-		playerRenderer.setWorld(cwm.getCRM());
+		playerRenderer.setWorld(cwm.getCCM());
 		cwm.setPlayerEntityRenderer(playerRenderer);
 	}
 
@@ -53,6 +53,7 @@ public class GameStatePlaying implements GameState
 	{
 		if (!client.isRunning())
 			client.start();
+		
 		cam.tick();
 
 		player.tick();
@@ -64,8 +65,10 @@ public class GameStatePlaying implements GameState
 		client.updatePlayerLocation(player);
 
 		cam.lockCameraToEntity(player);
+		
 		if (currentlyDisplayedGui != null)
 			currentlyDisplayedGui.tick();
+		
 		// if (input.isKeyJustDown(GLFW.GLFW_KEY_G)) {
 		// world.addEntity(new EntityTorch(world, player.getX(),
 		// player.getY()));
@@ -79,6 +82,7 @@ public class GameStatePlaying implements GameState
 		// DebugMonitor.setVariableValue("Player chunk", (int) ((player.getX() /
 		// Tile.tileSize) / Chunk.chunkS) + " " + (int) ((player.getY() /
 		// Tile.tileSize) / Chunk.chunkS));
+		
 		input.tick();
 
 		cwm.tick();
@@ -90,7 +94,6 @@ public class GameStatePlaying implements GameState
 		cam.attachTranslation();
 
 		cwm.render();
-		// TODO player render
 
 		GL11.glPopMatrix();
 

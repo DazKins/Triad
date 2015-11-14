@@ -10,7 +10,6 @@ public class Color
 		this.c = c;
 	}
 
-	// TODO Switch this to bytes
 	public Color(int r, int g, int b)
 	{
 		c += r << 16;

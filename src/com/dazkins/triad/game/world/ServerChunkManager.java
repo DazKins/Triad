@@ -11,7 +11,6 @@ public class ServerChunkManager
 {
 	private World world;
 
-	// TODO Use Chunks Coordinate system
 	private Map<ChunkCoordinate, Chunk> chunks;
 	private ArrayList<ChunkCoordinate> loadedChunks;
 
