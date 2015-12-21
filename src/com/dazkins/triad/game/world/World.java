@@ -6,6 +6,7 @@ import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.entity.harvestable.EntityHarvestable;
+import com.dazkins.triad.game.entity.mob.EntityZombie;
 import com.dazkins.triad.game.entity.mob.Mob;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.game.world.worldgen.WorldGen;

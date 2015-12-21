@@ -9,6 +9,8 @@ public class EntityUpdate
 	private float y;
 	
 	private int facing;
+	
+	private boolean remove;
 
 	public EntityUpdate(int gid, int tid, float x, float y, int f)
 	{
@@ -17,6 +19,19 @@ public class EntityUpdate
 		this.x = x;
 		this.y = y;
 		facing = f;
+		remove = false;
+	}
+	
+	//Sets up removal update
+	public EntityUpdate(int g)
+	{
+		gID = g;
+		remove = true;
+	}
+	
+	public boolean isRemove()
+	{
+		return remove;
 	}
 	
 	public int getFacing()

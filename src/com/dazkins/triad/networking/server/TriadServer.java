@@ -9,17 +9,24 @@ import java.util.Queue;
 
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.mob.EntityPlayerServer;
+import com.dazkins.triad.game.entity.mob.EntityZombie;
+import com.dazkins.triad.game.entity.renderer.StorageEntityRenderer;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
+import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.networking.Network;
 import com.dazkins.triad.networking.TriadConnection;
 import com.dazkins.triad.networking.client.AnimationUpdate;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet003ChunkData;
+import com.dazkins.triad.networking.packet.Packet005UpdatePlayerPosition;
 import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
 import com.dazkins.triad.networking.packet.Packet007EntityAnimationStart;
+import com.dazkins.triad.networking.packet.Packet009EntityRemoved;
+import com.dazkins.triad.networking.packet.Packet010PlayerNameSet;
 import com.dazkins.triad.networking.packet.PacketSend;
 import com.dazkins.triad.util.TriadLogger;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
@@ -34,6 +41,7 @@ public class TriadServer
 
 	private ArrayList<TriadConnection> connections;
 	private Map<TriadConnection, EntityPlayerServer> players;
+	private ArrayList<TriadConnection> connectionsToBeRemoved;
 
 	private ArrayList<ServerChunkRequest> chunkRequests;
 	private ArrayList<Chunk> chunksToUpdate;
@@ -41,6 +49,7 @@ public class TriadServer
 	private ArrayList<AnimationUpdate> animUpdates; 
 	
 	private Queue<PacketSend> packetSendQueue;
+	private Queue<PacketSend> priorityPacketSendQueue;
 	
 	private ArrayList<Chunk> spawnChunks;
 
@@ -66,6 +75,7 @@ public class TriadServer
 		spawnChunks = new ArrayList<Chunk>();
 		animUpdates = new ArrayList<AnimationUpdate>();
 		packetSendQueue = new LinkedList<PacketSend>();
+		connectionsToBeRemoved = new ArrayList<TriadConnection>();
 
 		Network.register(server);
 	}
@@ -106,22 +116,28 @@ public class TriadServer
 		return world;
 	}
 	
-	public void addPacketToSendQueue(Packet p, Connection c)
+	public void addPacketToSendQueue(Packet p, Connection c, boolean priority)
 	{
 		if (packetCount < PACKET_CUTOFF)
 		{
 			c.sendTCP(p);
 			packetCount++;
-		} else {
-			packetSendQueue.add(new PacketSend(p, c));
+		} else 
+		{
+			if (priority)
+				priorityPacketSendQueue.add(new PacketSend(p, c));
+			else
+				packetSendQueue.add(new PacketSend(p, c));
 		}
 	}
 
-	public void updatePlayer(TriadConnection c, float x, float y)
+	public void updatePlayer(TriadConnection c, float xa, float ya)
 	{
 		EntityPlayerServer p = players.get(c);
-		p.setX(x);
-		p.setY(y);
+		if (p != null)
+		{
+			p.push(xa, ya);
+		}
 	}
 
 	public TriadConnection getFromConnection(Connection c)
@@ -139,11 +155,30 @@ public class TriadServer
 	// Returns the id of the created player entity
 	public int registerNewConnection(TriadConnection c)
 	{
+		for (Map.Entry<TriadConnection, EntityPlayerServer> mapE : players.entrySet())
+		{
+			EntityPlayerServer pl = mapE.getValue();
+			Packet010PlayerNameSet namePacket = new Packet010PlayerNameSet();
+			namePacket.setgID(pl.getGlobalID());
+			namePacket.setName(pl.getName());
+			
+			c.sendPacket(namePacket, false);
+		}
+		
 		connections.add(c);
-		EntityPlayerServer p = new EntityPlayerServer(world, 0, 0);
+		EntityPlayerServer p = new EntityPlayerServer(world, 0, 0, c.getUsername());
 		players.put(c, p);
 		world.addEntity(p);
 		TriadLogger.log("Registered new connection: " + c.getUsername() + " from: " + c.getIP(), false);
+		
+		for (TriadConnection tc : connections)
+		{
+			Packet010PlayerNameSet namePacket = new Packet010PlayerNameSet();
+			namePacket.setName(c.getUsername());
+			namePacket.setgID(p.getGlobalID());
+			tc.sendPacket(namePacket, false);
+		}
+		
 		return p.getGlobalID();
 	}
 
@@ -208,12 +243,22 @@ public class TriadServer
 		for (Entity e : ents)
 		{
 			Packet006EntityPositionUpdate p0 = new Packet006EntityPositionUpdate();
+			
 			p0.setgID(e.getGlobalID());
 			p0.settID(e.getTypeID());
 			p0.setX(e.getX());
 			p0.setY(e.getY());
 			p0.setFacing(e.getFacing());
-			sendPacketToAll(p0);
+			
+			for (TriadConnection c : connections)
+			{
+				int cID = players.get(c).getGlobalID();
+				
+				if (e.getGlobalID() == cID)
+					c.sendPacket(p0, true);
+				else
+					c.sendPacket(p0, false);
+			}
 		}
 		
 		ArrayList<ChunkCoordinate> anchors = new ArrayList<ChunkCoordinate>();
@@ -237,7 +282,7 @@ public class TriadServer
 			{
 				TriadConnection tc = c.getConnection();
 				Packet003ChunkData p = cs.compressToPacket();
-				tc.sendPacket(p);
+				tc.sendPacket(p, false);
 				chunkRequests.remove(c);
 				i--;
 			}
@@ -252,7 +297,7 @@ public class TriadServer
 			p.setIndex(a.getIndex());
 			p.setOverwrite(a.getOverwrite());
 			p.setAnimSpeed(a.getAnimSpeed());
-			sendPacketToAll(p);
+			sendPacketToAll(p, false);
 		}
 		
 		animUpdates.clear();
@@ -266,22 +311,40 @@ public class TriadServer
 			{
 				if (c.isLoaded())
 				{
-					sendPacketToAll(c.compressToPacket());
+					sendPacketToAll(c.compressToPacket(), false);
 				}
 			}
 			chunksToUpdate.clear();
+		}
+		
+		for (TriadConnection t : connectionsToBeRemoved)
+		{
+			connections.remove(t);
 		}
 		
 		runningTicks++;
 		packetCount = 0;
 	}
 	
-	public void sendPacketToAll(Packet p) 
+	public void handleDisconnect(TriadConnection tc)
+	{
+		players.get(tc).remove();
+		connectionsToBeRemoved.add(tc);
+	}
+	
+	public void sendPacketToAll(Packet p, boolean priority) 
 	{
 		for (TriadConnection t : connections) 
 		{
-			t.sendPacket(p);
+			t.sendPacket(p, priority);
 		}
+	}
+	
+	public void registerEntityRemoval(Entity e)
+	{
+		Packet009EntityRemoved p = new Packet009EntityRemoved();
+		p.setGID(e.getGlobalID());
+		sendPacketToAll(p, false);
 	}
 
 	public void runLoop()

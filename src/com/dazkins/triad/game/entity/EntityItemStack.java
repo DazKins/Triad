@@ -2,7 +2,7 @@ package com.dazkins.triad.game.entity;
 
 import org.lwjgl.opengl.GL11;
 
-import com.dazkins.triad.game.entity.mob.EntityPlayerClient;
+import com.dazkins.triad.game.entity.mob.EntityPlayerClientController;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
@@ -51,11 +51,11 @@ public class EntityItemStack extends Entity
 
 	protected void onCollide(Entity e)
 	{
-		if (e instanceof EntityPlayerClient)
+		if (e instanceof EntityPlayerClientController)
 		{
 			if (getSpeed() < 0.2f && lifeTicks > 30)
 			{
-				EntityPlayerClient ep = (EntityPlayerClient) e;
+				EntityPlayerClientController ep = (EntityPlayerClientController) e;
 				if (ep.getInventory().addItemStack(is))
 					this.remove();
 			}

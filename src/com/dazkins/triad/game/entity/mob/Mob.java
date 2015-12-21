@@ -25,33 +25,15 @@ public abstract class Mob extends Entity
 	protected Inventory inv;
 	protected EquipmentInventory eInv;
 
-	// I don't really want graphical data stored in Entity classes
-	// This is just a temporary measure
-	protected GuiObjectStatusBar healthBar;
-
 	private int attackCooldownCounter;
 
 	protected Mob target;
-
-	private boolean healthBarGenerated;
 
 	public Mob(World w, int id, float x, float y, String s, int h)
 	{
 		super(w, id, x, y, s);
 		health = h;
 		eInv = new EquipmentInventory();
-	}
-
-	public void generateHealthBar()
-	{
-		try
-		{
-			healthBar = new GuiObjectStatusBar(null, 0, 0, 0xFF0000, 128, 1);
-			healthBarGenerated = true;
-		} catch (Exception e)
-		{
-			healthBarGenerated = false;
-		}
 	}
 
 	protected void moveUp()
@@ -222,9 +204,6 @@ public abstract class Mob extends Entity
 	public void tick()
 	{
 		super.tick();
-
-		if (!healthBarGenerated)
-			generateHealthBar();
 
 		ArrayList<Entity> ents = new ArrayList<Entity>();
 

@@ -43,7 +43,7 @@ public class Triad implements Runnable
 
 	public Triad()
 	{
-		client = new TriadClient("DazKins");
+		client = new TriadClient("Player" + (int) (Math.random() * 10000));
 
 		SoundManager.registerSound("/audio/music/triad_theme.wav", "theme");
 		// SoundManager.getAudio("theme").play();

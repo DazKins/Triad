@@ -14,9 +14,9 @@ public class EntityPlayerServer extends Mob
 {
 	private Interactable interactingObject;
 
-	public EntityPlayerServer(World w, float x, float y)
+	public EntityPlayerServer(World w, float x, float y, String name)
 	{
-		super(w, StorageEntityID.PLAYER, x, y, "player", 1000);
+		super(w, StorageEntityID.PLAYER, x, y, name, 1000);
 		this.inv = new Inventory(9, 5);
 	}
 
@@ -39,7 +39,7 @@ public class EntityPlayerServer extends Mob
 	{
 		return true;
 	}
-
+	
 	protected int getBaseDamage()
 	{
 		return 5;
@@ -68,5 +68,13 @@ public class EntityPlayerServer extends Mob
 	public float getMovementSpeed()
 	{
 		return 1f;
+	}
+	
+	public void tick()
+	{
+		super.tick();
+		super.move();
+		xa *= 0.75f;
+		ya *= 0.75f;
 	}
 }

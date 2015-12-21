@@ -1,27 +1,18 @@
 package com.dazkins.triad.game.entity.mob;
 
-import java.util.ArrayList;
 
 import org.lwjgl.system.glfw.GLFW;
 
-import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.StorageEntityID;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
-import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.gfx.Camera;
-import com.dazkins.triad.gfx.Image;
-import com.dazkins.triad.gfx.model.ModelHumanoid;
-import com.dazkins.triad.gfx.model.animation.AnimationHumanoidIdle;
-import com.dazkins.triad.gfx.model.animation.AnimationHumanoidSlashing;
-import com.dazkins.triad.gfx.model.animation.AnimationHumanoidWalking;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
 
-public class EntityPlayerClient extends Mob
+public class EntityPlayerClientController extends Mob
 {
 	private InputHandler input;
 
@@ -29,7 +20,7 @@ public class EntityPlayerClient extends Mob
 
 	private String name;
 
-	public EntityPlayerClient(String n, float x, float y, InputHandler input)
+	public EntityPlayerClientController(String n, float x, float y, InputHandler input)
 	{
 		super(null, StorageEntityID.PLAYER, x, y, "player", 1000);
 		this.input = input;

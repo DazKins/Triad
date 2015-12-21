@@ -5,6 +5,7 @@ import java.util.Comparator;
 
 import org.lwjgl.opengl.GL11;
 
+import com.dazkins.triad.game.entity.mob.EntityPlayerServer;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
@@ -197,45 +198,45 @@ public abstract class Entity
 			this.ya += i;
 		}
 
-		if (world != null)
-		{
-			if (this.getAABB() != null)
-			{
-				for (Entity e : world.getEntitiesInAABB(this.getAABB()))
-				{
-					if (e != this)
-					{
-						this.onCollide(e);
-					}
-				}
-				for (Entity e : world.getEntitiesInAABB(this.getAABB().shifted(xa, 0)))
-				{
-					if (e != this && (!this.mayPass(e) || !e.mayPass(this)))
-					{
-						if (e.mayBePushedBy(this))
-						{
-							e.push(xa, 0);
-						} else
-						{
-						}
-						xa = 0;
-					}
-				}
-				for (Entity e : world.getEntitiesInAABB(this.getAABB().shifted(0, ya)))
-				{
-					if (e != this && (!this.mayPass(e) || !e.mayPass(this)))
-					{
-						if (e.mayBePushedBy(this))
-						{
-							e.push(0, ya);
-						} else
-						{
-						}
-						ya = 0;
-					}
-				}
-			}
-		}
+//		if (world != null)
+//		{
+//			if (this.getAABB() != null)
+//			{
+//				for (Entity e : world.getEntitiesInAABB(this.getAABB()))
+//				{
+//					if (e != this)
+//					{
+//						this.onCollide(e);
+//					}
+//				}
+//				for (Entity e : world.getEntitiesInAABB(this.getAABB().shifted(xa, 0)))
+//				{
+//					if (e != this && (!this.mayPass(e) || !e.mayPass(this)))
+//					{
+//						if (e.mayBePushedBy(this))
+//						{
+//							e.push(xa, 0);
+//						} else
+//						{
+//						}
+//						xa = 0;
+//					}
+//				}
+//				for (Entity e : world.getEntitiesInAABB(this.getAABB().shifted(0, ya)))
+//				{
+//					if (e != this && (!this.mayPass(e) || !e.mayPass(this)))
+//					{
+//						if (e.mayBePushedBy(this))
+//						{
+//							e.push(0, ya);
+//						} else
+//						{
+//						}
+//						ya = 0;
+//					}
+//				}
+//			}
+//		}
 
 		x += xa;
 		y += ya;

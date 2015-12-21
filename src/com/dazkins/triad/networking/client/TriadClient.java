@@ -3,12 +3,13 @@ package com.dazkins.triad.networking.client;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.dazkins.triad.game.entity.mob.EntityPlayerClient;
+import com.dazkins.triad.game.entity.mob.EntityPlayerClientController;
 import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.networking.Network;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet002ChunkDataRequest;
 import com.dazkins.triad.networking.packet.Packet005UpdatePlayerPosition;
+import com.dazkins.triad.networking.packet.Packet011PlayerVelocity;
 import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Client;
 
@@ -24,7 +25,7 @@ public class TriadClient
 
 	private boolean running;
 
-	private int playerID;
+	private int playerID = -1;
 
 	public TriadClient(String s)
 	{
@@ -55,20 +56,10 @@ public class TriadClient
 	{
 		return running;
 	}
-
-	public void addEntityUpdate(EntityUpdate e)
-	{
-		update.addEntityUpdate(e);
-	}
 	
-	public void addAnimationUpdate(AnimationUpdate a)
+	public ClientUpdate getClientUpdate()
 	{
-		update.addAnimationUpdate(a);
-	}
-
-	public void addChunkUpdate(ChunkData c)
-	{
-		update.addChunkUpdate(c);
+		return update;
 	}
 	
 	public ClientUpdate getAndPurgeUpdate()
@@ -78,11 +69,11 @@ public class TriadClient
 		return c;
 	}
 
-	public void updatePlayerLocation(EntityPlayerClient p)
+	public void updatePlayerVelocity(float xa, float ya)
 	{
-		Packet005UpdatePlayerPosition p0 = new Packet005UpdatePlayerPosition();
-		p0.setX(p.getX());
-		p0.setY(p.getY());
+		Packet011PlayerVelocity p0 = new Packet011PlayerVelocity();
+		p0.setXa(xa);
+		p0.setYa(ya);
 		sendPacket(p0);
 	}
 

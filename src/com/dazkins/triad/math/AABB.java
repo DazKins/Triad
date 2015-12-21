@@ -73,6 +73,11 @@ public class AABB
 	{
 		return new AABB(x0, y0, x1, y1 + v);
 	}
+	
+	public AABB expand(float v)
+	{
+		return new AABB(x0 - v, y0 - v, x1 + v, y1 + v);
+	}
 
 	public AABB(float x0, float y0, float x1, float y1)
 	{

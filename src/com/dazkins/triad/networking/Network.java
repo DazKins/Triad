@@ -8,6 +8,10 @@ import com.dazkins.triad.networking.packet.Packet004LoginRequestResponse;
 import com.dazkins.triad.networking.packet.Packet005UpdatePlayerPosition;
 import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
 import com.dazkins.triad.networking.packet.Packet007EntityAnimationStart;
+import com.dazkins.triad.networking.packet.Packet008CameraStateUpdate;
+import com.dazkins.triad.networking.packet.Packet009EntityRemoved;
+import com.dazkins.triad.networking.packet.Packet010PlayerNameSet;
+import com.dazkins.triad.networking.packet.Packet011PlayerVelocity;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
@@ -16,6 +20,7 @@ public class Network
 	public static void register(EndPoint endPoint)
 	{
 		Kryo k = endPoint.getKryo();
+		
 		k.register(Packet000RawMessage.class);
 		k.register(Packet001LoginRequest.class);
 		k.register(Packet002ChunkDataRequest.class);
@@ -24,7 +29,12 @@ public class Network
 		k.register(Packet005UpdatePlayerPosition.class);
 		k.register(Packet006EntityPositionUpdate.class);
 		k.register(Packet007EntityAnimationStart.class);
+		k.register(Packet008CameraStateUpdate.class);
+		k.register(Packet009EntityRemoved.class);
+		k.register(Packet010PlayerNameSet.class);
+		k.register(Packet011PlayerVelocity.class);
 
+		k.register(String.class);
 		k.register(byte[].class);
 	}
 }

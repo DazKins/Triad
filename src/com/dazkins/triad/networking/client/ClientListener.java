@@ -1,14 +1,16 @@
 package com.dazkins.triad.networking.client;
 
 import com.dazkins.triad.game.world.ChunkCoordinate;
-import com.dazkins.triad.game.world.ChunkRenderer;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet000RawMessage;
 import com.dazkins.triad.networking.packet.Packet001LoginRequest;
 import com.dazkins.triad.networking.packet.Packet003ChunkData;
 import com.dazkins.triad.networking.packet.Packet004LoginRequestResponse;
+import com.dazkins.triad.networking.packet.Packet005UpdatePlayerPosition;
 import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
 import com.dazkins.triad.networking.packet.Packet007EntityAnimationStart;
+import com.dazkins.triad.networking.packet.Packet009EntityRemoved;
+import com.dazkins.triad.networking.packet.Packet010PlayerNameSet;
 import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -40,7 +42,7 @@ public class ClientListener extends Listener
 				byte[] lightData = p0.getLight();
 				ChunkCoordinate c = new ChunkCoordinate(x, y);
 				ChunkData d = new ChunkData(c, tileData, lightData);
-				client.addChunkUpdate(d);
+				client.getClientUpdate().addChunkUpdate(d);
 			}
 			if (p instanceof Packet004LoginRequestResponse)
 			{
@@ -59,10 +61,7 @@ public class ClientListener extends Listener
 				float x = p0.getX();
 				float y = p0.getY();
 				int facing = p0.getFacing();
-				if (gID != client.getPlayerID())
-				{
-					client.addEntityUpdate(new EntityUpdate(gID, tID, x, y, facing));
-				}
+				client.getClientUpdate().addEntityUpdate(new EntityUpdate(gID, tID, x, y, facing));
 			}
 			if (p instanceof Packet007EntityAnimationStart)
 			{
@@ -73,7 +72,21 @@ public class ClientListener extends Listener
 				boolean over = p0.getOverwrite();
 				float s = p0.getAnimSpeed();
 				AnimationUpdate a = new AnimationUpdate(gID, aID, ind, over, s);
-				client.addAnimationUpdate(a);
+				client.getClientUpdate().addAnimationUpdate(a);
+			}
+			if (p instanceof Packet009EntityRemoved)
+			{
+				Packet009EntityRemoved p0 = (Packet009EntityRemoved) p;
+				int gID = p0.getGID();
+				client.getClientUpdate().addEntityUpdate(new EntityUpdate(gID));
+ 			}
+			if (p instanceof Packet010PlayerNameSet)
+			{
+				Packet010PlayerNameSet p0 = (Packet010PlayerNameSet) p;
+				int gID = p0.getgID();
+				String name = p0.getName();
+				PlayerNameUpdate pn = new PlayerNameUpdate(name, gID);
+				client.getClientUpdate().addPlayerNameUpdate(pn);
 			}
 		}
 	}

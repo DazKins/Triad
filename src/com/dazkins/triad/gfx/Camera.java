@@ -1,8 +1,9 @@
-package com.dazkins.triad.gfx;
+ package com.dazkins.triad.gfx;
 
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
 
@@ -75,11 +76,11 @@ public class Camera
 		x += xa;
 		y += ya;
 	}
-
-	public void lockCameraToEntity(Entity e)
+	
+	public void centreOnLocation(float cx, float cy)
 	{
-		x = (e.getX() - getW() / 2.0f) * zoom;
-		y = (e.getY() - getH() / 2.0f) * zoom;
+		x = (cx - getW() / 2.0f) * zoom;
+		y = (cy - getH() / 2.0f) * zoom;
 
 		if (lockToBounds)
 		{
@@ -94,6 +95,16 @@ public class Camera
 		}
 	}
 
+	public void lockCameraToEntity(Entity e)
+	{
+		centreOnLocation(e.getX(), e.getY());
+	}
+	
+	public void lockCameraToEntityRenderer(EntityRenderer e)
+	{
+		centreOnLocation(e.getX(), e.getY());
+	}
+	
 	public void tick()
 	{
 		if (input.mWheel != 0)

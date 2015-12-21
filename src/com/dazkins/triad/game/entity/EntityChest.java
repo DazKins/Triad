@@ -1,6 +1,6 @@
 package com.dazkins.triad.game.entity;
 
-import com.dazkins.triad.game.entity.mob.EntityPlayerClient;
+import com.dazkins.triad.game.entity.mob.EntityPlayerClientController;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Camera;
@@ -29,9 +29,9 @@ public class EntityChest extends Entity implements Interactable
 
 	public void onInteract(Entity e)
 	{
-		if (e instanceof EntityPlayerClient)
+		if (e instanceof EntityPlayerClientController)
 		{
-			((EntityPlayerClient) e).setInteractingObject(this);
+			((EntityPlayerClientController) e).setInteractingObject(this);
 		}
 	}
 }

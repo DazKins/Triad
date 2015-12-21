@@ -3,7 +3,7 @@ package com.dazkins.triad.game;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.Triad;
-import com.dazkins.triad.game.entity.mob.EntityPlayerClient;
+import com.dazkins.triad.game.entity.mob.EntityPlayerClientController;
 import com.dazkins.triad.game.entity.renderer.EntityRendererPlayer;
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.gfx.Camera;
@@ -26,27 +26,24 @@ public class GameStatePlaying implements GameState
 
 	private TriadClient client;
 
-	private EntityPlayerClient player;
-	private EntityRendererPlayer playerRenderer;
+	private EntityPlayerClientController player;
 
 	public void init(Triad triad)
 	{
-		this.triad = triad;
 		win = triad.win;
+		this.triad = triad;
 		input = new InputHandler(win);
 		cam = new Camera(input, triad.win, 0, 0);
 		cam.lockZoom(0.56f, 8f);
 
-		player = new EntityPlayerClient("DazKins", 0, 0, input);
-		playerRenderer = new EntityRendererPlayer();
+		player = new EntityPlayerClientController("", 0, 0, input);
 	}
 
 	public void initClient(TriadClient c)
 	{
 		client = c;
 		cwm = new ClientWorldManager(client, cam);
-		playerRenderer.setWorld(cwm.getCCM());
-		cwm.setPlayerEntityRenderer(playerRenderer);
+		cwm.setPlayer(player);
 	}
 
 	public void tick()
@@ -57,14 +54,8 @@ public class GameStatePlaying implements GameState
 		cam.tick();
 
 		player.tick();
-
-		playerRenderer.setFacing(player.getFacing());
-		playerRenderer.setX(player.getX());
-		playerRenderer.setY(player.getY());
-
-		client.updatePlayerLocation(player);
-
-		cam.lockCameraToEntity(player);
+		
+		client.updatePlayerVelocity(player.getXA(), player.getYA());
 		
 		if (currentlyDisplayedGui != null)
 			currentlyDisplayedGui.tick();
@@ -86,6 +77,8 @@ public class GameStatePlaying implements GameState
 		input.tick();
 
 		cwm.tick();
+		
+		cam.lockCameraToEntity(player);
 	}
 
 	public void render()

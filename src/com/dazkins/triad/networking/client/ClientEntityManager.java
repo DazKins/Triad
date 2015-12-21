@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.dazkins.triad.game.entity.StorageEntityID;
 import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.game.entity.renderer.EntityRendererPlayer;
 import com.dazkins.triad.game.entity.renderer.StorageEntityRenderer;
@@ -16,9 +15,8 @@ import com.dazkins.triad.util.TriadLogger;
 public class ClientEntityManager
 {
 	private Map<Integer, EntityRenderer> renderers = new HashMap<Integer, EntityRenderer>();
+	private Map<Integer, String> storedNameUpdates = new HashMap<Integer, String>();
 	private ArrayList<Integer> loadedEntities = new ArrayList<Integer>();
-
-	private EntityRendererPlayer player;
 
 	private IWorldAccess world;
 
@@ -42,11 +40,6 @@ public class ClientEntityManager
 		loadedEntities.add(gID);
 	}
 
-	public void setPlayerEntityRenderer(EntityRendererPlayer p)
-	{
-		player = p;
-	}
-
 	public void updateRenderer(float x, float y, int gID, int tID, int facing)
 	{
 		EntityRenderer r = renderers.get(gID);
@@ -56,6 +49,12 @@ public class ClientEntityManager
 			r.setY(y);
 			r.setFacing(facing);
 		}
+	}
+	
+	public void removeRenderer(int gID)
+	{
+		loadedEntities.remove((Integer) gID);
+		renderers.remove(gID);
 	}
 
 	public static SortByY ySorter = new SortByY();
@@ -80,6 +79,19 @@ public class ClientEntityManager
 			e.addAnimation(aID, index, overwrite, speed);
 	}
 	
+	public void handlePlayerNameUpdate(int gID, String n)
+	{
+		EntityRenderer er = renderers.get(gID);
+		if (er != null && er instanceof EntityRendererPlayer)
+		{
+			EntityRendererPlayer ep = (EntityRendererPlayer) er;
+			ep.setName(n);
+		} else 
+		{
+			storedNameUpdates.put(gID, n);
+		}
+	}
+	
 	public void tick()
 	{
 		for (int i : loadedEntities)
@@ -88,6 +100,16 @@ public class ClientEntityManager
 			//TODO investigate null instances of this
 			if (e != null)
 				e.tick();
+		}
+
+		for (Map.Entry<Integer, String> mapE : storedNameUpdates.entrySet())
+		{
+			EntityRenderer er = renderers.get(mapE.getKey());
+			if (er != null)
+			{
+				EntityRendererPlayer ep = (EntityRendererPlayer) er;
+				ep.setName(mapE.getValue());
+			}
 		}
 	}
 
@@ -100,7 +122,6 @@ public class ClientEntityManager
 			if (r != null)
 				render.add(r);
 		}
-		render.add(player);
 		render.sort(ySorter);
 		for (EntityRenderer r : render)
 		{

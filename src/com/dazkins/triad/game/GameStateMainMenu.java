@@ -25,7 +25,6 @@ public class GameStateMainMenu implements GameState
 	
 	public void onPlayButtonPress()
 	{
-		TriadServer.main(null);
 		triad.setGameState(new GameStatePlaying());
 	}
 

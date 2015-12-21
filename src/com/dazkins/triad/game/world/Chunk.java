@@ -226,6 +226,7 @@ public class Chunk implements Loadable
 				{
 					es.remove(e);
 					entityCount--;
+					world.getServer().registerEntityRemoval(e);
 					continue;
 				}
 

@@ -15,8 +15,8 @@ public abstract class EntityRenderer
 	// ID of the entity the rendering instance is refering to
 	private int id;
 
-	private float x;
-	private float y;
+	protected float x;
+	protected float y;
 	
 	private int facing;
 
@@ -109,6 +109,8 @@ public abstract class EntityRenderer
 	{
 		if (isModelReady)
 			model.updateAnimationState();
+		
+		
 	}
 
 	public int getFacing()

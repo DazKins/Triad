@@ -1,6 +1,7 @@
 package com.dazkins.triad.networking.server;
 
 import com.dazkins.triad.game.world.Chunk;
+import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.networking.TriadConnection;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet000RawMessage;
@@ -8,6 +9,8 @@ import com.dazkins.triad.networking.packet.Packet001LoginRequest;
 import com.dazkins.triad.networking.packet.Packet002ChunkDataRequest;
 import com.dazkins.triad.networking.packet.Packet004LoginRequestResponse;
 import com.dazkins.triad.networking.packet.Packet005UpdatePlayerPosition;
+import com.dazkins.triad.networking.packet.Packet008CameraStateUpdate;
+import com.dazkins.triad.networking.packet.Packet011PlayerVelocity;
 import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive;
@@ -39,7 +42,7 @@ public class ServerListener extends Listener
 				Packet004LoginRequestResponse p1 = new Packet004LoginRequestResponse();
 				p1.setAccepted(true);
 				p1.setPlayerID(id);
-				server.getFromConnection(con).sendPacket(p1);
+				server.getFromConnection(con).sendPacket(p1, false);
 			}
 			if (p instanceof Packet002ChunkDataRequest)
 			{
@@ -52,10 +55,22 @@ public class ServerListener extends Listener
 			}
 			if (p instanceof Packet005UpdatePlayerPosition)
 			{
-				Packet005UpdatePlayerPosition p0 = (Packet005UpdatePlayerPosition) p;
-				float x = p0.getX();
-				float y = p0.getY();
-				server.updatePlayer(server.getFromConnection(con), x, y);
+				TriadLogger.log("Shouldn't have recieved this packet!", true);
+			}
+			if (p instanceof Packet008CameraStateUpdate)
+			{
+				Packet008CameraStateUpdate p0 = (Packet008CameraStateUpdate) p;
+				TriadConnection t = server.getFromConnection(con);
+				
+				CameraState cs = new CameraState(new AABB(p0.getX0(), p0.getY0(), p0.getX1(), p0.getY1()));
+				t.handleCameraUpdate(cs);
+			}
+			if (p instanceof Packet011PlayerVelocity)
+			{
+				Packet011PlayerVelocity p0 = (Packet011PlayerVelocity) p;
+				float xa = p0.getXa();
+				float ya = p0.getYa();
+				server.updatePlayer(server.getFromConnection(con), xa, ya);
 			}
 		} else if (!(o instanceof KeepAlive))
 		{
@@ -73,6 +88,7 @@ public class ServerListener extends Listener
 
 	public void disconnected(Connection c)
 	{
+		server.handleDisconnect(server.getFromConnection(c));
 		TriadLogger.log(c + " has disconnected", false);
 	}
 

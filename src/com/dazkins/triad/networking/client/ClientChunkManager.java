@@ -113,7 +113,7 @@ public class ClientChunkManager implements IWorldAccess
 		}
 	}
 
-	public synchronized Tile getTile(int x, int y)
+	public Tile getTile(int x, int y)
 	{
 		int cx = MathHelper.getChunkXFromTileX(x);
 		int cy = MathHelper.getChunkYFromTileY(y);
@@ -134,7 +134,7 @@ public class ClientChunkManager implements IWorldAccess
 		}
 	}
 
-	public synchronized Color getTileColor(int x, int y)
+	public Color getTileColor(int x, int y)
 	{
 		int cx = MathHelper.getChunkXFromTileX(x);
 		int cy = MathHelper.getChunkYFromTileY(y);
