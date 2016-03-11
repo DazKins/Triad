@@ -1,6 +1,5 @@
 package com.dazkins.triad.gfx.model.animation;
 
-import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.gfx.model.Quad;
@@ -12,12 +11,13 @@ public class AnimationHumanoidIdle extends Animation
 		super(StorageAnimationID.HUMANOID_IDLE, e, s);
 	}
 
-	public void updateState(Entity e)
+	public void updateState()
 	{
 		if (verifyModel(ModelHumanoid.class))
 		{
 			ModelHumanoid model = (ModelHumanoid) parentModel;
-			int f = e.getFacing();
+			
+			int f = eRenderer.getFacing();
 
 			Quad cRightArm = model.getRightArm()[f];
 			Quad cLeftArm = model.getLeftArm()[f];

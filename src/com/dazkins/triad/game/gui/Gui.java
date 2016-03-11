@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.gui.object.GuiObject;
+import com.dazkins.triad.game.gui.popup.GuiPopUp;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
@@ -15,6 +16,8 @@ public abstract class Gui
 	protected Window win;
 	
 	protected ArrayList<GuiObject> objects;
+	
+	protected GuiPopUp currentPopUp;
 
 	public Gui(Triad t, InputHandler i)
 	{
@@ -39,8 +42,17 @@ public abstract class Gui
 	{
 		objects.add(o);
 	}
+	
+	public void setPopUp(GuiPopUp p)
+	{
+		currentPopUp = p;
+	}
 
-	public abstract void render(Camera cam);
+	public void render(Camera cam)
+	{
+		if (currentPopUp != null)
+			currentPopUp.render();
+	}
 
 	public abstract void onExit();
 

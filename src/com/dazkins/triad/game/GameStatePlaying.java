@@ -56,6 +56,7 @@ public class GameStatePlaying implements GameState
 		player.tick();
 		
 		client.updatePlayerVelocity(player.getXA(), player.getYA());
+		cwm.clientUpdatePlayer(player.getX(), player.getY(), player.getFacing());
 		
 		if (currentlyDisplayedGui != null)
 			currentlyDisplayedGui.tick();

@@ -28,7 +28,7 @@ public class ClientWorldManager
 	public ClientWorldManager(TriadClient cl, Camera c)
 	{
 		crm = new ClientChunkManager();
-		cem = new ClientEntityManager();
+		cem = new ClientEntityManager(this);
 
 		requestedChunks = new ArrayList<ChunkCoordinate>();
 
@@ -49,12 +49,22 @@ public class ClientWorldManager
 		player = e;
 	}
 	
+	public int getMyPlayerID()
+	{
+		return myPlayerID;
+	}
+	
+	public void clientUpdatePlayer(float x, float y, int f)
+	{
+		cem.updatePlayerRenderer(x, y, f);
+	}
+	
 	public void render()
 	{
 		crm.render(cam);
 		cem.render(cam);
 	}
-
+	
 	public void tick()
 	{
 		if (myPlayerID == -1)
@@ -71,8 +81,6 @@ public class ClientWorldManager
 				requestedChunks.add(c);
 			}
 		}
-
-		boolean playerUpdateReceived = false;
 		
 		ArrayList<EntityUpdate> eUpdates = update.getEntityUpdates();
 		for (EntityUpdate c : eUpdates)
@@ -94,7 +102,6 @@ public class ClientWorldManager
 
 				if (gID == myPlayerID)
 				{
-					playerUpdateReceived = true;
 					player.setX(x);
 					player.setY(y);
 				}
@@ -107,9 +114,6 @@ public class ClientWorldManager
 				cem.updateRenderer(x, y, gID, tID, facing);
 			}
 		}
-		
-		if (!playerUpdateReceived)
-			TriadLogger.log("Did not recieve player update packet this frame!", true);
 		
 		ArrayList<AnimationUpdate> animUpdates = update.getAnimUpdates();
 		for (AnimationUpdate a : animUpdates)

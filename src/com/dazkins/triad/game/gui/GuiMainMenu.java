@@ -31,6 +31,7 @@ public class GuiMainMenu extends Gui
 
 	public void render(Camera cam)
 	{
+		super.render(cam);
 		playButton.render();
 	}
 

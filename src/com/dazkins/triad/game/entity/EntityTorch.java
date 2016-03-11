@@ -64,9 +64,6 @@ public class EntityTorch extends Entity implements LightEmitter
 			}
 		}
 
-		// if (lifeTicks > 60)
-		// remove();
-
 		super.move();
 
 		xa *= 0.85;

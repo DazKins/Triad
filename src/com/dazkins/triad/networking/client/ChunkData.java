@@ -31,6 +31,23 @@ public class ChunkData
 		tileData = new byte[Chunk.CHUNKSS];
 		light = new Color[Chunk.CHUNKSS];
 	}
+	
+	public ChunkData copyOf()
+	{
+		byte td[] = new byte[tileData.length];
+		for (int i = 0; i < td.length; i++)
+		{
+			td[i] = tileData[i];
+		}
+		
+		Color cd[] = new Color[light.length];
+		for (int i = 0; i < cd.length; i++)
+		{
+			cd[i] = light[i].copyOf();
+		}
+		
+		return new ChunkData(coords, td, cd);
+	}
 
 	public ChunkCoordinate getCoords()
 	{

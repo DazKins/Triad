@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.dazkins.triad.game.entity.StorageEntityID;
 import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.game.entity.renderer.EntityRendererPlayer;
 import com.dazkins.triad.game.entity.renderer.StorageEntityRenderer;
@@ -14,12 +15,24 @@ import com.dazkins.triad.util.TriadLogger;
 
 public class ClientEntityManager
 {
+	private ClientWorldManager clientWorldManager;
+	
 	private Map<Integer, EntityRenderer> renderers = new HashMap<Integer, EntityRenderer>();
 	private Map<Integer, String> storedNameUpdates = new HashMap<Integer, String>();
 	private ArrayList<Integer> loadedEntities = new ArrayList<Integer>();
 
 	private IWorldAccess world;
 
+	public ClientEntityManager(ClientWorldManager c)
+	{
+		clientWorldManager = c;
+	}
+	
+	public void updatePlayerRenderer(float x, float y, int f)
+	{
+		updateRenderer(x, y, clientWorldManager.getMyPlayerID(), StorageEntityID.PLAYER, f);
+	}
+	
 	public void initRenderer(IWorldAccess wo, int gID, int tID)
 	{
 		if (renderers.containsKey(gID))

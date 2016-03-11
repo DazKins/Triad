@@ -22,6 +22,7 @@ public class BufferObject
 	
 	//Stores seperate properties for the rendering context in case the data is changed
 	private BufferObjectRenderProperties renderProps;
+	private Image image;
 
 	private static void initStaticVBOs()
 	{
@@ -100,13 +101,13 @@ public class BufferObject
 	{
 		if (useVBO)
 		{
-		dataBuffer.clear();
-		dataBuffer.put(data.getRawData());
-		dataBuffer.flip();
-		
-		ID = GL15.glGenBuffers();
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dataBuffer, GL15.GL_DYNAMIC_DRAW);
+			dataBuffer.clear();
+			dataBuffer.put(data.getRawData());
+			dataBuffer.flip();
+			
+			ID = GL15.glGenBuffers();
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
+			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dataBuffer, GL15.GL_STATIC_DRAW);
 		} else 
 		{
 			ID = GL11.glGenLists(1);
@@ -144,14 +145,16 @@ public class BufferObject
 			GL11.glEnd();
 			GL11.glEndList();
 		}
+		
 		renderProps = data.getRenderProperties().clone();
+		image = data.getImg();
 	}
 
 	public void render()
 	{
 		if (renderProps.isUseTextures()) 
-		{ 
-			data.getImg().bindGLTexture();
+		{
+			image.bindGLTexture();
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 		}
 		

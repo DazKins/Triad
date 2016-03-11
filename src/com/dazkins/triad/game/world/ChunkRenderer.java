@@ -12,7 +12,7 @@ import com.dazkins.triad.util.LoaderManager;
 
 public class ChunkRenderer implements Loadable
 {
-	private static LoaderManager cg = new LoaderManager(1);
+	private static LoaderManager cg = new LoaderManager(5);
 	
 	private IWorldAccess world;
 
@@ -49,28 +49,37 @@ public class ChunkRenderer implements Loadable
 	
 	public void handleUpdate() 
 	{
-		if (!isLoading)
-			needsUpdating = true;
+		needsUpdating = true;
+	}
+	
+	public synchronized void setVBONeedsGenerating(boolean b)
+	{
+		vboNeedsGenerating = b;
+	}
+
+	public synchronized void setIsLoading(boolean b)
+	{
+		isLoading = b;
 	}
 
 	public void render(Camera cam)
 	{
-		if (needsUpdating && !isLoading)
+		if (needsUpdating && !isLoading && !vboNeedsGenerating)
 		{
 			if (cg.hasSpace())
 			{
-				cg.addLoadable(this);
-				isLoading = true;
+				setIsLoading(true);
 				needsUpdating = false;
+				cg.addLoadable(this);
 			}
 		}
 		if (vboNeedsGenerating)
 		{
 			tilePlane.deleteBuffer();
 			tilePlane.compile();
-			vboNeedsGenerating = false;
+			setVBONeedsGenerating(false);
 		}
-		if (tilePlane != null)
+		if (tilePlane != null && !vboNeedsGenerating)
 		{
 			GL11.glPushMatrix();
 			GL11.glTranslatef(0, 0, Tile.yPosToDepthRelativeToCamera(cam, getChunkY() * Chunk.CHUNKS * Tile.TILESIZE));
@@ -94,7 +103,7 @@ public class ChunkRenderer implements Loadable
 				}
 			}
 		}
-		vboNeedsGenerating = true;
-		isLoading = false;
+		setIsLoading(false);
+		setVBONeedsGenerating(true);
 	}
 }

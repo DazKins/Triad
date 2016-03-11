@@ -19,7 +19,7 @@ public class Chunk implements Loadable
 	public static final int CHUNKS = 16;
 	public static final int CHUNKSS = CHUNKS * CHUNKS;
 
-	private static float lFadeOut = 0.85f;
+	public static float lFadeOut = 0.85f;
 
 	private World world;
 	
@@ -145,13 +145,6 @@ public class Chunk implements Loadable
 		return data.getLight()[x + y * CHUNKS];
 	}
 
-	public void blendTileColor(Color c, int x, int y)
-	{
-		if (!isValidTilePos(x, y))
-			return;
-		data.getLight()[x + y * CHUNKS].blend(c);
-	}
-
 	public void setTile(Tile t, int x, int y)
 	{
 		if (getTile(x, y) != t)
@@ -175,10 +168,16 @@ public class Chunk implements Loadable
 		int r = (int) (col.getR() * lFadeOut);
 		int g = (int) (col.getG() * lFadeOut);
 		int b = (int) (col.getB() * lFadeOut);
+		
 		Color[] c = data.getLight();
 		for (int i = 0; i < c.length; i++)
 		{
 			c[i] = new Color(r, g, b);
+		}
+		
+		for (int i = 0; i < c.length; i++)
+		{
+			pTileColors[i] = new Color(r, g, b);
 		}
 	}
 
@@ -214,6 +213,7 @@ public class Chunk implements Loadable
 				}
 			}
 		}
+
 		
 		for (int i = 0; i < CHUNKSS; i++)
 		{
@@ -250,30 +250,33 @@ public class Chunk implements Loadable
 				}
 			}
 		}
-
-		Color wc = world.getAmbientLight();
-		int r = (int) (wc.getR() * lFadeOut);
-		int g = (int) (wc.getG() * lFadeOut);
-		int b = (int) (wc.getB() * lFadeOut);
+	}
+	
+	public void fadeLighting()
+	{
+		Color wc = world.getAmbientLightWithFalloff();
+		int r = wc.getR();
+		int g = wc.getG();
+		int b = wc.getB();
 		Color[] col = data.getLight();
 		for (int i = 0; i < col.length; i++)
 		{
 			Color c = col[i];
-			if (c.getR() * lFadeOut > r)
+			if ((int) (c.getR() * lFadeOut) > r)
 			{
 				c.setR((int) (c.getR() * lFadeOut));
 			} else if (c.getR() > r)
 			{
 				c.setR(r);
 			}
-			if (c.getG() * lFadeOut > g)
+			if ((int) (c.getG() * lFadeOut) > g)
 			{
 				c.setG((int) (c.getG() * lFadeOut));
 			} else if (c.getG() > g)
 			{
 				c.setG(g);
 			}
-			if (c.getB() * lFadeOut > b)
+			if ((int) (c.getB() * lFadeOut) > b)
 			{
 				c.setB((int) (c.getB() * lFadeOut));
 			} else if (c.getB() > b)
@@ -294,13 +297,13 @@ public class Chunk implements Loadable
 			}
 		}
 	}
-
+	
 	public void postTick()
 	{
-		Color[] col = data.getLight();
-		for (int i = 0; i < col.length; i++)
+		Color[] col1 = data.getLight();
+		for (int i = 0; i < col1.length; i++)
 		{
-			pTileColors[i] = col[i].copyOf();
+			pTileColors[i] = col1[i].copyOf();
 		}
 	}
 
@@ -312,7 +315,9 @@ public class Chunk implements Loadable
 			Color c = col[i];
 			Color pc = pTileColors[i];
 			if (!c.equals(pc))
+			{
 				return true;
+			}
 		}
 		return false;
 	}

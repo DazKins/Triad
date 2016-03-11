@@ -8,6 +8,7 @@ import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.gfx.model.animation.AnimationHumanoidIdle;
+import com.dazkins.triad.gfx.model.animation.StorageAnimationID;
 import com.dazkins.triad.math.AABB;
 
 public class EntityPlayerServer extends Mob
@@ -74,6 +75,14 @@ public class EntityPlayerServer extends Mob
 	{
 		super.tick();
 		super.move();
+		
+		if (Math.abs(xa) >= 0.2f || Math.abs(ya) >= 0.2f)
+			addNewAnimation(StorageAnimationID.HUMANOID_WALKING, 1, false, 1);
+		else
+			addNewAnimation(StorageAnimationID.HUMANOID_IDLE, 1, false, 1);
+
+		setFacingBasedOnVelocities(xa, ya);
+		
 		xa *= 0.75f;
 		ya *= 0.75f;
 	}

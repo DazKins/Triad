@@ -49,7 +49,6 @@ public class TriadServer
 	private ArrayList<AnimationUpdate> animUpdates; 
 	
 	private Queue<PacketSend> packetSendQueue;
-	private Queue<PacketSend> priorityPacketSendQueue;
 	
 	private ArrayList<Chunk> spawnChunks;
 
@@ -82,7 +81,9 @@ public class TriadServer
 	
 	public void startup()
 	{
+		world.tick();
 		generateSpawn();
+		world.tick();
 	}
 	
 	private void generateSpawn() 
@@ -118,16 +119,19 @@ public class TriadServer
 	
 	public void addPacketToSendQueue(Packet p, Connection c, boolean priority)
 	{
+		if (priority)
+		{
+			c.sendTCP(p);
+			packetCount++;
+		}
+		
 		if (packetCount < PACKET_CUTOFF)
 		{
 			c.sendTCP(p);
 			packetCount++;
 		} else 
 		{
-			if (priority)
-				priorityPacketSendQueue.add(new PacketSend(p, c));
-			else
-				packetSendQueue.add(new PacketSend(p, c));
+			packetSendQueue.add(new PacketSend(p, c));
 		}
 	}
 
@@ -250,8 +254,9 @@ public class TriadServer
 			p0.setY(e.getY());
 			p0.setFacing(e.getFacing());
 			
-			for (TriadConnection c : connections)
+			for (int i = 0; i < connections.size(); i++)
 			{
+				TriadConnection c = connections.get(i);
 				int cID = players.get(c).getGlobalID();
 				
 				if (e.getGlobalID() == cID)
@@ -262,6 +267,9 @@ public class TriadServer
 		}
 		
 		ArrayList<ChunkCoordinate> anchors = new ArrayList<ChunkCoordinate>();
+		
+		//Add a default load anchor to spawn
+		anchors.add(new ChunkCoordinate(0, 0));
 		
 		for (Map.Entry<TriadConnection, EntityPlayerServer> mapE : players.entrySet())
 		{
@@ -334,8 +342,9 @@ public class TriadServer
 	
 	public void sendPacketToAll(Packet p, boolean priority) 
 	{
-		for (TriadConnection t : connections) 
+		for (int i = 0; i < connections.size(); i++) 
 		{
+			TriadConnection t = connections.get(i);
 			t.sendPacket(p, priority);
 		}
 	}
@@ -351,7 +360,6 @@ public class TriadServer
 	{
 		long lastTime = System.nanoTime();
 		double nsPerTick = 1000000000D / 60D;
-		int frames = 0;
 		int ticks = 0;
 		long lastTimer = System.currentTimeMillis();
 		double delta = 0;
@@ -367,14 +375,10 @@ public class TriadServer
 				tick();
 				delta -= 1;
 			}
-			frames++;
 
 			if (System.currentTimeMillis() - lastTimer > 1000)
 			{
 				lastTimer += 1000;
-				DebugMonitor.setVariableValue("FPS", frames);
-				DebugMonitor.setVariableValue("UPS", ticks);
-				frames = 0;
 				ticks = 0;
 			}
 		}

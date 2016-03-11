@@ -109,8 +109,6 @@ public abstract class EntityRenderer
 	{
 		if (isModelReady)
 			model.updateAnimationState();
-		
-		
 	}
 
 	public int getFacing()

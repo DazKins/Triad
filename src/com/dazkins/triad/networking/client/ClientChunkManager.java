@@ -25,7 +25,6 @@ public class ClientChunkManager implements IWorldAccess
 
 	public void updateData(ChunkData d)
 	{
-		//TODO check this null instance
 		if (d != null)
 			chunkUpdates.put(d.getCoords(), d);
 	}
@@ -43,6 +42,8 @@ public class ClientChunkManager implements IWorldAccess
 		} else
 		{
 			data.put(coords, d);
+			//Just in case a deprecated chunk renderer got left behind
+			renderers.remove(coords);
 			ChunkRenderer nr = new ChunkRenderer();
 			nr.initializeData(this, d);
 			renderers.put(coords, nr);

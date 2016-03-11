@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.EntityTorch;
 import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.entity.harvestable.EntityHarvestable;
 import com.dazkins.triad.game.entity.mob.EntityZombie;
@@ -16,6 +17,7 @@ import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.networking.server.TriadServer;
 import com.dazkins.triad.util.LoaderManager;
+import com.dazkins.triad.util.TriadLogger;
 
 public class World
 {
@@ -42,8 +44,8 @@ public class World
 
 	public World(TriadServer s)
 	{
-		ambientLightLevel = new Color(126, 126, 126);
-
+		ambientLightLevel = new Color(255, 255, 255);
+		
 		chunkm = new ServerChunkManager(this);
 
 		worldGenerator = new WorldGen(this);
@@ -56,6 +58,10 @@ public class World
 		time = new TimeCycle(this);
 		
 		server = s;
+		
+		addEntity(new EntityTorch(this, 100, 100));
+		addEntity(new EntityTorch(this, -200, -300));
+		addEntity(new EntityTorch(this, 200, 300));
 	}
 
 	public WorldGen getWorldGenerator()
@@ -92,6 +98,11 @@ public class World
 	public Color getAmbientLight()
 	{
 		return ambientLightLevel;
+	}
+	
+	public Color getAmbientLightWithFalloff()
+	{
+		return new Color((int) (ambientLightLevel.getR() * Chunk.lFadeOut), (int) (ambientLightLevel.getG() * Chunk.lFadeOut), (int) (ambientLightLevel.getB() * Chunk.lFadeOut));
 	}
 
 	public void setAmbientLight(Color c)
@@ -303,31 +314,42 @@ public class World
 	public void tick()
 	{
 		processWaitingChunkLoads();
-		
-		time.tick();
 
 		ArrayList<Chunk> cs = chunkm.getLoadedChunks();
+		
+		time.tick();
 
 		for (int i = 0; i < cs.size(); i++)
 		{
 			Chunk c = cs.get(i);
 			if (c != null)
 				c.tick();
-			if (c.hasLightChanged()) 
-				server.addChunkUpdate(c);
 		}
-
-		for (int i = 0; i < cs.size(); i++)
+		
+		for (Chunk c : cs)
 		{
-			Chunk c = cs.get(i);
-			if (c != null)
-				c.postTick();
+			c.fadeLighting();
+		}
+		
+		for (Chunk c : cs)
+		{
+			if (c.hasLightChanged()) 
+			{
+				server.addChunkUpdate(c);
+			}
+		}
+		
+		for (Chunk c : cs)
+		{
+			c.postTick();
 		}
 
 		for (int i = 0; i < entityLoadQueue.size(); i++)
 		{
 			addEntity(entityLoadQueue.get(i));
 		}
+		
+		entityLoadQueue.clear();
 
 		tickedEntities.clear();
 	}

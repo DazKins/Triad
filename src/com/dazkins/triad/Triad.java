@@ -15,6 +15,7 @@ import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
+import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.networking.client.TriadClient;
 import com.dazkins.triad.util.TriadLogger;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
@@ -168,7 +169,7 @@ public class Triad implements Runnable
 
 	private void render()
 	{
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		GL11.glClear(/** GL11.GL_COLOR_BUFFER_BIT | **/ GL11.GL_DEPTH_BUFFER_BIT);
 
 		currentState.render();
 
