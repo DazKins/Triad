@@ -2,14 +2,13 @@ package com.dazkins.triad.networking.client;
 
 import java.util.ArrayList;
 
-import com.dazkins.triad.game.entity.StorageEntityID;
 import com.dazkins.triad.game.entity.mob.EntityPlayerClientController;
-import com.dazkins.triad.game.entity.renderer.EntityRendererPlayer;
+import com.dazkins.triad.game.entity.shell.EntityShell;
+import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.networking.packet.Packet008CameraStateUpdate;
-import com.dazkins.triad.util.TriadLogger;
 
 public class ClientWorldManager
 {
@@ -49,6 +48,11 @@ public class ClientWorldManager
 		player = e;
 	}
 	
+	public void setPlayerInteraction(EntityShell e)
+	{
+		player.setInteractingObject(e);
+	}
+	
 	public int getMyPlayerID()
 	{
 		return myPlayerID;
@@ -56,7 +60,7 @@ public class ClientWorldManager
 	
 	public void clientUpdatePlayer(float x, float y, int f)
 	{
-		cem.updatePlayerRenderer(x, y, f);
+		cem.updatePlayerEntity(x, y, f);
 	}
 	
 	public void render()
@@ -91,7 +95,7 @@ public class ClientWorldManager
 				
 				if (c.isRemove())
 				{
-					cem.removeRenderer(gID);
+					cem.removeEntity(gID);
 					continue;
 				}
 				
@@ -108,10 +112,10 @@ public class ClientWorldManager
 
 				if (!cem.hasAlreadyEntity(gID))
 				{
-					cem.initRenderer(crm, gID, tID);
+					cem.initEntity(crm, gID, tID);
 				}
 
-				cem.updateRenderer(x, y, gID, tID, facing);
+				cem.updateEntity(x, y, gID, tID, facing);
 			}
 		}
 		
@@ -135,6 +139,25 @@ public class ClientWorldManager
 			cem.handlePlayerNameUpdate(gID, name);
 		}
 		
+		ArrayList<InventoryUpdate> inventoryUpdates = update.getInventoryUpdates();
+		for (InventoryUpdate i : inventoryUpdates)
+		{
+			int gID = i.getEntityID();
+			ItemStack items[] = i.getItems();
+			int width = i.getWidth();
+			int height = i.getHeight();
+			cem.handleInventoryUpdate(gID, width, height, items);
+		}
+		
+		ArrayList<InteractionUpdate> interactionUpdates = update.getInteractionUpdates();
+		for (InteractionUpdate i : interactionUpdates)
+		{
+			int eID = i.getEntityID();
+			int iID = i.getInteractingID();
+			boolean s = i.isStart();
+			cem.handleInteractionUpdate(eID, iID, s);
+		}
+		
 		cem.tick();
 		
 		AABB b = cam.getViewportBounds();
@@ -145,5 +168,10 @@ public class ClientWorldManager
 		camP.setY1(b.getY1());
 		
 		client.sendPacket(camP);
+	}
+	
+	public EntityShell getPlayerEntityShell()
+	{
+		return cem.getMyPlayerShell();
 	}
 }

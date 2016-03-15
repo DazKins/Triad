@@ -4,9 +4,9 @@ import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
 
 public class ItemHarvestTool extends ItemWeapon
 {
-	public ItemHarvestTool(String name)
+	public ItemHarvestTool(int id, String name)
 	{
-		super(name);
+		super(id, name);
 	}
 
 	public int getHarvestDamage()

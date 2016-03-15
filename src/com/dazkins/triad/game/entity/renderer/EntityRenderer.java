@@ -6,6 +6,7 @@ import com.dazkins.triad.game.world.IWorldAccess;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
+import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.gfx.model.animation.StorageAnimation;
 import com.dazkins.triad.util.TriadLogger;
@@ -29,6 +30,8 @@ public abstract class EntityRenderer
 	protected IWorldAccess world;
 
 	public abstract void initModel();
+	
+	private String name = "";
 
 	public void setID(int id)
 	{
@@ -40,6 +43,11 @@ public abstract class EntityRenderer
 		{
 			TriadLogger.log("ID has already been assigned to this entity", true);
 		}
+	}
+	
+	public void setName(String s)
+	{
+		name = s;
 	}
 	
 	public void addAnimation(int aID, int i, boolean o, float s)
@@ -101,6 +109,8 @@ public abstract class EntityRenderer
 			if (t != null)
 				GL11.glColor3f(t.getDR(), t.getDG(), t.getDB());
 			model.render(facing);
+			if (name != null && !name.equals(""))
+				Font.drawString(name, x - name.length() * 8, y + 64, Tile.yPosToDepthRelativeToCamera(cam, y), 1.0f);
 		} else
 			initModel();
 	}

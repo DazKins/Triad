@@ -4,17 +4,29 @@ import java.util.ArrayList;
 
 public class ClientUpdate
 {
+	private ArrayList<ArrayList> updateLists = new ArrayList<ArrayList>();
+	
 	private ArrayList<ChunkData> chunkUpdates;
 	private ArrayList<AnimationUpdate> animUpdates;
 	private ArrayList<EntityUpdate> entityUpdates;
 	private ArrayList<PlayerNameUpdate> playerNameUpdates;
-	
+	private ArrayList<InventoryUpdate> inventoryUpdates;
+	private ArrayList<InteractionUpdate> interactionUpdates;
+
 	public ClientUpdate()
 	{
 		chunkUpdates = new ArrayList<ChunkData>();
+		updateLists.add(chunkUpdates);
 		animUpdates = new ArrayList<AnimationUpdate>();
+		updateLists.add(animUpdates);
 		entityUpdates = new ArrayList<EntityUpdate>();
+		updateLists.add(entityUpdates);
 		playerNameUpdates = new ArrayList<PlayerNameUpdate>();
+		updateLists.add(playerNameUpdates);
+		inventoryUpdates = new ArrayList<InventoryUpdate>();
+		updateLists.add(inventoryUpdates);
+		interactionUpdates = new ArrayList<InteractionUpdate>();
+		updateLists.add(interactionUpdates);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -25,15 +37,18 @@ public class ClientUpdate
 		c.animUpdates = (ArrayList<AnimationUpdate>) animUpdates.clone();
 		c.entityUpdates = (ArrayList<EntityUpdate>) entityUpdates.clone();
 		c.playerNameUpdates = (ArrayList<PlayerNameUpdate>) playerNameUpdates.clone();
+		c.inventoryUpdates = (ArrayList<InventoryUpdate>)inventoryUpdates.clone();
+		c.interactionUpdates = (ArrayList<InteractionUpdate>) interactionUpdates.clone();
+		c.updateLists = (ArrayList<ArrayList>) updateLists.clone();
 		return c;
 	}
 	
 	public void reset()
 	{
-		chunkUpdates.clear();
-		animUpdates.clear();
-		entityUpdates.clear();
-		playerNameUpdates.clear();
+		for (ArrayList l : updateLists)
+		{
+			l.clear();
+		}
 	}
 	
 	public void addChunkUpdate(ChunkData c)
@@ -56,6 +71,16 @@ public class ClientUpdate
 		playerNameUpdates.add(p);
 	}
 	
+	public void addInventoryUpdate(InventoryUpdate i)
+	{
+		inventoryUpdates.add(i);
+	}
+	
+	public void addInteractionUpdates(InteractionUpdate i)
+	{
+		interactionUpdates.add(i);
+	}
+	
 	public ArrayList<ChunkData> getChunkUpdates()
 	{
 		return chunkUpdates;
@@ -74,5 +99,15 @@ public class ClientUpdate
 	public ArrayList<PlayerNameUpdate> getPlayerNameUpdates()
 	{
 		return playerNameUpdates;
+	}
+	
+	public ArrayList<InventoryUpdate> getInventoryUpdates()
+	{
+		return inventoryUpdates;
+	}
+	
+	public ArrayList<InteractionUpdate> getInteractionUpdates()
+	{
+		return interactionUpdates;
 	}
 }

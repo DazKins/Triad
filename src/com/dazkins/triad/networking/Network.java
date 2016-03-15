@@ -12,6 +12,9 @@ import com.dazkins.triad.networking.packet.Packet008CameraStateUpdate;
 import com.dazkins.triad.networking.packet.Packet009EntityRemoved;
 import com.dazkins.triad.networking.packet.Packet010PlayerNameSet;
 import com.dazkins.triad.networking.packet.Packet011PlayerVelocity;
+import com.dazkins.triad.networking.packet.Packet012Inventory;
+import com.dazkins.triad.networking.packet.Packet013InteractCommand;
+import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
@@ -33,8 +36,12 @@ public class Network
 		k.register(Packet009EntityRemoved.class);
 		k.register(Packet010PlayerNameSet.class);
 		k.register(Packet011PlayerVelocity.class);
+		k.register(Packet012Inventory.class);
+		k.register(Packet013InteractCommand.class);
+		k.register(Packet014InteractionUpdate.class);
 
 		k.register(String.class);
+		k.register(int[].class);
 		k.register(byte[].class);
 	}
 }

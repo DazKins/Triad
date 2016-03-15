@@ -2,9 +2,9 @@ package com.dazkins.triad.game.inventory.item.equipable.armour.body;
 
 public class ItemTestChest extends ItemArmourBody
 {
-	public ItemTestChest()
+	public ItemTestChest(int id)
 	{
-		super("testChest", 50);
+		super(id, "testChest", 50);
 	}
 
 }

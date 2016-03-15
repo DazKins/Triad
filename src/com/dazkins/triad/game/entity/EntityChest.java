@@ -1,13 +1,11 @@
 package com.dazkins.triad.game.entity;
 
-import com.dazkins.triad.game.entity.mob.EntityPlayerClientController;
 import com.dazkins.triad.game.inventory.Inventory;
+import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.gfx.Camera;
-import com.dazkins.triad.gfx.model.ModelChest;
 import com.dazkins.triad.math.AABB;
 
-public class EntityChest extends Entity implements Interactable
+public class EntityChest extends Entity implements Interactable, IEntityWithInventory
 {
 	private Inventory inv;
 
@@ -15,6 +13,8 @@ public class EntityChest extends Entity implements Interactable
 	{
 		super(w, StorageEntityID.CHEST, x, y, "chest");
 		inv = new Inventory(9, 5);
+		
+		inv.addItem(Item.testSword);
 	}
 
 	public AABB getAABB()
@@ -27,11 +27,12 @@ public class EntityChest extends Entity implements Interactable
 		return inv;
 	}
 
+	public void setInventory(Inventory i)
+	{
+		inv = i;
+	}
+
 	public void onInteract(Entity e)
 	{
-		if (e instanceof EntityPlayerClientController)
-		{
-			((EntityPlayerClientController) e).setInteractingObject(this);
-		}
 	}
 }

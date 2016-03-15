@@ -4,22 +4,18 @@ import java.util.ArrayList;
 
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
-import com.dazkins.triad.game.gui.object.GuiObjectStatusBar;
+import com.dazkins.triad.game.entity.IEntityWithInventory;
+import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
-import com.dazkins.triad.game.inventory.item.equipable.ItemEquipable;
 import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
 import com.dazkins.triad.game.inventory.item.equipable.weapon.harvestTool.ItemHarvestTool;
-import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.game.world.tile.Tile;
-import com.dazkins.triad.gfx.Camera;
-import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.math.AABB;
 
-public abstract class Mob extends Entity
+public abstract class Mob extends Entity implements IEntityWithInventory
 {
 	protected int health;
 	protected Inventory inv;
@@ -28,12 +24,37 @@ public abstract class Mob extends Entity
 	private int attackCooldownCounter;
 
 	protected Mob target;
+	
+	protected Interactable interactingObject;
 
 	public Mob(World w, int id, float x, float y, String s, int h)
 	{
 		super(w, id, x, y, s);
 		health = h;
 		eInv = new EquipmentInventory();
+	}
+	
+	public void attemptInteract()
+	{
+		AABB b = getFacingAttackArea(getFacing());
+		ArrayList<Interactable> ints = world.getInteractablesInAABB(b);
+		System.out.println(ints.size());
+		for (Interactable i : ints)
+		{
+			setInteractingObject(i);
+			i.onInteract(this);
+		}
+	}
+
+	public Interactable getInteractingObject()
+	{
+		return interactingObject;
+	}
+
+	public void setInteractingObject(Interactable i)
+	{
+		interactingObject = i;
+		world.getServer().onMobInteraction(this);
 	}
 
 	protected void moveUp()
@@ -292,6 +313,11 @@ public abstract class Mob extends Entity
 	public Inventory getInventory()
 	{
 		return inv;
+	}
+	
+	public void setInventory(Inventory i)
+	{
+		inv = i;
 	}
 
 	protected AABB[] getInteractAreas()

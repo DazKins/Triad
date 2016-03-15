@@ -4,9 +4,9 @@ import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
 
 public class ItemAxe extends ItemHarvestTool
 {
-	public ItemAxe()
+	public ItemAxe(int id)
 	{
-		super("axe");
+		super(id, "axe");
 	}
 
 	public int getDamage()

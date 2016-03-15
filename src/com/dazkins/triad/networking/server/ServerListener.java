@@ -11,6 +11,9 @@ import com.dazkins.triad.networking.packet.Packet004LoginRequestResponse;
 import com.dazkins.triad.networking.packet.Packet005UpdatePlayerPosition;
 import com.dazkins.triad.networking.packet.Packet008CameraStateUpdate;
 import com.dazkins.triad.networking.packet.Packet011PlayerVelocity;
+import com.dazkins.triad.networking.packet.Packet012Inventory;
+import com.dazkins.triad.networking.packet.Packet013InteractCommand;
+import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
 import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive;
@@ -71,6 +74,27 @@ public class ServerListener extends Listener
 				float xa = p0.getXa();
 				float ya = p0.getYa();
 				server.updatePlayer(server.getFromConnection(con), xa, ya);
+			}
+			if (p instanceof Packet012Inventory)
+			{
+				Packet012Inventory p0 = (Packet012Inventory) p;
+				int gID = p0.getEntityGID();
+				int width = p0.getWidth();
+				int height = p0.getHeight();
+				int items[] = p0.getItems();
+				int stackCounts[] = p0.getStackCounts();
+				server.handleInventoryUpdate(gID, width, height, items, stackCounts);
+			}
+			if (p instanceof Packet013InteractCommand)
+			{
+				Packet013InteractCommand p0 = (Packet013InteractCommand) p;
+				server.handleInteraction(server.getFromConnection(con), true);
+			}
+			if (p instanceof Packet014InteractionUpdate)
+			{
+				Packet014InteractionUpdate p0 = (Packet014InteractionUpdate) p;
+				server.handleInteraction(server.getFromConnection(con), false);
+				
 			}
 		} else if (!(o instanceof KeepAlive))
 		{

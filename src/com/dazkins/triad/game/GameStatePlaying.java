@@ -1,11 +1,14 @@
 package com.dazkins.triad.game;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.mob.EntityPlayerClientController;
-import com.dazkins.triad.game.entity.renderer.EntityRendererPlayer;
+import com.dazkins.triad.game.entity.shell.EntityShell;
 import com.dazkins.triad.game.gui.Gui;
+import com.dazkins.triad.game.gui.GuiSingleInventory;
+import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
@@ -61,25 +64,62 @@ public class GameStatePlaying implements GameState
 		if (currentlyDisplayedGui != null)
 			currentlyDisplayedGui.tick();
 		
-		// if (input.isKeyJustDown(GLFW.GLFW_KEY_G)) {
-		// world.addEntity(new EntityTorch(world, player.getX(),
-		// player.getY()));
-		// DebugMonitor.addMessage("Torch added at: (" + player.getX() + "," +
-		// player.getY() + ")");
-		// }
-		// DebugMonitor.setVariableValue("Tile light", world.getTileColor((int)
-		// player.getX() / Tile.tileSize, (int) player.getY() / Tile.tileSize));
-		// DebugMonitor.setVariableValue("Player position", player.getX() + " "
-		// + player.getY());
-		// DebugMonitor.setVariableValue("Player chunk", (int) ((player.getX() /
-		// Tile.tileSize) / Chunk.chunkS) + " " + (int) ((player.getY() /
-		// Tile.tileSize) / Chunk.chunkS));
+		if (input.isKeyJustDown(GLFW.GLFW_KEY_E))
+		{
+			client.sendInteractionRequest();
+		}
+		
+		Inventory inv = player.getInventory();
+		
+		if (input.isKeyJustDown(GLFW.GLFW_KEY_I))
+		{
+			changeGui(new GuiSingleInventory(inv, cwm.getPlayerEntityShell().getGlobalID(), triad, input, client));
+		}
+		
+		if (inv.hasChanged())
+		{
+			client.updatePlayerInventory(inv);
+		}
+		inv.resetHasChangedFlag();
+		
+		EntityShell playerEntityShell = cwm.getPlayerEntityShell();
+		if (playerEntityShell != null)
+		{
+			player.setInteractingObject(playerEntityShell.getInteractingEntity());
+		}
+		
+		EntityShell interactingObject = player.getInteractingObject();
+		if (interactingObject != null)
+		{
+			Inventory i = interactingObject.getInventory();
+			if (i != null && currentlyDisplayedGui == null)
+			{
+				changeGui(new GuiSingleInventory(interactingObject, triad, input, client));
+			}
+		}
+		
+		if (currentlyDisplayedGui != null)
+		{
+			if (input.isKeyJustDown(GLFW.GLFW_KEY_ESCAPE))
+			{
+				client.cancelInteraction();
+				changeGui(null);
+			}
+		}
+		
+		if (currentlyDisplayedGui instanceof GuiSingleInventory)
+		{
+			if (player.getInteractingObject() == null)
+			{
+				changeGui(null);
+			}
+		}
 		
 		input.tick();
 
 		cwm.tick();
 		
-		cam.lockCameraToEntity(player);
+		cam.centreOnLocation(player.getX(), player.getY());
 	}
 
 	public void render()
@@ -97,7 +137,9 @@ public class GameStatePlaying implements GameState
 
 	private void changeGui(Gui g)
 	{
-		currentlyDisplayedGui.onExit();
+		if (currentlyDisplayedGui != null)
+			currentlyDisplayedGui.onExit();
+		
 		currentlyDisplayedGui = g;
 	}
 }

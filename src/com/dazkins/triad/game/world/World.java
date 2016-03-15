@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.dazkins.triad.game.entity.Activeatable;
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.EntityChest;
 import com.dazkins.triad.game.entity.EntityTorch;
 import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.entity.harvestable.EntityHarvestable;
@@ -59,9 +60,7 @@ public class World
 		
 		server = s;
 		
-		addEntity(new EntityTorch(this, 100, 100));
-		addEntity(new EntityTorch(this, -200, -300));
-		addEntity(new EntityTorch(this, 200, 300));
+		addEntity(new EntityChest(this, -200, -200));
 	}
 
 	public WorldGen getWorldGenerator()

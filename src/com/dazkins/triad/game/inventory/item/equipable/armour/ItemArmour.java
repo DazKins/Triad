@@ -6,9 +6,9 @@ public class ItemArmour extends ItemEquipable
 {
 	protected int armour;
 
-	public ItemArmour(String name, int a)
+	public ItemArmour(int id, String name, int a)
 	{
-		super(name);
+		super(id, name);
 		armour = a;
 	}
 }

@@ -3,27 +3,27 @@ package com.dazkins.triad.game.inventory.item;
 public class ItemStack
 {
 	private Item itemType;
-	private int size;
+	private int stackSize;
 
 	public ItemStack(Item i, int s)
 	{
 		itemType = i;
-		size = s;
+		stackSize = s;
 	}
 
-	public int getSize()
+	public int getStackSize()
 	{
-		return size;
+		return stackSize;
 	}
 
 	public void addToQuantity(int a)
 	{
-		size += a;
+		stackSize += a;
 	}
 
 	public void setSize(int s)
 	{
-		size = s;
+		stackSize = s;
 	}
 
 	public Item getItemType()

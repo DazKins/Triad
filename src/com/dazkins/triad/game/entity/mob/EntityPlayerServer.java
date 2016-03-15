@@ -1,20 +1,17 @@
 package com.dazkins.triad.game.entity.mob;
 
+import java.util.ArrayList;
+
 import com.dazkins.triad.game.entity.Entity;
-import com.dazkins.triad.game.entity.StorageEntityID;
 import com.dazkins.triad.game.entity.Interactable;
+import com.dazkins.triad.game.entity.StorageEntityID;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.gfx.Image;
-import com.dazkins.triad.gfx.model.ModelHumanoid;
-import com.dazkins.triad.gfx.model.animation.AnimationHumanoidIdle;
 import com.dazkins.triad.gfx.model.animation.StorageAnimationID;
 import com.dazkins.triad.math.AABB;
 
 public class EntityPlayerServer extends Mob
 {
-	private Interactable interactingObject;
-
 	public EntityPlayerServer(World w, float x, float y, String name)
 	{
 		super(w, StorageEntityID.PLAYER, x, y, name, 1000);
@@ -25,15 +22,17 @@ public class EntityPlayerServer extends Mob
 	{
 		return 1000;
 	}
-
-	public Interactable getInteractingObject()
+	
+	public void attemptInteract()
 	{
-		return interactingObject;
-	}
-
-	public void setInteractingObject(Interactable i)
-	{
-		interactingObject = i;
+		AABB b = getFacingAttackArea(getFacing());
+		ArrayList<Interactable> ints = world.getInteractablesInAABB(b);
+		for (Interactable i : ints)
+		{
+			setInteractingObject(i);
+			i.onInteract(this);
+			world.getServer().onMobInteraction(this);
+		}
 	}
 
 	public boolean mayPass(Entity e)

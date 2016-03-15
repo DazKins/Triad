@@ -7,8 +7,10 @@ import java.util.Map;
 
 import com.dazkins.triad.game.entity.StorageEntityID;
 import com.dazkins.triad.game.entity.renderer.EntityRenderer;
-import com.dazkins.triad.game.entity.renderer.EntityRendererPlayer;
 import com.dazkins.triad.game.entity.renderer.StorageEntityRenderer;
+import com.dazkins.triad.game.entity.shell.EntityShell;
+import com.dazkins.triad.game.inventory.Inventory;
+import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.IWorldAccess;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.util.TriadLogger;
@@ -17,7 +19,7 @@ public class ClientEntityManager
 {
 	private ClientWorldManager clientWorldManager;
 	
-	private Map<Integer, EntityRenderer> renderers = new HashMap<Integer, EntityRenderer>();
+	private Map<Integer, EntityShell> entityShells = new HashMap<Integer, EntityShell>();
 	private Map<Integer, String> storedNameUpdates = new HashMap<Integer, String>();
 	private ArrayList<Integer> loadedEntities = new ArrayList<Integer>();
 
@@ -28,14 +30,14 @@ public class ClientEntityManager
 		clientWorldManager = c;
 	}
 	
-	public void updatePlayerRenderer(float x, float y, int f)
+	public void updatePlayerEntity(float x, float y, int f)
 	{
-		updateRenderer(x, y, clientWorldManager.getMyPlayerID(), StorageEntityID.PLAYER, f);
+		updateEntity(x, y, clientWorldManager.getMyPlayerID(), StorageEntityID.PLAYER, f);
 	}
 	
-	public void initRenderer(IWorldAccess wo, int gID, int tID)
+	public void initEntity(IWorldAccess wo, int gID, int tID)
 	{
-		if (renderers.containsKey(gID))
+		if (entityShells.containsKey(gID))
 		{
 			TriadLogger.log("Entity renderer has already been registered", true);
 			return;
@@ -43,31 +45,58 @@ public class ClientEntityManager
 
 		world = wo;
 
+		EntityShell s = new EntityShell(this, gID);
+		
 		EntityRenderer r = StorageEntityRenderer.recieveRenderer(tID);
 
 		if (r != null)
 			r.setWorld(world);
+		
+		s.setRenderer(r);
 
-		renderers.put(gID, r);
+		entityShells.put(gID, s);
 
 		loadedEntities.add(gID);
 	}
-
-	public void updateRenderer(float x, float y, int gID, int tID, int facing)
+	
+	public ArrayList<EntityShell> getLoadedEntities()
 	{
-		EntityRenderer r = renderers.get(gID);
-		if (r != null)
+		ArrayList<EntityShell> es = new ArrayList<EntityShell>();
+		
+		for (int i : loadedEntities)
 		{
-			r.setX(x);
-			r.setY(y);
-			r.setFacing(facing);
+			EntityShell e = entityShells.get(i);
+			es.add(e);
+		}
+		
+		return es;
+	}
+	
+	public EntityShell getEntityShell(int id)
+	{
+		return entityShells.get(id);
+	}
+	
+	public EntityShell getMyPlayerShell()
+	{
+		return entityShells.get(clientWorldManager.getMyPlayerID());
+	}
+
+	public void updateEntity(float x, float y, int gID, int tID, int facing)
+	{
+		EntityShell s = entityShells.get(gID);
+		if (s != null)
+		{
+			s.setX(x);
+			s.setY(y);
+			s.setFacing(facing);
 		}
 	}
 	
-	public void removeRenderer(int gID)
+	public void removeEntity(int gID)
 	{
 		loadedEntities.remove((Integer) gID);
-		renderers.remove(gID);
+		entityShells.remove(gID);
 	}
 
 	public static SortByY ySorter = new SortByY();
@@ -87,21 +116,46 @@ public class ClientEntityManager
 		int index = a.getIndex();
 		boolean overwrite = a.getOverwrite();
 		float speed = a.getAnimSpeed();
-		EntityRenderer e = renderers.get(eID);
+		EntityShell e = entityShells.get(eID);
 		if (e != null)
-			e.addAnimation(aID, index, overwrite, speed);
+			e.getRenderer().addAnimation(aID, index, overwrite, speed);
+	}
+	
+	public void handleInteractionUpdate(int gID, int iID, boolean start)
+	{
+		EntityShell e = entityShells.get(gID);
+		if (start)
+		{
+			e.setInteractingEntityID(iID);
+		} else 
+		{
+			e.setInteractingEntityID(-1);
+		}
 	}
 	
 	public void handlePlayerNameUpdate(int gID, String n)
 	{
-		EntityRenderer er = renderers.get(gID);
-		if (er != null && er instanceof EntityRendererPlayer)
+		EntityShell es = entityShells.get(gID);
+		if (es != null)
 		{
-			EntityRendererPlayer ep = (EntityRendererPlayer) er;
-			ep.setName(n);
+			es.setName(n);
 		} else 
 		{
 			storedNameUpdates.put(gID, n);
+		}
+	}
+	
+	public void handleInventoryUpdate(int gID, int width, int height, ItemStack[] is)
+	{
+		EntityShell es = entityShells.get(gID);
+		if (es != null)
+		{
+			es.setInventory(new Inventory(width, height));
+			Inventory inv = es.getInventory();
+			for (int i = 0; i < width * height; i++)
+			{
+				inv.addItemStack(is[i], i);
+			}
 		}
 	}
 	
@@ -109,7 +163,7 @@ public class ClientEntityManager
 	{
 		for (int i : loadedEntities)
 		{
-			EntityRenderer e = renderers.get(i);
+			EntityShell e = entityShells.get(i);
 			//TODO investigate null instances of this
 			if (e != null)
 				e.tick();
@@ -117,11 +171,10 @@ public class ClientEntityManager
 
 		for (Map.Entry<Integer, String> mapE : storedNameUpdates.entrySet())
 		{
-			EntityRenderer er = renderers.get(mapE.getKey());
-			if (er != null)
+			EntityShell es = entityShells.get(mapE.getKey());
+			if (es != null)
 			{
-				EntityRendererPlayer ep = (EntityRendererPlayer) er;
-				ep.setName(mapE.getValue());
+				es.setName(mapE.getValue());
 			}
 		}
 	}
@@ -131,9 +184,13 @@ public class ClientEntityManager
 		ArrayList<EntityRenderer> render = new ArrayList<EntityRenderer>();
 		for (int i : loadedEntities)
 		{
-			EntityRenderer r = renderers.get(i);
-			if (r != null)
-				render.add(r);
+			EntityShell s = entityShells.get(i);
+			if (s != null)
+			{
+				EntityRenderer er = s.getRenderer();
+				if (er != null)
+					render.add(er);
+			}
 		}
 		render.sort(ySorter);
 		for (EntityRenderer r : render)

@@ -4,8 +4,8 @@ import com.dazkins.triad.game.inventory.item.equipable.armour.ItemArmour;
 
 public abstract class ItemArmourHead extends ItemArmour
 {
-	public ItemArmourHead(String name, int a)
+	public ItemArmourHead(int id, String name, int a)
 	{
-		super(name, a);
+		super(id, name, a);
 	}
 }

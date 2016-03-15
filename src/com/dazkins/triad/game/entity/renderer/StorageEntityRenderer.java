@@ -6,7 +6,7 @@ import com.dazkins.triad.util.TriadLogger;
 @SuppressWarnings("unchecked")
 public class StorageEntityRenderer
 {
-	private static Class<? extends EntityRenderer>[] renderers = new Class[10];
+	private static Class<? extends EntityRenderer>[] renderers = new Class[20];
 
 	static
 	{
@@ -16,6 +16,7 @@ public class StorageEntityRenderer
 		renderers[StorageEntityID.FLOWER] = EntityRendererFlower.class;
 		renderers[StorageEntityID.SAND_GRASS] = EntityRendererSandGrass.class;
 		renderers[StorageEntityID.ZOMBIE] = EntityRendererZombie.class;
+		renderers[StorageEntityID.CHEST] = EntityRendererChest.class;
 	}
 
 	public static EntityRenderer recieveRenderer(int id)

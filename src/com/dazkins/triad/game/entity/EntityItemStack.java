@@ -51,15 +51,16 @@ public class EntityItemStack extends Entity
 
 	protected void onCollide(Entity e)
 	{
-		if (e instanceof EntityPlayerClientController)
-		{
-			if (getSpeed() < 0.2f && lifeTicks > 30)
-			{
-				EntityPlayerClientController ep = (EntityPlayerClientController) e;
-				if (ep.getInventory().addItemStack(is))
-					this.remove();
-			}
-		}
+		//TODO Reimplement
+//		if (e instanceof EntityPlayerClientController)
+//		{
+//			if (getSpeed() < 0.2f && lifeTicks > 30)
+//			{
+//				EntityPlayerClientController ep = (EntityPlayerClientController) e;
+//				if (ep.getInventory().addItemStack(is))
+//					this.remove();
+//			}
+//		}
 	}
 
 	public AABB getBoundsForRendering()

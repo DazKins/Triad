@@ -30,7 +30,7 @@ public class GuiPlayer extends Gui
 
 	public void tick()
 	{
-		statusBar.updateStatus((player.lifeTicks % 60) / 60.0f);
+//		statusBar.updateStatus((player.lifeTicks % 60) / 60.0f);
 	}
 
 	public void render(Camera cam)

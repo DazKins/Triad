@@ -1,10 +1,8 @@
-[Triad Client   21:44:14]  Logger started!
-[Triad Client   21:44:14]  OpenGL Context Succefully Created!
-[Triad Client   21:44:14]  OpenGL version: 4.5
-[Triad Client   21:44:14]  VBOs enabled
-[Triad Client   21:44:16]  Connected
-[Triad Client   21:44:16]  Recieved raw message from server: Hello 127.0.0.1!
-[Triad Client   21:44:16]  Login accepted
-[Triad Client   21:44:16]  No entity renderer for id : 7
-[Triad Client   21:44:16]  No entity renderer for id : 7
-[Triad Client   21:45:05]  Disconnected
+[Triad Client   23:42:57]  Logger started!
+[Triad Client   23:42:57]  OpenGL Context Succefully Created!
+[Triad Client   23:42:57]  OpenGL version: 4.5
+[Triad Client   23:42:57]  VBOs enabled
+[Triad Client   23:43:00]  Connected
+[Triad Client   23:43:00]  Recieved raw message from server: Hello 127.0.0.1!
+[Triad Client   23:43:00]  Login accepted
+[Triad Client   23:44:05]  Disconnected

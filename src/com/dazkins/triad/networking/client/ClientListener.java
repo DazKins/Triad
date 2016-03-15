@@ -11,6 +11,8 @@ import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
 import com.dazkins.triad.networking.packet.Packet007EntityAnimationStart;
 import com.dazkins.triad.networking.packet.Packet009EntityRemoved;
 import com.dazkins.triad.networking.packet.Packet010PlayerNameSet;
+import com.dazkins.triad.networking.packet.Packet012Inventory;
+import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
 import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -87,6 +89,30 @@ public class ClientListener extends Listener
 				String name = p0.getName();
 				PlayerNameUpdate pn = new PlayerNameUpdate(name, gID);
 				client.getClientUpdate().addPlayerNameUpdate(pn);
+			}
+			if (p instanceof Packet012Inventory)
+			{
+				Packet012Inventory p0 = (Packet012Inventory) p;
+				int w = p0.getWidth();
+				int h = p0.getHeight();
+				int eID = p0.getEntityGID();
+				InventoryUpdate u = new InventoryUpdate(eID, w, h);
+				int items[] = p0.getItems();
+				int stacks[] = p0.getStackCounts();
+				for (int i = 0; i < w * h; i++)
+				{
+					if (stacks[i] > 0)
+						u.setItemData(items[i], stacks[i], i);
+				}
+				client.getClientUpdate().addInventoryUpdate(u);
+			}
+			if (p instanceof Packet014InteractionUpdate)
+			{
+				Packet014InteractionUpdate p0 = (Packet014InteractionUpdate) p;
+				int eID = p0.getInteractingEntityID();
+				int iID = p0.getEntityInteractedWithID();
+				boolean s = p0.isStart();
+				client.getClientUpdate().addInteractionUpdates(new InteractionUpdate(eID, iID, s));
 			}
 		}
 	}

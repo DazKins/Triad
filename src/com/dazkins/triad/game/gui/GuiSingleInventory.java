@@ -1,37 +1,51 @@
 package com.dazkins.triad.game.gui;
 
 import com.dazkins.triad.Triad;
-import com.dazkins.triad.game.entity.mob.EntityPlayerClientController;
+import com.dazkins.triad.game.entity.shell.EntityShell;
 import com.dazkins.triad.game.gui.object.GuiObjectInventory;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.input.InputHandler;
+import com.dazkins.triad.networking.client.TriadClient;
 
-public class GuiPlayerInventory extends Gui
+public class GuiSingleInventory extends Gui
 {
-	private EntityPlayerClientController player;
 	private Inventory inv;
 	private EquipmentInventory eInv;
 
 	private GuiObjectInventory gInv;
 
 	private ItemStack selectedItem;
+	
+	private TriadClient client;
+	
+	private EntityShell entity;
+	private int entityID;
 
-	public GuiPlayerInventory(Triad t, InputHandler i, EntityPlayerClientController e)
+	public GuiSingleInventory(EntityShell e, Triad t, InputHandler i, TriadClient c)
 	{
 		super(t, i);
-		player = e;
-		inv = e.getInventory();
-		eInv = player.getEquipmentInventory();
-
+		this.inv = e.getInventory();
+		entity = e;
+		entityID = entity.getGlobalID();
 		setupGraphics();
+		client = c;
+	}
+
+	public GuiSingleInventory(Inventory inv, int eID, Triad t, InputHandler i, TriadClient c)
+	{
+		super(t, i);
+		this.inv = inv;
+		entityID = eID;
+		setupGraphics();
+		client = c;
 	}
 
 	public void setupGraphics()
 	{
-		gInv = new GuiObjectInventory(this, inv, win, input, 1);
+		gInv = new GuiObjectInventory(this, inv, win, input, 0, 0, 1);
 	}
 
 	public void tick()
@@ -76,6 +90,7 @@ public class GuiPlayerInventory extends Gui
 	public void onExit()
 	{
 		inv.addItemStack(selectedItem);
+		client.sendInventoryUpdate(inv, entityID);
 		selectedItem = null;
 	}
 

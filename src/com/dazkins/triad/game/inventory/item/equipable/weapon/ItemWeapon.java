@@ -4,9 +4,9 @@ import com.dazkins.triad.game.inventory.item.equipable.ItemEquipable;
 
 public abstract class ItemWeapon extends ItemEquipable
 {
-	public ItemWeapon(String name)
+	public ItemWeapon(int id, String name)
 	{
-		super(name);
+		super(id, name);
 	}
 
 	public int getDamage()

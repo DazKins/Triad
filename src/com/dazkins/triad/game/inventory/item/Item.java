@@ -15,25 +15,31 @@ import com.dazkins.triad.gfx.Image;
 
 public class Item
 {
-	public static ItemTestChest testChest = new ItemTestChest();
-	public static ItemTestFeet testFeet = new ItemTestFeet();
-	public static ItemTestHelmet testHelmet = new ItemTestHelmet();
-	public static ItemTestLegs testLegs = new ItemTestLegs();
-	public static ItemTestSword testSword = new ItemTestSword();
-	public static ItemAxe axe = new ItemAxe();
-	public static ItemLog log = new ItemLog();
+	public static Item items[] = new Item[256];
+	
+	public static ItemTestChest testChest = new ItemTestChest(0);
+	public static ItemTestFeet testFeet = new ItemTestFeet(1);
+	public static ItemTestHelmet testHelmet = new ItemTestHelmet(2);
+	public static ItemTestLegs testLegs = new ItemTestLegs(3);
+	public static ItemTestSword testSword = new ItemTestSword(4);
+	public static ItemAxe axe = new ItemAxe(5);
+	public static ItemLog log = new ItemLog(6);
 	
 	protected String name;
 	protected int ID;
 	protected boolean stackable;
 	private Image img;
 	private BufferObject icon;
+	
+	private boolean imageIconLoaded = false;
 
-	public Item(String name, boolean s)
+	public Item(int id, String name, boolean s)
 	{
+		this.ID = id;
 		this.name = name;
 		this.stackable = s;
-		loadImageIconModel();
+		
+		items[id] = this;
 	}
 
 	public static void dropItemStack(World w, float x, float y, Item i, int n)
@@ -43,7 +49,7 @@ public class Item
 
 	public static void dropItemStack(World w, float x, float y, ItemStack is)
 	{
-		int no = is.getSize();
+		int no = is.getStackSize();
 		if (no > 4 && is.getItemType().isStackable())
 		{
 			dropStackWithVelocity(w, x, y, is, no);
@@ -75,6 +81,8 @@ public class Item
 		icon.resetData();
 		img.renderSprite(icon, 0, 0, 32, 32, 0, 0, 32, 32, 0.0f, 0.0f);
 		icon.compile();
+		
+		imageIconLoaded = true;
 	}
 
 	public String getName()
@@ -86,9 +94,17 @@ public class Item
 	{
 		return stackable;
 	}
+	
+	public int getID()
+	{
+		return ID;
+	}
 
 	public void renderIcon(float x, float y, float z, float scale)
 	{
+		if (!imageIconLoaded)
+			loadImageIconModel();
+		
 		GL11.glPushMatrix();
 
 		if (x != 0 || y != 0 || z != 0)
@@ -110,6 +126,9 @@ public class Item
 
 	public Image getImage()
 	{
+		if (!imageIconLoaded)
+			loadImageIconModel();
+		
 		return img;
 	}
 }

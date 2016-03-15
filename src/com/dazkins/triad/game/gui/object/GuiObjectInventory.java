@@ -70,9 +70,9 @@ public class GuiObjectInventory extends GuiObject
 		mainBox = new GuiObjectBox(g, windowPosX, windowPosY, windowWidth, windowHeight, 0);
 		slotSheet = new GuiObjectBox[inv.width * inv.height];
 
-		for (int ix = 0; x < inv.width; x++)
+		for (int ix = 0; ix < inv.width; ix++)
 		{
-			for (int iy = 0; y < inv.height; y++)
+			for (int iy = 0; iy < inv.height; iy++)
 			{
 				slotSheet[ix + iy * inv.width] = new GuiObjectBox(g, windowPosX + ix * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + iy * (slotSize + gridSpacingY) + gridOffsetY, slotSize, slotSize, 3);
 			}
@@ -129,8 +129,8 @@ public class GuiObjectInventory extends GuiObject
 				if (i != null)
 				{
 					i.getItemType().renderIcon(windowPosX + x * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + y * (slotSize + gridSpacingY) + gridOffsetY, 0.2f, slotSize / 32.0f);
-					if (i.getSize() > 1)
-						Font.drawString(i.getSize() + "", windowPosX + x * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + y * (slotSize + gridSpacingY) + gridOffsetY + 3, 5, 1);
+					if (i.getStackSize() > 1)
+						Font.drawString(i.getStackSize() + "", windowPosX + x * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + y * (slotSize + gridSpacingY) + gridOffsetY + 3, 5, 1);
 				}
 			}
 		}

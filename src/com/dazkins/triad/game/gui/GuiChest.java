@@ -32,10 +32,10 @@ public class GuiChest extends Gui
 		chest = c;
 		player = p;
 
-		pInv = p.getInventory();
+//		pInv = p.getInventory();
 		cInv = c.getInventory();
 
-		eInv = p.getEquipmentInventory();
+//		eInv = p.getEquipmentInventory();
 
 		setupGraphics();
 	}

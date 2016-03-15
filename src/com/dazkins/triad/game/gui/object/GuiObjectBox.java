@@ -1,5 +1,7 @@
 package com.dazkins.triad.game.gui.object;
 
+import org.lwjgl.opengl.GL11;
+
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.renderformat.BoxRenderFormat;
 import com.dazkins.triad.game.gui.renderformat.RenderFormatManager;
@@ -63,6 +65,8 @@ public class GuiObjectBox extends GuiObject
 		BoxRenderFormat b = RenderFormatManager.BOX;
 		
 		int ind = b.isSimple() ? 9 : 0;
+		
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		
 		sections[ind + 0].setOffset(x, y + height - 16);
 		sections[ind + 0].setRenderLayer(layer);

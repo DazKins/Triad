@@ -4,8 +4,8 @@ import com.dazkins.triad.game.entity.Facing;
 
 public class ItemTestHelmet extends ItemArmourHead
 {
-	public ItemTestHelmet()
+	public ItemTestHelmet(int id)
 	{
-		super("testHelmet", 10);
+		super(id, "testHelmet", 10);
 	}
 }

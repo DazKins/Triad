@@ -2,9 +2,9 @@ package com.dazkins.triad.game.inventory.item.equipable.weapon;
 
 public class ItemTestSword extends ItemWeapon
 {
-	public ItemTestSword()
+	public ItemTestSword(int id)
 	{
-		super("testSword");
+		super(id, "testSword");
 	}
 
 	public int getDamage()

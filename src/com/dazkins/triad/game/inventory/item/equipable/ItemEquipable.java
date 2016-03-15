@@ -10,9 +10,9 @@ public abstract class ItemEquipable extends Item
 {
 	private Quad equipQuads[];
 
-	public ItemEquipable(String name)
+	public ItemEquipable(int id, String name)
 	{
-		super(name, false);
+		super(id, name, false);
 		equipQuads = new Quad[20];
 	}
 

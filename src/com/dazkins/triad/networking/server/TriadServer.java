@@ -8,34 +8,38 @@ import java.util.Map;
 import java.util.Queue;
 
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.IEntityWithInventory;
+import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.entity.mob.EntityPlayerServer;
-import com.dazkins.triad.game.entity.mob.EntityZombie;
-import com.dazkins.triad.game.entity.renderer.StorageEntityRenderer;
+import com.dazkins.triad.game.entity.mob.Mob;
+import com.dazkins.triad.game.inventory.Inventory;
+import com.dazkins.triad.game.inventory.item.Item;
+import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
-import com.dazkins.triad.gfx.Camera;
-import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.gfx.Image;
 import com.dazkins.triad.networking.Network;
 import com.dazkins.triad.networking.TriadConnection;
 import com.dazkins.triad.networking.client.AnimationUpdate;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet003ChunkData;
-import com.dazkins.triad.networking.packet.Packet005UpdatePlayerPosition;
 import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
 import com.dazkins.triad.networking.packet.Packet007EntityAnimationStart;
 import com.dazkins.triad.networking.packet.Packet009EntityRemoved;
 import com.dazkins.triad.networking.packet.Packet010PlayerNameSet;
+import com.dazkins.triad.networking.packet.Packet012Inventory;
+import com.dazkins.triad.networking.packet.Packet013InteractCommand;
+import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
 import com.dazkins.triad.networking.packet.PacketSend;
 import com.dazkins.triad.util.TriadLogger;
-import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
 public class TriadServer
 {
-	private static final int PACKET_CUTOFF = 1000;
+	private static final int PACKET_CUTOFF = 20000;
 	
 	private Server server;
 
@@ -143,6 +147,18 @@ public class TriadServer
 			p.push(xa, ya);
 		}
 	}
+	
+	public void handleInteraction(TriadConnection c, boolean start)
+	{
+		EntityPlayerServer e = players.get(c);
+		if (start)
+		{
+			e.attemptInteract();	
+		} else
+		{
+			e.setInteractingObject(null);
+		}
+	}
 
 	public TriadConnection getFromConnection(Connection c)
 	{
@@ -183,6 +199,30 @@ public class TriadServer
 			tc.sendPacket(namePacket, false);
 		}
 		
+		ArrayList<Entity> ents = world.getLoadedEntities();
+		for (Entity e : ents)
+		{
+			Packet006EntityPositionUpdate p0 = new Packet006EntityPositionUpdate();
+			
+			p0.setgID(e.getGlobalID());
+			p0.settID(e.getTypeID());
+			p0.setX(e.getX());
+			p0.setY(e.getY());
+			p0.setFacing(e.getFacing());
+			
+			if (e instanceof IEntityWithInventory)
+			{
+				IEntityWithInventory eInv = (IEntityWithInventory) e;
+				Inventory i = eInv.getInventory();
+				if (i != null)
+				{
+					Packet012Inventory p1 = Inventory.compressToPacket(i, e.getGlobalID());
+					
+					c.sendPacket(p1, false);
+				}
+			} 
+		}
+		
 		return p.getGlobalID();
 	}
 
@@ -220,6 +260,27 @@ public class TriadServer
 		TriadLogger.log("Started on port: " + port, false);
 
 		runLoop();
+	}
+	
+	public void onMobInteraction(Mob m)
+	{
+		Entity iEnt = (Entity) (m.getInteractingObject());
+		int eid = m.getGlobalID();
+		if (iEnt != null)
+		{
+			int iid = iEnt.getGlobalID();
+			Packet014InteractionUpdate p =  new Packet014InteractionUpdate();
+			p.setEntityInteractedWithID(iid);
+			p.setInteractingEntityID(eid);
+			p.setStart(true);
+			sendPacketToAll(p, false);
+		} else
+		{
+			Packet014InteractionUpdate p =  new Packet014InteractionUpdate();
+			p.setInteractingEntityID(eid);
+			p.setStart(false);
+			sendPacketToAll(p, false);
+		}
 	}
 
 	public void addChunkRequest(TriadConnection tc, Chunk c)
@@ -263,6 +324,22 @@ public class TriadServer
 					c.sendPacket(p0, true);
 				else
 					c.sendPacket(p0, false);
+			}
+
+			if (e instanceof IEntityWithInventory)
+			{
+				IEntityWithInventory eInv = (IEntityWithInventory) e;
+				Inventory inv = eInv.getInventory();
+				if (inv != null)
+				{
+					if (inv.hasChanged())
+					{
+						Packet012Inventory p1 = Inventory.compressToPacket(inv, e.getGlobalID());
+						
+						sendPacketToAll(p1, false);
+					}
+					inv.resetHasChangedFlag();
+				}
 			}
 		}
 		
@@ -354,6 +431,39 @@ public class TriadServer
 		Packet009EntityRemoved p = new Packet009EntityRemoved();
 		p.setGID(e.getGlobalID());
 		sendPacketToAll(p, false);
+	}
+	
+	public void handleInventoryUpdate(int gID, int width, int height, int items[], int stackCounts[])
+	{
+		ArrayList<Entity> entities = world.getLoadedEntities();
+		for (Entity e : entities)
+		{
+			if (e.getGlobalID() == gID)
+			{
+				if (e instanceof IEntityWithInventory)
+				{
+					IEntityWithInventory eInv = (IEntityWithInventory) e;
+					int w = width;
+					int h = height;
+					eInv.setInventory(new Inventory(w, h));
+					Inventory i = eInv.getInventory();
+					for (int i0 = 0; i0 < items.length; i0++)
+					{
+						int itemIndex = items[i0];
+						if (itemIndex >= 0)
+						{
+							Item item = Item.items[itemIndex];
+							int stackCount = stackCounts[i0];
+							if (stackCount > 0)
+							{
+								ItemStack itemStack = new ItemStack(item, stackCount);
+								i.addItemStack(itemStack, i0);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	public void runLoop()
