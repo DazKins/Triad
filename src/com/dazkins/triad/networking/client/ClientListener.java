@@ -1,6 +1,8 @@
 package com.dazkins.triad.networking.client;
 
+import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.ChunkCoordinate;
+import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet000RawMessage;
 import com.dazkins.triad.networking.packet.Packet001LoginRequest;
@@ -13,6 +15,7 @@ import com.dazkins.triad.networking.packet.Packet009EntityRemoved;
 import com.dazkins.triad.networking.packet.Packet010PlayerNameSet;
 import com.dazkins.triad.networking.packet.Packet012Inventory;
 import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
+import com.dazkins.triad.networking.packet.Packet015SingleLightValueChunkUpdate;
 import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -44,7 +47,8 @@ public class ClientListener extends Listener
 				byte[] lightData = p0.getLight();
 				ChunkCoordinate c = new ChunkCoordinate(x, y);
 				ChunkData d = new ChunkData(c, tileData, lightData);
-				client.getClientUpdate().addChunkUpdate(d);
+				ChunkUpdate cu = new ChunkUpdate(d, true, true);
+				client.getClientUpdate().addChunkUpdate(cu);
 			}
 			if (p instanceof Packet004LoginRequestResponse)
 			{
@@ -113,6 +117,21 @@ public class ClientListener extends Listener
 				int iID = p0.getEntityInteractedWithID();
 				boolean s = p0.isStart();
 				client.getClientUpdate().addInteractionUpdates(new InteractionUpdate(eID, iID, s));
+			}
+			if (p instanceof Packet015SingleLightValueChunkUpdate)
+			{
+				Packet015SingleLightValueChunkUpdate p0 = (Packet015SingleLightValueChunkUpdate) p;
+				int x = p0.getX();
+				int y = p0.getY();
+				Color[] lightData = new Color[Chunk.CHUNKSS];
+				for (int i = 0; i < Chunk.CHUNKSS; i++)
+				{
+					lightData[i] = new Color(p0.getR(), p0.getG(), p0.getB());
+				}
+				ChunkCoordinate c = new ChunkCoordinate(x, y);
+				ChunkData d = new ChunkData(c, null, lightData);
+				ChunkUpdate cu = new ChunkUpdate(d, false, true);
+				client.getClientUpdate().addChunkUpdate(cu);
 			}
 		}
 	}

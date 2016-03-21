@@ -90,20 +90,26 @@ public class ChunkRenderer implements Loadable
 
 	public void load()
 	{
-		tilePlane.resetData();
-		tilePlane.getData().bindImage(Image.getImageFromName("spriteSheet"));
-		for (int x = 0; x < Chunk.CHUNKS; x++)
+		try
 		{
-			for (int y = 0; y < Chunk.CHUNKS; y++)
+			tilePlane.resetData();
+			tilePlane.getData().bindImage(Image.getImageFromName("spriteSheet"));
+			for (int x = 0; x < Chunk.CHUNKS; x++)
 			{
-				int tileIndex = data.getTileData()[x + y * Chunk.CHUNKS];
-				if (tileIndex != 0)
+				for (int y = 0; y < Chunk.CHUNKS; y++)
 				{
-					Tile.tiles[tileIndex].render(world, tilePlane.getData(), x * Tile.TILESIZE + (getChunkX() * Tile.TILESIZE * Chunk.CHUNKS), y * Tile.TILESIZE + (getChunkY() * Tile.TILESIZE * Chunk.CHUNKS));
+					int tileIndex = data.getTileData()[x + y * Chunk.CHUNKS];
+					if (tileIndex != 0)
+					{
+						Tile.tiles[tileIndex].render(world, tilePlane.getData(), x * Tile.TILESIZE + (getChunkX() * Tile.TILESIZE * Chunk.CHUNKS), y * Tile.TILESIZE + (getChunkY() * Tile.TILESIZE * Chunk.CHUNKS));
+					}
 				}
 			}
+			setIsLoading(false);
+			setVBONeedsGenerating(true);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
 		}
-		setIsLoading(false);
-		setVBONeedsGenerating(true);
 	}
 }

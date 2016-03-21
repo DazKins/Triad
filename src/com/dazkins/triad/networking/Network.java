@@ -15,6 +15,7 @@ import com.dazkins.triad.networking.packet.Packet011PlayerVelocity;
 import com.dazkins.triad.networking.packet.Packet012Inventory;
 import com.dazkins.triad.networking.packet.Packet013InteractCommand;
 import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
+import com.dazkins.triad.networking.packet.Packet015SingleLightValueChunkUpdate;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
@@ -39,6 +40,7 @@ public class Network
 		k.register(Packet012Inventory.class);
 		k.register(Packet013InteractCommand.class);
 		k.register(Packet014InteractionUpdate.class);
+		k.register(Packet015SingleLightValueChunkUpdate.class);
 
 		k.register(String.class);
 		k.register(int[].class);

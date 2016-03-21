@@ -184,7 +184,7 @@ public abstract class Entity
 	
 	public void addNewAnimation(int aID, int ind, boolean over, float speed)
 	{
-		world.getServer().addAnimUpdate(new AnimationUpdate(globalID, aID, ind, over, speed));
+		world.getServerWorldManager().getUpdate().addAnimationUpdate(new AnimationUpdate(globalID, aID, ind, over, speed));
 	}
 
 	public void move()

@@ -6,7 +6,7 @@ public class ClientUpdate
 {
 	private ArrayList<ArrayList> updateLists = new ArrayList<ArrayList>();
 	
-	private ArrayList<ChunkData> chunkUpdates;
+	private ArrayList<ChunkUpdate> chunkUpdates;
 	private ArrayList<AnimationUpdate> animUpdates;
 	private ArrayList<EntityUpdate> entityUpdates;
 	private ArrayList<PlayerNameUpdate> playerNameUpdates;
@@ -15,7 +15,7 @@ public class ClientUpdate
 
 	public ClientUpdate()
 	{
-		chunkUpdates = new ArrayList<ChunkData>();
+		chunkUpdates = new ArrayList<ChunkUpdate>();
 		updateLists.add(chunkUpdates);
 		animUpdates = new ArrayList<AnimationUpdate>();
 		updateLists.add(animUpdates);
@@ -33,7 +33,7 @@ public class ClientUpdate
 	public ClientUpdate clone()
 	{
 		ClientUpdate c = new ClientUpdate();
-		c.chunkUpdates = (ArrayList<ChunkData>) chunkUpdates.clone();
+		c.chunkUpdates = (ArrayList<ChunkUpdate>) chunkUpdates.clone();
 		c.animUpdates = (ArrayList<AnimationUpdate>) animUpdates.clone();
 		c.entityUpdates = (ArrayList<EntityUpdate>) entityUpdates.clone();
 		c.playerNameUpdates = (ArrayList<PlayerNameUpdate>) playerNameUpdates.clone();
@@ -51,7 +51,7 @@ public class ClientUpdate
 		}
 	}
 	
-	public void addChunkUpdate(ChunkData c)
+	public void addChunkUpdate(ChunkUpdate c)
 	{
 		chunkUpdates.add(c);
 	}
@@ -81,7 +81,7 @@ public class ClientUpdate
 		interactionUpdates.add(i);
 	}
 	
-	public ArrayList<ChunkData> getChunkUpdates()
+	public ArrayList<ChunkUpdate> getChunkUpdates()
 	{
 		return chunkUpdates;
 	}

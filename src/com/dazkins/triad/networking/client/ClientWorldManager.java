@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.dazkins.triad.game.entity.mob.EntityPlayerClientController;
 import com.dazkins.triad.game.entity.shell.EntityShell;
+import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.gfx.Camera;
@@ -125,10 +126,10 @@ public class ClientWorldManager
 			cem.handleAnimationUpdate(a);
 		}
 
-		ArrayList<ChunkData> chunks = update.getChunkUpdates();
-		for (ChunkData c : chunks)
+		ArrayList<ChunkUpdate> chunks = update.getChunkUpdates();
+		for (ChunkUpdate c : chunks)
 		{
-			crm.updateData(c);
+			crm.handleChunkUpdate(c);
 		}
 		
 		ArrayList<PlayerNameUpdate> playerNameUpdates = update.getPlayerNameUpdates();
@@ -143,10 +144,8 @@ public class ClientWorldManager
 		for (InventoryUpdate i : inventoryUpdates)
 		{
 			int gID = i.getEntityID();
-			ItemStack items[] = i.getItems();
-			int width = i.getWidth();
-			int height = i.getHeight();
-			cem.handleInventoryUpdate(gID, width, height, items);
+			Inventory inv = Inventory.createInventoryObject(i);
+			cem.handleInventoryUpdate(gID, inv);
 		}
 		
 		ArrayList<InteractionUpdate> interactionUpdates = update.getInteractionUpdates();

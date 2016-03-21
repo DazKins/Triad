@@ -2,6 +2,7 @@ package com.dazkins.triad.game.inventory;
 
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
+import com.dazkins.triad.networking.client.InventoryUpdate;
 import com.dazkins.triad.networking.packet.Packet012Inventory;
 import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
 import com.dazkins.triad.util.TriadLogger;
@@ -160,6 +161,52 @@ public class Inventory
 		p0.setStackCounts(stackSizes);
 		
 		return p0;
+	}
+	
+	public static Inventory createInventoryObject(Packet012Inventory p)
+	{
+		int width = p.getWidth();
+		int height = p.getHeight();
+		
+		Inventory inv = new Inventory(width, height); 
+				
+		int items[] = p.getItems();
+		int stackCounts[] = p.getStackCounts();
+		
+		for (int i = 0; i < width * height; i++)
+		{
+			int itemID = items[i];
+			int stackSize = stackCounts[i];
+			if (stackSize > 0 && itemID >= 0)
+			{
+				Item it = Item.items[itemID];
+				ItemStack is = new ItemStack(it, stackSize);
+				inv.addItemStack(is, i);
+			}
+		}
+		
+		return inv;
+	}
+	
+	public static Inventory createInventoryObject(InventoryUpdate p)
+	{
+		int width = p.getWidth();
+		int height = p.getHeight();
+		
+		Inventory inv = new Inventory(width, height); 
+				
+		ItemStack items[] = p.getItems();
+		
+		for (int i = 0; i < width * height; i++)
+		{
+			ItemStack ci = items[i];
+			if (ci != null)
+			{
+				inv.addItemStack(ci, i);
+			}
+		}
+		
+		return inv;
 	}
 	
 	public void resetHasChangedFlag()

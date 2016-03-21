@@ -20,7 +20,10 @@ public class ClientEntityManager
 	private ClientWorldManager clientWorldManager;
 	
 	private Map<Integer, EntityShell> entityShells = new HashMap<Integer, EntityShell>();
+	
 	private Map<Integer, String> storedNameUpdates = new HashMap<Integer, String>();
+	private Map<Integer, Inventory> storedInventoryUpdates = new HashMap<Integer, Inventory>();
+	
 	private ArrayList<Integer> loadedEntities = new ArrayList<Integer>();
 
 	private IWorldAccess world;
@@ -145,17 +148,21 @@ public class ClientEntityManager
 		}
 	}
 	
-	public void handleInventoryUpdate(int gID, int width, int height, ItemStack[] is)
+	public void handleInventoryUpdate(int gID, Inventory i)
 	{
 		EntityShell es = entityShells.get(gID);
 		if (es != null)
 		{
-			es.setInventory(new Inventory(width, height));
-			Inventory inv = es.getInventory();
-			for (int i = 0; i < width * height; i++)
-			{
-				inv.addItemStack(is[i], i);
-			}
+			es.setInventory(i);
+			
+			if (storedInventoryUpdates.containsKey(gID))
+				storedInventoryUpdates.remove(gID);
+		} else
+		{
+			if (!storedInventoryUpdates.containsKey(gID))
+				storedInventoryUpdates.put(gID, i);
+			else
+				storedInventoryUpdates.replace(gID, i);
 		}
 	}
 	
@@ -175,6 +182,17 @@ public class ClientEntityManager
 			if (es != null)
 			{
 				es.setName(mapE.getValue());
+			}
+		}
+
+
+		for (Map.Entry<Integer, Inventory> mapE : storedInventoryUpdates.entrySet())
+		{
+			int gID = mapE.getKey();
+			EntityShell es = entityShells.get(gID);
+			if (es != null)
+			{
+				handleInventoryUpdate(gID, mapE.getValue());
 			}
 		}
 	}

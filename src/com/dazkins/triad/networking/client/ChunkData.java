@@ -8,6 +8,7 @@ import com.dazkins.triad.gfx.Color;
 public class ChunkData
 {
 	private ChunkCoordinate coords;
+	
 	private byte[] tileData;
 	private Color[] light;
 
@@ -30,6 +31,16 @@ public class ChunkData
 		coords = c;
 		tileData = new byte[Chunk.CHUNKSS];
 		light = new Color[Chunk.CHUNKSS];
+	}
+	
+	public void setTileData(byte[] d)
+	{
+		tileData = d;
+	}
+	
+	public void setLightData(Color[] c)
+	{
+		light = c;
 	}
 	
 	public ChunkData copyOf()

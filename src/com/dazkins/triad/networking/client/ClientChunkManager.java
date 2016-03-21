@@ -21,32 +21,56 @@ public class ClientChunkManager implements IWorldAccess
 	private Map<ChunkCoordinate, ChunkRenderer> renderers = new HashMap<ChunkCoordinate, ChunkRenderer>();
 	private ArrayList<ChunkCoordinate> requests = new ArrayList<ChunkCoordinate>();
 	
-	private Map<ChunkCoordinate, ChunkData> chunkUpdates = new HashMap<ChunkCoordinate, ChunkData>();
+	private Map<ChunkCoordinate, ArrayList<ChunkUpdate>> chunkUpdates = new HashMap<ChunkCoordinate, ArrayList<ChunkUpdate>>();
 
-	public void updateData(ChunkData d)
+	public void handleChunkUpdate(ChunkUpdate d)
 	{
 		if (d != null)
-			chunkUpdates.put(d.getCoords(), d);
+		{
+			ArrayList<ChunkUpdate> ups = chunkUpdates.get(d.getData().getCoords());
+			
+			if (ups == null)
+			{
+				chunkUpdates.put(d.getData().getCoords(), new ArrayList<ChunkUpdate>());
+			}
+			
+			ups = chunkUpdates.get(d.getData().getCoords());
+			if (ups.size() > 4)
+				ups.remove(0);
+				
+			chunkUpdates.get(d.getData().getCoords()).add(d);
+		}
 	}
 	
 	public void handleChunkUpdate(ChunkCoordinate coords) 
 	{
-		ChunkData d = chunkUpdates.get(coords);
+		ArrayList<ChunkUpdate> ups = chunkUpdates.get(coords);
 		
-		if (data.containsKey(coords))
+//		if (ups.size() > 10)
+//			System.out.println(ups.size());
+		
+		for (ChunkUpdate d : ups)
 		{
-			data.remove(coords);
-			data.put(coords, d);
-			ChunkRenderer r = renderers.get(coords);
-			r.updateData(d);
-		} else
-		{
-			data.put(coords, d);
-			//Just in case a deprecated chunk renderer got left behind
-			renderers.remove(coords);
-			ChunkRenderer nr = new ChunkRenderer();
-			nr.initializeData(this, d);
-			renderers.put(coords, nr);
+			if (data.containsKey(coords))
+			{
+				if (d.updateLight())
+					data.get(coords).setLightData(d.getData().getLight());
+				if (d.updateTiles())
+					data.get(coords).setTileData(d.getData().getTileData());
+				ChunkRenderer r = renderers.get(coords);
+				r.updateData(data.get(coords));
+			} else
+			{
+				if (d.updateTiles())
+				{
+					data.put(coords, d.getData());
+					//Just in case a deprecated chunk renderer got left behind
+					renderers.remove(coords);
+					ChunkRenderer nr = new ChunkRenderer();
+					nr.initializeData(this, data.get(coords));
+					renderers.put(coords, nr);
+				}
+			}
 		}
 		
 		if (requests.contains(coords))
@@ -69,7 +93,9 @@ public class ClientChunkManager implements IWorldAccess
 			}
 		}
 		
-		chunkUpdates.remove(coords);
+		ArrayList<ChunkUpdate> aUps = chunkUpdates.get(coords);
+		if (aUps != null)
+			aUps.clear();
 	}
 
 	public ArrayList<ChunkCoordinate> getRequestsForMissingChunks()
@@ -92,6 +118,8 @@ public class ClientChunkManager implements IWorldAccess
 		int iy0 = (int) Math.floor((y0 / div) - 2.0f);
 		int iy1 = (int) Math.floor((y1 / div) + 2.0f);
 		
+		int chunkUpdatesHandled = 0;
+		
 		for (int x = ix0; x < ix1; x++)
 		{
 			for (int y = iy0; y < iy1; y++)
@@ -99,17 +127,40 @@ public class ClientChunkManager implements IWorldAccess
 				ChunkCoordinate c = new ChunkCoordinate(x, y);
 				if (chunkUpdates.containsKey(c)) 
 				{
-					handleChunkUpdate(c);
+					if (chunkUpdates.get(c).size() != 0)
+					{
+						handleChunkUpdate(c);
+						chunkUpdatesHandled++;
+					}
 				}
 				ChunkData cd = data.get(c);
 				if (cd == null)
 				{
-					requests.add(c);
+					if (!requests.contains(c))
+					{
+						requests.add(c);
+					}
 				} else
 				{
 					ChunkRenderer r = renderers.get(c);
 					r.render(cam);
 				}
+			}
+		}
+		
+		if (chunkUpdatesHandled < 100)
+		{
+			for (Map.Entry<ChunkCoordinate, ArrayList<ChunkUpdate>> entry : chunkUpdates.entrySet())
+			{
+				ChunkCoordinate c = entry.getKey();
+				ArrayList<ChunkUpdate> cs = entry.getValue();
+				if (cs.size() != 0)
+				{
+					handleChunkUpdate(c);
+					chunkUpdatesHandled++;
+				}
+				if (chunkUpdatesHandled > 100)
+					break;
 			}
 		}
 	}

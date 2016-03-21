@@ -9,7 +9,9 @@ import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.networking.client.ChunkData;
+import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet003ChunkData;
+import com.dazkins.triad.networking.packet.Packet015SingleLightValueChunkUpdate;
 import com.dazkins.triad.util.Loadable;
 import com.dazkins.triad.util.LoaderManager;
 import com.dazkins.triad.util.TriadLogger;
@@ -52,19 +54,45 @@ public class Chunk implements Loadable
 		}
 	}
 	
+	public boolean isAllLightSame()
+	{
+		Color cs[] = data.getLight();
+		Color c0 = cs[0];
+		for (Color c : cs)
+		{
+			if (!c.equals(c0))
+				return false;
+		}
+		return true;
+	}
+	
 	public ChunkData getData()
 	{
 		return data;
 	}
 	
-	public Packet003ChunkData compressToPacket() 
+	public Packet compressToPacket(boolean forceWhole) 
 	{
-		Packet003ChunkData p = new Packet003ChunkData();
-		p.setTiles(data.getTileData());
-		p.setLight(ChunkData.compressLight(data.getLight()));
-		p.setX(data.getCoords().getX());
-		p.setY(data.getCoords().getY());
-		return p;
+		if (isAllLightSame() && !forceWhole)
+		{
+			Packet015SingleLightValueChunkUpdate p = new Packet015SingleLightValueChunkUpdate();
+			Color cs[] = data.getLight();
+			Color c0 = cs[0];
+			p.setR(c0.getR());
+			p.setG(c0.getG());
+			p.setB(c0.getB());
+			p.setX(data.getCoords().getX());
+			p.setY(data.getCoords().getY());
+			return p;
+		} else
+		{
+			Packet003ChunkData p = new Packet003ChunkData();
+			p.setTiles(data.getTileData());
+			p.setLight(ChunkData.compressLight(data.getLight()));
+			p.setX(data.getCoords().getX());
+			p.setY(data.getCoords().getY());
+			return p;
+		}
 	}
 
 	public boolean addToLoader(LoaderManager l)
@@ -226,7 +254,7 @@ public class Chunk implements Loadable
 				{
 					es.remove(e);
 					entityCount--;
-					world.getServer().registerEntityRemoval(e);
+					world.getServerWorldManager().registerEntityRemoval(e);
 					continue;
 				}
 

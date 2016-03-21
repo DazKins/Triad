@@ -41,7 +41,7 @@ public class ServerListener extends Listener
 			if (p instanceof Packet001LoginRequest)
 			{
 				Packet001LoginRequest p0 = (Packet001LoginRequest) p;
-				int id = server.registerNewConnection(new TriadConnection(server, con, p0.getUsername()));
+				int id = server.handleNewConnection(new TriadConnection(server, con, p0.getUsername()));
 				Packet004LoginRequestResponse p1 = new Packet004LoginRequestResponse();
 				p1.setAccepted(true);
 				p1.setPlayerID(id);
@@ -52,9 +52,7 @@ public class ServerListener extends Listener
 				Packet002ChunkDataRequest p0 = (Packet002ChunkDataRequest) p;
 				int x = p0.getCX();
 				int y = p0.getCY();
-				Chunk c =  server.getWorld().getChunkWithForceLoad(x, y);
-				server.addChunkRequest(server.getFromConnection(con), c);
-				server.getWorld().addChunkToLoadQueue(c);
+				server.handleChunkRequest(server.getFromConnection(con), x, y);
 			}
 			if (p instanceof Packet005UpdatePlayerPosition)
 			{
@@ -73,7 +71,7 @@ public class ServerListener extends Listener
 				Packet011PlayerVelocity p0 = (Packet011PlayerVelocity) p;
 				float xa = p0.getXa();
 				float ya = p0.getYa();
-				server.updatePlayer(server.getFromConnection(con), xa, ya);
+				server.handlePlayerVelocityUpdate(server.getFromConnection(con), xa, ya);
 			}
 			if (p instanceof Packet012Inventory)
 			{
@@ -87,13 +85,12 @@ public class ServerListener extends Listener
 			}
 			if (p instanceof Packet013InteractCommand)
 			{
-				Packet013InteractCommand p0 = (Packet013InteractCommand) p;
-				server.handleInteraction(server.getFromConnection(con), true);
+				server.handleInteractionUpdate(server.getFromConnection(con), true);
 			}
 			if (p instanceof Packet014InteractionUpdate)
 			{
-				Packet014InteractionUpdate p0 = (Packet014InteractionUpdate) p;
-				server.handleInteraction(server.getFromConnection(con), false);
+				//When interaction updates are received on the sever, they always indicate the end of an interaction
+				server.handleInteractionUpdate(server.getFromConnection(con), false);
 				
 			}
 		} else if (!(o instanceof KeepAlive))

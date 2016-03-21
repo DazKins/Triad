@@ -1,10 +1,7 @@
-[Triad Server   23:42:56]  Logger started!
-[Triad Server   23:42:56]  Generating spawn...
-[Triad Server   23:42:59]  Spawn generated
-[Triad Server   23:42:59]  Started on port: 54555
-[Triad Server   23:43:00]  New connection from: 127.0.0.1 on Connection 1
-[Triad Server   23:43:00]  Registered new connection: Player8965 from: 127.0.0.1
-[Triad Server   23:43:14]  New connection from: 127.0.0.1 on Connection 2
-[Triad Server   23:43:14]  Registered new connection: Player3014 from: 127.0.0.1
-[Triad Server   23:44:05]  Connection 1 has disconnected
-[Triad Server   23:44:31]  Connection 2 has disconnected
+[Triad Server   20:22:56]  Logger started!
+[Triad Server   20:22:57]  Generating spawn...
+[Triad Server   20:22:59]  Spawn generated
+[Triad Server   20:22:59]  Started on port: 54555
+[Triad Server   20:23:01]  New connection from: 127.0.0.1 on Connection 1
+[Triad Server   20:23:01]  Registered new connection: Player5374 from: 127.0.0.1
+[Triad Server   20:24:02]  Connection 1 has disconnected

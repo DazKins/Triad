@@ -16,6 +16,7 @@ import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.MathHelper;
+import com.dazkins.triad.networking.server.ServerWorldManager;
 import com.dazkins.triad.networking.server.TriadServer;
 import com.dazkins.triad.util.LoaderManager;
 import com.dazkins.triad.util.TriadLogger;
@@ -24,7 +25,7 @@ public class World
 {
 	public ServerChunkManager chunkm;
 	
-	public TriadServer server;
+	public ServerWorldManager serverWorldManager;
 
 	private Color ambientLightLevel;
 
@@ -43,7 +44,7 @@ public class World
 
 	private WorldGen worldGenerator;
 
-	public World(TriadServer s)
+	public World(ServerWorldManager s)
 	{
 		ambientLightLevel = new Color(255, 255, 255);
 		
@@ -58,7 +59,7 @@ public class World
 
 		time = new TimeCycle(this);
 		
-		server = s;
+		serverWorldManager = s;
 		
 		addEntity(new EntityChest(this, -200, -200));
 	}
@@ -89,9 +90,9 @@ public class World
 		}
 	}
 	
-	public TriadServer getServer()
+	public ServerWorldManager getServerWorldManager()
 	{
-		return server;
+		return serverWorldManager;
 	}
 	
 	public Color getAmbientLight()
@@ -334,7 +335,7 @@ public class World
 		{
 			if (c.hasLightChanged()) 
 			{
-				server.addChunkUpdate(c);
+				serverWorldManager.addChunkToUpdate(c);
 			}
 		}
 		
