@@ -1,9 +1,9 @@
-package com.dazkins.triad.networking.client;
+package com.dazkins.triad.networking.client.update;
 
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 
-public class InventoryUpdate
+public class ClientUpdateInventory
 {
 	private int entityID;
 	
@@ -12,7 +12,7 @@ public class InventoryUpdate
 	
 	private ItemStack[] items;
 	
-	public InventoryUpdate(int eID, int w, int h)
+	public ClientUpdateInventory(int eID, int w, int h)
 	{
 		this.entityID = eID;
 		this.width = w;

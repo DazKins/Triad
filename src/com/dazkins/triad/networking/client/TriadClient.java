@@ -3,9 +3,9 @@ package com.dazkins.triad.networking.client;
 import java.io.IOException;
 
 import com.dazkins.triad.game.inventory.Inventory;
-import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.networking.Network;
+import com.dazkins.triad.networking.UpdateList;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet002ChunkDataRequest;
 import com.dazkins.triad.networking.packet.Packet011PlayerVelocity;
@@ -23,7 +23,7 @@ public class TriadClient
 
 	private String ip;
 
-	private ClientUpdate update;
+	private UpdateList update;
 
 	private boolean running;
 
@@ -37,7 +37,7 @@ public class TriadClient
 
 		new Thread(client).start();
 
-		update = new ClientUpdate();
+		update = new UpdateList();
 
 		ip = "localhost";
 
@@ -59,15 +59,15 @@ public class TriadClient
 		return running;
 	}
 	
-	public ClientUpdate getClientUpdate()
+	public UpdateList getClientUpdate()
 	{
 		return update;
 	}
 	
-	public ClientUpdate getAndPurgeUpdate()
+	public UpdateList getAndPurgeUpdate()
 	{
-		ClientUpdate c = update.clone();
-		update.reset();
+		UpdateList c = update.clone();
+		update.purge();
 		return c;
 	}
 

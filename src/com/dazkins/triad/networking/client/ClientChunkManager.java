@@ -13,6 +13,7 @@ import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.MathHelper;
+import com.dazkins.triad.networking.client.update.ClientUpdateChunk;
 
 public class ClientChunkManager implements IWorldAccess
 {
@@ -21,17 +22,17 @@ public class ClientChunkManager implements IWorldAccess
 	private Map<ChunkCoordinate, ChunkRenderer> renderers = new HashMap<ChunkCoordinate, ChunkRenderer>();
 	private ArrayList<ChunkCoordinate> requests = new ArrayList<ChunkCoordinate>();
 	
-	private Map<ChunkCoordinate, ArrayList<ChunkUpdate>> chunkUpdates = new HashMap<ChunkCoordinate, ArrayList<ChunkUpdate>>();
+	private Map<ChunkCoordinate, ArrayList<ClientUpdateChunk>> chunkUpdates = new HashMap<ChunkCoordinate, ArrayList<ClientUpdateChunk>>();
 
-	public void handleChunkUpdate(ChunkUpdate d)
+	public void handleChunkUpdate(ClientUpdateChunk d)
 	{
 		if (d != null)
 		{
-			ArrayList<ChunkUpdate> ups = chunkUpdates.get(d.getData().getCoords());
+			ArrayList<ClientUpdateChunk> ups = chunkUpdates.get(d.getData().getCoords());
 			
 			if (ups == null)
 			{
-				chunkUpdates.put(d.getData().getCoords(), new ArrayList<ChunkUpdate>());
+				chunkUpdates.put(d.getData().getCoords(), new ArrayList<ClientUpdateChunk>());
 			}
 			
 			ups = chunkUpdates.get(d.getData().getCoords());
@@ -44,12 +45,12 @@ public class ClientChunkManager implements IWorldAccess
 	
 	public void handleChunkUpdate(ChunkCoordinate coords) 
 	{
-		ArrayList<ChunkUpdate> ups = chunkUpdates.get(coords);
+		ArrayList<ClientUpdateChunk> ups = chunkUpdates.get(coords);
 		
 //		if (ups.size() > 10)
 //			System.out.println(ups.size());
 		
-		for (ChunkUpdate d : ups)
+		for (ClientUpdateChunk d : ups)
 		{
 			if (data.containsKey(coords))
 			{
@@ -93,7 +94,7 @@ public class ClientChunkManager implements IWorldAccess
 			}
 		}
 		
-		ArrayList<ChunkUpdate> aUps = chunkUpdates.get(coords);
+		ArrayList<ClientUpdateChunk> aUps = chunkUpdates.get(coords);
 		if (aUps != null)
 			aUps.clear();
 	}
@@ -150,10 +151,10 @@ public class ClientChunkManager implements IWorldAccess
 		
 		if (chunkUpdatesHandled < 100)
 		{
-			for (Map.Entry<ChunkCoordinate, ArrayList<ChunkUpdate>> entry : chunkUpdates.entrySet())
+			for (Map.Entry<ChunkCoordinate, ArrayList<ClientUpdateChunk>> entry : chunkUpdates.entrySet())
 			{
 				ChunkCoordinate c = entry.getKey();
-				ArrayList<ChunkUpdate> cs = entry.getValue();
+				ArrayList<ClientUpdateChunk> cs = entry.getValue();
 				if (cs.size() != 0)
 				{
 					handleChunkUpdate(c);

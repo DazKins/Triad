@@ -16,7 +16,8 @@ import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.networking.Network;
 import com.dazkins.triad.networking.TriadConnection;
-import com.dazkins.triad.networking.client.AnimationUpdate;
+import com.dazkins.triad.networking.UpdateList;
+import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
 import com.dazkins.triad.networking.packet.Packet007EntityAnimationStart;
@@ -25,6 +26,8 @@ import com.dazkins.triad.networking.packet.Packet010PlayerNameSet;
 import com.dazkins.triad.networking.packet.Packet012Inventory;
 import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
 import com.dazkins.triad.networking.packet.PacketSend;
+import com.dazkins.triad.networking.server.update.ServerUpdateChunkRequest;
+import com.dazkins.triad.networking.server.update.ServerUpdatePlayerVelocity;
 import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
@@ -47,7 +50,7 @@ public class TriadServer
 	private int runningTicks;
 	private int packetCount;
 	
-	private ServerUpdate serverUpdate;
+	private UpdateList serverUpdate;
 
 	public TriadServer()
 	{
@@ -63,7 +66,7 @@ public class TriadServer
 		packetSendQueue = new LinkedList<PacketSend>();
 		connectionsToBeRemoved = new ArrayList<TriadConnection>();
 		
-		serverUpdate = new ServerUpdate();
+		serverUpdate = new UpdateList();
 		
 		Network.register(server);
 	}
@@ -75,15 +78,15 @@ public class TriadServer
 		serverWorldManager.tick();
 	}
 	
-	public ServerUpdate getUpdate()
+	public UpdateList getUpdate()
 	{
 		return serverUpdate;
 	}
 	
-	public ServerUpdate getAndPurgeUpdate()
+	public UpdateList getAndPurgeUpdate()
 	{
-		ServerUpdate s = serverUpdate.clone();
-		serverUpdate.reset();
+		UpdateList s = serverUpdate.clone();
+		serverUpdate.purge();
 		return s;
 	}
 	
@@ -285,8 +288,7 @@ public class TriadServer
 	public void handleChunkRequest(TriadConnection tc, int cx, int cy)
 	{
 		Chunk c = serverWorldManager.getWorld().getChunkWithForceLoad(cx, cy);
-		serverUpdate.addChunkRequest(new ServerChunkRequest(tc, c));
-		serverWorldManager.getWorld().addChunkToLoadQueue(c);
+		serverUpdate.addUpdate(new ServerUpdateChunkRequest(tc, c));
 	}
 	
 	public void handleDisconnect(TriadConnection tc)
@@ -311,7 +313,7 @@ public class TriadServer
 		sendPacketToAll(p, false);
 	}
 	
-	public void sendAnimationUpdate(AnimationUpdate a)
+	public void sendAnimationUpdate(ClientUpdateAnimation a)
 	{
 		Packet007EntityAnimationStart p = new Packet007EntityAnimationStart();
 		p.setAnimID(a.getAnimID());
@@ -440,6 +442,6 @@ public class TriadServer
 	public void handlePlayerVelocityUpdate(TriadConnection tc, float xa, float ya)
 	{
 		EntityPlayerServer e = serverWorldManager.getPlayers().get(tc);
-		serverUpdate.addPlayerVelocityUpdate(new PlayerVelocityUpdate(e, xa, ya));
+		serverUpdate.addUpdate(new ServerUpdatePlayerVelocity(e, xa, ya));
 	}
 }

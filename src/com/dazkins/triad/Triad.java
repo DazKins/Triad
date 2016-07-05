@@ -1,21 +1,21 @@
 package com.dazkins.triad;
 
+import java.util.ArrayList;
+
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
 import com.dazkins.triad.audio.SoundManager;
 import com.dazkins.triad.game.GameState;
-import com.dazkins.triad.game.GameStateLoading;
 import com.dazkins.triad.game.GameStateMainMenu;
 import com.dazkins.triad.game.GameStatePlaying;
 import com.dazkins.triad.game.gui.object.GuiObjectBox;
 import com.dazkins.triad.gfx.BufferObject;
-import com.dazkins.triad.gfx.Font;
 import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.gfx.TTF;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
-import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.networking.client.TriadClient;
 import com.dazkins.triad.util.TriadLogger;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
@@ -47,7 +47,7 @@ public class Triad implements Runnable
 		client = new TriadClient("Player" + (int) (Math.random() * 10000));
 
 		SoundManager.registerSound("/audio/music/triad_theme.wav", "theme");
-		// SoundManager.getAudio("theme").play();
+//		 SoundManager.getAudio("theme").play();
 
 //		win = new Window(1920, 1080, true);
 		win = new Window(1280, 720, false);
@@ -69,12 +69,14 @@ public class Triad implements Runnable
 
 		BufferObject.init();
 
-		Font.initializeFont();
+		TTF.init();
 		
 		GuiObjectBox.init();
 
 //		setGameState(new GameStateLoading());
 		setGameState(new GameStateMainMenu());
+		
+		DebugMonitor.setWindow(win);
 	}
 
 	public void setGameState(GameState g)
@@ -174,7 +176,7 @@ public class Triad implements Runnable
 		currentState.render();
 
 		DebugMonitor.render();
-
+		
 		win.update();
 	}
 

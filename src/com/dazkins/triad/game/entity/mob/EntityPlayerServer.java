@@ -9,7 +9,6 @@ import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.model.animation.StorageAnimationID;
 import com.dazkins.triad.math.AABB;
-import com.dazkins.triad.networking.client.InteractionUpdate;
 
 public class EntityPlayerServer extends Mob
 {

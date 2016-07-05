@@ -1,15 +1,15 @@
-package com.dazkins.triad.networking.server;
+package com.dazkins.triad.networking.server.update;
 
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.networking.TriadConnection;
 
-public class ServerChunkRequest
+public class ServerUpdateChunkRequest extends ServerUpdate
 {
 	private TriadConnection connection;
 
 	private Chunk chunk;
 
-	public ServerChunkRequest(TriadConnection tc, Chunk c)
+	public ServerUpdateChunkRequest(TriadConnection tc, Chunk c)
 	{
 		connection = tc;
 		chunk = c;

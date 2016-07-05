@@ -1,11 +1,11 @@
-package com.dazkins.triad.networking.client;
+package com.dazkins.triad.networking.client.update;
 
-public class PlayerNameUpdate
+public class ClientUpdatePlayerName
 {
 	private String name;
 	private int gID;
 	
-	public PlayerNameUpdate(String n, int g)
+	public ClientUpdatePlayerName(String n, int g)
 	{
 		name = n;
 		gID = g;

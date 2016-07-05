@@ -1,10 +1,12 @@
 package com.dazkins.triad.game.gui.renderformat;
 
 import com.dazkins.triad.gfx.Color;
+import com.dazkins.triad.gfx.TTF;
 
 public class TextRenderFormat extends RenderFormat
 {
-	private Color c = new Color(0xFFFFFF);
+	private TTF font = TTF.main;
+	private Color c = new Color(0);
 	private float a = 1.0f;
 	private boolean shadow = false;
 	
@@ -26,6 +28,12 @@ public class TextRenderFormat extends RenderFormat
 		return this;
 		
 	}
+	
+	public TextRenderFormat setFont(TTF f)
+	{
+		this.font = f;
+		return this;
+	}
 
 	public Color getColor()
 	{
@@ -41,12 +49,18 @@ public class TextRenderFormat extends RenderFormat
 	{
 		return shadow;
 	}
+	
+	public TTF getFont()
+	{
+		return font;
+	}
 
 	public TextRenderFormat reset()
 	{
-		c = new Color(255, 255, 255);
+		c = new Color(0);
 		a = 1.0f;
 		shadow = false;
+		font = TTF.main;
 		return this;
 	}
 }

@@ -1,15 +1,15 @@
-package com.dazkins.triad.networking.server;
+package com.dazkins.triad.networking.server.update;
 
 import com.dazkins.triad.game.entity.mob.EntityPlayerServer;
 
-public class PlayerVelocityUpdate
+public class ServerUpdatePlayerVelocity
 {
 	private EntityPlayerServer ent;
 	
 	private float xa;
 	private float ya;
 	
-	public PlayerVelocityUpdate(EntityPlayerServer e, float x, float y)
+	public ServerUpdatePlayerVelocity(EntityPlayerServer e, float x, float y)
 	{
 		xa = x;
 		ya = y;

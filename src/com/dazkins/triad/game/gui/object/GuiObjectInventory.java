@@ -4,7 +4,7 @@ import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.gfx.Camera;
-import com.dazkins.triad.gfx.Font;
+import com.dazkins.triad.gfx.TTF;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
 
@@ -130,7 +130,7 @@ public class GuiObjectInventory extends GuiObject
 				{
 					i.getItemType().renderIcon(windowPosX + x * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + y * (slotSize + gridSpacingY) + gridOffsetY, 0.2f, slotSize / 32.0f);
 					if (i.getStackSize() > 1)
-						Font.drawString(i.getStackSize() + "", windowPosX + x * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + y * (slotSize + gridSpacingY) + gridOffsetY + 3, 5, 1);
+						TTF.renderString(i.getStackSize() + "", windowPosX + x * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + y * (slotSize + gridSpacingY) + gridOffsetY + 3, 5, 1);
 				}
 			}
 		}

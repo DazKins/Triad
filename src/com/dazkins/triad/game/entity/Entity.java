@@ -12,7 +12,6 @@ import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.model.animation.Animation;
 import com.dazkins.triad.math.AABB;
-import com.dazkins.triad.networking.client.AnimationUpdate;
 
 public abstract class Entity
 {
@@ -184,7 +183,7 @@ public abstract class Entity
 	
 	public void addNewAnimation(int aID, int ind, boolean over, float speed)
 	{
-		world.getServerWorldManager().getUpdate().addAnimationUpdate(new AnimationUpdate(globalID, aID, ind, over, speed));
+		world.getServerWorldManager().handleAnimationUpdate(globalID, aID, ind, over, speed);
 	}
 
 	public void move()

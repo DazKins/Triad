@@ -2,22 +2,22 @@ package com.dazkins.triad.game.gui.renderformat;
 
 public class BoxRenderFormat extends RenderFormat 
 {
-	private boolean simple = true;
+	private int renderStyle = 1;
 	
-	public boolean isSimple()
+	public int getRenderStyle()
 	{
-		return simple;
+		return renderStyle;
 	}
 	
-	public BoxRenderFormat setSimple(boolean s)
+	public BoxRenderFormat setRenderStyle(int s)
 	{
-		simple = s;
+		renderStyle = s;
 		return this;
 	}
 	
 	public RenderFormat reset()
 	{
-		simple = true;
+		renderStyle = 1;
 		return this;
 	}
 }

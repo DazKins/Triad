@@ -11,7 +11,8 @@ import com.dazkins.triad.math.AABB;
 
 public class GuiObjectBox extends GuiObject
 {
-	private static Quad[] sections = new Quad[18];
+	private static final int STYLE_COUNT = 3;
+	private static Quad[] sections = new Quad[STYLE_COUNT *  9];
 	
 	private float width;
 	private float height;
@@ -36,7 +37,7 @@ public class GuiObjectBox extends GuiObject
 	
 	public static void init()
 	{
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < STYLE_COUNT; i++)
 		{
 			int ind = i * 9;
 			int xOff = (i + 1) * 24;
@@ -64,7 +65,7 @@ public class GuiObjectBox extends GuiObject
 	{
 		BoxRenderFormat b = RenderFormatManager.BOX;
 		
-		int ind = b.isSimple() ? 9 : 0;
+		int ind = b.getRenderStyle() * 9;
 		
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		

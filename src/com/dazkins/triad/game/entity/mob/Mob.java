@@ -14,7 +14,6 @@ import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
 import com.dazkins.triad.game.inventory.item.equipable.weapon.harvestTool.ItemHarvestTool;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.math.AABB;
-import com.dazkins.triad.networking.client.InteractionUpdate;
 
 public abstract class Mob extends Entity implements IEntityWithInventory
 {

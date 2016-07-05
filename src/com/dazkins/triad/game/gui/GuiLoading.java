@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL11;
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Camera;
-import com.dazkins.triad.gfx.Font;
+import com.dazkins.triad.gfx.TTF;
 import com.dazkins.triad.util.Loader;
 
 public class GuiLoading extends Gui
@@ -44,7 +44,7 @@ public class GuiLoading extends Gui
 
 		String msg = "Loading...";
 
-		Font.drawString(msg, ((float) triad.win.getW() / 2.0f) - ((float) msg.length() * 8), triad.win.getH() / 2 + 16, 1.0f, 1.0f);
+		TTF.renderString(msg, ((float) triad.win.getW() / 2.0f) - ((float) msg.length() * 8), triad.win.getH() / 2 + 16, 1.0f, 1.0f);
 	}
 
 	public void onExit()

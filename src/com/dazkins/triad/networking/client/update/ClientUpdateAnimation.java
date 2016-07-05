@@ -1,6 +1,6 @@
-package com.dazkins.triad.networking.client;
+package com.dazkins.triad.networking.client.update;
 
-public class AnimationUpdate
+public class ClientUpdateAnimation
 {
 	private int entityGID;
 	private int animID;
@@ -8,7 +8,7 @@ public class AnimationUpdate
 	private boolean overwrite;
 	private float animSpeed;
 	
-	public AnimationUpdate(int gID, int aID, int ind, boolean over, float s)
+	public ClientUpdateAnimation(int gID, int aID, int ind, boolean over, float s)
 	{
 		entityGID = gID;
 		animID = aID;

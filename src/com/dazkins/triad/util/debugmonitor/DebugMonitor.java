@@ -1,14 +1,12 @@
 package com.dazkins.triad.util.debugmonitor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.dazkins.triad.game.gui.renderformat.RenderFormatManager;
-import com.dazkins.triad.game.gui.renderformat.TextRenderFormat;
 import com.dazkins.triad.gfx.Color;
-import com.dazkins.triad.gfx.Font;
+import com.dazkins.triad.gfx.TTF;
+import com.dazkins.triad.gfx.Window;
 
 public class DebugMonitor
 {
@@ -18,6 +16,8 @@ public class DebugMonitor
 
 	private static int messageShowTime = 2000;
 	private static boolean enabled;
+	
+	private static Window win;
 
 	public static void addMessage(String s)
 	{
@@ -42,6 +42,11 @@ public class DebugMonitor
 				variables.add(o);
 			}
 		}
+	}
+	
+	public static void setWindow(Window w)
+	{
+		win = w;
 	}
 
 	public static void enable()
@@ -71,7 +76,9 @@ public class DebugMonitor
 			for (int i = 0; i < variables.size(); i += 2)
 			{
 				String msg = variables.get(i).toString() + ": " + variables.get(i + 1).toString();
-				Font.drawString(msg, 0, yInc * 16, 1.0f, 1.0f);
+				int len = RenderFormatManager.TEXT.getFont().getStringLength(msg);
+				TTF.renderString(msg, win.getW() - len - 5, yInc * TTF.LETTER_HEIGHT, 1.0f + i * 0.001f, 1.0f);
+//				TTF.main.renderString("msg");
 				yInc++;
 			}
 
@@ -84,7 +91,8 @@ public class DebugMonitor
 					continue;
 				}
 				RenderFormatManager.TEXT.reset().setColour(new Color(200, 0, 0)).setA(1.0f);
-				Font.drawString(s.getMsg(), 0, yInc * 16, 1.0f, 1.0f);
+				int len = RenderFormatManager.TEXT.getFont().getStringLength(s.getMsg());
+				TTF.renderString(s.getMsg(), win.getW() - len - 5, yInc * TTF.LETTER_HEIGHT, 1.0f, 1.0f);
 				RenderFormatManager.TEXT.reset();
 				yInc++;
 			}

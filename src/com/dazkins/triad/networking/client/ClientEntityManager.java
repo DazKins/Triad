@@ -13,6 +13,7 @@ import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.IWorldAccess;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
 import com.dazkins.triad.util.TriadLogger;
 
 public class ClientEntityManager
@@ -112,7 +113,7 @@ public class ClientEntityManager
 		}
 	}
 	
-	public void handleAnimationUpdate(AnimationUpdate a)
+	public void handleAnimationUpdate(ClientUpdateAnimation a)
 	{
 		int eID = a.getEntityGID();
 		int aID = a.getAnimID();

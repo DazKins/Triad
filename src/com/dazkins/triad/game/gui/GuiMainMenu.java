@@ -19,7 +19,7 @@ public class GuiMainMenu extends Gui
 		
 		menu = m;
 		
-		playButton = new GuiObjectButton(this, "Play", 300, 300, 100, 1);
+		playButton = new GuiObjectButton(this, "Play", 300, 300, 150, 1);
 		playButton.setPressEvent(new GuiEventButtonPress()
 		{
 			public void onPress()

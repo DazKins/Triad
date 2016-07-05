@@ -89,39 +89,21 @@ public class Image
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
 		}
 	}
-
-	public Image(File f) throws IOException
+	
+	public Image(BufferedImage img)
 	{
-		loadSpriteSheet(f);
+		loadImage(img);
 	}
 
-	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z, float b)
+	public Image(File f) throws IOException 
 	{
-		float offset = 0.001f;
-
-		float tx0 = (tx / (float) width) + offset;
-		float ty0 = (ty / (float) height) + offset;
-		float tx1 = ((tx + tw) / (float) width) - offset;
-		float ty1 = ((ty + th) / (float) height) - offset;
-
-		bo.getData().bindImage(this);
-		bo.getData().setDepth(z);
-		if (b != 0)
-			bo.getData().setRGB(b, b, b);
-		bo.getData().setUV(tx1, ty0);
-		bo.getData().addVertex(x + w, y + h);
-		bo.getData().setUV(tx0, ty0);
-		bo.getData().addVertex(x, y + h);
-		bo.getData().setUV(tx0, ty1);
-		bo.getData().addVertex(x, y);
-		bo.getData().setUV(tx1, ty1);
-		bo.getData().addVertex(x + w, y);
+		loadImage(ImageIO.read(f));
 	}
 
-	private void loadSpriteSheet(File f) throws IOException
+	private void loadImage(BufferedImage img)
 	{
-		img = ImageIO.read(f);
-
+		this.img = img;
+		
 		width = img.getWidth();
 		height = img.getHeight();
 		int[] pixels = img.getRGB(0, 0, width, height, null, 0, width);
@@ -161,5 +143,28 @@ public class Image
 		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, b);
 
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+	}
+
+	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z, float b)
+	{
+		float offset = 0.001f;
+
+		float tx0 = (tx / (float) width) + offset;
+		float ty0 = (ty / (float) height) + offset;
+		float tx1 = ((tx + tw) / (float) width) - offset;
+		float ty1 = ((ty + th) / (float) height) - offset;
+
+		bo.getData().bindImage(this);
+		bo.getData().setDepth(z);
+		if (b != 0)
+			bo.getData().setRGB(b, b, b);
+		bo.getData().setUV(tx1, ty0);
+		bo.getData().addVertex(x + w, y + h);
+		bo.getData().setUV(tx0, ty0);
+		bo.getData().addVertex(x, y + h);
+		bo.getData().setUV(tx0, ty1);
+		bo.getData().addVertex(x, y);
+		bo.getData().setUV(tx1, ty1);
+		bo.getData().addVertex(x + w, y);
 	}
 }

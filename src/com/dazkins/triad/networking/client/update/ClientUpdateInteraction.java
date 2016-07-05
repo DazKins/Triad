@@ -1,13 +1,13 @@
-package com.dazkins.triad.networking.client;
+package com.dazkins.triad.networking.client.update;
 
-public class InteractionUpdate
+public class ClientUpdateInteraction
 {
 	private int eID;
 	private int iID;
 	
 	private boolean start;
 	
-	public InteractionUpdate(int e, int i, boolean s)
+	public ClientUpdateInteraction(int e, int i, boolean s)
 	{
 		eID = e;
 		iID = i;

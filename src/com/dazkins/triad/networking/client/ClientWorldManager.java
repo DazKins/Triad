@@ -9,6 +9,13 @@ import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.networking.UpdateList;
+import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
+import com.dazkins.triad.networking.client.update.ClientUpdateChunk;
+import com.dazkins.triad.networking.client.update.ClientUpdateEntity;
+import com.dazkins.triad.networking.client.update.ClientUpdateInteraction;
+import com.dazkins.triad.networking.client.update.ClientUpdateInventory;
+import com.dazkins.triad.networking.client.update.ClientUpdatePlayerName;
 import com.dazkins.triad.networking.packet.Packet008CameraStateUpdate;
 
 public class ClientWorldManager
@@ -75,7 +82,7 @@ public class ClientWorldManager
 		if (myPlayerID == -1)
 			myPlayerID = client.getPlayerID();
 		
-		ClientUpdate update = client.getAndPurgeUpdate();
+		UpdateList update = client.getAndPurgeUpdate();
 
 		ArrayList<ChunkCoordinate> cs = crm.getRequestsForMissingChunks();
 		for (ChunkCoordinate c : cs)
@@ -87,8 +94,8 @@ public class ClientWorldManager
 			}
 		}
 		
-		ArrayList<EntityUpdate> eUpdates = update.getEntityUpdates();
-		for (EntityUpdate c : eUpdates)
+		ArrayList<ClientUpdateEntity> eUpdates = update.getUpdateListOfType(ClientUpdateEntity.class);
+		for (ClientUpdateEntity c : eUpdates)
 		{
 			if (c != null)
 			{
@@ -120,36 +127,36 @@ public class ClientWorldManager
 			}
 		}
 		
-		ArrayList<AnimationUpdate> animUpdates = update.getAnimUpdates();
-		for (AnimationUpdate a : animUpdates)
+		ArrayList<ClientUpdateAnimation> animUpdates = update.getUpdateListOfType(ClientUpdateAnimation.class);
+		for (ClientUpdateAnimation a : animUpdates)
 		{
 			cem.handleAnimationUpdate(a);
 		}
 
-		ArrayList<ChunkUpdate> chunks = update.getChunkUpdates();
-		for (ChunkUpdate c : chunks)
+		ArrayList<ClientUpdateChunk> chunks = update.getUpdateListOfType(ClientUpdateChunk.class);
+		for (ClientUpdateChunk c : chunks)
 		{
 			crm.handleChunkUpdate(c);
 		}
 		
-		ArrayList<PlayerNameUpdate> playerNameUpdates = update.getPlayerNameUpdates();
-		for (PlayerNameUpdate p : playerNameUpdates)
+		ArrayList<ClientUpdatePlayerName> playerNameUpdates = update.getUpdateListOfType(ClientUpdatePlayerName.class);
+		for (ClientUpdatePlayerName p : playerNameUpdates)
 		{
 			int gID = p.getGID();
 			String name = p.getName();
 			cem.handlePlayerNameUpdate(gID, name);
 		}
 		
-		ArrayList<InventoryUpdate> inventoryUpdates = update.getInventoryUpdates();
-		for (InventoryUpdate i : inventoryUpdates)
+		ArrayList<ClientUpdateInventory> inventoryUpdates = update.getUpdateListOfType(ClientUpdateInventory.class);
+		for (ClientUpdateInventory i : inventoryUpdates)
 		{
 			int gID = i.getEntityID();
 			Inventory inv = Inventory.createInventoryObject(i);
 			cem.handleInventoryUpdate(gID, inv);
 		}
 		
-		ArrayList<InteractionUpdate> interactionUpdates = update.getInteractionUpdates();
-		for (InteractionUpdate i : interactionUpdates)
+		ArrayList<ClientUpdateInteraction> interactionUpdates = update.getUpdateListOfType(ClientUpdateInteraction.class);
+		for (ClientUpdateInteraction i : interactionUpdates)
 		{
 			int eID = i.getEntityID();
 			int iID = i.getInteractingID();

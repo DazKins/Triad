@@ -1,7 +1,10 @@
-[Triad Server   20:22:56]  Logger started!
-[Triad Server   20:22:57]  Generating spawn...
-[Triad Server   20:22:59]  Spawn generated
-[Triad Server   20:22:59]  Started on port: 54555
-[Triad Server   20:23:01]  New connection from: 127.0.0.1 on Connection 1
-[Triad Server   20:23:01]  Registered new connection: Player5374 from: 127.0.0.1
-[Triad Server   20:24:02]  Connection 1 has disconnected
+[Triad Server   01:20:43]  Logger started!
+[Triad Server   01:20:45]  Generating spawn...
+[Triad Server   01:20:47]  Spawn generated
+[Triad Server   01:20:47]  Started on port: 54555
+[Triad Server   01:20:51]  New connection from: lmlicenses.wip4.adobe.com on Connection 1
+[Triad Server   01:20:51]  Registered new connection: Player901 from: lmlicenses.wip4.adobe.com
+[Triad Server   01:20:52]  New connection from: lmlicenses.wip4.adobe.com on Connection 2
+[Triad Server   01:20:52]  Registered new connection: Player5800 from: lmlicenses.wip4.adobe.com
+[Triad Server   01:21:03]  Connection 2 has disconnected
+[Triad Server   01:21:04]  Connection 1 has disconnected

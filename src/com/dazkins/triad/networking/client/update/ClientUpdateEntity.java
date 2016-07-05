@@ -1,6 +1,6 @@
-package com.dazkins.triad.networking.client;
+package com.dazkins.triad.networking.client.update;
 
-public class EntityUpdate
+public class ClientUpdateEntity
 {
 	private int gID;
 	private int tID;
@@ -12,7 +12,7 @@ public class EntityUpdate
 	
 	private boolean remove;
 
-	public EntityUpdate(int gid, int tid, float x, float y, int f)
+	public ClientUpdateEntity(int gid, int tid, float x, float y, int f)
 	{
 		gID = gid;
 		tID = tid;
@@ -23,7 +23,7 @@ public class EntityUpdate
 	}
 	
 	//Sets up removal update
-	public EntityUpdate(int g)
+	public ClientUpdateEntity(int g)
 	{
 		gID = g;
 		remove = true;

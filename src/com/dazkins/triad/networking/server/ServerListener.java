@@ -14,6 +14,7 @@ import com.dazkins.triad.networking.packet.Packet011PlayerVelocity;
 import com.dazkins.triad.networking.packet.Packet012Inventory;
 import com.dazkins.triad.networking.packet.Packet013InteractCommand;
 import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
+import com.dazkins.triad.networking.server.update.ServerUpdatePlayerVelocity;
 import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive;

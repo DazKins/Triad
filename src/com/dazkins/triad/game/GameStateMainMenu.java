@@ -2,6 +2,8 @@ package com.dazkins.triad.game;
 
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.gui.GuiMainMenu;
+import com.dazkins.triad.game.gui.renderformat.RenderFormatManager;
+import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.networking.server.TriadServer;
@@ -30,6 +32,7 @@ public class GameStateMainMenu implements GameState
 
 	public void render()
 	{
+		RenderFormatManager.TEXT.setColour(new Color(0));
 		mainMenu.render(null);
 	}
 

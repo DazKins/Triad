@@ -2,7 +2,7 @@ package com.dazkins.triad.game.inventory;
 
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
-import com.dazkins.triad.networking.client.InventoryUpdate;
+import com.dazkins.triad.networking.client.update.ClientUpdateInventory;
 import com.dazkins.triad.networking.packet.Packet012Inventory;
 import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
 import com.dazkins.triad.util.TriadLogger;
@@ -188,7 +188,7 @@ public class Inventory
 		return inv;
 	}
 	
-	public static Inventory createInventoryObject(InventoryUpdate p)
+	public static Inventory createInventoryObject(ClientUpdateInventory p)
 	{
 		int width = p.getWidth();
 		int height = p.getHeight();

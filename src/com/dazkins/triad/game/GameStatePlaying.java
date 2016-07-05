@@ -7,6 +7,7 @@ import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.mob.EntityPlayerClientController;
 import com.dazkins.triad.game.entity.shell.EntityShell;
 import com.dazkins.triad.game.gui.Gui;
+import com.dazkins.triad.game.gui.GuiChat;
 import com.dazkins.triad.game.gui.GuiSingleInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.gfx.Camera;
@@ -23,6 +24,8 @@ public class GameStatePlaying implements GameState
 
 	private InputHandler input;
 	private Camera cam;
+	
+	private GuiChat chatGui;
 
 	private Gui currentlyDisplayedGui;
 	private Window win;
@@ -38,6 +41,8 @@ public class GameStatePlaying implements GameState
 		input = new InputHandler(win);
 		cam = new Camera(input, triad.win, 0, 0);
 		cam.lockZoom(0.56f, 8f);
+		
+		chatGui = new GuiChat(triad, input);
 
 		player = new EntityPlayerClientController("", 0, 0, input);
 	}
@@ -51,6 +56,8 @@ public class GameStatePlaying implements GameState
 
 	public void tick()
 	{
+		chatGui.tick();
+		
 		if (!client.isRunning())
 			client.start();
 		
@@ -130,6 +137,8 @@ public class GameStatePlaying implements GameState
 		cwm.render();
 
 		GL11.glPopMatrix();
+		
+		chatGui.render();
 
 		if (currentlyDisplayedGui != null)
 			currentlyDisplayedGui.render(cam);

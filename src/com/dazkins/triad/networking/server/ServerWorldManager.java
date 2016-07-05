@@ -14,8 +14,11 @@ import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.networking.TriadConnection;
-import com.dazkins.triad.networking.client.AnimationUpdate;
+import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
 import com.dazkins.triad.networking.packet.Packet;
+import com.dazkins.triad.networking.server.update.ServerUpdateChunkRequest;
+import com.dazkins.triad.networking.server.update.ServerUpdatePlayerVelocity;
+import com.dazkins.triad.networking.UpdateList;
 
 public class ServerWorldManager
 {
@@ -28,6 +31,8 @@ public class ServerWorldManager
 	private ArrayList<Chunk> spawnChunks;
 	private ArrayList<Chunk> chunksToUpdate;
 	
+	private ArrayList<ServerUpdateChunkRequest> chunkRequests;
+	
 	public ServerWorldManager(TriadServer s)
 	{
 		server = s;
@@ -37,11 +42,13 @@ public class ServerWorldManager
 		world = new World(this);
 		
 		chunksToUpdate = new ArrayList<Chunk>();
+		
+		chunkRequests = new ArrayList<ServerUpdateChunkRequest>();
 	}
 	
 	public void tick()
 	{
-		ServerUpdate update = server.getAndPurgeUpdate();
+		UpdateList update = server.getAndPurgeUpdate();
 		
 		ArrayList<Entity> ents = world.getLoadedEntities();
 		for (Entity e : ents)
@@ -79,10 +86,16 @@ public class ServerWorldManager
 		
 		world.handleChunkLoadsFromAchors(anchors);
 
-		ArrayList<ServerChunkRequest> chunkRequests = update.getChunkRequests();
+		ArrayList<ServerUpdateChunkRequest> tChunkRequests = update.getUpdateListOfType(ServerUpdateChunkRequest.class);
+		for (ServerUpdateChunkRequest c : tChunkRequests)
+		{
+			chunkRequests.add(c);
+			world.addChunkToLoadQueue(c.getChunk());
+		}
+
 		for (int i = 0; i < chunkRequests.size(); i++)
 		{
-			ServerChunkRequest c = chunkRequests.get(i);
+			ServerUpdateChunkRequest c = chunkRequests.get(i);
 			Chunk cs = c.getChunk();
 			if (cs.isLoaded())
 			{
@@ -94,15 +107,8 @@ public class ServerWorldManager
 			}
 		}
 		
-		ArrayList<AnimationUpdate> animUpdates = update.getAnimationUpdates();
-		for (int i = 0; i < animUpdates.size(); i++)
-		{
-			AnimationUpdate a = animUpdates.get(i);
-			server.sendAnimationUpdate(a);
-		}
-		
-		ArrayList<PlayerVelocityUpdate> playerVelUpdates = update.getPlayerVelocityUpdates();
-		for (PlayerVelocityUpdate p : playerVelUpdates)
+		ArrayList<ServerUpdatePlayerVelocity> playerVelUpdates = update.getUpdateListOfType(ServerUpdatePlayerVelocity.class);
+		for (ServerUpdatePlayerVelocity p : playerVelUpdates)
 		{
 			float xa = p.getXA();
 			float ya = p.getYA();
@@ -152,6 +158,11 @@ public class ServerWorldManager
 		}
 	}
 	
+	public void handleAnimationUpdate(int globalID, int animationID, int animIndex, boolean overwrite, float speed)
+	{
+		server.sendAnimationUpdate(new ClientUpdateAnimation(globalID, animationID, animIndex, overwrite, speed));
+	}
+	
 	public ArrayList<Chunk> getSpawnChunks()
 	{
 		return spawnChunks;
@@ -166,7 +177,7 @@ public class ServerWorldManager
 		return e;
 	}
 
-	public ServerUpdate getUpdate()
+	public UpdateList getUpdate()
 	{
 		return server.getUpdate();
 	}

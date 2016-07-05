@@ -1,13 +1,15 @@
-package com.dazkins.triad.networking.client;
+package com.dazkins.triad.networking.client.update;
 
-public class ChunkUpdate
+import com.dazkins.triad.networking.client.ChunkData;
+
+public class ClientUpdateChunk
 {
 	private ChunkData data;
 	
 	private boolean updateTiles;
 	private boolean updateLight;
 	
-	public ChunkUpdate(ChunkData d, boolean tiles, boolean light)
+	public ClientUpdateChunk(ChunkData d, boolean tiles, boolean light)
 	{
 		data = d;
 		updateTiles = tiles;

@@ -3,6 +3,12 @@ package com.dazkins.triad.networking.client;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.gfx.Color;
+import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
+import com.dazkins.triad.networking.client.update.ClientUpdateChunk;
+import com.dazkins.triad.networking.client.update.ClientUpdateEntity;
+import com.dazkins.triad.networking.client.update.ClientUpdateInteraction;
+import com.dazkins.triad.networking.client.update.ClientUpdateInventory;
+import com.dazkins.triad.networking.client.update.ClientUpdatePlayerName;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet000RawMessage;
 import com.dazkins.triad.networking.packet.Packet001LoginRequest;
@@ -17,6 +23,7 @@ import com.dazkins.triad.networking.packet.Packet012Inventory;
 import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
 import com.dazkins.triad.networking.packet.Packet015SingleLightValueChunkUpdate;
 import com.dazkins.triad.util.TriadLogger;
+import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
@@ -47,8 +54,8 @@ public class ClientListener extends Listener
 				byte[] lightData = p0.getLight();
 				ChunkCoordinate c = new ChunkCoordinate(x, y);
 				ChunkData d = new ChunkData(c, tileData, lightData);
-				ChunkUpdate cu = new ChunkUpdate(d, true, true);
-				client.getClientUpdate().addChunkUpdate(cu);
+				ClientUpdateChunk cu = new ClientUpdateChunk(d, true, true);
+				client.getClientUpdate().addUpdate(cu);
 			}
 			if (p instanceof Packet004LoginRequestResponse)
 			{
@@ -56,6 +63,7 @@ public class ClientListener extends Listener
 				client.registerPlayerID(p0.getChosenPlayerID());
 				if (p0.isAccepted())
 				{
+					DebugMonitor.addMessage("Login accepted!");
 					TriadLogger.log("Login accepted", false);
 				}
 			}
@@ -67,7 +75,7 @@ public class ClientListener extends Listener
 				float x = p0.getX();
 				float y = p0.getY();
 				int facing = p0.getFacing();
-				client.getClientUpdate().addEntityUpdate(new EntityUpdate(gID, tID, x, y, facing));
+				client.getClientUpdate().addUpdate(new ClientUpdateEntity(gID, tID, x, y, facing));
 			}
 			if (p instanceof Packet007EntityAnimationStart)
 			{
@@ -77,22 +85,22 @@ public class ClientListener extends Listener
 				int ind = p0.getIndex();
 				boolean over = p0.getOverwrite();
 				float s = p0.getAnimSpeed();
-				AnimationUpdate a = new AnimationUpdate(gID, aID, ind, over, s);
-				client.getClientUpdate().addAnimationUpdate(a);
+				ClientUpdateAnimation a = new ClientUpdateAnimation(gID, aID, ind, over, s);
+				client.getClientUpdate().addUpdate(a);
 			}
 			if (p instanceof Packet009EntityRemoved)
 			{
 				Packet009EntityRemoved p0 = (Packet009EntityRemoved) p;
 				int gID = p0.getGID();
-				client.getClientUpdate().addEntityUpdate(new EntityUpdate(gID));
+				client.getClientUpdate().addUpdate(new ClientUpdateEntity(gID));
  			}
 			if (p instanceof Packet010PlayerNameSet)
 			{
 				Packet010PlayerNameSet p0 = (Packet010PlayerNameSet) p;
 				int gID = p0.getgID();
 				String name = p0.getName();
-				PlayerNameUpdate pn = new PlayerNameUpdate(name, gID);
-				client.getClientUpdate().addPlayerNameUpdate(pn);
+				ClientUpdatePlayerName pn = new ClientUpdatePlayerName(name, gID);
+				client.getClientUpdate().addUpdate(pn);
 			}
 			if (p instanceof Packet012Inventory)
 			{
@@ -100,7 +108,7 @@ public class ClientListener extends Listener
 				int w = p0.getWidth();
 				int h = p0.getHeight();
 				int eID = p0.getEntityGID();
-				InventoryUpdate u = new InventoryUpdate(eID, w, h);
+				ClientUpdateInventory u = new ClientUpdateInventory(eID, w, h);
 				int items[] = p0.getItems();
 				int stacks[] = p0.getStackCounts();
 				for (int i = 0; i < w * h; i++)
@@ -108,7 +116,7 @@ public class ClientListener extends Listener
 					if (stacks[i] > 0)
 						u.setItemData(items[i], stacks[i], i);
 				}
-				client.getClientUpdate().addInventoryUpdate(u);
+				client.getClientUpdate().addUpdate(u);
 			}
 			if (p instanceof Packet014InteractionUpdate)
 			{
@@ -116,7 +124,7 @@ public class ClientListener extends Listener
 				int eID = p0.getInteractingEntityID();
 				int iID = p0.getEntityInteractedWithID();
 				boolean s = p0.isStart();
-				client.getClientUpdate().addInteractionUpdates(new InteractionUpdate(eID, iID, s));
+				client.getClientUpdate().addUpdate(new ClientUpdateInteraction(eID, iID, s));
 			}
 			if (p instanceof Packet015SingleLightValueChunkUpdate)
 			{
@@ -130,8 +138,8 @@ public class ClientListener extends Listener
 				}
 				ChunkCoordinate c = new ChunkCoordinate(x, y);
 				ChunkData d = new ChunkData(c, null, lightData);
-				ChunkUpdate cu = new ChunkUpdate(d, false, true);
-				client.getClientUpdate().addChunkUpdate(cu);
+				ClientUpdateChunk cu = new ClientUpdateChunk(d, false, true);
+				client.getClientUpdate().addUpdate(cu);
 			}
 		}
 	}
