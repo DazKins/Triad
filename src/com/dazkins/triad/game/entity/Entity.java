@@ -255,6 +255,23 @@ public abstract class Entity
 		if (world != null)
 			world.registerEntityTick(this);
 	}
+	
+	private boolean needsUpdate;
+	
+	public void markForUpdate()
+	{
+		needsUpdate = true;
+	}
+	
+	public boolean purgeUpdateFlag()
+	{
+		if (needsUpdate)
+		{
+			needsUpdate = false;
+			return true;
+		}
+		return false;
+	}
 
 	public String getName()
 	{

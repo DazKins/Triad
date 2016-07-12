@@ -14,11 +14,14 @@ import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.networking.TriadConnection;
+import com.dazkins.triad.networking.UpdateList;
 import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
 import com.dazkins.triad.networking.packet.Packet;
+import com.dazkins.triad.networking.packet.Packet004LoginRequestResponse;
 import com.dazkins.triad.networking.server.update.ServerUpdateChunkRequest;
+import com.dazkins.triad.networking.server.update.ServerUpdateNewConnection;
 import com.dazkins.triad.networking.server.update.ServerUpdatePlayerVelocity;
-import com.dazkins.triad.networking.UpdateList;
+import com.dazkins.triad.util.TriadLogger;
 
 public class ServerWorldManager
 {
@@ -48,12 +51,15 @@ public class ServerWorldManager
 	
 	public void tick()
 	{
-		UpdateList update = server.getAndPurgeUpdate();
+		UpdateList update = server.getUpdate();
 		
 		ArrayList<Entity> ents = world.getLoadedEntities();
 		for (Entity e : ents)
 		{
-			server.sendEntityUpdate(e);
+			if (e.purgeUpdateFlag())
+			{
+				server.sendEntityUpdate(e);
+			}
 
 			if (e instanceof IEntityWithInventory)
 			{
@@ -85,8 +91,18 @@ public class ServerWorldManager
 		}
 		
 		world.handleChunkLoadsFromAchors(anchors);
+		
+		ArrayList<ServerUpdateNewConnection> newConnections = update.getAndPurgeUpdateListOfType(ServerUpdateNewConnection.class);
+		for (ServerUpdateNewConnection con : newConnections)
+		{
+			int id = server.handleNewConnection(new TriadConnection(server, con.getConnection(), con.getUsername()));
+			Packet004LoginRequestResponse p1 = new Packet004LoginRequestResponse();
+			p1.setAccepted(true);
+			p1.setPlayerID(id);
+			server.getFromConnection(con.getConnection()).sendPacket(p1, false);
+		}
 
-		ArrayList<ServerUpdateChunkRequest> tChunkRequests = update.getUpdateListOfType(ServerUpdateChunkRequest.class);
+		ArrayList<ServerUpdateChunkRequest> tChunkRequests = update.getAndPurgeUpdateListOfType(ServerUpdateChunkRequest.class);
 		for (ServerUpdateChunkRequest c : tChunkRequests)
 		{
 			chunkRequests.add(c);
@@ -107,7 +123,7 @@ public class ServerWorldManager
 			}
 		}
 		
-		ArrayList<ServerUpdatePlayerVelocity> playerVelUpdates = update.getUpdateListOfType(ServerUpdatePlayerVelocity.class);
+		ArrayList<ServerUpdatePlayerVelocity> playerVelUpdates = update.getAndPurgeUpdateListOfType(ServerUpdatePlayerVelocity.class);
 		for (ServerUpdatePlayerVelocity p : playerVelUpdates)
 		{
 			float xa = p.getXA();

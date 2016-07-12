@@ -2,45 +2,50 @@ package com.dazkins.triad.networking;
 
 import java.util.ArrayList;
 
-import com.dazkins.triad.game.world.Chunk;
-
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class UpdateList
 {
 	private ArrayList<ArrayList> updateLists = new ArrayList<ArrayList>();
 	
-	public void purge()
-	{
-		updateLists.clear();
-	}
-	
 	public UpdateList clone()
 	{
 		UpdateList newList = new UpdateList();
-		for (ArrayList list : updateLists)
+		for (int i = 0; i < updateLists.size(); i++)
 		{
-			 newList.updateLists.add((ArrayList) list.clone());
+			 newList.updateLists.add((ArrayList) updateLists.get(i).clone());
 		}
 		return newList;
 	}
 	
-	public ArrayList getUpdateListOfType(Class type)
+	public synchronized ArrayList getAndPurgeUpdateListOfType(Class type)
 	{
-		for (ArrayList list : updateLists)
+		ArrayList original = getUpdateListOfType(type);
+		ArrayList list = (ArrayList) original.clone();
+		updateLists.remove(original);
+		return list;
+	}
+	
+	private ArrayList getUpdateListOfType(Class type)
+	{
+		for (int i = 0; i < updateLists.size(); i++)
 		{
-			Object firstObj = list.get(0);
-			if (firstObj != null)
+			ArrayList list = updateLists.get(i);
+			if (list != null)
 			{
-				if (type.isInstance(firstObj))
+				Object firstObj = list.get(0);
+				if (firstObj != null)
 				{
-					return list;
+					if (type.isInstance(firstObj))
+					{
+						return list;
+					}
 				}
 			}
 		}
 		return new ArrayList();
 	}
 	
-	public void addUpdate(Object u)
+	public synchronized void addUpdate(Object u)
 	{
 		ArrayList list = getUpdateListOfType(u.getClass());
 		if (!list.isEmpty())

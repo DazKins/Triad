@@ -30,8 +30,11 @@ public class GuiSingleInventory extends Gui
 		this.inv = e.getInventory();
 		entity = e;
 		entityID = entity.getGlobalID();
-		setupGraphics();
 		client = c;
+		
+		gInv = new GuiObjectInventory(this, inv, i);
+		gInv.setLayer(1);
+		setupGraphics();
 	}
 
 	public GuiSingleInventory(Inventory inv, int eID, Triad t, InputHandler i, TriadClient c)
@@ -39,13 +42,23 @@ public class GuiSingleInventory extends Gui
 		super(t, i);
 		this.inv = inv;
 		entityID = eID;
-		setupGraphics();
 		client = c;
+		
+		gInv = new GuiObjectInventory(this, inv, i);
+		gInv.setLayer(1);
+		setupGraphics();
 	}
 
 	public void setupGraphics()
 	{
-		gInv = new GuiObjectInventory(this, inv, win, input, 0, 0, 1);
+		int width = 500;
+		gInv.setWidth(500);
+		
+		float height = gInv.getOptimalHeightFromGivenWidth();
+		gInv.setHeight(height);
+		
+		gInv.setX((win.getW() - width) / 2.0f);
+		gInv.setY((win.getH() - height) / 2.0f);
 	}
 
 	public void tick()

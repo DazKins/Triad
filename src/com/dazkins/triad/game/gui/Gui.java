@@ -56,7 +56,13 @@ public abstract class Gui
 
 	public abstract void onExit();
 
-	public abstract void setupGraphics();
+	public void setupGraphics()
+	{
+		for (GuiObject g : objects)
+		{
+			g.setupGraphics();
+		}
+	}
 	
 	public InputHandler getInputHandler()
 	{

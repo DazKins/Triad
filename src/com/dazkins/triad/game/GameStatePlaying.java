@@ -1,9 +1,12 @@
 package com.dazkins.triad.game;
 
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.Triad;
+import com.dazkins.triad.game.chat.Chat;
 import com.dazkins.triad.game.entity.mob.EntityPlayerClientController;
 import com.dazkins.triad.game.entity.shell.EntityShell;
 import com.dazkins.triad.game.gui.Gui;
@@ -15,6 +18,8 @@ import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.networking.client.ClientWorldManager;
 import com.dazkins.triad.networking.client.TriadClient;
+import com.dazkins.triad.networking.client.update.ClientUpdateChatMessage;
+import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 
 public class GameStatePlaying implements GameState
 {
@@ -25,6 +30,7 @@ public class GameStatePlaying implements GameState
 	private InputHandler input;
 	private Camera cam;
 	
+	private Chat chat;
 	private GuiChat chatGui;
 
 	private Gui currentlyDisplayedGui;
@@ -34,15 +40,16 @@ public class GameStatePlaying implements GameState
 
 	private EntityPlayerClientController player;
 
-	public void init(Triad triad)
+	public void init(Triad triad, InputHandler inp)
 	{
 		win = triad.win;
 		this.triad = triad;
-		input = new InputHandler(win);
+		input = inp;
 		cam = new Camera(input, triad.win, 0, 0);
 		cam.lockZoom(0.56f, 8f);
 		
-		chatGui = new GuiChat(triad, input);
+		chat = new Chat();
+		chatGui = new GuiChat(triad, input, chat);
 
 		player = new EntityPlayerClientController("", 0, 0, input);
 	}
@@ -50,83 +57,94 @@ public class GameStatePlaying implements GameState
 	public void initClient(TriadClient c)
 	{
 		client = c;
+		chat.initClient(client);
 		cwm = new ClientWorldManager(client, cam);
 		cwm.setPlayer(player);
 	}
 
 	public void tick()
 	{
-		chatGui.tick();
-		
 		if (!client.isRunning())
 			client.start();
 		
-		cam.tick();
-
-		player.tick();
-		
-		client.updatePlayerVelocity(player.getXA(), player.getYA());
-		cwm.clientUpdatePlayer(player.getX(), player.getY(), player.getFacing());
-		
-		if (currentlyDisplayedGui != null)
-			currentlyDisplayedGui.tick();
-		
-		if (input.isKeyJustDown(GLFW.GLFW_KEY_E))
+		if (client.isLoginAccepted())
 		{
-			client.sendInteractionRequest();
-		}
-		
-		Inventory inv = player.getInventory();
-		
-		if (input.isKeyJustDown(GLFW.GLFW_KEY_I))
-		{
-			changeGui(new GuiSingleInventory(inv, cwm.getPlayerEntityShell().getGlobalID(), triad, input, client));
-		}
-		
-		if (inv.hasChanged())
-		{
-			client.updatePlayerInventory(inv);
-		}
-		inv.resetHasChangedFlag();
-		
-		EntityShell playerEntityShell = cwm.getPlayerEntityShell();
-		if (playerEntityShell != null)
-		{
-			player.setInteractingObject(playerEntityShell.getInteractingEntity());
-		}
-		
-		EntityShell interactingObject = player.getInteractingObject();
-		if (interactingObject != null)
-		{
-			Inventory i = interactingObject.getInventory();
-			if (i != null && currentlyDisplayedGui == null)
+			if (!client.hasSentReadyToReceive())
+				client.markReadyToReceive();
+			
+			cam.tick();
+	
+			player.tick();
+			
+			client.updatePlayerVelocity(player.getXA(), player.getYA());
+			cwm.clientUpdatePlayer(player.getX(), player.getY(), player.getFacing());
+			
+			if (currentlyDisplayedGui != null)
+				currentlyDisplayedGui.tick();
+			
+			if (input.isKeyJustDown(GLFW.GLFW_KEY_E))
 			{
-				changeGui(new GuiSingleInventory(interactingObject, triad, input, client));
+				client.sendInteractionRequest();
 			}
-		}
-		
-		if (currentlyDisplayedGui != null)
-		{
-			if (input.isKeyJustDown(GLFW.GLFW_KEY_ESCAPE))
+			
+			Inventory inv = player.getInventory();
+			
+			if (input.isKeyJustDown(GLFW.GLFW_KEY_I))
 			{
-				client.cancelInteraction();
-				changeGui(null);
+				changeGui(new GuiSingleInventory(inv, cwm.getPlayerEntityShell().getGlobalID(), triad, input, client));
 			}
-		}
-		
-		if (currentlyDisplayedGui instanceof GuiSingleInventory)
-		{
-			if (player.getInteractingObject() == null)
+			
+			if (inv.hasChanged())
 			{
-				changeGui(null);
+				client.updatePlayerInventory(inv);
 			}
+			inv.resetHasChangedFlag();
+			
+			EntityShell playerEntityShell = cwm.getPlayerEntityShell();
+			if (playerEntityShell != null)
+			{
+				player.setInteractingObject(playerEntityShell.getInteractingEntity());
+			}
+			
+			EntityShell interactingObject = player.getInteractingObject();
+			if (interactingObject != null)
+			{
+				Inventory i = interactingObject.getInventory();
+				if (i != null && currentlyDisplayedGui == null)
+				{
+					changeGui(new GuiSingleInventory(interactingObject, triad, input, client));
+				}
+			}
+			
+			if (currentlyDisplayedGui != null)
+			{
+				if (input.isKeyJustDown(GLFW.GLFW_KEY_ESCAPE))
+				{
+					client.cancelInteraction();
+					changeGui(null);
+				}
+			}
+			
+//			if (currentlyDisplayedGui instanceof GuiSingleInventory)
+//			{
+//				if (player.getInteractingObject() == null)
+//				{
+//					changeGui(null);
+//				}
+//			}
+	
+			cwm.tick();
+			
+			cam.centreOnLocation(player.getX(), player.getY());
+			
+			chat.tick();
+			chatGui.tick();
 		}
 		
-		input.tick();
-
-		cwm.tick();
+		DebugMonitor.setVariableValue("Packets sent", client.getPacketSendCount());
+		DebugMonitor.setVariableValue("Packets received", client.getPacketReceiveCount());
 		
-		cam.centreOnLocation(player.getX(), player.getY());
+		client.resetCounters();
 	}
 
 	public void render()

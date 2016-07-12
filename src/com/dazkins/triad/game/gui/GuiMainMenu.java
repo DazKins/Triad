@@ -4,9 +4,11 @@ import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.GameStateMainMenu;
 import com.dazkins.triad.game.gui.event.GuiEventButtonPress;
 import com.dazkins.triad.game.gui.object.GuiObjectButton;
+import com.dazkins.triad.game.gui.renderformat.RenderFormatManager;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.Color;
+import com.dazkins.triad.gfx.TTF;
 import com.dazkins.triad.input.InputHandler;
-import com.dazkins.triad.util.TriadLogger;
 
 public class GuiMainMenu extends Gui
 {
@@ -19,7 +21,13 @@ public class GuiMainMenu extends Gui
 		
 		menu = m;
 		
-		playButton = new GuiObjectButton(this, "Play", 300, 300, 150, 1);
+		playButton = new GuiObjectButton(this);
+		
+		playButton.setX(300);
+		playButton.setY(300);
+		playButton.setWidth(150);
+		playButton.setContent("Play \\n test setset set set sgfdf geh rh");
+		playButton.setLayer(1);
 		playButton.setPressEvent(new GuiEventButtonPress()
 		{
 			public void onPress()
@@ -27,22 +35,21 @@ public class GuiMainMenu extends Gui
 				menu.onPlayButtonPress();
 			}
 		});
+		
+		setupGraphics();
 	}
 
 	public void render(Camera cam)
 	{
 		super.render(cam);
 		playButton.render();
+		
+		RenderFormatManager.TEXT.setColour(new Color(255, 255, 255));
+		TTF.renderStringWithFormating("TEST SETS ET #ff00ff sdglhr 0823y 5luetguh #ff0000 083tg24pty-gdlsdg 23t ", 0, 0, 1.0f);
 	}
 
 	public void onExit()
 	{
 		
 	}
-
-	public void setupGraphics()
-	{
-		
-	}
-	
 }

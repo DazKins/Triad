@@ -82,7 +82,7 @@ public class ClientWorldManager
 		if (myPlayerID == -1)
 			myPlayerID = client.getPlayerID();
 		
-		UpdateList update = client.getAndPurgeUpdate();
+		UpdateList update = client.getClientUpdate();
 
 		ArrayList<ChunkCoordinate> cs = crm.getRequestsForMissingChunks();
 		for (ChunkCoordinate c : cs)
@@ -94,7 +94,7 @@ public class ClientWorldManager
 			}
 		}
 		
-		ArrayList<ClientUpdateEntity> eUpdates = update.getUpdateListOfType(ClientUpdateEntity.class);
+		ArrayList<ClientUpdateEntity> eUpdates = update.getAndPurgeUpdateListOfType(ClientUpdateEntity.class);
 		for (ClientUpdateEntity c : eUpdates)
 		{
 			if (c != null)
@@ -127,19 +127,19 @@ public class ClientWorldManager
 			}
 		}
 		
-		ArrayList<ClientUpdateAnimation> animUpdates = update.getUpdateListOfType(ClientUpdateAnimation.class);
+		ArrayList<ClientUpdateAnimation> animUpdates = update.getAndPurgeUpdateListOfType(ClientUpdateAnimation.class);
 		for (ClientUpdateAnimation a : animUpdates)
 		{
 			cem.handleAnimationUpdate(a);
 		}
 
-		ArrayList<ClientUpdateChunk> chunks = update.getUpdateListOfType(ClientUpdateChunk.class);
+		ArrayList<ClientUpdateChunk> chunks = update.getAndPurgeUpdateListOfType(ClientUpdateChunk.class);
 		for (ClientUpdateChunk c : chunks)
 		{
 			crm.handleChunkUpdate(c);
 		}
 		
-		ArrayList<ClientUpdatePlayerName> playerNameUpdates = update.getUpdateListOfType(ClientUpdatePlayerName.class);
+		ArrayList<ClientUpdatePlayerName> playerNameUpdates = update.getAndPurgeUpdateListOfType(ClientUpdatePlayerName.class);
 		for (ClientUpdatePlayerName p : playerNameUpdates)
 		{
 			int gID = p.getGID();
@@ -147,7 +147,7 @@ public class ClientWorldManager
 			cem.handlePlayerNameUpdate(gID, name);
 		}
 		
-		ArrayList<ClientUpdateInventory> inventoryUpdates = update.getUpdateListOfType(ClientUpdateInventory.class);
+		ArrayList<ClientUpdateInventory> inventoryUpdates = update.getAndPurgeUpdateListOfType(ClientUpdateInventory.class);
 		for (ClientUpdateInventory i : inventoryUpdates)
 		{
 			int gID = i.getEntityID();
@@ -155,7 +155,7 @@ public class ClientWorldManager
 			cem.handleInventoryUpdate(gID, inv);
 		}
 		
-		ArrayList<ClientUpdateInteraction> interactionUpdates = update.getUpdateListOfType(ClientUpdateInteraction.class);
+		ArrayList<ClientUpdateInteraction> interactionUpdates = update.getAndPurgeUpdateListOfType(ClientUpdateInteraction.class);
 		for (ClientUpdateInteraction i : interactionUpdates)
 		{
 			int eID = i.getEntityID();

@@ -263,7 +263,16 @@ public class Chunk implements Loadable
 
 				if (!world.entityHasBeenTicked(e))
 				{
+					float oldX = e.getX();
+					float oldY = e.getY();
+					int oldFacing = e.getFacing();
+					
 					e.tick();
+					
+					if (e.getX() != oldX || e.getY() != oldY || e.getFacing() != oldFacing)
+					{
+						e.markForUpdate();
+					}
 				}
 
 				int x1 = (int) (e.getX() / Tile.TILESIZE);

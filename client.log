@@ -1,8 +1,7 @@
-[Triad Client   01:20:45]  Logger started!
-[Triad Client   01:20:45]  OpenGL Context Succefully Created!
-[Triad Client   01:20:45]  OpenGL version: 4.5
-[Triad Client   01:20:45]  VBOs enabled
-[Triad Client   01:20:51]  Connected
-[Triad Client   01:20:51]  Recieved raw message from server: Hello lmlicenses.wip4.adobe.com!
-[Triad Client   01:20:51]  Login accepted
-[Triad Client   01:21:04]  Disconnected
+[Triad Client   21:00:01]  Logger started!
+[Triad Client   21:00:02]  OpenGL Context Succefully Created!
+[Triad Client   21:00:02]  OpenGL version: 4.5
+[Triad Client   21:00:02]  VBOs enabled
+[Triad Client   21:00:04]  Connected
+[Triad Client   21:00:04]  Recieved raw message from server: Hello lmlicenses.wip4.adobe.com!
+[Triad Client   21:00:04]  Login accepted

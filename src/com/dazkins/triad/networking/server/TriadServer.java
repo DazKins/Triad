@@ -19,13 +19,16 @@ import com.dazkins.triad.networking.TriadConnection;
 import com.dazkins.triad.networking.UpdateList;
 import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
 import com.dazkins.triad.networking.packet.Packet;
+import com.dazkins.triad.networking.packet.Packet000RawMessage;
 import com.dazkins.triad.networking.packet.Packet006EntityPositionUpdate;
 import com.dazkins.triad.networking.packet.Packet007EntityAnimationStart;
 import com.dazkins.triad.networking.packet.Packet009EntityRemoved;
 import com.dazkins.triad.networking.packet.Packet010PlayerNameSet;
 import com.dazkins.triad.networking.packet.Packet012Inventory;
 import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
+import com.dazkins.triad.networking.packet.Packet017ChatMessage;
 import com.dazkins.triad.networking.packet.PacketSend;
+import com.dazkins.triad.networking.server.update.ServerUpdateChatMessage;
 import com.dazkins.triad.networking.server.update.ServerUpdateChunkRequest;
 import com.dazkins.triad.networking.server.update.ServerUpdatePlayerVelocity;
 import com.dazkins.triad.util.TriadLogger;
@@ -59,7 +62,7 @@ public class TriadServer
 
 		connections = new ArrayList<TriadConnection>();
 
-		port = 54555;
+		port = 56355;
 
 		serverWorldManager = new ServerWorldManager(this);
 		
@@ -81,13 +84,6 @@ public class TriadServer
 	public UpdateList getUpdate()
 	{
 		return serverUpdate;
-	}
-	
-	public UpdateList getAndPurgeUpdate()
-	{
-		UpdateList s = serverUpdate.clone();
-		serverUpdate.purge();
-		return s;
 	}
 	
 	public ServerWorldManager getServerWorldManager()
@@ -192,6 +188,8 @@ public class TriadServer
 			p0.setY(e.getY());
 			p0.setFacing(e.getFacing());
 			
+			c.sendPacket(p0, false);
+			
 			if (e instanceof IEntityWithInventory)
 			{
 				IEntityWithInventory eInv = (IEntityWithInventory) e;
@@ -216,6 +214,7 @@ public class TriadServer
 		} catch (IOException e)
 		{
 			TriadLogger.log(e.getMessage(), true);
+			System.exit(1);
 		}
 		
 		TriadLogger.log("Generating spawn...", false);
@@ -268,8 +267,16 @@ public class TriadServer
 				
 				if (p != null)
 				{
-					p.getCon().sendTCP(p.getPacket());
-					packetCount++;
+					TriadConnection connection = getFromConnection(p.getCon());
+					if (connection.isReadyToReceive())
+					{
+						p.getCon().sendTCP(p.getPacket());
+						packetCount++;
+					} else  
+					{
+						System.out.println("hit");
+						packetSendQueue.add(p);
+					}
 				}
 			} else { break; }
 		}
@@ -279,6 +286,17 @@ public class TriadServer
 		for (TriadConnection t : connectionsToBeRemoved)
 		{
 			connections.remove(t);
+		}
+		
+		ArrayList<ServerUpdateChatMessage> msgs = serverUpdate.getAndPurgeUpdateListOfType(ServerUpdateChatMessage.class);
+		for (ServerUpdateChatMessage c : msgs)
+		{
+			String msg = c.getMessage();
+			String sender = c.getSender();
+			Packet017ChatMessage p = new Packet017ChatMessage();
+			p.setMsg(msg);
+			p.setSender(sender);
+			sendPacketToAll(p, false);
 		}
 		
 		runningTicks++;
@@ -425,6 +443,11 @@ public class TriadServer
 		TriadLogger.initServerLog();
 		TriadServer t = new TriadServer();
 		t.start();
+	}
+	
+	public void markReadyToReceive(TriadConnection tc)
+	{
+		tc.markAsReadyToReceive();
 	}
 
 	public void handleInteractionUpdate(TriadConnection tc, boolean s)

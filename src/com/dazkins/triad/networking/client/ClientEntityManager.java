@@ -187,15 +187,15 @@ public class ClientEntityManager
 		}
 
 
-		for (Map.Entry<Integer, Inventory> mapE : storedInventoryUpdates.entrySet())
-		{
-			int gID = mapE.getKey();
-			EntityShell es = entityShells.get(gID);
-			if (es != null)
-			{
-				handleInventoryUpdate(gID, mapE.getValue());
-			}
-		}
+//		for (Map.Entry<Integer, Inventory> mapE : storedInventoryUpdates.entrySet())
+//		{
+//			int gID = mapE.getKey();
+//			EntityShell es = entityShells.get(gID);
+//			if (es != null)
+//			{
+//				handleInventoryUpdate(gID, mapE.getValue());
+//			}
+//		}
 	}
 
 	public void render(Camera cam)

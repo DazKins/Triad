@@ -61,4 +61,9 @@ public class GuiObjectStatusBar extends GuiObject
 		model.render();
 		GL11.glPopMatrix();
 	}
+
+	public void setupGraphics()
+	{
+		
+	}
 }

@@ -13,6 +13,8 @@ public class TriadConnection
 	
 	private CameraState camState;
 	private long camReceiveTime = System.currentTimeMillis() - CAM_OUTDATED_CUTOFF;
+	
+	private boolean readyToReceive;
 
 	public TriadConnection(TriadServer s, Connection c, String n)
 	{
@@ -25,6 +27,16 @@ public class TriadConnection
 	{
 		camState = cam;
 		camReceiveTime = System.currentTimeMillis();
+	}
+	
+	public void markAsReadyToReceive()
+	{
+		readyToReceive = true;
+	}
+	
+	public boolean isReadyToReceive()
+	{
+		return readyToReceive;
 	}
 	
 	private static final int CAM_OUTDATED_CUTOFF = 5000;

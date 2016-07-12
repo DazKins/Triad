@@ -73,6 +73,8 @@ public class World
 	{
 		int tx = (int) (e.getX() / Tile.TILESIZE);
 		int ty = (int) (e.getY() / Tile.TILESIZE);
+		
+		e.markForUpdate();
 
 		try
 		{

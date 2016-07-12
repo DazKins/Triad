@@ -11,23 +11,12 @@ import com.dazkins.triad.math.AABB;
 
 public class GuiObjectBox extends GuiObject
 {
-	private static final int STYLE_COUNT = 3;
+	private static final int STYLE_COUNT = 5;
 	private static Quad[] sections = new Quad[STYLE_COUNT *  9];
 	
-	private float width;
-	private float height;
-	
-	private float x;
-	private float y;
-	
-	public GuiObjectBox(Gui g, float x, float y, float w, float h, int l)
+	public GuiObjectBox(Gui g)
 	{
-		super(g, l);
-		
-		this.x = x;
-		this.y = y;
-		this.width = w;
-		this.height = h;
+		super(g);
 	}
 
 	public boolean intersects(float x, float y)
@@ -55,6 +44,7 @@ public class GuiObjectBox extends GuiObject
 			}
 		}
 	}
+
 	
 	public AABB getBounds()
 	{
@@ -101,5 +91,10 @@ public class GuiObjectBox extends GuiObject
 		sections[ind + 8].setOffset(x + width - 16, y);
 		sections[ind + 8].setRenderLayer(layer);
 		sections[ind + 8].render();
+	}
+
+	public void setupGraphics()
+	{
+		
 	}
 }

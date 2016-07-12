@@ -5,10 +5,18 @@ import com.dazkins.triad.gfx.TTF;
 
 public class TextRenderFormat extends RenderFormat
 {
+	private TextAlign align;
 	private TTF font = TTF.main;
 	private Color c = new Color(0);
 	private float a = 1.0f;
 	private boolean shadow = false;
+	private float size = 1.0f;
+	
+	public TextRenderFormat setAlign(TextAlign t)
+	{
+		align = t;
+		return this;
+	}
 	
 	public TextRenderFormat setA(float a)
 	{
@@ -34,6 +42,12 @@ public class TextRenderFormat extends RenderFormat
 		this.font = f;
 		return this;
 	}
+	
+	public TextRenderFormat setSize(float s)
+	{
+		this.size = s;
+		return this;
+	}
 
 	public Color getColor()
 	{
@@ -54,6 +68,16 @@ public class TextRenderFormat extends RenderFormat
 	{
 		return font;
 	}
+	
+	public float getSize()
+	{
+		return size;
+	}
+	
+	public TextAlign getAlign()
+	{
+		return align; 
+	}
 
 	public TextRenderFormat reset()
 	{
@@ -61,6 +85,8 @@ public class TextRenderFormat extends RenderFormat
 		a = 1.0f;
 		shadow = false;
 		font = TTF.main;
+		size = 1.0f;
+		align = TextAlign.LEFT;
 		return this;
 	}
 }

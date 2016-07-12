@@ -5,26 +5,18 @@ import com.dazkins.triad.game.gui.event.GuiEventButtonPress;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
 
-public class GuiObjectButton extends GuiObject
+public class GuiObjectButton extends GuiObjectTextBox
 {
-	private GuiObjectTextBox box;
-	
 	private GuiEventButtonPress event;
 	
-	public GuiObjectButton(Gui g, String t, float x, float y, float w, int l)
+	public GuiObjectButton(Gui g)
 	{
-		super(g, l);
-		box = new GuiObjectTextBox(g, t, x, y, w, l);
+		super(g);
 	}
 	
 	public void setPressEvent(GuiEventButtonPress g)
 	{
 		event = g;
-	}
-	
-	public AABB getBounds()
-	{
-		return box.getBounds();
 	}
 	
 	public void tick()
@@ -36,10 +28,5 @@ public class GuiObjectButton extends GuiObject
 			if (getBounds().intersects(input.mouseX, input.mouseY))
 				event.onPress();
 		}
-	}
-	
-	public void render()
-	{
-		box.render();
 	}
 }

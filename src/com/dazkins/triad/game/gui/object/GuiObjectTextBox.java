@@ -2,42 +2,35 @@ package com.dazkins.triad.game.gui.object;
 
 import java.util.ArrayList;
 
+import org.omg.Messaging.SyncScopeHelper;
+
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.renderformat.RenderFormatManager;
+import com.dazkins.triad.game.gui.renderformat.TextAlign;
 import com.dazkins.triad.gfx.OpenGLHelper;
 import com.dazkins.triad.gfx.TTF;
 import com.dazkins.triad.math.AABB;
 
-public class GuiObjectTextBox extends GuiObject
+public class GuiObjectTextBox extends GuiObjectBox
 {
-	private GuiObjectBox box;
-	
 	private String rawMsg;
 	private ArrayList<String> msg;
 	
-	private float x;
-	private float y;
+	private int maxLineCount;
 	
-	private float width;
-	
-	public GuiObjectTextBox(Gui g, String m, float x, float y, float maxWidth, int layer) 
+	public GuiObjectTextBox(Gui g) 
 	{
-		super(g, layer);
-		
-		this.x = x;
-		this.y = y;
-		
-		rawMsg = m;
-		
-		this.width = maxWidth;
-
-		setupBox();
-		oldFont = RenderFormatManager.TEXT.getFont();
+		super(g);
 	}
 	
-	public AABB getBounds()
+	public void setMaxLineCount(int m)
 	{
-		return box.getBounds();
+		maxLineCount = m;
+	}
+	
+	public void setContent(String c)
+	{
+		this.rawMsg = c;
 	}
 	
 	private TTF oldFont;
@@ -45,23 +38,32 @@ public class GuiObjectTextBox extends GuiObject
 	public void render()
 	{
 		if (RenderFormatManager.TEXT.getFont() != oldFont)
-			setupBox();
+			setupGraphics();
 		
-		box.render();
+		super.render();
 		for (int i = 0; i < msg.size(); i++)
 		{
-//			FontRenderer.drawString(msg.get(i), x + 10, (y + i * 16) - 5, layer * 0.001f + 0.0001f, 1.0f);
 			float strLen = RenderFormatManager.TEXT.getFont().getStringLength(msg.get(i));
-			float move = (width - strLen) / 2.0f;
-			TTF.renderString(msg.get(i), x + 5 + move, y + 2 + i * TTF.LETTER_HEIGHT, layer * 0.001f + 0.0001f, 1.0f);
+			
+			float move = 0;
+			TextAlign a = RenderFormatManager.TEXT.getAlign();
+			if (a == TextAlign.CENTRE)
+				move = (super.width - strLen) / 2.0f;
+			
+			TTF.renderStringWithFormating(msg.get(i), x + move + 3, y + height + 3 - (i + 1) * TTF.getLetterHeight(), layer * 0.001f + 0.0001f);
 		}
 		
 		oldFont = RenderFormatManager.TEXT.getFont();
 		
-		OpenGLHelper.renderReferencePoint(x, y);
+//		OpenGLHelper.renderReferencePoint(x, y);
 	}
 	
-	private void setupBox()
+	public String getContent()
+	{
+		return rawMsg;
+	}
+	
+	public void setupGraphics()
 	{
 		msg = new ArrayList<String>();
 		
@@ -71,22 +73,42 @@ public class GuiObjectTextBox extends GuiObject
 		
 		for (int i = 0; i < ms.length; i++)
 		{
+			if (maxLineCount > 0)
+			{
+				if (msg.size() >= maxLineCount)
+				{
+					break;
+				}
+			}
+			
 			String oldLine = curString;
 			curString += ms[i] + " ";
-			int curLineLength = RenderFormatManager.TEXT.getFont().getStringLength(curString);
+			float curLineLength = RenderFormatManager.TEXT.getFont().getStringLength(curString);
+			
+			if (ms[i].equals("\\n"))
+			{
+				msg.add(oldLine);
+				curString = "";
+				continue;
+			}
 			if (curLineLength > width)
 			{
 				msg.add(oldLine);
-				System.out.println(oldLine);
 				curString = ms[i] + " ";
 			}
 		}
 		
 		if (!curString.equals(""))
-			msg.add(curString);
+		{
+			if (maxLineCount > 0)
+			{
+				if (msg.size() < maxLineCount)
+					msg.add(curString);
+			}
+			else
+				msg.add(curString);
+		}
 		
-		int height = msg.size() * TTF.LETTER_HEIGHT;
-		
-		box = new GuiObjectBox(super.gui, x, y, width, height, layer);
+		height = msg.size() * TTF.getLetterHeight();
 	}
 }

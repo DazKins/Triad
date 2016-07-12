@@ -1,9 +1,8 @@
 package com.dazkins.triad.input;
 
-import java.nio.DoubleBuffer;
+import java.util.LinkedList;
+import java.util.Queue;
 
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.glfw.GLFW;
 import org.lwjgl.system.glfw.WindowCallback;
 
@@ -11,6 +10,10 @@ import com.dazkins.triad.gfx.Window;
 
 public class InputHandler extends WindowCallback
 {
+	private Queue<Character> typedQueue;
+	private boolean typedQueueOpen;
+	private int backspaceCount;
+	
 	private Window window;
 
 	private boolean[] keys = new boolean[400];
@@ -30,14 +33,29 @@ public class InputHandler extends WindowCallback
 	{
 		window = w;
 		WindowCallback.set(window.getWindowReference(), this);
+		typedQueue = new LinkedList<Character>();
 	}
 
 	public boolean isKeyDown(int k)
 	{
-		return keys[k];
+		if (!typedQueueOpen)
+			return keys[k];
+		return false;
 	}
 
 	public boolean isKeyJustDown(int k)
+	{
+		if (!typedQueueOpen)
+			return justDownedKeys[k];
+		return false;
+	}
+	
+	public boolean isKeyDownIgnoreTypedQueue(int k)
+	{
+		return keys[k];
+	}
+
+	public boolean isKeyJustDownIgnoreTypedQueue(int k)
 	{
 		return justDownedKeys[k];
 	}
@@ -64,8 +82,40 @@ public class InputHandler extends WindowCallback
 	{
 	}
 
+	private void pushToTypedQueue(char c)
+	{
+		typedQueue.add(c);
+	}
+	
+	public char popTypedQueue()
+	{
+		return typedQueue.remove();
+	}
+	
+	public boolean isTypedQueueEmpty()
+	{
+		return typedQueue.isEmpty();
+	}
+	
+	public void openTypedQueue()
+	{
+		typedQueueOpen = true;
+	}
+	
+	public void closeTypedQueue()
+	{
+		typedQueueOpen = false;
+	}
+	
+	public boolean isTypedQueueOpen()
+	{
+		return typedQueueOpen;
+	}
+	
 	public void character(long window, int codepoint)
 	{
+		if (typedQueueOpen && codepoint != '#')
+			pushToTypedQueue((char) codepoint);
 	}
 
 	public void cursorEnter(long window, int entered)
@@ -85,9 +135,20 @@ public class InputHandler extends WindowCallback
 	public void framebufferSize(long window, int width, int height)
 	{
 	}
+	
+	public int getAndPurgeBackspaceCount()
+	{
+		int tmp = backspaceCount;
+		backspaceCount = 0;
+		return tmp;
+	}
 
 	public void key(long window, int key, int scancode, int action, int mods)
 	{
+		//Backspace
+		if (key == 259 && typedQueueOpen && (action == 1 || action == 2))
+			backspaceCount++;
+		
 		if (action == GLFW.GLFW_PRESS)
 		{
 			if (key < 400 && key >= 0)

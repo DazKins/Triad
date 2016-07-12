@@ -1,20 +1,20 @@
 package com.dazkins.triad.networking.server;
 
-import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.networking.TriadConnection;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet000RawMessage;
 import com.dazkins.triad.networking.packet.Packet001LoginRequest;
 import com.dazkins.triad.networking.packet.Packet002ChunkDataRequest;
-import com.dazkins.triad.networking.packet.Packet004LoginRequestResponse;
 import com.dazkins.triad.networking.packet.Packet005UpdatePlayerPosition;
 import com.dazkins.triad.networking.packet.Packet008CameraStateUpdate;
 import com.dazkins.triad.networking.packet.Packet011PlayerVelocity;
 import com.dazkins.triad.networking.packet.Packet012Inventory;
 import com.dazkins.triad.networking.packet.Packet013InteractCommand;
 import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
-import com.dazkins.triad.networking.server.update.ServerUpdatePlayerVelocity;
+import com.dazkins.triad.networking.packet.Packet016ReadyToReceive;
+import com.dazkins.triad.networking.server.update.ServerUpdateChatMessage;
+import com.dazkins.triad.networking.server.update.ServerUpdateNewConnection;
 import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive;
@@ -37,16 +37,17 @@ public class ServerListener extends Listener
 
 			if (p instanceof Packet000RawMessage)
 			{
+				Packet000RawMessage p0 = (Packet000RawMessage) p;
 				TriadLogger.log("Recieved raw message from: " + con + " saying: " + ((Packet000RawMessage) p).getMsg(), false);
+				String sender = server.getFromConnection(con).getUsername();
+				String message = p0.getMsg();
+				ServerUpdateChatMessage up = new ServerUpdateChatMessage(sender, message);
+				server.getUpdate().addUpdate(up);
 			}
 			if (p instanceof Packet001LoginRequest)
 			{
 				Packet001LoginRequest p0 = (Packet001LoginRequest) p;
-				int id = server.handleNewConnection(new TriadConnection(server, con, p0.getUsername()));
-				Packet004LoginRequestResponse p1 = new Packet004LoginRequestResponse();
-				p1.setAccepted(true);
-				p1.setPlayerID(id);
-				server.getFromConnection(con).sendPacket(p1, false);
+				server.getUpdate().addUpdate(new ServerUpdateNewConnection(p0.getUsername(), con));
 			}
 			if (p instanceof Packet002ChunkDataRequest)
 			{
@@ -92,7 +93,10 @@ public class ServerListener extends Listener
 			{
 				//When interaction updates are received on the sever, they always indicate the end of an interaction
 				server.handleInteractionUpdate(server.getFromConnection(con), false);
-				
+			}
+			if (p instanceof Packet016ReadyToReceive)
+			{
+				server.markReadyToReceive(server.getFromConnection(con));
 			}
 		} else if (!(o instanceof KeepAlive))
 		{

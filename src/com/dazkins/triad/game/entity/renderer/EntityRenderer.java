@@ -110,7 +110,7 @@ public abstract class EntityRenderer
 				GL11.glColor3f(t.getDR(), t.getDG(), t.getDB());
 			model.render(facing);
 			if (name != null && !name.equals(""))
-				TTF.renderString(name, x - name.length() * 8, y + 64, Tile.yPosToDepthRelativeToCamera(cam, y), 1.0f);
+				TTF.renderString(name, x - name.length() * 8, y + 64, Tile.yPosToDepthRelativeToCamera(cam, y));
 		} else
 			initModel();
 	}

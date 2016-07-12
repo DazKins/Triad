@@ -8,7 +8,7 @@ import com.dazkins.triad.gfx.TTF;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
 
-public class GuiObjectInventory extends GuiObject
+public class GuiObjectInventory extends GuiObjectBox
 {
 	private Window win;
 
@@ -16,104 +16,125 @@ public class GuiObjectInventory extends GuiObject
 
 	private InputHandler input;
 
-	private GuiObjectBox mainBox;
-
 	private GuiObjectBox[] slotSheet;
 
-	private float winOffsetX;
-	private float winOffsetY;
-
-	private float gridSpacingX;
-	private float gridSpacingY;
-
-	private float gridOffsetX;
-	private float gridOffsetY;
-
-	private float slotSize;
-
-	private float windowWidth;
-	private float windowHeight;
-
-	private float windowPosX;
-	private float windowPosY;
+	private float gridOffsetX = 12;
+	private float gridOffsetY = 10;
 
 	private ItemStack hoveredItem;
-
-	public GuiObjectInventory(Gui g, Inventory i, Window w, InputHandler inp, int x, int y, int l)
+	
+	public GuiObjectInventory(Gui g, Inventory inv, InputHandler inp)
 	{
-		super(g, l);
+		super(g);
+		this.inv = inv;
 		
-		inv = i;
-		win = w;
-		input = inp;
-
-		winOffsetX = x;
-		winOffsetY = y;
-
-
-		float winWR = (float) win.getW() / 1920.0f;
-
-		gridSpacingX = (int) (4.0f * winWR);
-		gridSpacingY = gridSpacingX;
-
-		gridOffsetX = 12;
-		gridOffsetY = 10;
-
-		slotSize = 64.0f * winWR;
-
-		windowWidth = ((float) inv.width * (slotSize + gridSpacingX) + gridOffsetX * 2.0f - gridSpacingX);
-		windowHeight = ((float) inv.height * (slotSize + gridSpacingY) + gridOffsetY * 2.0f - gridSpacingY);
-
-		windowPosX = (win.getW() / 2.0f - windowWidth / 2.0f) + winOffsetX;
-		windowPosY = (win.getH() / 2.0f - windowHeight / 2.0f) + winOffsetY;
-
-		mainBox = new GuiObjectBox(g, windowPosX, windowPosY, windowWidth, windowHeight, 0);
-		slotSheet = new GuiObjectBox[inv.width * inv.height];
-
-		for (int ix = 0; ix < inv.width; ix++)
+		int width = inv.width;
+		int height= inv.height;
+		
+		slotSheet = new GuiObjectBox[width * height];
+		for (int i = 0; i < width * height; i++)
 		{
-			for (int iy = 0; iy < inv.height; iy++)
+			slotSheet[i] = new GuiObjectBox(this.gui);
+			slotSheet[i].setLayer(2);
+		}
+		
+		this.input = inp;
+	}
+	
+	public void setX(float x)
+	{
+		super.setX(x);
+		
+		int width = inv.width;
+		int height= inv.height;
+		
+		for (int ix = 0; ix < width; ix++)
+		{
+			for (int iy = 0; iy < height; iy++)
 			{
-				slotSheet[ix + iy * inv.width] = new GuiObjectBox(g, windowPosX + ix * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + iy * (slotSize + gridSpacingY) + gridOffsetY, slotSize, slotSize, 3);
+				GuiObjectBox b = slotSheet[ix + iy * width];
+				b.setX(x + gridOffsetX + ix * (getSlotSize() + getGridSpacingX()));
 			}
 		}
 	}
-
-	public GuiObjectInventory(Gui g, Inventory i, Window w, InputHandler inp, int l)
+	
+	public void setY(float y)
 	{
-		super(g, l);
+		super.setY(y);
 		
-		inv = i;
-		win = w;
-		input = inp;
+		int width = inv.width;
+		int height= inv.height;
+		
+		for (int ix = 0; ix < width; ix++)
+		{
+			for (int iy = 0; iy < height; iy++)
+			{
+				GuiObjectBox b = slotSheet[ix + iy * width];
+				b.setY(y + gridOffsetY + iy * (getSlotSize() + getGridSpacingY()));
+			}
+		}
+	}
+	
+	public void setWidth(float w)
+	{
+		super.setWidth(w);
+		
+		int invWidth = inv.width;
+		int invHeight = inv.height;
+		
+		for (int ix = 0; ix < invWidth; ix++)
+		{
+			for (int iy = 0; iy < invHeight; iy++)
+			{
+				GuiObjectBox b = slotSheet[ix + iy * invWidth];
+				b.setWidth(getSlotSize());
+				b.setX(x + gridOffsetX + ix * (getSlotSize() + getGridSpacingX()));
+			}
+		}
+	}
+	
+	public void setHeight(float h)
+	{
+		super.setHeight(h);
 
-		winOffsetX = 0;
-		winOffsetY = 0;
+		int invWidth = inv.width;
+		int invHeight = inv.height;
+		
+		for (int ix = 0; ix < invWidth; ix++)
+		{
+			for (int iy = 0; iy < invHeight; iy++)
+			{
+				GuiObjectBox b = slotSheet[ix + iy * invWidth];
+				b.setHeight(getSlotSize());
+				b.setY(y + gridOffsetY + iy * (getSlotSize() + getGridSpacingY()));
+			}
+		}
+	}
+	
+	private float getGridSpacingX()
+	{
+		return 3.0f;
 	}
 
-	public float getWinW()
+	private float getGridSpacingY()
 	{
-		return windowWidth;
+		return 3.0f;
 	}
-
-	public float getWinH()
+	
+	private float getSlotSize()
 	{
-		return windowHeight;
-	}
-
-	public void setOffsetX(float x)
-	{
-		winOffsetX = x;
-	}
-
-	public void setOffsetY(float y)
-	{
-		winOffsetY = y;
+		int invWidth = inv.width;
+		
+		float slotGridSize = width - 2 * gridOffsetX;
+		float totalSlotWidth = slotGridSize - (invWidth - 1) * getGridSpacingX();
+		float individualWidth = totalSlotWidth / invWidth;
+		
+		return individualWidth;
 	}
 
 	public void render(Camera cam)
 	{
-		mainBox.render();
+		super.render();
 		for (int x = 0; x < inv.width; x++)
 		{
 			for (int y = 0; y < inv.height; y++)
@@ -121,24 +142,30 @@ public class GuiObjectInventory extends GuiObject
 				slotSheet[x + y * inv.width].render();
 			}
 		}
-		for (int x = 0; x < inv.width; x++)
+		
+		for (int ix = 0; ix < inv.width; ix++)
 		{
-			for (int y = 0; y < inv.height; y++)
+			for (int iy = 0; iy < inv.height; iy++)
 			{
-				ItemStack i = inv.getItemStack(x, y);
+				ItemStack i = inv.getItemStack(ix, iy);
 				if (i != null)
 				{
-					i.getItemType().renderIcon(windowPosX + x * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + y * (slotSize + gridSpacingY) + gridOffsetY, 0.2f, slotSize / 32.0f);
-					if (i.getStackSize() > 1)
-						TTF.renderString(i.getStackSize() + "", windowPosX + x * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + y * (slotSize + gridSpacingY) + gridOffsetY + 3, 5, 1);
+					i.getItemType().renderIcon(this.x + ix * (getSlotSize() + getGridSpacingX()) + gridOffsetX, y + iy * (getSlotSize() + getGridSpacingY()) + gridOffsetY, 0.2f, getSlotSize() / 32.0f);
+//					if (i.getStackSize() > 1)
+//						TTF.renderString(i.getStackSize() + "", windowPosX + ix * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + iy * (slotSize + gridSpacingY) + gridOffsetY + 3, 5);
 				}
 			}
 		}
 	}
+	
+	public float getOptimalHeightFromGivenWidth()
+	{
+		return ((getSlotSize() + getGridSpacingY()) * inv.height) + 2 * gridOffsetY;
+	}
 
 	public float getItemScale()
 	{
-		return slotSize / 32.0f;
+		return getSlotSize() / 32.0f;
 	}
 
 	public ItemStack getHoveredItem()
@@ -167,5 +194,10 @@ public class GuiObjectInventory extends GuiObject
 		hoveredItem = null;
 
 		hoveredItem = inv.getItemStack(getHoveredSlotIndex());
+	}
+
+	public void setupGraphics()
+	{
+		
 	}
 }

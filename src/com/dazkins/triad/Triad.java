@@ -1,7 +1,5 @@
 package com.dazkins.triad;
 
-import java.util.ArrayList;
-
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
@@ -82,7 +80,7 @@ public class Triad implements Runnable
 	public void setGameState(GameState g)
 	{
 		currentState = g;
-		currentState.init(this);
+		currentState.init(this, input);
 
 		if (currentState instanceof GameStatePlaying)
 		{
@@ -225,9 +223,9 @@ public class Triad implements Runnable
 
 	private void tick()
 	{
-		input.tick();
-
 		currentState.tick();
+		
+		input.tick();
 
 		if (win.wasCloseRequested())
 		{

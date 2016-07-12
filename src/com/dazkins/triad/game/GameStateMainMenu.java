@@ -6,7 +6,6 @@ import com.dazkins.triad.game.gui.renderformat.RenderFormatManager;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
-import com.dazkins.triad.networking.server.TriadServer;
 
 public class GameStateMainMenu implements GameState
 {
@@ -16,11 +15,11 @@ public class GameStateMainMenu implements GameState
 
 	private InputHandler input;
 
-	public void init(Triad triad)
+	public void init(Triad triad, InputHandler inp)
 	{
 		this.triad = triad;
 		Window win = triad.win;
-		input = new InputHandler(win);
+		input = inp;
 		
 		mainMenu = new GuiMainMenu(triad, input, this);
 	}

@@ -15,7 +15,7 @@ import com.dazkins.triad.util.TriadLogger;
 
 public class TTF
 {
-	public static final int LETTER_HEIGHT = 32;
+	private static final int LETTER_HEIGHT = 32;
 	
 	public static TTF main;
 //	public static TTF mainBold;
@@ -36,6 +36,12 @@ public class TTF
 //		mainItalic = new TTF("/font/" + mainFont + ".ttf", Font.ITALIC);
 	}
 	
+	public static float getLetterHeight()
+	{
+		float size = RenderFormatManager.TEXT.getSize();
+		return (float) LETTER_HEIGHT * size;
+	}
+	
 	public TTF(String path, int style)
 	{
 		try
@@ -52,17 +58,39 @@ public class TTF
 		}
 	}
 	
-	public int getStringLength(String p)
+	public static String getReducedString(String p)
 	{
-		int r = 0;
-		for (char c : p.toCharArray())
+		String red = "";
+		String[] split = p.split(" ");
+		for (String s : split)
 		{
-			r += charWidth.get(c);
+			if (!s.equals(""))
+			{
+				if (s.toCharArray()[0] != '#')
+				{
+					red += s + " ";
+				}
+			}
+		}
+		
+		return red;
+	}
+	
+	public float getStringLength(String p)
+	{
+		String red = getReducedString(p);
+		
+		float s = RenderFormatManager.TEXT.getSize();
+		
+		int r = 0;
+		for (char c : red.toCharArray())
+		{
+			r += s * charWidth.get(c);
 		}
 		return r;
 	}
 	
-	private void renderTTFString(String s, float x, float y, float z, float scale)
+	private void renderTTFString(String s, float x, float y, float z)
 	{
 		TextRenderFormat format = RenderFormatManager.TEXT;
 		
@@ -72,9 +100,16 @@ public class TTF
 		
 		GL11.glColor4f(r, g, b, 1.0f);
 		
+		float scale = format.getSize();
+		
 		int i = 0;
 		for (char c : s.toCharArray())
 		{
+			if (c == ' ')
+			{
+				i += charWidth.get(c) * scale;
+				continue;
+			}
 			BufferObject bo = charMap.get(c);
 			if (bo != null)
 			{
@@ -136,12 +171,52 @@ public class TTF
 		}
 	}
 	
-	public static void renderString(String s, float x, float y, float z, float scale)
+	public static void renderStringWithFormating(String s, float x, float y, float z)
+	{
+		TTF font = RenderFormatManager.TEXT.getFont();
+		
+		if (font == null)
+		{
+			TriadLogger.log("No font assigned!", true);
+			return;
+		}
+		
+		String[] split = s.split(" ");
+		
+		int renderOffset = 0;
+		int layerCount = 0;
+		
+		for (int i = 0; i < split.length; i++)
+		{
+			String cur = split[i];
+			char[] chars = cur.toCharArray();
+			char start = chars[0];
+			if (start == '#')
+			{
+				String r = (chars[1] + "") + (chars[2] + "");
+				String g = (chars[3] + "") + (chars[4] + "");
+				String b = (chars[5] + "") + (chars[6] + "");
+				
+				int ir = Integer.parseInt(r, 16);
+				int ig = Integer.parseInt(g, 16);
+				int ib = Integer.parseInt(b, 16);
+				
+				RenderFormatManager.TEXT.setColour(new Color(ir, ig, ib));
+			} else 
+			{
+				renderString(cur, x + renderOffset, y, z + layerCount * 0.01f);
+				renderOffset += font.getStringLength(cur + " ");
+				layerCount++;
+			}
+		}
+	}
+	
+	public static void renderString(String s, float x, float y, float z)
 	{
 		TTF font = RenderFormatManager.TEXT.getFont();
 		
 		if (font != null)
-			font.renderTTFString(s, x, y, z, scale);
+			font.renderTTFString(s, x, y, z);
 		else
 			TriadLogger.log("No font assigned!", true);
 	}

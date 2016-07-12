@@ -3,7 +3,7 @@ package com.dazkins.triad.game;
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.entity.particle.ParticlePoolLoader;
 import com.dazkins.triad.game.gui.GuiLoading;
-import com.dazkins.triad.game.world.World;
+import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.util.Loader;
 
 public class GameStateLoading implements GameState
@@ -15,7 +15,7 @@ public class GameStateLoading implements GameState
 
 	private boolean started;
 
-	public void init(Triad triad)
+	public void init(Triad triad, InputHandler inp)
 	{
 		this.triad = triad;
 		loader = new Loader();

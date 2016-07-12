@@ -30,6 +30,7 @@ public class GuiPlayer extends Gui
 
 	public void tick()
 	{
+		super.tick();
 //		statusBar.updateStatus((player.lifeTicks % 60) / 60.0f);
 	}
 

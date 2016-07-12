@@ -1,9 +1,11 @@
 package com.dazkins.triad.networking.client;
 
+import com.dazkins.triad.game.chat.ChatMessage;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
+import com.dazkins.triad.networking.client.update.ClientUpdateChatMessage;
 import com.dazkins.triad.networking.client.update.ClientUpdateChunk;
 import com.dazkins.triad.networking.client.update.ClientUpdateEntity;
 import com.dazkins.triad.networking.client.update.ClientUpdateInteraction;
@@ -22,6 +24,7 @@ import com.dazkins.triad.networking.packet.Packet010PlayerNameSet;
 import com.dazkins.triad.networking.packet.Packet012Inventory;
 import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
 import com.dazkins.triad.networking.packet.Packet015SingleLightValueChunkUpdate;
+import com.dazkins.triad.networking.packet.Packet017ChatMessage;
 import com.dazkins.triad.util.TriadLogger;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 import com.esotericsoftware.kryonet.Connection;
@@ -30,19 +33,34 @@ import com.esotericsoftware.kryonet.Listener;
 public class ClientListener extends Listener
 {
 	private TriadClient client;
+	
+	private int packetReceiveCount;
 
 	public ClientListener(TriadClient tc)
 	{
 		client = tc;
+	}
+	
+	public void resetCounter()
+	{
+		packetReceiveCount = 0;
+	}
+	
+	public int getPacketReceiveCount()
+	{
+		return packetReceiveCount;
 	}
 
 	public void received(Connection con, Object o)
 	{
 		if (o instanceof Packet)
 		{
+			packetReceiveCount++;
 			Packet p = (Packet) o;
 			if (p instanceof Packet000RawMessage)
 			{
+				Packet000RawMessage p0 = (Packet000RawMessage) p;
+				client.getClientUpdate().addUpdate(new ClientUpdateChatMessage(new ChatMessage(p0.getMsg(), "SERVER")));
 				TriadLogger.log("Recieved raw message from server: " + ((Packet000RawMessage) p).getMsg(), false);
 			}
 			if (p instanceof Packet003ChunkData)
@@ -60,12 +78,7 @@ public class ClientListener extends Listener
 			if (p instanceof Packet004LoginRequestResponse)
 			{
 				Packet004LoginRequestResponse p0 = (Packet004LoginRequestResponse) p;
-				client.registerPlayerID(p0.getChosenPlayerID());
-				if (p0.isAccepted())
-				{
-					DebugMonitor.addMessage("Login accepted!");
-					TriadLogger.log("Login accepted", false);
-				}
+				client.handleLoginRequestResponse(p0.isAccepted(), p0.getChosenPlayerID());
 			}
 			if (p instanceof Packet006EntityPositionUpdate)
 			{
@@ -140,6 +153,13 @@ public class ClientListener extends Listener
 				ChunkData d = new ChunkData(c, null, lightData);
 				ClientUpdateChunk cu = new ClientUpdateChunk(d, false, true);
 				client.getClientUpdate().addUpdate(cu);
+			}
+			if (p instanceof Packet017ChatMessage)
+			{
+				Packet017ChatMessage p0 = (Packet017ChatMessage) p;
+				String msg = p0.getMsg();
+				String sender = p0.getSender();
+				client.getClientUpdate().addUpdate(new ClientUpdateChatMessage(new ChatMessage(msg, sender)));
 			}
 		}
 	}

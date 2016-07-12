@@ -2,22 +2,27 @@ package com.dazkins.triad.networking.client;
 
 import java.io.IOException;
 
+import com.dazkins.triad.game.chat.Chat;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.networking.Network;
 import com.dazkins.triad.networking.UpdateList;
 import com.dazkins.triad.networking.packet.Packet;
+import com.dazkins.triad.networking.packet.Packet000RawMessage;
 import com.dazkins.triad.networking.packet.Packet002ChunkDataRequest;
 import com.dazkins.triad.networking.packet.Packet011PlayerVelocity;
 import com.dazkins.triad.networking.packet.Packet012Inventory;
 import com.dazkins.triad.networking.packet.Packet013InteractCommand;
 import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
+import com.dazkins.triad.networking.packet.Packet016ReadyToReceive;
 import com.dazkins.triad.util.TriadLogger;
+import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 import com.esotericsoftware.kryonet.Client;
 
 public class TriadClient
 {
 	private Client client;
+	private ClientListener clientListener;
 
 	private String username;
 
@@ -28,6 +33,12 @@ public class TriadClient
 	private boolean running;
 
 	private int playerID = -1;
+	
+	private boolean loginAccepted;
+	
+	private int packetSendCount;
+	
+	private Chat chat;
 
 	public TriadClient(String s)
 	{
@@ -42,6 +53,19 @@ public class TriadClient
 		ip = "localhost";
 
 		Network.register(client);
+	}
+	
+	private boolean sentReadyToReceive;
+	
+	public boolean hasSentReadyToReceive()
+	{
+		return sentReadyToReceive;
+	}
+	
+	public void markReadyToReceive()
+	{
+		sendPacket(new Packet016ReadyToReceive());
+		sentReadyToReceive = true;
 	}
 
 	public int getPlayerID()
@@ -59,16 +83,14 @@ public class TriadClient
 		return running;
 	}
 	
+	public boolean isLoginAccepted()
+	{
+		return loginAccepted;
+	}
+	
 	public UpdateList getClientUpdate()
 	{
 		return update;
-	}
-	
-	public UpdateList getAndPurgeUpdate()
-	{
-		UpdateList c = update.clone();
-		update.purge();
-		return c;
 	}
 
 	public void updatePlayerVelocity(float xa, float ya)
@@ -83,30 +105,41 @@ public class TriadClient
 	{
 		Packet012Inventory p0 = Inventory.compressToPacket(inv, eID);
 		
-		client.sendTCP(p0);
+		sendPacket(p0);
 	}
 	
 	public void updatePlayerInventory(Inventory inv)
 	{
 		Packet012Inventory p0 = Inventory.compressToPacket(inv, getPlayerID());
-		
-		client.sendTCP(p0);
+
+		sendPacket(p0);
+	}
+	
+	public void handleLoginRequestResponse(boolean a, int pID)
+	{
+		if (a)
+		{
+			DebugMonitor.addMessage("Login accepted!");
+			TriadLogger.log("Login accepted", false);
+			registerPlayerID(pID);
+			loginAccepted = true;
+		}
 	}
 	
 	public void sendInteractionRequest()
 	{
 		Packet013InteractCommand p0 = new Packet013InteractCommand();
-		client.sendTCP(p0);
+		sendPacket(p0);
 	}
 
 	public void start()
 	{
-		ClientListener cl = new ClientListener(this);
-		client.addListener(cl);
+		clientListener = new ClientListener(this);
+		client.addListener(clientListener);
 
 		try
 		{
-			client.connect(5000, ip, 54555);
+			client.connect(5000, ip, 56355);
 		} catch (IOException e)
 		{
 			TriadLogger.log(e.getMessage(), true);
@@ -128,6 +161,23 @@ public class TriadClient
 	public void sendPacket(Packet p)
 	{
 		client.sendTCP(p);
+		packetSendCount++;
+	}
+	
+	public void resetCounters()
+	{
+		packetSendCount = 0;
+		clientListener.resetCounter();
+	}
+	
+	public int getPacketSendCount()
+	{
+		return packetSendCount;
+	}
+	
+	public int getPacketReceiveCount()
+	{
+		return clientListener.getPacketReceiveCount();
 	}
 
 	public void requestChunkData(ChunkCoordinate c)
@@ -143,6 +193,13 @@ public class TriadClient
 		Packet014InteractionUpdate p0 = new Packet014InteractionUpdate();
 		p0.setInteractingEntityID(playerID);
 		p0.setStart(false);
+		sendPacket(p0);
+	}
+
+	public void sendMessage(String s)
+	{
+		Packet000RawMessage p0 = new Packet000RawMessage();
+		p0.setMessage(s);
 		sendPacket(p0);
 	}
 }
