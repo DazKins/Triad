@@ -237,4 +237,17 @@ public class ClientEntityManager
 	{
 		return loadedEntities.contains(gID);
 	}
+
+	public boolean handleCooldownUpdate(int gID, int an, int cd)
+	{
+		EntityShell s = entityShells.get(gID);
+		
+		if (s == null)
+			return false;
+		
+		AbilityBar b = s.getAbilityBar();
+		b.setCooldown(an, cd);
+		
+		return true;
+	}
 }

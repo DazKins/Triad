@@ -119,7 +119,7 @@ public abstract class Mob extends Entity implements IEntityWithInventory, IEntit
 		return 0;
 	}
 
-	protected int getDamage()
+	public int getDamage()
 	{
 		ItemWeapon wep = eInv.getWeaponItem();
 		if (wep != null)
@@ -136,7 +136,7 @@ public abstract class Mob extends Entity implements IEntityWithInventory, IEntit
 		return 0;
 	}
 
-	protected int getKnockbackValue()
+	public int getKnockbackValue()
 	{
 		ItemWeapon wep = eInv.getWeaponItem();
 		if (wep != null)
@@ -287,6 +287,9 @@ public abstract class Mob extends Entity implements IEntityWithInventory, IEntit
 			world.getServerWorldManager().handleHealthUpdate(this);
 			
 		prevHealth = health;
+		
+		if (abilityBar != null)
+			world.getServerWorldManager().handleCooldownUpdate(this, abilityBar.getCooldownUpdates());
 	}
 
 	public ItemStack[] getItemsToDrop()
@@ -363,7 +366,7 @@ public abstract class Mob extends Entity implements IEntityWithInventory, IEntit
 		return r;
 	}
 
-	protected AABB[] getAttackAreas()
+	public AABB[] getAttackAreas()
 	{
 		AABB[] r = new AABB[4];
 		int ar = getAttackRange();

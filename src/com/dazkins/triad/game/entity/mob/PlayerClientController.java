@@ -224,6 +224,6 @@ public class PlayerClientController
 
 	public float getMovementSpeed()
 	{
-		return 0.2f + MathHelper.getRandomWithNegatives() * 0.01f;
+		return 0.2f + MathHelper.getRandomWithNegatives() * 0.001f;
 	}
 }

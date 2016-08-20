@@ -10,7 +10,7 @@ import com.dazkins.triad.gfx.Color;
 import com.dazkins.triad.gfx.model.ModelTorch;
 import com.dazkins.triad.math.AABB;
 
-public class EntityTorch extends Entity implements LightEmitter
+public class EntityTorch extends Entity implements ILightEmitter
 {
 	public EntityTorch(World w, float x, float y)
 	{

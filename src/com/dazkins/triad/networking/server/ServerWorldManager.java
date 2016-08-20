@@ -278,4 +278,9 @@ public class ServerWorldManager
 	{
 		server.sendHealthUpdate(m, m.getHealth());
 	}
+
+	public void handleCooldownUpdate(Mob m, int[] c)
+	{
+		server.sendCooldownUpdate(m, c);
+	}
 }

@@ -13,6 +13,7 @@ import com.dazkins.triad.networking.UpdateList;
 import com.dazkins.triad.networking.client.update.ClientUpdateAbilityBar;
 import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
 import com.dazkins.triad.networking.client.update.ClientUpdateChunk;
+import com.dazkins.triad.networking.client.update.ClientUpdateCooldown;
 import com.dazkins.triad.networking.client.update.ClientUpdateEntity;
 import com.dazkins.triad.networking.client.update.ClientUpdateEntityHealthUpdate;
 import com.dazkins.triad.networking.client.update.ClientUpdateInteraction;
@@ -196,6 +197,18 @@ public class ClientWorldManager
 			if (!cem.handleHealthUpdate(gID, health, maxHealth))
 			{
 				update.addUpdate(h);
+			}
+		}
+		
+		ArrayList<ClientUpdateCooldown> cooldownUpdates = update.getAndPurgeUpdateListOfType(ClientUpdateCooldown.class);
+		for (ClientUpdateCooldown c : cooldownUpdates)
+		{
+			int gID = c.getgID();
+			int cd = c.getCooldown();
+			int an = c.getAbilityNo();
+			if (!cem.handleCooldownUpdate(gID, an, cd))
+			{
+				update.addUpdate(c);
 			}
 		}
 		

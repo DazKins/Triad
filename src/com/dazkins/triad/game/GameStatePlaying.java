@@ -91,9 +91,10 @@ public class GameStatePlaying implements GameState
 					Inventory inv = playerEntityShell.getInventory();
 					AbilityBar ab = playerEntityShell.getAbilityBar();
 					
-					if (ab != null && !guiPlayerAbilityBar.hasAbilityBar())
+					if (ab != null)
 					{
-						guiPlayerAbilityBar.setAbilityBar(ab);
+						if (!guiPlayerAbilityBar.hasAbilityBar())
+							guiPlayerAbilityBar.setAbilityBar(ab);
 					}
 					
 					if (input.isKeyJustDown(GLFW.GLFW_KEY_I))

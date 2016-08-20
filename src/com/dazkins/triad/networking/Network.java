@@ -23,6 +23,7 @@ import com.dazkins.triad.networking.packet.Packet019Pong;
 import com.dazkins.triad.networking.packet.Packet020UseAbility;
 import com.dazkins.triad.networking.packet.Packet021AbilityBar;
 import com.dazkins.triad.networking.packet.Packet022EntityHealthUpdate;
+import com.dazkins.triad.networking.packet.Packet023CooldownUpdate;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
@@ -55,6 +56,7 @@ public class Network
 		k.register(Packet020UseAbility.class);
 		k.register(Packet021AbilityBar.class);
 		k.register(Packet022EntityHealthUpdate.class);
+		k.register(Packet023CooldownUpdate.class);
 
 		k.register(String.class);
 		k.register(int[].class);

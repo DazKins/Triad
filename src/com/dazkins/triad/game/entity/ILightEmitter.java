@@ -1,6 +1,6 @@
 package com.dazkins.triad.game.entity;
 
-public interface LightEmitter
+public interface ILightEmitter
 {
 	public int getR();
 

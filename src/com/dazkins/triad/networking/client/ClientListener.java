@@ -10,6 +10,7 @@ import com.dazkins.triad.networking.client.update.ClientUpdateAbilityBar;
 import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
 import com.dazkins.triad.networking.client.update.ClientUpdateChatMessage;
 import com.dazkins.triad.networking.client.update.ClientUpdateChunk;
+import com.dazkins.triad.networking.client.update.ClientUpdateCooldown;
 import com.dazkins.triad.networking.client.update.ClientUpdateEntity;
 import com.dazkins.triad.networking.client.update.ClientUpdateEntityHealthUpdate;
 import com.dazkins.triad.networking.client.update.ClientUpdateInteraction;
@@ -31,6 +32,7 @@ import com.dazkins.triad.networking.packet.Packet017ChatMessage;
 import com.dazkins.triad.networking.packet.Packet019Pong;
 import com.dazkins.triad.networking.packet.Packet021AbilityBar;
 import com.dazkins.triad.networking.packet.Packet022EntityHealthUpdate;
+import com.dazkins.triad.networking.packet.Packet023CooldownUpdate;
 import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -177,6 +179,15 @@ public class ClientListener extends Listener
 				int h = p0.getHealth();
 				int mh = p0.getMaxHealth();
 				ClientUpdateEntityHealthUpdate c = new ClientUpdateEntityHealthUpdate(gID, h, mh);
+				client.getClientUpdate().addUpdate(c);
+			}
+			if (p instanceof Packet023CooldownUpdate)
+			{
+				Packet023CooldownUpdate p0 = (Packet023CooldownUpdate) p;
+				int gID = p0.getgID();
+				int abilityNo = p0.getAbilityNumber();
+				int cd = p0.getCooldownRemaining();
+				ClientUpdateCooldown c = new ClientUpdateCooldown(gID, abilityNo, cd);
 				client.getClientUpdate().addUpdate(c);
 			}
 		}

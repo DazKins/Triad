@@ -25,8 +25,64 @@ public class AbilityBar
 		this.abilities = new Ability[size];
 		this.lastUse = new long[size];
 		this.size = size;
+		this.prevCooldowns = new int[abilities.length];
+		this.cooldowns = new int[abilities.length];
 	}
 	
+	private int[] prevCooldowns;
+	
+	public int[] getCooldownUpdates()
+	{
+		int[] newCooldowns = new int[abilities.length];
+		for (int i = 0; i < abilities.length; i++)
+		{
+			long lu = lastUse[i];
+			
+			if (abilities[i] == null)
+			{
+				newCooldowns[i] = -1;
+				continue;
+			}
+			
+			int cd = (int) (lu + abilities[i].getCooldown() - mob.getLifeTicks());
+			
+			if (cd < 0)
+				cd = 0;
+			
+			if (cd != prevCooldowns[i])
+				newCooldowns[i] = cd;
+			else
+				newCooldowns[i] = -1;
+			
+			prevCooldowns[i] = cd;
+		}
+		return newCooldowns;
+	}
+	
+	//For use client side only
+	//
+	//
+	
+	private int cooldowns[];
+	
+	public void setCooldown(int an, int cd)
+	{
+		cooldowns[an] = cd;
+	}
+	
+	public int[] getCooldowns()
+	{
+		return cooldowns;
+	}
+	
+	public int getCooldown(int an)
+	{
+		return cooldowns[an];
+	}
+			
+	//
+	//
+
 	public void setAbility(int i, Ability a)
 	{
 		abilities[i] = a;

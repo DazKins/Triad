@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
+import com.dazkins.triad.game.ability.Ability;
 import com.dazkins.triad.game.ability.AbilityBar;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.IEntityWithAbilityBar;
@@ -34,6 +35,7 @@ import com.dazkins.triad.networking.packet.Packet017ChatMessage;
 import com.dazkins.triad.networking.packet.Packet019Pong;
 import com.dazkins.triad.networking.packet.Packet021AbilityBar;
 import com.dazkins.triad.networking.packet.Packet022EntityHealthUpdate;
+import com.dazkins.triad.networking.packet.Packet023CooldownUpdate;
 import com.dazkins.triad.networking.packet.PacketSend;
 import com.dazkins.triad.networking.server.update.ServerUpdateChatMessage;
 import com.dazkins.triad.networking.server.update.ServerUpdateChunkRequest;
@@ -544,5 +546,20 @@ public class TriadServer
 		p.setHealth(h);
 		p.setMaxHealth(m.getMaxHealth());
 		sendPacketToAll(p, false);
+	}
+
+	public void sendCooldownUpdate(Mob m, int[] c)
+	{
+		for (int i = 0; i < c.length; i++)
+		{
+			if (c[i] != -1)
+			{
+				Packet023CooldownUpdate p = new Packet023CooldownUpdate();
+				p.setAbilityNumber(i);
+				p.setgID(m.getGlobalID());
+				p.setCooldownRemaining(c[i]);
+				sendPacketToAll(p, false);
+			}
+		}
 	}
 }

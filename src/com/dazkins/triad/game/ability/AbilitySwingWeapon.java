@@ -6,8 +6,6 @@ import com.dazkins.triad.math.AABB;
 
 public class AbilitySwingWeapon extends Ability
 {
-	private AABB attackHitbox = new AABB(-50, -50, 50, 50);
-	
 	public AbilitySwingWeapon(int id)
 	{
 		super(id, "swingweapon");
@@ -22,12 +20,10 @@ public class AbilitySwingWeapon extends Ability
 	{
 		m.onUseAbility(this);
 		
-		float x = m.getX();
-		float y = m.getY();
+		AABB attackHitboxes[] = m.getAttackAreas();
 		
-		AABB b = attackHitbox.shifted(x, y);
+		AABB b = attackHitboxes[m.getFacing()];
 		
-		//AABB, Mob, Damage, Knockback
-		w.sendAttackCommand(b, m, 10, 1);
+		w.sendAttackCommand(b, m, m.getDamage(), m.getKnockbackValue());
 	}
 }
