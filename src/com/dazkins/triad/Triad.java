@@ -28,8 +28,8 @@ public class Triad implements Runnable
 
 	private InputHandler input;
 
-	public static float zMin = -10f;
-	public static float zMax = 70f;
+	public static float zMin = -800f;
+	public static float zMax = 700f;
 
 	private TriadClient client;
 
@@ -48,7 +48,7 @@ public class Triad implements Runnable
 //		 SoundManager.getAudio("theme").play();
 
 //		win = new Window(1920, 1080, true);
-		win = new Window(1280, 720, false);
+		win = new Window(1600, 900, false);
 
 		Sys.touch();
 

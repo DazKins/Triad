@@ -14,6 +14,7 @@ public class StorageAnimation
 	{
 		animations[StorageAnimationID.HUMANOID_IDLE] = AnimationHumanoidIdle.class;
 		animations[StorageAnimationID.HUMANOID_WALKING] = AnimationHumanoidWalking.class;
+		animations[StorageAnimationID.HUMANOID_SLASHING] = AnimationHumanoidSlashing.class;
 		animations[StorageAnimationID.QUADRUPED_WALKING] = AnimationQuadrupedWalking.class;
 	}
 

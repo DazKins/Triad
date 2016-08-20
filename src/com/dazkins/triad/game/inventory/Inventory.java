@@ -4,22 +4,36 @@ import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.networking.client.update.ClientUpdateInventory;
 import com.dazkins.triad.networking.packet.Packet012Inventory;
-import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
 import com.dazkins.triad.util.TriadLogger;
 
 public class Inventory
 {
+	private int type;
 	public int width, height;
 
 	protected ItemStack[] items;
 
-	public Inventory(int width, int height)
+	public Inventory(int t, int width, int height)
 	{
+		this.type = t;
 		this.height = height;
 		this.width = width;
 		items = new ItemStack[height * width];
 	}
 
+	public Inventory(int width, int height)
+	{
+		this.type = InventoryType.NORMAL;
+		this.height = height;
+		this.width = width;
+		items = new ItemStack[height * width];
+	}
+	
+	public int getType()
+	{
+		return type;
+	}
+	
 	public ItemStack getItemStack(int x, int y)
 	{
 		return items[x + y * width];
@@ -131,16 +145,22 @@ public class Inventory
 	}
 	
 	//For server client interaction
-	boolean changed = true;
+	private boolean changed = true;
 	
-	public boolean hasChanged()
+	public boolean getAndPurgeHasChangedFlag()
 	{
-		return changed;
+		if (changed)
+		{
+			changed = false;
+			return true;
+		}
+		return false;
 	}
 	
 	public static Packet012Inventory compressToPacket(Inventory inv, int eID)
 	{
 		Packet012Inventory p0 = new Packet012Inventory();
+		p0.setType(inv.getType());
 		p0.setEntityGID(eID);
 		p0.setWidth(inv.width);
 		p0.setHeight(inv.height);
@@ -167,8 +187,14 @@ public class Inventory
 	{
 		int width = p.getWidth();
 		int height = p.getHeight();
+		int type = p.getType();
 		
-		Inventory inv = new Inventory(width, height); 
+		Inventory inv = null;
+		
+		if (type == InventoryType.NORMAL)
+			inv = new Inventory(width, height);
+		if (type == InventoryType.EQUIPMENT)
+			inv = new EquipmentInventory();
 				
 		int items[] = p.getItems();
 		int stackCounts[] = p.getStackCounts();
@@ -185,32 +211,8 @@ public class Inventory
 			}
 		}
 		
-		return inv;
-	}
-	
-	public static Inventory createInventoryObject(ClientUpdateInventory p)
-	{
-		int width = p.getWidth();
-		int height = p.getHeight();
-		
-		Inventory inv = new Inventory(width, height); 
-				
-		ItemStack items[] = p.getItems();
-		
-		for (int i = 0; i < width * height; i++)
-		{
-			ItemStack ci = items[i];
-			if (ci != null)
-			{
-				inv.addItemStack(ci, i);
-			}
-		}
+		inv.changed = false;
 		
 		return inv;
-	}
-	
-	public void resetHasChangedFlag()
-	{
-		changed = false;
 	}
 }

@@ -1,7 +1,8 @@
 package com.dazkins.triad.networking.server;
 
+import com.dazkins.triad.game.entity.mob.EntityPlayer;
+import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.math.AABB;
-import com.dazkins.triad.networking.TriadConnection;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet000RawMessage;
 import com.dazkins.triad.networking.packet.Packet001LoginRequest;
@@ -13,8 +14,15 @@ import com.dazkins.triad.networking.packet.Packet012Inventory;
 import com.dazkins.triad.networking.packet.Packet013InteractCommand;
 import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
 import com.dazkins.triad.networking.packet.Packet016ReadyToReceive;
+import com.dazkins.triad.networking.packet.Packet018Ping;
+import com.dazkins.triad.networking.packet.Packet020UseAbility;
+import com.dazkins.triad.networking.server.update.ServerUpdateAbilityUse;
+import com.dazkins.triad.networking.server.update.ServerUpdateCameraState;
 import com.dazkins.triad.networking.server.update.ServerUpdateChatMessage;
+import com.dazkins.triad.networking.server.update.ServerUpdateInteraction;
+import com.dazkins.triad.networking.server.update.ServerUpdateInventory;
 import com.dazkins.triad.networking.server.update.ServerUpdateNewConnection;
+import com.dazkins.triad.networking.server.update.ServerUpdatePlayerVelocity;
 import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive;
@@ -63,40 +71,52 @@ public class ServerListener extends Listener
 			if (p instanceof Packet008CameraStateUpdate)
 			{
 				Packet008CameraStateUpdate p0 = (Packet008CameraStateUpdate) p;
-				TriadConnection t = server.getFromConnection(con);
-				
 				CameraState cs = new CameraState(new AABB(p0.getX0(), p0.getY0(), p0.getX1(), p0.getY1()));
-				t.handleCameraUpdate(cs);
+				server.getUpdate().addUpdate(new ServerUpdateCameraState(cs, server.getFromConnection(con)));
 			}
 			if (p instanceof Packet011PlayerVelocity)
 			{
 				Packet011PlayerVelocity p0 = (Packet011PlayerVelocity) p;
 				float xa = p0.getXa();
 				float ya = p0.getYa();
-				server.handlePlayerVelocityUpdate(server.getFromConnection(con), xa, ya);
+				EntityPlayer e = server.getPlayer(server.getFromConnection(con));
+				server.getUpdate().addUpdate(new ServerUpdatePlayerVelocity(e, xa, ya));
 			}
 			if (p instanceof Packet012Inventory)
 			{
 				Packet012Inventory p0 = (Packet012Inventory) p;
-				int gID = p0.getEntityGID();
-				int width = p0.getWidth();
-				int height = p0.getHeight();
-				int items[] = p0.getItems();
-				int stackCounts[] = p0.getStackCounts();
-				server.handleInventoryUpdate(gID, width, height, items, stackCounts);
+				Inventory i = Inventory.createInventoryObject(p0);
+				EntityPlayer player = server.getPlayer(server.getFromConnection(con));
+				ServerUpdateInventory u = new ServerUpdateInventory(i, player);
+				server.getUpdate().addUpdate(u);
 			}
 			if (p instanceof Packet013InteractCommand)
 			{
-				server.handleInteractionUpdate(server.getFromConnection(con), true);
+				EntityPlayer player = server.getPlayer(server.getFromConnection(con));
+				ServerUpdateInteraction u = new ServerUpdateInteraction(player, true);
+				server.getUpdate().addUpdate(u);
 			}
 			if (p instanceof Packet014InteractionUpdate)
 			{
-				//When interaction updates are received on the sever, they always indicate the end of an interaction
-				server.handleInteractionUpdate(server.getFromConnection(con), false);
+				EntityPlayer player = server.getPlayer(server.getFromConnection(con));
+				ServerUpdateInteraction u = new ServerUpdateInteraction(player, false);
+				server.getUpdate().addUpdate(u);
 			}
 			if (p instanceof Packet016ReadyToReceive)
 			{
 				server.markReadyToReceive(server.getFromConnection(con));
+			}
+			if (p instanceof Packet018Ping)
+			{
+				server.onPing(server.getFromConnection(con));
+			}
+			if (p instanceof Packet020UseAbility)
+			{
+				Packet020UseAbility p0 = (Packet020UseAbility) p;
+				int n = p0.getAbilityNo();
+				EntityPlayer player = server.getPlayer(server.getFromConnection(con));
+				ServerUpdateAbilityUse u = new ServerUpdateAbilityUse(n, player);
+				server.getUpdate().addUpdate(u);
 			}
 		} else if (!(o instanceof KeepAlive))
 		{
@@ -107,9 +127,6 @@ public class ServerListener extends Listener
 	public void connected(Connection c)
 	{
 		TriadLogger.log("New connection from: " + c.getRemoteAddressTCP().getHostName() + " on " + c, false);
-		Packet000RawMessage p = new Packet000RawMessage();
-		p.setMessage("Hello " + c.getRemoteAddressTCP().getHostName() + "!");
-		c.sendTCP(p);
 	}
 
 	public void disconnected(Connection c)

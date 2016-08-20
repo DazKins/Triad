@@ -15,6 +15,8 @@ import com.dazkins.triad.networking.packet.Packet012Inventory;
 import com.dazkins.triad.networking.packet.Packet013InteractCommand;
 import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
 import com.dazkins.triad.networking.packet.Packet016ReadyToReceive;
+import com.dazkins.triad.networking.packet.Packet018Ping;
+import com.dazkins.triad.networking.packet.Packet020UseAbility;
 import com.dazkins.triad.util.TriadLogger;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 import com.esotericsoftware.kryonet.Client;
@@ -38,7 +40,9 @@ public class TriadClient
 	
 	private int packetSendCount;
 	
-	private Chat chat;
+	private boolean pingSent;
+	private long pingTime;
+	private float ping;
 
 	public TriadClient(String s)
 	{
@@ -50,7 +54,7 @@ public class TriadClient
 
 		update = new UpdateList();
 
-		ip = "localhost";
+		ip = "127.0.0.1";
 
 		Network.register(client);
 	}
@@ -111,7 +115,6 @@ public class TriadClient
 	public void updatePlayerInventory(Inventory inv)
 	{
 		Packet012Inventory p0 = Inventory.compressToPacket(inv, getPlayerID());
-
 		sendPacket(p0);
 	}
 	
@@ -129,6 +132,13 @@ public class TriadClient
 	public void sendInteractionRequest()
 	{
 		Packet013InteractCommand p0 = new Packet013InteractCommand();
+		sendPacket(p0);
+	}
+	
+	public void useAbility(int i)
+	{
+		Packet020UseAbility p0 = new Packet020UseAbility();
+		p0.setAbilityNo(i);
 		sendPacket(p0);
 	}
 
@@ -201,5 +211,23 @@ public class TriadClient
 		Packet000RawMessage p0 = new Packet000RawMessage();
 		p0.setMessage(s);
 		sendPacket(p0);
+	}
+	
+	public void tick()
+	{
+		if (!pingSent && loginAccepted && (System.nanoTime() - pingTime) > 500000000)
+		{
+			Packet018Ping p = new Packet018Ping();
+			sendPacket(p);
+			pingTime = System.nanoTime();
+			pingSent = true;
+		}
+	}
+	
+	public void onPong()
+	{
+		ping = (float) (System.nanoTime() - pingTime) / 1000000.0f;
+		DebugMonitor.setVariableValue("Ping", ping);
+		pingSent = false;
 	}
 }

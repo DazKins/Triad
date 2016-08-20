@@ -79,6 +79,9 @@ public class Image
 
 	public static Image getImageFromName(String name)
 	{
+		Image i = nameToImage.get(name);
+		if (i == null)
+			i = getImageFromName("missing_texture");
 		return nameToImage.get(name);
 	}
 
@@ -147,7 +150,7 @@ public class Image
 
 	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z, float b)
 	{
-		float offset = 0.001f;
+		float offset = 0.0001f;
 
 		float tx0 = (tx / (float) width) + offset;
 		float ty0 = (ty / (float) height) + offset;

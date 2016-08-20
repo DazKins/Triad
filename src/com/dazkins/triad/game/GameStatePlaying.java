@@ -1,16 +1,16 @@
 package com.dazkins.triad.game;
 
-import java.util.ArrayList;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.Triad;
+import com.dazkins.triad.game.ability.AbilityBar;
 import com.dazkins.triad.game.chat.Chat;
-import com.dazkins.triad.game.entity.mob.EntityPlayerClientController;
+import com.dazkins.triad.game.entity.mob.PlayerClientController;
 import com.dazkins.triad.game.entity.shell.EntityShell;
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.GuiChat;
+import com.dazkins.triad.game.gui.GuiPlayerAbilityBar;
 import com.dazkins.triad.game.gui.GuiSingleInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.gfx.Camera;
@@ -18,7 +18,7 @@ import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.networking.client.ClientWorldManager;
 import com.dazkins.triad.networking.client.TriadClient;
-import com.dazkins.triad.networking.client.update.ClientUpdateChatMessage;
+import com.dazkins.triad.util.TriadLogger;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
 
 public class GameStatePlaying implements GameState
@@ -32,13 +32,13 @@ public class GameStatePlaying implements GameState
 	
 	private Chat chat;
 	private GuiChat chatGui;
-
+	private GuiPlayerAbilityBar guiPlayerAbilityBar;
 	private Gui currentlyDisplayedGui;
 	private Window win;
 
 	private TriadClient client;
 
-	private EntityPlayerClientController player;
+	private PlayerClientController player;
 
 	public void init(Triad triad, InputHandler inp)
 	{
@@ -50,8 +50,9 @@ public class GameStatePlaying implements GameState
 		
 		chat = new Chat();
 		chatGui = new GuiChat(triad, input, chat);
+		guiPlayerAbilityBar = new GuiPlayerAbilityBar(triad, input);
 
-		player = new EntityPlayerClientController("", 0, 0, input);
+		player = new PlayerClientController("", 0, 0, input);
 	}
 
 	public void initClient(TriadClient c)
@@ -76,9 +77,6 @@ public class GameStatePlaying implements GameState
 	
 			player.tick();
 			
-			client.updatePlayerVelocity(player.getXA(), player.getYA());
-			cwm.clientUpdatePlayer(player.getX(), player.getY(), player.getFacing());
-			
 			if (currentlyDisplayedGui != null)
 				currentlyDisplayedGui.tick();
 			
@@ -87,23 +85,27 @@ public class GameStatePlaying implements GameState
 				client.sendInteractionRequest();
 			}
 			
-			Inventory inv = player.getInventory();
-			
-			if (input.isKeyJustDown(GLFW.GLFW_KEY_I))
-			{
-				changeGui(new GuiSingleInventory(inv, cwm.getPlayerEntityShell().getGlobalID(), triad, input, client));
-			}
-			
-			if (inv.hasChanged())
-			{
-				client.updatePlayerInventory(inv);
-			}
-			inv.resetHasChangedFlag();
-			
 			EntityShell playerEntityShell = cwm.getPlayerEntityShell();
 			if (playerEntityShell != null)
 			{
-				player.setInteractingObject(playerEntityShell.getInteractingEntity());
+					Inventory inv = playerEntityShell.getInventory();
+					AbilityBar ab = playerEntityShell.getAbilityBar();
+					
+					if (ab != null && !guiPlayerAbilityBar.hasAbilityBar())
+					{
+						guiPlayerAbilityBar.setAbilityBar(ab);
+					}
+					
+					if (input.isKeyJustDown(GLFW.GLFW_KEY_I))
+					{
+						changeGui(new GuiSingleInventory(inv, cwm.getPlayerEntityShell().getGlobalID(), triad, input, client));
+					}
+				
+					if (inv.getAndPurgeHasChangedFlag())
+					{
+						client.updatePlayerInventory(inv);
+					}
+					player.setInteractingObject(playerEntityShell.getInteractingEntity());
 			}
 			
 			EntityShell interactingObject = player.getInteractingObject();
@@ -144,6 +146,7 @@ public class GameStatePlaying implements GameState
 		DebugMonitor.setVariableValue("Packets sent", client.getPacketSendCount());
 		DebugMonitor.setVariableValue("Packets received", client.getPacketReceiveCount());
 		
+		client.tick();
 		client.resetCounters();
 	}
 
@@ -157,6 +160,7 @@ public class GameStatePlaying implements GameState
 		GL11.glPopMatrix();
 		
 		chatGui.render();
+		guiPlayerAbilityBar.render();
 
 		if (currentlyDisplayedGui != null)
 			currentlyDisplayedGui.render(cam);

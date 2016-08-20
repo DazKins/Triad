@@ -21,7 +21,6 @@ public class OpenGLHelper
 	public static void immDrawQuad(float x0, float y0, float x1, float y1, float z)
 	{
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glVertex3f(x0, y0, z);
 		GL11.glVertex3f(x1, y0, z);

@@ -4,11 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.dazkins.triad.game.ability.AbilityBar;
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.IEntityWithAbilityBar;
+import com.dazkins.triad.game.entity.IEntityWithEquipmentInventory;
 import com.dazkins.triad.game.entity.IEntityWithInventory;
-import com.dazkins.triad.game.entity.mob.EntityPlayerServer;
+import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.entity.mob.Mob;
+import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
+import com.dazkins.triad.game.inventory.InventoryType;
 import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.game.world.World;
@@ -18,7 +23,10 @@ import com.dazkins.triad.networking.UpdateList;
 import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
 import com.dazkins.triad.networking.packet.Packet;
 import com.dazkins.triad.networking.packet.Packet004LoginRequestResponse;
+import com.dazkins.triad.networking.server.update.ServerUpdateAbilityUse;
 import com.dazkins.triad.networking.server.update.ServerUpdateChunkRequest;
+import com.dazkins.triad.networking.server.update.ServerUpdateInteraction;
+import com.dazkins.triad.networking.server.update.ServerUpdateInventory;
 import com.dazkins.triad.networking.server.update.ServerUpdateNewConnection;
 import com.dazkins.triad.networking.server.update.ServerUpdatePlayerVelocity;
 import com.dazkins.triad.util.TriadLogger;
@@ -29,7 +37,7 @@ public class ServerWorldManager
 	
 	private World world;
 		
-	private Map<TriadConnection, EntityPlayerServer> players;
+	private Map<TriadConnection, EntityPlayer> players;
 	
 	private ArrayList<Chunk> spawnChunks;
 	private ArrayList<Chunk> chunksToUpdate;
@@ -39,7 +47,7 @@ public class ServerWorldManager
 	public ServerWorldManager(TriadServer s)
 	{
 		server = s;
-		players = new HashMap<TriadConnection, EntityPlayerServer>();
+		players = new HashMap<TriadConnection, EntityPlayer>();
 		spawnChunks = new ArrayList<Chunk>();
 		
 		world = new World(this);
@@ -67,12 +75,29 @@ public class ServerWorldManager
 				Inventory inv = eInv.getInventory();
 				if (inv != null)
 				{
-					if (inv.hasChanged())
+					if (inv.getAndPurgeHasChangedFlag())
 					{
 						server.sendEntityInventoryUpdate(eInv);
 					}
-					inv.resetHasChangedFlag();
 				}
+			}
+			
+			if (e instanceof IEntityWithAbilityBar)
+			{
+				IEntityWithAbilityBar eA = (IEntityWithAbilityBar) e;
+				AbilityBar ab = eA.getAbilityBar();
+				if (ab != null)
+				{
+					if (ab.getAndPurgeHasChangedFlag())
+					{
+						server.sendEntityAbilityBarUpdate(eA);
+					}
+				}
+			}
+			
+			if (e instanceof IEntityWithEquipmentInventory)
+			{
+				
 			}
 		}
 		
@@ -81,9 +106,9 @@ public class ServerWorldManager
 		//Add a default load anchor to spawn
 		anchors.add(new ChunkCoordinate(0, 0));
 		
-		for (Map.Entry<TriadConnection, EntityPlayerServer> mapE : players.entrySet())
+		for (Map.Entry<TriadConnection, EntityPlayer> mapE : players.entrySet())
 		{
-			EntityPlayerServer p = mapE.getValue();
+			EntityPlayer p = mapE.getValue();
 			int cx = (int) (p.getX() / (Tile.TILESIZE * Chunk.CHUNKS));
 			int cy = (int) (p.getY() / (Tile.TILESIZE * Chunk.CHUNKS));
 			
@@ -100,6 +125,7 @@ public class ServerWorldManager
 			p1.setAccepted(true);
 			p1.setPlayerID(id);
 			server.getFromConnection(con.getConnection()).sendPacket(p1, false);
+			server.sendGlobalMessage("Welcome to the server " + con.getUsername() + "!");
 		}
 
 		ArrayList<ServerUpdateChunkRequest> tChunkRequests = update.getAndPurgeUpdateListOfType(ServerUpdateChunkRequest.class);
@@ -128,9 +154,39 @@ public class ServerWorldManager
 		{
 			float xa = p.getXA();
 			float ya = p.getYA();
-			EntityPlayerServer e = p.getEnt();
+			EntityPlayer e = p.getEnt();
 			if (e != null)
 				e.push(xa, ya);
+		}
+		
+		ArrayList<ServerUpdateAbilityUse> abilityUpdates = update.getAndPurgeUpdateListOfType(ServerUpdateAbilityUse.class);
+		for (ServerUpdateAbilityUse u : abilityUpdates)
+		{
+			int an = u.getAbiityNo();
+			EntityPlayer p = u.getPlayer();
+			p.useAbility(an);
+		}
+		
+		ArrayList<ServerUpdateInventory> inventoryUpdates = update.getAndPurgeUpdateListOfType(ServerUpdateInventory.class);
+		for (ServerUpdateInventory u : inventoryUpdates)
+		{
+			EntityPlayer p = u.getPlayer();
+			Inventory inv = u.getInventory();
+			if (inv.getType() == InventoryType.NORMAL)
+				p.setInventory(inv);
+			if (inv.getType() == InventoryType.EQUIPMENT)
+				p.setEquipmentInventory((EquipmentInventory) inv);
+		}
+		
+		ArrayList<ServerUpdateInteraction> interactionUpdates = update.getAndPurgeUpdateListOfType(ServerUpdateInteraction.class);
+		for (ServerUpdateInteraction u : interactionUpdates)
+		{
+			EntityPlayer p = u .getPlayer();
+			boolean s = u.getStatus();
+			if (s)
+				p.attemptInteract();
+			else
+				p.setInteractingObject(null);
 		}
 		
 		world.tick();
@@ -153,7 +209,7 @@ public class ServerWorldManager
 		return world;
 	}
 	
-	public Map<TriadConnection, EntityPlayerServer> getPlayers()
+	public Map<TriadConnection, EntityPlayer> getPlayers()
 	{
 		return players;
 	}
@@ -184,13 +240,18 @@ public class ServerWorldManager
 		return spawnChunks;
 	}
 	
-	public EntityPlayerServer addNewPlayer(String username, TriadConnection c)
+	public EntityPlayer addNewPlayer(String username, TriadConnection c)
 	{
-		EntityPlayerServer e = new EntityPlayerServer(world, 0, 0, username);
+		EntityPlayer e = new EntityPlayer(world, 0, 0, username);
 		players.put(c, e);
 		world.addEntity(e);
 		
 		return e;
+	}
+	
+	public EntityPlayer getPlayer(TriadConnection c)
+	{
+		return players.get(c);
 	}
 
 	public UpdateList getUpdate()
@@ -211,5 +272,10 @@ public class ServerWorldManager
 	public void onInteractUpdate(Mob mob)
 	{
 		server.sendInteractionUpdate(mob);
+	}
+
+	public void handleHealthUpdate(Mob m)
+	{
+		server.sendHealthUpdate(m, m.getHealth());
 	}
 }

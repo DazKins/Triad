@@ -6,10 +6,14 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
+import com.dazkins.triad.game.ability.AbilityBar;
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.IEntityWithAbilityBar;
+import com.dazkins.triad.game.entity.IEntityWithEquipmentInventory;
 import com.dazkins.triad.game.entity.IEntityWithInventory;
-import com.dazkins.triad.game.entity.mob.EntityPlayerServer;
+import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.entity.mob.Mob;
+import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
@@ -27,10 +31,12 @@ import com.dazkins.triad.networking.packet.Packet010PlayerNameSet;
 import com.dazkins.triad.networking.packet.Packet012Inventory;
 import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
 import com.dazkins.triad.networking.packet.Packet017ChatMessage;
+import com.dazkins.triad.networking.packet.Packet019Pong;
+import com.dazkins.triad.networking.packet.Packet021AbilityBar;
+import com.dazkins.triad.networking.packet.Packet022EntityHealthUpdate;
 import com.dazkins.triad.networking.packet.PacketSend;
 import com.dazkins.triad.networking.server.update.ServerUpdateChatMessage;
 import com.dazkins.triad.networking.server.update.ServerUpdateChunkRequest;
-import com.dazkins.triad.networking.server.update.ServerUpdatePlayerVelocity;
 import com.dazkins.triad.util.TriadLogger;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
@@ -102,6 +108,7 @@ public class TriadServer
 		{
 			c.sendTCP(p);
 			packetCount++;
+			return;
 		}
 		
 		if (packetCount < PACKET_CUTOFF)
@@ -155,9 +162,9 @@ public class TriadServer
 	// Returns the id of the created player entity
 	public int handleNewConnection(TriadConnection c)
 	{
-		for (Map.Entry<TriadConnection, EntityPlayerServer> mapE : serverWorldManager.getPlayers().entrySet())
+		for (Map.Entry<TriadConnection, EntityPlayer> mapE : serverWorldManager.getPlayers().entrySet())
 		{
-			EntityPlayerServer pl = mapE.getValue();
+			EntityPlayer pl = mapE.getValue();
 			Packet010PlayerNameSet namePacket = new Packet010PlayerNameSet();
 			namePacket.setgID(pl.getGlobalID());
 			namePacket.setName(pl.getName());
@@ -166,16 +173,23 @@ public class TriadServer
 		}
 		
 		connections.add(c);
-		EntityPlayerServer p = serverWorldManager.addNewPlayer(c.getUsername(), c);
+		EntityPlayer p = serverWorldManager.addNewPlayer(c.getUsername(), c);
 		TriadLogger.log("Registered new connection: " + c.getUsername() + " from: " + c.getIP(), false);
 		
-		for (TriadConnection tc : connections)
-		{
-			Packet010PlayerNameSet namePacket = new Packet010PlayerNameSet();
-			namePacket.setName(c.getUsername());
-			namePacket.setgID(p.getGlobalID());
-			tc.sendPacket(namePacket, false);
-		}
+		Packet010PlayerNameSet namePacket = new Packet010PlayerNameSet();
+		namePacket.setName(c.getUsername());
+		namePacket.setgID(p.getGlobalID());
+		sendPacketToAll(namePacket, false);
+		
+		Packet012Inventory inventoryPacket = Inventory.compressToPacket(p.getEquipmentInventory(), p.getGlobalID());
+		sendPacketToAll(inventoryPacket, false);
+		
+		Packet022EntityHealthUpdate healthUpdate = new Packet022EntityHealthUpdate();
+		int h = p.getHealth();
+		int gID = p.getGlobalID();
+		healthUpdate.setgID(gID);
+		healthUpdate.setHealth(h);
+		sendPacketToAll(healthUpdate, false);
 		
 		ArrayList<Entity> ents = serverWorldManager.getWorld().getLoadedEntities();
 		for (Entity e : ents)
@@ -190,6 +204,17 @@ public class TriadServer
 			
 			c.sendPacket(p0, false);
 			
+			if (e instanceof Mob)
+			{
+				Mob m = (Mob) e;
+				int health = m.getHealth();
+				int mHealth = m.getMaxHealth();
+				Packet022EntityHealthUpdate p1 = new Packet022EntityHealthUpdate();
+				p1.setgID(e.getGlobalID());
+				p1.setHealth(health);
+				p1.setMaxHealth(mHealth);
+				c.sendPacket(p1, false);
+			}
 			if (e instanceof IEntityWithInventory)
 			{
 				IEntityWithInventory eInv = (IEntityWithInventory) e;
@@ -197,10 +222,29 @@ public class TriadServer
 				if (i != null)
 				{
 					Packet012Inventory p1 = Inventory.compressToPacket(i, e.getGlobalID());
-					
 					c.sendPacket(p1, false);
 				}
 			} 
+			if (e instanceof IEntityWithAbilityBar)
+			{
+				IEntityWithAbilityBar eAb = (IEntityWithAbilityBar) e;
+				AbilityBar a = eAb.getAbilityBar();
+				if (a != null)
+				{
+					Packet021AbilityBar p1 = AbilityBar.compressToPacket(a, e.getGlobalID());
+					c.sendPacket(p1, false);
+				}
+			}
+			if (e instanceof IEntityWithEquipmentInventory)
+			{
+				IEntityWithEquipmentInventory eInv = (IEntityWithEquipmentInventory) e;
+				EquipmentInventory i = eInv.getEquipmentInventory();
+				if (i != null)
+				{
+					Packet012Inventory p1 = Inventory.compressToPacket(i, e.getGlobalID());
+					c.sendPacket(p1, false);
+				}
+			}
 		}
 		
 		return p.getGlobalID();
@@ -274,7 +318,6 @@ public class TriadServer
 						packetCount++;
 					} else  
 					{
-						System.out.println("hit");
 						packetSendQueue.add(p);
 					}
 				}
@@ -301,6 +344,13 @@ public class TriadServer
 		
 		runningTicks++;
 		packetCount = 0;
+	}
+	
+	public void sendGlobalMessage(String m)
+	{
+		Packet000RawMessage p = new Packet000RawMessage();
+		p.setMessage(m);
+		sendPacketToAll(p, false);
 	}
 	
 	public void handleChunkRequest(TriadConnection tc, int cx, int cy)
@@ -353,7 +403,7 @@ public class TriadServer
 		
 		for (TriadConnection c : connections)
 		{
-			EntityPlayerServer ep = serverWorldManager.getPlayers().get(c);
+			EntityPlayer ep = serverWorldManager.getPlayers().get(c);
 			int id = ep.getGlobalID();
 			
 			if (id == e.getGlobalID())
@@ -374,6 +424,15 @@ public class TriadServer
 		int gID = e.getGlobalID();
 		Inventory i = ie.getInventory();
 		Packet012Inventory p = Inventory.compressToPacket(i, gID);
+		sendPacketToAll(p, false);
+	}
+
+	public void sendEntityAbilityBarUpdate(IEntityWithAbilityBar ae)
+	{
+		Entity e = (Entity) ae;
+		int gID = e.getGlobalID();
+		AbilityBar a = ae.getAbilityBar();
+		Packet021AbilityBar p = AbilityBar.compressToPacket(a, gID);
 		sendPacketToAll(p, false);
 	}
 	
@@ -449,10 +508,15 @@ public class TriadServer
 	{
 		tc.markAsReadyToReceive();
 	}
+	
+	public EntityPlayer getPlayer(TriadConnection c)
+	{
+		return serverWorldManager.getPlayer(c);
+	}
 
 	public void handleInteractionUpdate(TriadConnection tc, boolean s)
 	{
-		EntityPlayerServer e = serverWorldManager.getPlayers().get(tc);
+		EntityPlayer e = serverWorldManager.getPlayers().get(tc);
 		if (s)
 		{
 			e.attemptInteract();
@@ -462,9 +526,23 @@ public class TriadServer
 		}
 	}
 	
-	public void handlePlayerVelocityUpdate(TriadConnection tc, float xa, float ya)
+//	public void handlePlayerVelocityUpdate(TriadConnection tc, float xa, float ya)
+//	{
+//		EntityPlayer e = serverWorldManager.getPlayers().get(tc);
+//		serverUpdate.addUpdate(new ServerUpdatePlayerVelocity(e, xa, ya));
+//	}
+
+	public void onPing(TriadConnection c)
 	{
-		EntityPlayerServer e = serverWorldManager.getPlayers().get(tc);
-		serverUpdate.addUpdate(new ServerUpdatePlayerVelocity(e, xa, ya));
+		c.sendPacket(new Packet019Pong(), true);
+	}
+
+	public void sendHealthUpdate(Mob m, int h)
+	{
+		Packet022EntityHealthUpdate p = new Packet022EntityHealthUpdate();
+		p.setgID(m.getGlobalID());
+		p.setHealth(h);
+		p.setMaxHealth(m.getMaxHealth());
+		sendPacketToAll(p, false);
 	}
 }

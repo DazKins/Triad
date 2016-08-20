@@ -1,6 +1,6 @@
 package com.dazkins.triad.networking.client.update;
 
-public class ClientUpdateInteraction
+public class ClientUpdateInteraction extends ClientUpdate
 {
 	private int eID;
 	private int iID;

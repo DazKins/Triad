@@ -2,25 +2,48 @@ package com.dazkins.triad.game.entity.mob;
 
 import java.util.ArrayList;
 
+import com.dazkins.triad.game.ability.Ability;
+import com.dazkins.triad.game.ability.AbilityBar;
+import com.dazkins.triad.game.ability.AbilitySwingWeapon;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.entity.StorageEntityID;
+import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
+import com.dazkins.triad.game.inventory.item.Item;
+import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.gfx.model.animation.StorageAnimationID;
 import com.dazkins.triad.math.AABB;
 
-public class EntityPlayerServer extends Mob
+public class EntityPlayer extends Mob
 {
-	public EntityPlayerServer(World w, float x, float y, String name)
+	public EntityPlayer(World w, float x, float y, String name)
 	{
-		super(w, StorageEntityID.PLAYER, x, y, name, 1000);
+		super(w, StorageEntityID.PLAYER, x, y, name, 100);
 		this.inv = new Inventory(9, 5);
+		abilityBar = new AbilityBar(this, 10);
+		abilityBar.setAbility(0, Ability.swingWeapon);
+		inv.addItem(Item.log);
+		this.eInv = new EquipmentInventory();
+		eInv.addItemStack(new ItemStack(Item.testHelmet, 1));
+		eInv.addItemStack(new ItemStack(Item.testChest, 1));
+//		eInv.addItemStack(new ItemStack(Item.testFeet, 1));
+		eInv.addItemStack(new ItemStack(Item.testLegs, 1));
+		eInv.addItemStack(new ItemStack(Item.testSword, 1));
 	}
 
 	public int getMaxHealth()
 	{
-		return 1000;
+		return 100;
+	}
+	
+	public void onUseAbility(Ability a)
+	{
+		if (a instanceof AbilitySwingWeapon)
+		{
+			addNewAnimation(StorageAnimationID.HUMANOID_SLASHING, 1, false, 0.3f);
+		}
 	}
 	
 	public void attemptInteract()
@@ -75,9 +98,9 @@ public class EntityPlayerServer extends Mob
 		super.move();
 		
 		if (Math.abs(xa) >= 0.2f || Math.abs(ya) >= 0.2f)
-			addNewAnimation(StorageAnimationID.HUMANOID_WALKING, 1, false, 1);
+			addNewAnimation(StorageAnimationID.HUMANOID_WALKING, 2, false, 1);
 		else
-			addNewAnimation(StorageAnimationID.HUMANOID_IDLE, 1, false, 1);
+			addNewAnimation(StorageAnimationID.HUMANOID_IDLE, 2, false, 1);
 
 		setFacingBasedOnVelocities(xa, ya);
 		

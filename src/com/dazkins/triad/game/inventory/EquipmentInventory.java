@@ -121,6 +121,6 @@ public class EquipmentInventory extends Inventory
 
 	public EquipmentInventory()
 	{
-		super(5, 5);
+		super(InventoryType.EQUIPMENT, 5, 5);
 	}
 }

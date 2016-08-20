@@ -1,28 +1,26 @@
 package com.dazkins.triad.game.entity.mob;
 
-
 import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
-import com.dazkins.triad.game.entity.StorageEntityID;
 import com.dazkins.triad.game.entity.shell.EntityShell;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.math.MathHelper;
+import com.dazkins.triad.networking.client.TriadClient;
 
-public class EntityPlayerClientController
+public class PlayerClientController
 {
+	private TriadClient client;
+	
 	private float x;
 	private float y;
 	
 	private float xa;
 	private float ya;
-	
-	private int facing;
-	
-	private Inventory inv;
 	
 	private InputHandler input;
 
@@ -30,19 +28,18 @@ public class EntityPlayerClientController
 
 	private String name;
 
-	public EntityPlayerClientController(String n, float x, float y, InputHandler input)
+	public PlayerClientController(String n, float x, float y, InputHandler input)
 	{
 		this.x = x;
 		this.y = y;
 		this.input = input;
-		this.inv = new Inventory(9, 5);
-		inv.addItem(Item.testHelmet);
-		inv.addItem(Item.testChest);
-		inv.addItem(Item.testLegs);
-		inv.addItems(Item.testSword, 4);
-		inv.addItem(Item.axe);
 
 		name = n;
+	}
+	
+	public void setClient(TriadClient c)
+	{
+		this.client = c;
 	}
 
 	public String getName()
@@ -78,21 +75,67 @@ public class EntityPlayerClientController
 
 			if (input.isKeyDown(GLFW.GLFW_KEY_W))
 			{
-				facing = Facing.UP;
 				ya += getMovementSpeed() * moveModifier;
 			} else if (input.isKeyDown(GLFW.GLFW_KEY_S))
 			{
-				facing = Facing.DOWN;
 				ya += -getMovementSpeed() * moveModifier;
 			}
 			if (input.isKeyDown(GLFW.GLFW_KEY_A))
 			{
-				facing = Facing.LEFT;
 				xa += -getMovementSpeed() * moveModifier;
 			} else if (input.isKeyDown(GLFW.GLFW_KEY_D))
 			{
-				facing = Facing.RIGHT;
 				xa += getMovementSpeed() * moveModifier;
+			}
+			
+			if (input.isKeyJustDown(GLFW.GLFW_KEY_1))
+			{
+				client.useAbility(0);
+			}
+			
+			if (input.isKeyJustDown(GLFW.GLFW_KEY_2))
+			{
+				client.useAbility(1);
+			}
+			
+			if (input.isKeyJustDown(GLFW.GLFW_KEY_3))
+			{
+				client.useAbility(2);
+			}
+			
+			if (input.isKeyJustDown(GLFW.GLFW_KEY_4))
+			{
+				client.useAbility(3);
+			}
+			
+			if (input.isKeyJustDown(GLFW.GLFW_KEY_5))
+			{
+				client.useAbility(4);
+			}
+			
+			if (input.isKeyJustDown(GLFW.GLFW_KEY_6))
+			{
+				client.useAbility(5);
+			}
+			
+			if (input.isKeyJustDown(GLFW.GLFW_KEY_7))
+			{
+				client.useAbility(6);
+			}
+			
+			if (input.isKeyJustDown(GLFW.GLFW_KEY_8))
+			{
+				client.useAbility(7);
+			}
+			
+			if (input.isKeyJustDown(GLFW.GLFW_KEY_9))
+			{
+				client.useAbility(8);
+			}
+			
+			if (input.isKeyJustDown(GLFW.GLFW_KEY_0))
+			{
+				client.useAbility(9);
 			}
 
 			//TODO reimplement
@@ -105,8 +148,10 @@ public class EntityPlayerClientController
 //			}
 		}
 
-		x += xa;
-		y += ya;
+		client.updatePlayerVelocity(xa, ya);
+
+//		x += xa;
+//		y += ya;
 
 		xa *= 0.75f;
 		ya *= 0.75f;
@@ -142,15 +187,10 @@ public class EntityPlayerClientController
 		this.y = y;
 	}
 	
-	public int getFacing()
-	{
-		return facing;
-	}
-	
-	public Inventory getInventory()
-	{
-		return inv;
-	}
+//	public int getFacing()
+//	{
+//		return facing;
+//	}
 
 	public boolean mayPass(Entity e)
 	{
@@ -184,11 +224,6 @@ public class EntityPlayerClientController
 
 	public float getMovementSpeed()
 	{
-		return 1f;
-	}
-	
-	public void setInventory(Inventory i)
-	{
-		inv = i;
+		return 0.2f + MathHelper.getRandomWithNegatives() * 0.01f;
 	}
 }

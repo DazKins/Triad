@@ -2,7 +2,7 @@ package com.dazkins.triad.game.entity;
 
 import org.lwjgl.opengl.GL11;
 
-import com.dazkins.triad.game.entity.mob.EntityPlayerClientController;
+import com.dazkins.triad.game.entity.mob.PlayerClientController;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;

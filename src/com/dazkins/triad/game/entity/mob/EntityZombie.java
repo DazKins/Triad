@@ -96,7 +96,7 @@ public class EntityZombie extends Mob
 	public Class<? extends Mob>[] getHostileMobs()
 	{
 		Class<? extends Mob>[] r = new Class[1];
-		r[0] = EntityPlayerServer.class;
+		r[0] = EntityPlayer.class;
 		return r;
 	}
 

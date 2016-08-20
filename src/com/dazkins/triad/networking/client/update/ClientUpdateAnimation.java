@@ -1,6 +1,6 @@
 package com.dazkins.triad.networking.client.update;
 
-public class ClientUpdateAnimation
+public class ClientUpdateAnimation extends ClientUpdate
 {
 	private int entityGID;
 	private int animID;

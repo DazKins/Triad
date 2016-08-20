@@ -15,22 +15,26 @@ import com.dazkins.triad.input.InputHandler;
 
 public class GuiChat extends Gui
 {
+	private static final int CHAT_WIDTH = 400;
+	
 	private GuiObjectTextBox mainChat;
 	private GuiObjectTextEntry textEntry;
 	
 	private Chat chat;
 	
-	private static final float TEXT_SIZE = 0.7f;
+	private static final float TEXT_SIZE = 0.6f;
+	private static final int MESSAGE_COUNT = 8;
 	
 	public GuiChat(Triad t, InputHandler i, Chat c)
 	{
 		super(t, i);
 		this.chat = c;
 		mainChat = new GuiObjectTextBox(this);
-		mainChat.setWidth(600);
+		mainChat.setWidth(CHAT_WIDTH);
 		
 		textEntry = new GuiObjectTextEntry(this);
-		textEntry.setWidth(600);
+		textEntry.setWidth(CHAT_WIDTH);
+		textEntry.setMaxLineCount(1);
 
 		RenderFormatManager.TEXT.setSize(TEXT_SIZE);
 		mainChat.setY(TTF.getLetterHeight());
@@ -50,9 +54,15 @@ public class GuiChat extends Gui
 		RenderFormatManager.BOX.setRenderStyle(3);
 		
 		ArrayList<ChatMessage> msgs = chat.getChatMessages();
+		
+		int len = msgs.size();
 		String content = "";
-		for (ChatMessage s : msgs)
+		int start = len - MESSAGE_COUNT;
+		if (start < 0)
+			start = 0;
+		for (int i = start; i < msgs.size(); i++)
 		{
+			ChatMessage s = msgs.get(i);
 			String sender = s.getSender();
 			String msg = s.getMessage();
 			content += "#ff006a " + sender + ": #ffffff " + msg + " \\n ";
@@ -68,7 +78,6 @@ public class GuiChat extends Gui
 	
 	public void render()
 	{
-		
 		if (chat.getAndPurgeHasChatChanged())
 		{
 			setupGraphics();
@@ -102,7 +111,7 @@ public class GuiChat extends Gui
 			input.closeTypedQueue();
 		}
 		
-		if (input.isKeyJustDownIgnoreTypedQueue(GLFW.GLFW_KEY_ENTER))
+		if (input.isKeyJustDownIgnoreTypedQueue(GLFW.GLFW_KEY_ENTER) && input.isTypedQueueOpen())
 		{
 			String cont = textEntry.getContent();
 			textEntry.setContent("");

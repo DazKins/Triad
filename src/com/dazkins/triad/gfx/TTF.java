@@ -11,11 +11,14 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.gui.renderformat.RenderFormatManager;
 import com.dazkins.triad.game.gui.renderformat.TextRenderFormat;
+import com.dazkins.triad.util.StringUtil;
 import com.dazkins.triad.util.TriadLogger;
 
 public class TTF
 {
 	private static final int LETTER_HEIGHT = 32;
+	private static final float LETTER_SPACING = 0.5f;
+	private static final float SPACE_SIZE = 2.0f;
 	
 	public static TTF main;
 //	public static TTF mainBold;
@@ -61,14 +64,16 @@ public class TTF
 	public static String getReducedString(String p)
 	{
 		String red = "";
-		String[] split = p.split(" ");
+		
+		p = p.replace(" ", " " + StringUtil.RANDOM_SPACE_SEPERATOR);
+		String[] split = p.split(StringUtil.RANDOM_SPACE_SEPERATOR);
 		for (String s : split)
 		{
 			if (!s.equals(""))
 			{
 				if (s.toCharArray()[0] != '#')
 				{
-					red += s + " ";
+					red += s;
 				}
 			}
 		}
@@ -85,7 +90,9 @@ public class TTF
 		int r = 0;
 		for (char c : red.toCharArray())
 		{
-			r += s * charWidth.get(c);
+			if (c == ' ')
+				r += s * SPACE_SIZE;
+			r += s * charWidth.get(c) + LETTER_SPACING;
 		}
 		return r;
 	}
@@ -102,12 +109,12 @@ public class TTF
 		
 		float scale = format.getSize();
 		
-		int i = 0;
+		float i = 0;
 		for (char c : s.toCharArray())
 		{
 			if (c == ' ')
 			{
-				i += charWidth.get(c) * scale;
+				i += SPACE_SIZE * scale;
 				continue;
 			}
 			BufferObject bo = charMap.get(c);
@@ -118,7 +125,7 @@ public class TTF
 				GL11.glScalef(scale, scale, 1.0f);
 				bo.render();
 				GL11.glPopMatrix();
-				i += charWidth.get(c) * scale;
+				i += (charWidth.get(c) + LETTER_SPACING) * scale;
 			} else 
 			{
 				TriadLogger.log("No character registered for: " + c, true);
@@ -181,7 +188,8 @@ public class TTF
 			return;
 		}
 		
-		String[] split = s.split(" ");
+		s = s.replace(" ", " " + StringUtil.RANDOM_SPACE_SEPERATOR);
+		String[] split = s.split(StringUtil.RANDOM_SPACE_SEPERATOR);
 		
 		int renderOffset = 0;
 		int layerCount = 0;
@@ -189,24 +197,27 @@ public class TTF
 		for (int i = 0; i < split.length; i++)
 		{
 			String cur = split[i];
-			char[] chars = cur.toCharArray();
-			char start = chars[0];
-			if (start == '#')
+			if (cur.length() > 0)
 			{
-				String r = (chars[1] + "") + (chars[2] + "");
-				String g = (chars[3] + "") + (chars[4] + "");
-				String b = (chars[5] + "") + (chars[6] + "");
-				
-				int ir = Integer.parseInt(r, 16);
-				int ig = Integer.parseInt(g, 16);
-				int ib = Integer.parseInt(b, 16);
-				
-				RenderFormatManager.TEXT.setColour(new Color(ir, ig, ib));
-			} else 
-			{
-				renderString(cur, x + renderOffset, y, z + layerCount * 0.01f);
-				renderOffset += font.getStringLength(cur + " ");
-				layerCount++;
+				char[] chars = cur.toCharArray();
+				char start = chars[0];
+				if (start == '#')
+				{
+					String r = (chars[1] + "") + (chars[2] + "");
+					String g = (chars[3] + "") + (chars[4] + "");
+					String b = (chars[5] + "") + (chars[6] + "");
+					
+					int ir = Integer.parseInt(r, 16);
+					int ig = Integer.parseInt(g, 16);
+					int ib = Integer.parseInt(b, 16);
+					
+					RenderFormatManager.TEXT.setColour(new Color(ir, ig, ib));
+				} else 
+				{
+					renderString(cur, x + renderOffset, y, z + layerCount * 0.01f);
+					renderOffset += font.getStringLength(cur);
+					layerCount++;
+				}
 			}
 		}
 	}

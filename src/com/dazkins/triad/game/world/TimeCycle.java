@@ -18,7 +18,7 @@ public class TimeCycle
 
 	public TimeCycle(World w)
 	{
-		curTime = 16000;
+		curTime = 0;
 		this.world = w;
 	}
 
@@ -37,7 +37,7 @@ public class TimeCycle
 		else if (relTime > HALFDAY + TRANSTIME / 2)
 			world.setAmbientLight(nightLight);
 
-		DebugMonitor.setVariableValue("Time", getTime() + " (" + getRelTime() + ")" + " (" + getDayOrNight() + ")");
+//		DebugMonitor.setVariableValue("Time", getTime() + " (" + getRelTime() + ")" + " (" + getDayOrNight() + ")");
 
 		curTime++;
 	}

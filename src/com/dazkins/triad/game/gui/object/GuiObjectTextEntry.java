@@ -19,14 +19,18 @@ public class GuiObjectTextEntry extends GuiObjectTextBox
 	{
 		if (input.isTypedQueueOpen())
 		{
+			setShowCursor(true);
 			String cur = this.getContent();
+			
 			while (!input.isTypedQueueEmpty())
 			{
 				cur += input.popTypedQueue();
 			}
+			
 			int b = input.getAndPurgeBackspaceCount();
 			if (cur.length() > 0)
 				cur = cur.substring(0, cur.length() - b);
+			
 			if (!this.getContent().equals(cur))
 			{
 				RenderFormatManager.TEXT.setSize(0.7f);
@@ -34,6 +38,9 @@ public class GuiObjectTextEntry extends GuiObjectTextBox
 				setupGraphics();
 				RenderFormatManager.TEXT.reset();
 			}
+		} else 
+		{
+			setShowCursor(false);	
 		}
 	}
 }

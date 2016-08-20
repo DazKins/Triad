@@ -2,7 +2,7 @@ package com.dazkins.triad.networking.client.update;
 
 import com.dazkins.triad.networking.client.ChunkData;
 
-public class ClientUpdateChunk
+public class ClientUpdateChunk extends ClientUpdate
 {
 	private ChunkData data;
 	

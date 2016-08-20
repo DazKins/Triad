@@ -4,6 +4,7 @@ import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.gfx.model.Quad;
+import com.dazkins.triad.util.TriadLogger;
 
 public class AnimationHumanoidSlashing extends Animation
 {
@@ -30,9 +31,10 @@ public class AnimationHumanoidSlashing extends Animation
 			float multiplier;
 
 			if (animSpeed != 0)
-				multiplier = 50 / animSpeed;
+				multiplier = 5 * animSpeed;
 			else
-				multiplier = 50;
+				multiplier = 5;
+			
 
 			if (f == Facing.LEFT)
 			{

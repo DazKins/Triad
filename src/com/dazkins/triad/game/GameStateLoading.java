@@ -1,7 +1,6 @@
 package com.dazkins.triad.game;
 
 import com.dazkins.triad.Triad;
-import com.dazkins.triad.game.entity.particle.ParticlePoolLoader;
 import com.dazkins.triad.game.gui.GuiLoading;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.util.Loader;
@@ -19,7 +18,7 @@ public class GameStateLoading implements GameState
 	{
 		this.triad = triad;
 		loader = new Loader();
-		loader.addLoad(new ParticlePoolLoader());
+//		loader.addLoad(new ParticlePoolLoader());
 
 		gui = new GuiLoading(triad, loader);
 	}

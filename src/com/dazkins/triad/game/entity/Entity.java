@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 import org.lwjgl.opengl.GL11;
 
-import com.dazkins.triad.game.entity.mob.EntityPlayerServer;
+import com.dazkins.triad.game.entity.mob.EntityPlayer;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.BufferObject;
@@ -19,7 +19,7 @@ public abstract class Entity
 
 	protected float x, y;
 	protected float xa, ya;
-	public long lifeTicks;
+	protected long lifeTicks;
 	protected String name;
 	protected World world;
 
@@ -47,6 +47,11 @@ public abstract class Entity
 	public int getTypeID()
 	{
 		return typeID;
+	}
+	
+	public World getWorld()
+	{
+		return world;
 	}
 
 	public int getGlobalID()
@@ -254,6 +259,11 @@ public abstract class Entity
 
 		if (world != null)
 			world.registerEntityTick(this);
+	}
+	
+	public long getLifeTicks()
+	{
+		return lifeTicks;
 	}
 	
 	private boolean needsUpdate;

@@ -51,4 +51,9 @@ public class MathHelper
 		else
 			return (int) Math.floor((float) y / (float) Chunk.CHUNKS);
 	}
+	
+	public static float getRandomWithNegatives()
+	{
+		return ((float) Math.random() - 0.5f) * 2.0f;
+	}
 }

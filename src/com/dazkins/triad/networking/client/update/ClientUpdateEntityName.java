@@ -1,11 +1,11 @@
 package com.dazkins.triad.networking.client.update;
 
-public class ClientUpdatePlayerName
+public class ClientUpdateEntityName extends ClientUpdate
 {
 	private String name;
 	private int gID;
 	
-	public ClientUpdatePlayerName(String n, int g)
+	public ClientUpdateEntityName(String n, int g)
 	{
 		name = n;
 		gID = g;

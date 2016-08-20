@@ -31,7 +31,7 @@ public class Tile
 	{
 		// return -((MathHelper.betterMod(y, Chunk.chunkS * Tile.tileSize) /
 		// tileSize) % (Triad.zMax - 10)) - 3;
-		return -((y / (float) TILESIZE)) - 3;
+		return -((y / (float) (TILESIZE / 4.0f))) - 3;
 	}
 
 	public static float yPosToDepthRelativeToCamera(Camera c, float y)

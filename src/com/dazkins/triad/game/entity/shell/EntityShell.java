@@ -1,6 +1,8 @@
 package com.dazkins.triad.game.entity.shell;
 
+import com.dazkins.triad.game.ability.AbilityBar;
 import com.dazkins.triad.game.entity.renderer.EntityRenderer;
+import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.networking.client.ClientEntityManager;
@@ -23,8 +25,13 @@ public class EntityShell
 	private String name;
 	
 	private Inventory inventory;
+	private EquipmentInventory equipmentInventory;
+	private AbilityBar abilityBar;
 	
 	private int globalID;
+	
+	private int health;
+	private int maxHealth;
 	
 	public EntityShell(ClientEntityManager cem, int gID)
 	{
@@ -72,6 +79,16 @@ public class EntityShell
 		this.inventory = inventory;
 	}
 	
+	public void setAbilityBar(AbilityBar a)
+	{
+		this.abilityBar = a;
+	}
+	
+	public AbilityBar getAbilityBar()
+	{
+		return this.abilityBar;
+	}
+	
 	public void tick()
 	{
 		if (entityRenderer != null)
@@ -81,6 +98,7 @@ public class EntityShell
 	public void setRenderer(EntityRenderer e)
 	{
 		entityRenderer = e;
+		entityRenderer.initEntityShell(this);
 	}
 	
 	public EntityRenderer getRenderer()
@@ -134,5 +152,35 @@ public class EntityShell
 		this.name = name;
 		if (entityRenderer != null)
 			entityRenderer.setName(name);
+	}
+
+	public void setEquipmentInventory(EquipmentInventory i)
+	{
+		equipmentInventory = i;
+	}
+	
+	public EquipmentInventory getEquipmentInventory()
+	{
+		return equipmentInventory;
+	}
+	
+	public int getHealth()
+	{
+		return health;
+	}
+	
+	public void setHealth(int h)
+	{
+		this.health = h;
+	}
+	
+	public int getMaxHealth()
+	{
+		return this.maxHealth;
+	}
+	
+	public void setMaxHealth(int mh)
+	{
+		this.maxHealth = mh;
 	}
 }

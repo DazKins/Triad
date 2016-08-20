@@ -2,20 +2,22 @@ package com.dazkins.triad.networking.client;
 
 import java.util.ArrayList;
 
-import com.dazkins.triad.game.entity.mob.EntityPlayerClientController;
+import com.dazkins.triad.game.ability.AbilityBar;
+import com.dazkins.triad.game.entity.mob.PlayerClientController;
 import com.dazkins.triad.game.entity.shell.EntityShell;
 import com.dazkins.triad.game.inventory.Inventory;
-import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.networking.UpdateList;
+import com.dazkins.triad.networking.client.update.ClientUpdateAbilityBar;
 import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
 import com.dazkins.triad.networking.client.update.ClientUpdateChunk;
 import com.dazkins.triad.networking.client.update.ClientUpdateEntity;
+import com.dazkins.triad.networking.client.update.ClientUpdateEntityHealthUpdate;
 import com.dazkins.triad.networking.client.update.ClientUpdateInteraction;
 import com.dazkins.triad.networking.client.update.ClientUpdateInventory;
-import com.dazkins.triad.networking.client.update.ClientUpdatePlayerName;
+import com.dazkins.triad.networking.client.update.ClientUpdateEntityName;
 import com.dazkins.triad.networking.packet.Packet008CameraStateUpdate;
 
 public class ClientWorldManager
@@ -24,7 +26,7 @@ public class ClientWorldManager
 	private ClientEntityManager cem;
 
 	private int myPlayerID;
-	private EntityPlayerClientController player;
+	private PlayerClientController player;
 
 	private Camera cam;
 
@@ -51,8 +53,9 @@ public class ClientWorldManager
 		return crm;
 	}
 
-	public void setPlayer(EntityPlayerClientController e)
+	public void setPlayer(PlayerClientController e)
 	{
+		e.setClient(client);
 		player = e;
 	}
 	
@@ -139,20 +142,26 @@ public class ClientWorldManager
 			crm.handleChunkUpdate(c);
 		}
 		
-		ArrayList<ClientUpdatePlayerName> playerNameUpdates = update.getAndPurgeUpdateListOfType(ClientUpdatePlayerName.class);
-		for (ClientUpdatePlayerName p : playerNameUpdates)
+		ArrayList<ClientUpdateEntityName> playerNameUpdates = update.getAndPurgeUpdateListOfType(ClientUpdateEntityName.class);
+		for (ClientUpdateEntityName p : playerNameUpdates)
 		{
 			int gID = p.getGID();
 			String name = p.getName();
-			cem.handlePlayerNameUpdate(gID, name);
+			if (!cem.handleNameUpdate(gID, name))
+			{
+				update.addUpdate(p);
+			}
 		}
 		
 		ArrayList<ClientUpdateInventory> inventoryUpdates = update.getAndPurgeUpdateListOfType(ClientUpdateInventory.class);
 		for (ClientUpdateInventory i : inventoryUpdates)
 		{
-			int gID = i.getEntityID();
-			Inventory inv = Inventory.createInventoryObject(i);
-			cem.handleInventoryUpdate(gID, inv);
+			int gID = i.getGlobalID();
+			Inventory inv = i.getInventory();
+			if (!cem.handleInventoryUpdate(gID, inv))
+			{
+				update.addUpdate(i);
+			}
 		}
 		
 		ArrayList<ClientUpdateInteraction> interactionUpdates = update.getAndPurgeUpdateListOfType(ClientUpdateInteraction.class);
@@ -161,7 +170,33 @@ public class ClientWorldManager
 			int eID = i.getEntityID();
 			int iID = i.getInteractingID();
 			boolean s = i.isStart();
-			cem.handleInteractionUpdate(eID, iID, s);
+			if (!cem.handleInteractionUpdate(eID, iID, s))
+			{
+				update.addUpdate(i);
+			}
+		}
+		
+		ArrayList<ClientUpdateAbilityBar> abilityBarUpdate = update.getAndPurgeUpdateListOfType(ClientUpdateAbilityBar.class);
+		for (ClientUpdateAbilityBar a : abilityBarUpdate)
+		{
+			int gID = a.getGID();
+			AbilityBar b = a.getAbilityBar();
+			if (!cem.handleAbilityBarUpdate(gID, b))
+			{
+				update.addUpdate(a);
+			}
+		}
+		
+		ArrayList<ClientUpdateEntityHealthUpdate> healthUpdates = update.getAndPurgeUpdateListOfType(ClientUpdateEntityHealthUpdate.class);
+		for (ClientUpdateEntityHealthUpdate h : healthUpdates)
+		{
+			int gID = h.getGID();
+			int health = h.getHealth();
+			int maxHealth = h.getMaxHealth();
+			if (!cem.handleHealthUpdate(gID, health, maxHealth))
+			{
+				update.addUpdate(h);
+			}
 		}
 		
 		cem.tick();

@@ -3,6 +3,7 @@ package com.dazkins.triad.networking.packet;
 public class Packet012Inventory extends Packet 
 {
 	private int entityGID;
+	private int type;
 	
 	private int width;
 	private int height;
@@ -58,5 +59,15 @@ public class Packet012Inventory extends Packet
 	public void setStackCounts(int[] stackCounts) 
 	{
 		this.stackCounts = stackCounts;
+	}
+	
+	public int getType()
+	{
+		return type;
+	}
+	
+	public void setType(int t)
+	{
+		type = t;
 	}
 }

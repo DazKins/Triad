@@ -18,6 +18,11 @@ import com.dazkins.triad.networking.packet.Packet014InteractionUpdate;
 import com.dazkins.triad.networking.packet.Packet015SingleLightValueChunkUpdate;
 import com.dazkins.triad.networking.packet.Packet016ReadyToReceive;
 import com.dazkins.triad.networking.packet.Packet017ChatMessage;
+import com.dazkins.triad.networking.packet.Packet018Ping;
+import com.dazkins.triad.networking.packet.Packet019Pong;
+import com.dazkins.triad.networking.packet.Packet020UseAbility;
+import com.dazkins.triad.networking.packet.Packet021AbilityBar;
+import com.dazkins.triad.networking.packet.Packet022EntityHealthUpdate;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
@@ -45,6 +50,11 @@ public class Network
 		k.register(Packet015SingleLightValueChunkUpdate.class);
 		k.register(Packet016ReadyToReceive.class);
 		k.register(Packet017ChatMessage.class);
+		k.register(Packet018Ping.class);
+		k.register(Packet019Pong.class);
+		k.register(Packet020UseAbility.class);
+		k.register(Packet021AbilityBar.class);
+		k.register(Packet022EntityHealthUpdate.class);
 
 		k.register(String.class);
 		k.register(int[].class);

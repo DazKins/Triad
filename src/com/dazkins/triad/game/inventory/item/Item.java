@@ -17,13 +17,13 @@ public class Item
 {
 	public static Item items[] = new Item[256];
 	
-	public static ItemTestChest testChest = new ItemTestChest(0);
-	public static ItemTestFeet testFeet = new ItemTestFeet(1);
-	public static ItemTestHelmet testHelmet = new ItemTestHelmet(2);
-	public static ItemTestLegs testLegs = new ItemTestLegs(3);
-	public static ItemTestSword testSword = new ItemTestSword(4);
-	public static ItemAxe axe = new ItemAxe(5);
-	public static ItemLog log = new ItemLog(6);
+	public static final ItemTestChest testChest = new ItemTestChest(0);
+	public static final ItemTestFeet testFeet = new ItemTestFeet(1);
+	public static final ItemTestHelmet testHelmet = new ItemTestHelmet(2);
+	public static final ItemTestLegs testLegs = new ItemTestLegs(3);
+	public static final ItemTestSword testSword = new ItemTestSword(4);
+	public static final ItemAxe axe = new ItemAxe(5);
+	public static final ItemLog log = new ItemLog(6);
 	
 	protected String name;
 	protected int ID;
@@ -114,12 +114,6 @@ public class Item
 			GL11.glScalef(scale, scale, scale);
 
 		icon.render();
-
-		if (x != 0 || y != 0 || z != 0)
-			GL11.glTranslatef(x, y, z);
-
-		if (scale != 1)
-			GL11.glScalef(scale, scale, scale);
 
 		GL11.glPopMatrix();
 	}

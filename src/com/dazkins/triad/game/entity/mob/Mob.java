@@ -2,8 +2,12 @@ package com.dazkins.triad.game.entity.mob;
 
 import java.util.ArrayList;
 
+import com.dazkins.triad.game.ability.Ability;
+import com.dazkins.triad.game.ability.AbilityBar;
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
+import com.dazkins.triad.game.entity.IEntityWithAbilityBar;
+import com.dazkins.triad.game.entity.IEntityWithEquipmentInventory;
 import com.dazkins.triad.game.entity.IEntityWithInventory;
 import com.dazkins.triad.game.entity.Interactable;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
@@ -15,7 +19,7 @@ import com.dazkins.triad.game.inventory.item.equipable.weapon.harvestTool.ItemHa
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.math.AABB;
 
-public abstract class Mob extends Entity implements IEntityWithInventory
+public abstract class Mob extends Entity implements IEntityWithInventory, IEntityWithAbilityBar, IEntityWithEquipmentInventory
 {
 	protected int health;
 	protected Inventory inv;
@@ -26,6 +30,8 @@ public abstract class Mob extends Entity implements IEntityWithInventory
 	protected Mob target;
 	
 	protected Interactable interactingObject;
+	
+	protected AbilityBar abilityBar;
 
 	public Mob(World w, int id, float x, float y, String s, int h)
 	{
@@ -53,8 +59,17 @@ public abstract class Mob extends Entity implements IEntityWithInventory
 	public void setInteractingObject(Interactable i)
 	{
 		interactingObject = i;
-		Entity e = (Entity) i;
 		world.getServerWorldManager().onInteractUpdate(this);
+	}
+	
+	public void useAbility(int n)
+	{
+		abilityBar.useAbility(n);
+	}
+	
+	public void onUseAbility(Ability a)
+	{
+		
 	}
 
 	protected void moveUp()
@@ -221,6 +236,8 @@ public abstract class Mob extends Entity implements IEntityWithInventory
 		push(x0 * k, y0 * k);
 		health -= d;
 	}
+	
+	private int prevHealth = -1;
 
 	public void tick()
 	{
@@ -265,6 +282,11 @@ public abstract class Mob extends Entity implements IEntityWithInventory
 		{
 			kill();
 		}
+		
+		if (health != prevHealth)
+			world.getServerWorldManager().handleHealthUpdate(this);
+			
+		prevHealth = health;
 	}
 
 	public ItemStack[] getItemsToDrop()
@@ -319,6 +341,16 @@ public abstract class Mob extends Entity implements IEntityWithInventory
 	{
 		inv = i;
 	}
+	
+	public AbilityBar getAbilityBar()
+	{
+		return abilityBar;
+	}
+	
+	public void setAbilityBar(AbilityBar b)
+	{
+		abilityBar = b;
+	}
 
 	protected AABB[] getInteractAreas()
 	{
@@ -350,5 +382,10 @@ public abstract class Mob extends Entity implements IEntityWithInventory
 	public EquipmentInventory getEquipmentInventory()
 	{
 		return eInv;
+	}
+	
+	public void setEquipmentInventory(EquipmentInventory i)
+	{
+		eInv = i;
 	}
 }

@@ -5,12 +5,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.dazkins.triad.game.ability.AbilityBar;
 import com.dazkins.triad.game.entity.StorageEntityID;
 import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.game.entity.renderer.StorageEntityRenderer;
 import com.dazkins.triad.game.entity.shell.EntityShell;
+import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
-import com.dazkins.triad.game.inventory.item.ItemStack;
+import com.dazkins.triad.game.inventory.InventoryType;
 import com.dazkins.triad.game.world.IWorldAccess;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
@@ -21,9 +23,6 @@ public class ClientEntityManager
 	private ClientWorldManager clientWorldManager;
 	
 	private Map<Integer, EntityShell> entityShells = new HashMap<Integer, EntityShell>();
-	
-	private Map<Integer, String> storedNameUpdates = new HashMap<Integer, String>();
-	private Map<Integer, Inventory> storedInventoryUpdates = new HashMap<Integer, Inventory>();
 	
 	private ArrayList<Integer> loadedEntities = new ArrayList<Integer>();
 
@@ -125,9 +124,13 @@ public class ClientEntityManager
 			e.getRenderer().addAnimation(aID, index, overwrite, speed);
 	}
 	
-	public void handleInteractionUpdate(int gID, int iID, boolean start)
+	public boolean handleInteractionUpdate(int gID, int iID, boolean start)
 	{
 		EntityShell e = entityShells.get(gID);
+		
+		if (e == null)
+			return false;
+		
 		if (start)
 		{
 			e.setInteractingEntityID(iID);
@@ -135,36 +138,57 @@ public class ClientEntityManager
 		{
 			e.setInteractingEntityID(-1);
 		}
+		
+		return true;
 	}
 	
-	public void handlePlayerNameUpdate(int gID, String n)
+	public boolean handleHealthUpdate(int gID, int health, int maxHealth)
+	{
+		EntityShell e = entityShells.get(gID);
+		
+		if (e == null)
+			return false;
+		
+		e.setHealth(health);
+		e.setMaxHealth(maxHealth);
+		return true;
+	}
+	
+	public boolean handleNameUpdate(int gID, String n)
 	{
 		EntityShell es = entityShells.get(gID);
 		if (es != null)
 		{
 			es.setName(n);
-		} else 
-		{
-			storedNameUpdates.put(gID, n);
+			return true;
 		}
+		return false;
 	}
 	
-	public void handleInventoryUpdate(int gID, Inventory i)
+	public boolean handleInventoryUpdate(int gID, Inventory i)
 	{
 		EntityShell es = entityShells.get(gID);
 		if (es != null)
 		{
-			es.setInventory(i);
-			
-			if (storedInventoryUpdates.containsKey(gID))
-				storedInventoryUpdates.remove(gID);
-		} else
-		{
-			if (!storedInventoryUpdates.containsKey(gID))
-				storedInventoryUpdates.put(gID, i);
-			else
-				storedInventoryUpdates.replace(gID, i);
+			if (i.getType() == InventoryType.NORMAL)
+				es.setInventory(i);
+			if (i.getType() == InventoryType.EQUIPMENT)
+				es.setEquipmentInventory((EquipmentInventory) i);
+			return true;
 		}
+		return false;
+	}
+	
+	public boolean handleAbilityBarUpdate(int gID, AbilityBar b)
+	{
+		EntityShell es = entityShells.get(gID);
+		if (es != null)
+		{
+			es.setAbilityBar(b);
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public void tick()
@@ -175,15 +199,6 @@ public class ClientEntityManager
 			//TODO investigate null instances of this
 			if (e != null)
 				e.tick();
-		}
-
-		for (Map.Entry<Integer, String> mapE : storedNameUpdates.entrySet())
-		{
-			EntityShell es = entityShells.get(mapE.getKey());
-			if (es != null)
-			{
-				es.setName(mapE.getValue());
-			}
 		}
 
 
