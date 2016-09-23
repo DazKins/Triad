@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.dazkins.triad.game.ability.AbilityBar;
 import com.dazkins.triad.game.entity.Entity;
+import com.dazkins.triad.game.entity.EntityTorch;
 import com.dazkins.triad.game.entity.IEntityWithAbilityBar;
 import com.dazkins.triad.game.entity.IEntityWithEquipmentInventory;
 import com.dazkins.triad.game.entity.IEntityWithInventory;
@@ -18,6 +19,7 @@ import com.dazkins.triad.game.world.Chunk;
 import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
+import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.networking.TriadConnection;
 import com.dazkins.triad.networking.UpdateList;
 import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
@@ -56,6 +58,9 @@ public class ServerWorldManager
 		
 		chunkRequests = new ArrayList<ServerUpdateChunkRequest>();
 	}
+	
+	//DELETE
+	private boolean test = false;
 	
 	public void tick()
 	{
@@ -201,6 +206,12 @@ public class ServerWorldManager
 				}
 			}
 			chunksToUpdate.clear();
+		}
+		
+		if (!test)
+		{
+			test = true;
+			world.addEntity(new EntityTorch(world, MathHelper.getRandomWithNegatives() * 50.0f, MathHelper.getRandomWithNegatives() * 50.0f));
 		}
 	}
 	

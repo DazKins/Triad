@@ -19,6 +19,7 @@ import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.Chunk;
+import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.networking.Network;
 import com.dazkins.triad.networking.TriadConnection;
 import com.dazkins.triad.networking.UpdateList;
@@ -176,6 +177,8 @@ public class TriadServer
 		
 		connections.add(c);
 		EntityPlayer p = serverWorldManager.addNewPlayer(c.getUsername(), c);
+		p.setX(MathHelper.getRandomWithNegatives() * 50.0f);
+		p.setY(MathHelper.getRandomWithNegatives() * 50.0f);
 		TriadLogger.log("Registered new connection: " + c.getUsername() + " from: " + c.getIP(), false);
 		
 		Packet010PlayerNameSet namePacket = new Packet010PlayerNameSet();

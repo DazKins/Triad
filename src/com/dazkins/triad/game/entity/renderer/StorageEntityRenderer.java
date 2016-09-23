@@ -17,6 +17,7 @@ public class StorageEntityRenderer
 		renderers[StorageEntityID.SAND_GRASS] = EntityRendererSandGrass.class;
 		renderers[StorageEntityID.ZOMBIE] = EntityRendererZombie.class;
 		renderers[StorageEntityID.CHEST] = EntityRendererChest.class;
+		renderers[StorageEntityID.TORCH] = EntityRendererTorch.class;
 	}
 
 	public static EntityRenderer recieveRenderer(int id)

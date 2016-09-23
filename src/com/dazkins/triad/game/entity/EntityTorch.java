@@ -1,13 +1,9 @@
 package com.dazkins.triad.game.entity;
 
-import org.lwjgl.opengl.GL11;
-
 import com.dazkins.triad.game.world.World;
 import com.dazkins.triad.game.world.tile.Tile;
-import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
-import com.dazkins.triad.gfx.model.ModelTorch;
 import com.dazkins.triad.math.AABB;
 
 public class EntityTorch extends Entity implements ILightEmitter

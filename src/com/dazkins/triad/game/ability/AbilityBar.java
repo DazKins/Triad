@@ -102,10 +102,13 @@ public class AbilityBar
 	{
 		Ability a = abilities[i];
 		
-		if (mob.getLifeTicks() - lastUse[i] >= a.getCooldown())
+		if (a != null)
 		{
-			a.onUse(world, mob);
-			lastUse[i] = mob.getLifeTicks();
+			if (mob.getLifeTicks() - lastUse[i] >= a.getCooldown())
+			{
+				a.onUse(world, mob);
+				lastUse[i] = mob.getLifeTicks();
+			}
 		}
 	}
 	

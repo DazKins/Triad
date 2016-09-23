@@ -11,6 +11,7 @@ import com.dazkins.triad.game.GameStatePlaying;
 import com.dazkins.triad.game.gui.object.GuiObjectBox;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.gfx.ShaderProgram;
 import com.dazkins.triad.gfx.TTF;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
@@ -63,6 +64,12 @@ public class Triad implements Runnable
 
 	private void initProg()
 	{
+		ShaderProgram.setupShaders();
+		ShaderProgram.DEFAULT_SHADER.bind();
+		
+		ShaderProgram.DEFAULT_SHADER.setUniform("test", 255);
+		ShaderProgram.DEFAULT_SHADER.bind();
+		
 		Image.init();
 
 		BufferObject.init();

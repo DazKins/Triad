@@ -18,7 +18,7 @@ public class TimeCycle
 
 	public TimeCycle(World w)
 	{
-		curTime = 0;
+		curTime = HALFDAY;
 		this.world = w;
 	}
 

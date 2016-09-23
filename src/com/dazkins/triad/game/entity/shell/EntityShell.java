@@ -97,8 +97,11 @@ public class EntityShell
 	
 	public void setRenderer(EntityRenderer e)
 	{
-		entityRenderer = e;
-		entityRenderer.initEntityShell(this);
+		if (e != null)
+		{
+			entityRenderer = e;
+			entityRenderer.initEntityShell(this);
+		}
 	}
 	
 	public EntityRenderer getRenderer()
