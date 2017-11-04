@@ -6,6 +6,7 @@ import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.gui.object.GuiObject;
 import com.dazkins.triad.game.gui.popup.GuiPopUp;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.RenderContext;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
 
@@ -48,7 +49,7 @@ public abstract class Gui
 		currentPopUp = p;
 	}
 
-	public void render(Camera cam)
+	public void render(RenderContext rc, Camera cam)
 	{
 		if (currentPopUp != null)
 			currentPopUp.render();

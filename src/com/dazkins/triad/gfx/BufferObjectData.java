@@ -2,7 +2,11 @@ package com.dazkins.triad.gfx;
 
 public class BufferObjectData
 {
-	private float[] data;
+	public static final int VERTEX_ATTRIB_SIZE = 4;
+	
+	//TODO make private again
+	public float[] data;
+	
 	private int size;
 	
 	private BufferObjectRenderProperties props;
@@ -10,11 +14,6 @@ public class BufferObjectData
 	// Store the temporary variables to be loaded into the VBO
 	private float x;
 	private float y;
-	private float z;
-	private float r;
-	private float g;
-	private float b;
-	private float a;
 	private float u;
 	private float v;
 	
@@ -25,10 +24,6 @@ public class BufferObjectData
 		props = new BufferObjectRenderProperties();
 		data = new float[s];
 		size = s;
-		a = 1.0f;
-		r = 1.0f;
-		g = 1.0f;
-		b = 1.0f;
 	}
 	
 	public BufferObjectData(float[] d)
@@ -39,17 +34,12 @@ public class BufferObjectData
 		{
 			data[i] = d[i];
 		}
-		props.setVertexCount(d.length / 9);
+		props.setVertexCount(d.length / VERTEX_ATTRIB_SIZE);
 		size = data.length;
-		a = 1.0f;
-		r = 1.0f;
-		g = 1.0f;
-		b = 1.0f;
-		x = 0;
-		y = 0;
-		z = 0;
-		u = 0;
-		v = 0;
+		x = 0.0f;
+		y = 0.0f;
+		u = 0.0f;
+		v = 0.0f;
 	}
 	
 	public BufferObjectData clone()
@@ -83,64 +73,41 @@ public class BufferObjectData
 	{
 		return props;
 	}
-	
-	public void setRGB(float r, float g, float b)
-	{
-		props.setUseColours(true);
-		this.r = r;
-		this.g = g;
-		this.b = b;
-	}
 
-	public void setColor(Color c)
-	{
-		props.setUseColours(true);
-		this.r = c.getDR();
-		this.g = c.getDG();
-		this.b = c.getDB();
-	}
-
-	public void setA(float a)
-	{
-		props.setUseColours(true);
-		this.a = a;
-	}
-
-	public void setUV(float u, float v)
+	public BufferObjectData setUV(float u, float v)
 	{
 		props.setUseTextures(true);
 		this.u = u;
 		this.v = v;
+		
+		return this;
 	}
-
-	public void setDepth(float z)
-	{
-		this.z = z;
-	}
-
-	public void addVertex(float x, float y)
+	
+	public BufferObjectData setXY(float x, float y)
 	{
 		this.x = x;
 		this.y = y;
+		
+		return this;
+	}
+	
+	public BufferObjectData pushVertex()
+	{
 		loadVertexDataIntoArray();
 		props.incrementVertexCount();
+		
+		return this;
 	}
 	
 	public void loadVertexDataIntoArray()
 	{
 		int vert = props.getVertexCount();
 		
-		data[vert * 9 + 0] = x;
-		data[vert * 9 + 1] = y;
-		data[vert * 9 + 2] = z;
+		data[vert * VERTEX_ATTRIB_SIZE + 0] = x;
+		data[vert * VERTEX_ATTRIB_SIZE + 1] = y;
 
-		data[vert * 9 + 3] = r;
-		data[vert * 9 + 4] = g;
-		data[vert * 9 + 5] = b;
-		data[vert * 9 + 6] = a;
-
-		data[vert * 9 + 7] = u;
-		data[vert * 9 + 8] = v;
+		data[vert * VERTEX_ATTRIB_SIZE + 2] = u;
+		data[vert * VERTEX_ATTRIB_SIZE + 3] = v;
 	}
 
 	public void bindImage(Image i)

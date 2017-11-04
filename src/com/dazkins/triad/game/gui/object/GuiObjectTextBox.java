@@ -2,14 +2,11 @@ package com.dazkins.triad.game.gui.object;
 
 import java.util.ArrayList;
 
-import org.omg.Messaging.SyncScopeHelper;
-
 import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.gui.renderformat.RenderFormatManager;
 import com.dazkins.triad.game.gui.renderformat.TextAlign;
-import com.dazkins.triad.gfx.OpenGLHelper;
+import com.dazkins.triad.gfx.RenderContext;
 import com.dazkins.triad.gfx.TTF;
-import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.util.StringUtil;
 
 public class GuiObjectTextBox extends GuiObjectBox
@@ -42,38 +39,39 @@ public class GuiObjectTextBox extends GuiObjectBox
 	
 	private TTF oldFont;
 	
-	public void render()
+	public void render(RenderContext rc)
 	{
-		if (RenderFormatManager.TEXT.getFont() != oldFont)
-			setupGraphics();
+//		if (RenderFormatManager.TEXT.getFont() != oldFont)
+//			setupGraphics();
 		
-		super.render();
-		for (int i = 0; i < msg.size(); i++)
-		{
-			String curMsg = msg.get(i);
-			
-			float strLen = RenderFormatManager.TEXT.getFont().getStringLength(curMsg);
-			
-			float move = 0;
-			
-			if (maxLineCount == 1)
-			{
-				if (strLen > super.width)
-					move = super.width - strLen;
-			}
-			
-			TextAlign a = RenderFormatManager.TEXT.getAlign();
-			
-			if (a == TextAlign.CENTRE)
-				move = (super.width - strLen) / 2.0f;
-			
-			TTF.renderStringWithFormating(curMsg, x + move + 3, y + height + 3 - (i + 1) * TTF.getLetterHeight(), layer * 0.001f + 0.0001f);
-
-			if (i == msg.size() - 1 && showCursor)
-				TTF.renderStringWithFormating("#ff006a |", x + move + 3 + strLen, y + height + 3 - (i + 1) * TTF.getLetterHeight(), layer * 0.001f + 0.0001f);
-		}
+		super.render(rc);
 		
-		oldFont = RenderFormatManager.TEXT.getFont();
+//		for (int i = 0; i < msg.size(); i++)
+//		{
+//			String curMsg = msg.get(i);
+//			
+//			float strLen = RenderFormatManager.TEXT.getFont().getStringLength(curMsg);
+//			
+//			float move = 0;
+//			
+//			if (maxLineCount == 1)
+//			{
+//				if (strLen > super.width)
+//					move = super.width - strLen;
+//			}
+//			
+//			TextAlign a = RenderFormatManager.TEXT.getAlign();
+//			
+//			if (a == TextAlign.CENTRE)
+//				move = (super.width - strLen) / 2.0f;
+//			
+//			TTF.renderStringWithFormating(curMsg, x + move + 3, y + height + 3 - (i + 1) * TTF.getLetterHeight(), layer * 0.001f + 0.0001f);
+//
+//			if (i == msg.size() - 1 && showCursor)
+//				TTF.renderStringWithFormating("#ff006a |", x + move + 3 + strLen, y + height + 3 - (i + 1) * TTF.getLetterHeight(), layer * 0.001f + 0.0001f);
+//		}
+//		
+//		oldFont = RenderFormatManager.TEXT.getFont();
 		
 //		OpenGLHelper.renderReferencePoint(x, y);
 	}

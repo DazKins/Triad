@@ -7,6 +7,7 @@ import com.dazkins.triad.game.gui.object.GuiObjectButton;
 import com.dazkins.triad.game.gui.renderformat.RenderFormatManager;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
+import com.dazkins.triad.gfx.RenderContext;
 import com.dazkins.triad.gfx.TTF;
 import com.dazkins.triad.input.InputHandler;
 
@@ -39,13 +40,13 @@ public class GuiMainMenu extends Gui
 		setupGraphics();
 	}
 
-	public void render(Camera cam)
+	public void render(RenderContext rc, Camera cam)
 	{
-		super.render(cam);
-		playButton.render();
+		super.render(rc, cam);
+		playButton.render(rc);
 		
-		RenderFormatManager.TEXT.setColour(new Color(255, 255, 255));
-		TTF.renderStringWithFormating("TEST SETS ET #ff00ff sdglhr 0823y 5luetguh #ff0000 083tg24pty-gdlsdg 23t ", 0, 0, 1.0f);
+		//RenderFormatManager.TEXT.setColour(new Color(255, 255, 255));
+		//TTF.renderStringWithFormating("TEST SETS ET #ff00ff sdglhr 0823y 5luetguh #ff0000 083tg24pty-gdlsdg 23t ", 0, 0, 1.0f);
 	}
 
 	public void onExit()

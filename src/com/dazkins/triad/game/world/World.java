@@ -60,7 +60,9 @@ public class World
 		time = new TimeCycle(this);
 		
 		serverWorldManager = s;
-		
+
+		addEntity(new EntityZombie(this, 200, 200));
+		//TODO Why can't i spawn more than one entity at the start of the game
 		addEntity(new EntityChest(this, -200, -200));
 	}
 

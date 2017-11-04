@@ -1,8 +1,16 @@
-in uint colour;
+	#version 330
 
-out vec4 out_Color;
+in vec2 pass_tex;
 
-void main(void)
+uniform sampler2D texture_sampler;
+
+out vec4 color;
+
+void main()
 {
-	out_Color = vec4(colour / 255, 0.0, 1.0, 1.0);
+	//gl_FragColor = vec4(texture2D(texture_sampler, pass_tex).rgb, 1.0);
+	//color = vec4(texture2D(texture_sampler, pass_tex).rgb, 1.0);
+	gl_FragColor = vec4(pass_tex.xy, 1.0, 1.0);
+	//gl_FragColor = texture2D(texture_sampler, pass_tex).rgba;
+	//gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
 }

@@ -41,7 +41,7 @@ public abstract class Ability
 		img = Image.getImageFromName("ability_" + name);
 		imgIcon = new BufferObject(36);
 		imgIcon.resetData();
-		img.renderSprite(imgIcon, 0, 0, 32, 32, 0, 0, 16, 16, 0.0f, 0.0f);
+		img.loadSpriteBufferObject(imgIcon, 0, 0, 32, 32, 0, 0, 16, 16, 0.0f, 0.0f);
 		imgIcon.compile();
 		
 		isImageIconLoaded = true;

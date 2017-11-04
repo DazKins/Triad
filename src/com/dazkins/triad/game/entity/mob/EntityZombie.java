@@ -1,16 +1,9 @@
 package com.dazkins.triad.game.entity.mob;
 
 import com.dazkins.triad.game.entity.StorageEntityID;
-import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.inventory.item.Item;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.game.world.World;
-import com.dazkins.triad.gfx.Image;
-import com.dazkins.triad.gfx.model.Model;
-import com.dazkins.triad.gfx.model.ModelZombie;
-import com.dazkins.triad.gfx.model.animation.AnimationHumanoidIdle;
-import com.dazkins.triad.gfx.model.animation.AnimationZombieSlashing;
-import com.dazkins.triad.gfx.model.animation.AnimationZombieWalking;
 import com.dazkins.triad.math.AABB;
 
 public class EntityZombie extends Mob

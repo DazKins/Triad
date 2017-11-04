@@ -69,7 +69,7 @@ public class ServerWorldManager
 		ArrayList<Entity> ents = world.getLoadedEntities();
 		for (Entity e : ents)
 		{
-			if (e.purgeUpdateFlag())
+			if (e.getAndPurgeUpdateFlag())
 			{
 				server.sendEntityUpdate(e);
 			}

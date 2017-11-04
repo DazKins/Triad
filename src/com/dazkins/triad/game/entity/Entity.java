@@ -273,7 +273,7 @@ public abstract class Entity
 		needsUpdate = true;
 	}
 	
-	public boolean purgeUpdateFlag()
+	public boolean getAndPurgeUpdateFlag()
 	{
 		if (needsUpdate)
 		{

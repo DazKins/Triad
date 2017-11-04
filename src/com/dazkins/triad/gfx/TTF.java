@@ -97,6 +97,7 @@ public class TTF
 		return r;
 	}
 	
+	//TODO update text
 	private void renderTTFString(String s, float x, float y, float z)
 	{
 		TextRenderFormat format = RenderFormatManager.TEXT;
@@ -170,7 +171,7 @@ public class TTF
 			
 			BufferObject bo = new BufferObject(36);
 			bo.resetData();
-			imgObj.renderSprite(bo, -scalePad / 2.0f, 0, scaleWidth + scalePad, LETTER_HEIGHT, 0, 0, cWidth + pad * 2, cHeight, 0.0f, 0.0f);
+			imgObj.loadSpriteBufferObject(bo, -scalePad / 2.0f, 0, scaleWidth + scalePad, LETTER_HEIGHT, 0, 0, cWidth + pad * 2, cHeight, 0.0f, 0.0f);
 			bo.compile();
 			
 			charMap.put(c, bo);

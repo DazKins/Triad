@@ -4,6 +4,15 @@ import org.lwjgl.opengl.GL11;
 
 public class OpenGLHelper
 {
+	public static void checkError()
+	{
+		int err = GL11.glGetError();
+		if (err != GL11.GL_NO_ERROR)
+		{
+			System.err.println("error");
+		}
+	}
+	
 	public static void renderReferencePoint(float x, float y)
 	{
 		GL11.glPointSize(5);

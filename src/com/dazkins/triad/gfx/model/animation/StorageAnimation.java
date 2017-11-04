@@ -8,7 +8,7 @@ public class StorageAnimation
 {
 	private static Class<? extends Animation>[] animations = new Class[100];
 	@SuppressWarnings("rawtypes")
-	private static Class[] args = new Class[]{EntityRenderer.class, float.class};
+	private static Class[] args = new Class[] { EntityRenderer.class, float.class };
 
 	static
 	{

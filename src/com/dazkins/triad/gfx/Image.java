@@ -148,7 +148,8 @@ public class Image
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 	}
 
-	public void renderSprite(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z, float b)
+	//TODO change parameters
+	public void loadSpriteBufferObject(BufferObject bo, float x, float y, float w, float h, int tx, int ty, int tw, int th, float z, float b)
 	{
 		float offset = 0.0001f;
 
@@ -158,16 +159,20 @@ public class Image
 		float ty1 = ((ty + th) / (float) height) - offset;
 
 		bo.getData().bindImage(this);
-		bo.getData().setDepth(z);
-		if (b != 0)
-			bo.getData().setRGB(b, b, b);
-		bo.getData().setUV(tx1, ty0);
-		bo.getData().addVertex(x + w, y + h);
-		bo.getData().setUV(tx0, ty0);
-		bo.getData().addVertex(x, y + h);
-		bo.getData().setUV(tx0, ty1);
-		bo.getData().addVertex(x, y);
-		bo.getData().setUV(tx1, ty1);
-		bo.getData().addVertex(x + w, y);
+		
+		//TODO get rid of this properly
+//		bo.getData().setDepth(z);
+//		if (b != 0)
+//			bo.getData().setRGB(b, b, b);
+		
+		bo.getData().setUV(tx1, ty1).setXY(x + w, y + h).pushVertex();
+		bo.getData().setUV(tx0, ty1).setXY(x, y + h).pushVertex();
+		bo.getData().setUV(tx0, ty0).setXY(x, y).pushVertex();
+		bo.getData().setUV(tx1, ty0).setXY(x + w, y).pushVertex();
+		
+//		bo.getData().setUV(tx0, ty1).setXY(x + w, y + h).pushVertex();
+//		bo.getData().setUV(tx0, ty1).setXY(x, y + h).pushVertex();
+//		bo.getData().setUV(tx1, ty0).setXY(x, y).pushVertex();
+//		bo.getData().setUV(tx0, ty0).setXY(x + w, y).pushVertex();
 	}
 }

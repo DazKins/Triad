@@ -6,7 +6,9 @@ import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.gfx.RenderContext;
 import com.dazkins.triad.math.AABB;
+import com.dazkins.triad.math.Matrix3;
 
 public class Quad
 {
@@ -25,8 +27,6 @@ public class Quad
 	private float w, h;
 	private int tx, ty;
 	private int tw, th;
-
-	private float renderLayer;
 
 	private ArrayList<Quad> childQuads;
 	private ArrayList<Quad> temporaryChildQuads;
@@ -84,9 +84,9 @@ public class Quad
 
 	public void generate()
 	{
-		bufferObject = new BufferObject(36);
+		bufferObject = new BufferObject(16);
 		bufferObject.resetData();
-		img.renderSprite(bufferObject, x, y, w, h, tx, ty, tw, th, 0.0f, 0.0f);
+		img.loadSpriteBufferObject(bufferObject, x, y, w, h, tx, ty, tw, th, 0.0f, 0.0f);
 		bufferObject.compile();
 	}
 
@@ -122,34 +122,31 @@ public class Quad
 		offsetY = y;
 	}
 
-	public void setRenderLayer(float l)
-	{
-		renderLayer = l;
-	}
-
-	public float getRenderLayer()
-	{
-		return renderLayer;
-	}
-
-	private void attachTransformation()
+	//TODO maybe work towards removing this now the new matrix system is in place
+	private void attachTransformation(RenderContext rc)
 	{
 		if ((cRotX != 0 || cRotY != 0) && rot != 0)
-			GL11.glTranslatef(cRotX, cRotY, 0);
+			rc.getMatrixStack().transform(Matrix3.translate(cRotX, cRotY));
+//			GL11.glTranslatef(cRotX, cRotY, 0);
 		
 		if (rot != 0)
-			GL11.glRotatef(rot, 0, 0, 1);
+			rc.getMatrixStack().transform(Matrix3.rotate(rot));
+//			GL11.glRotatef(rot, 0, 0, 1);
 		
 		if ((cRotX != 0 || cRotY != 0) && rot != 0)
-			GL11.glTranslatef(-cRotX, -cRotY, 0);
+			rc.getMatrixStack().transform(Matrix3.translate(-cRotX, -cRotY));
+//			GL11.glTranslatef(-cRotX, -cRotY, 0);
 
-		float z = renderLayer * 0.001f;
-		
-		if (offsetX != 0 || offsetY != 0 || z != 0)
-			GL11.glTranslatef(offsetX, offsetY, z);
+		//TODO more render layering to be cleared up
+//		float z = renderLayer * 0.001f;
 		
 		if (scaleX != 1 || scaleY != 1)
-			GL11.glScalef(scaleX, scaleY, 1.0f);
+			rc.getMatrixStack().transform(Matrix3.scale(scaleX, scaleY));
+//			GL11.glScalef(scaleX, scaleY, 1.0f);
+		
+		if (offsetX != 0 || offsetY != 0)
+			rc.getMatrixStack().transform(Matrix3.translate(offsetX, offsetY));
+//			GL11.glTranslatef(offsetX, offsetY, z);
 	}
 	
 	public void stretch(float nH, float nW)
@@ -158,34 +155,37 @@ public class Quad
 		scaleY = nW / w;
 	}
 
-	public void render()
+	public void render(RenderContext rc)
 	{
 		temporaryChildQuads.sort(Model.rSort);
 		childQuads.sort(Model.rSort);
 
-		GL11.glPushMatrix();
+//		GL11.glPushMatrix();
+		rc.getMatrixStack().push();
 
 		if (parentQuad != null)
 		{
-			parentQuad.attachTransformation();
+			parentQuad.attachTransformation(rc);
 		}
 
-		attachTransformation();
+		attachTransformation(rc);
 
-		bufferObject.render();
+//		bufferObject.render();
+		rc.addToRender(bufferObject);
 
-		GL11.glPopMatrix();
+//		GL11.glPopMatrix();
+		rc.getMatrixStack().pop();
 
 		for (Quad q : childQuads)
 		{
-			q.render();
+			q.render(rc);
 		}
 		for (int i = 0; i < temporaryChildQuads.size(); i++)
 		{
 			Quad q = temporaryChildQuads.get(i);
 			if (q != null)
 			{
-				q.render();
+				q.render(rc);
 			}
 		}
 

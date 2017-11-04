@@ -11,10 +11,12 @@ import com.dazkins.triad.game.GameStatePlaying;
 import com.dazkins.triad.game.gui.object.GuiObjectBox;
 import com.dazkins.triad.gfx.BufferObject;
 import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.gfx.RenderContext;
 import com.dazkins.triad.gfx.ShaderProgram;
 import com.dazkins.triad.gfx.TTF;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
+import com.dazkins.triad.math.Matrix3;
 import com.dazkins.triad.networking.client.TriadClient;
 import com.dazkins.triad.util.TriadLogger;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
@@ -33,6 +35,8 @@ public class Triad implements Runnable
 	public static float zMax = 700f;
 
 	private TriadClient client;
+	
+	private RenderContext renderContext;
 
 	public static void main(String args[])
 	{
@@ -67,21 +71,26 @@ public class Triad implements Runnable
 		ShaderProgram.setupShaders();
 		ShaderProgram.DEFAULT_SHADER.bind();
 		
-		ShaderProgram.DEFAULT_SHADER.setUniform("test", 255);
-		ShaderProgram.DEFAULT_SHADER.bind();
+//		ShaderProgram.DEFAULT_SHADER.setUniform("test", 255);
+//
+//		Matrix3 res = Matrix3.screenSpace(1600, 900);
+//		
+//		ShaderProgram.DEFAULT_SHADER.setUniform("mat", res);
 		
 		Image.init();
 
 		BufferObject.init();
-
-		TTF.init();
 		
 		GuiObjectBox.init();
+
+		TTF.init();
 
 //		setGameState(new GameStateLoading());
 		setGameState(new GameStateMainMenu());
 		
 		DebugMonitor.setWindow(win);
+		
+		renderContext = new RenderContext();
 	}
 
 	public void setGameState(GameState g)
@@ -99,16 +108,9 @@ public class Triad implements Runnable
 	private void initOpenGL()
 	{
 		GLContext.createFromCurrent();
+		
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glLoadIdentity();
-		GL11.glOrtho(0, win.getW(), 0, win.getH(), zMin, zMax);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glCullFace(GL11.GL_BACK);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glViewport(0, 0, win.getW(), win.getH());
 
 		TriadLogger.log("OpenGL Context Succefully Created!", false);
 	}
@@ -168,21 +170,29 @@ public class Triad implements Runnable
 
 	private void checkWindow()
 	{
+		//TODO check this
 		if (win.wasResized())
 		{
 			resyncOpenGL();
 		}
 	}
-
+	
 	private void render()
 	{
-		GL11.glClear(/** GL11.GL_COLOR_BUFFER_BIT | **/ GL11.GL_DEPTH_BUFFER_BIT);
+//		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+		
+//		renderContext.getMatrixStack().transform(Matrix3.screenSpace(1600, 900));
+		
+		currentState.render(renderContext);
 
-		currentState.render();
-
-		DebugMonitor.render();
+		//TODO put the debug monitor back
+		//		DebugMonitor.render();
+		
+		renderContext.render();
 		
 		win.update();
+		
+		renderContext.refresh();
 	}
 
 	// TODO Reimplement icon loading
@@ -222,9 +232,9 @@ public class Triad implements Runnable
 
 	private void resyncOpenGL()
 	{
-		GL11.glLoadIdentity();
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glOrtho(0, win.getW(), 0, win.getH(), zMin, zMax);
+//		GL11.glLoadIdentity();
+//		GL11.glMatrixMode(GL11.GL_PROJECTION);
+//		GL11.glOrtho(0, win.getW(), 0, win.getH(), zMin, zMax);
 		GL11.glViewport(0, 0, win.getW(), win.getH());
 	}
 

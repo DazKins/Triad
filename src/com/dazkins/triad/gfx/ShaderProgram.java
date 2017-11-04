@@ -1,14 +1,19 @@
 package com.dazkins.triad.gfx;
 
+import java.nio.FloatBuffer;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
+import com.dazkins.triad.math.Matrix3;
 import com.dazkins.triad.util.StringUtil;
 import com.dazkins.triad.util.TriadLogger;
 
 public class ShaderProgram
 {
 	public static ShaderProgram DEFAULT_SHADER;
+	
+	private static ShaderProgram CURRENT_SHADER;
 	
 	private int shaderProgram;
 	
@@ -69,13 +74,30 @@ public class ShaderProgram
 //		unbind();
 	}
 	
+	public void setUniform(String s, Matrix3 m)
+	{
+		FloatBuffer b = m.dropToBuffer();
+		int loc = GL20.glGetUniformLocation(shaderProgram, s);
+		GL20.glUniformMatrix3(loc, false, b);
+	}
+	
+	public static ShaderProgram getCurrentShader()
+	{
+		return CURRENT_SHADER;
+	}
+	
 	public void bind()
 	{
-		GL20.glUseProgram(shaderProgram);
+		if (CURRENT_SHADER != this)
+		{
+			GL20.glUseProgram(shaderProgram);
+			CURRENT_SHADER = this;
+		}
 	}
 	
 	public void unbind()
 	{
 		GL20.glUseProgram(0);
+		CURRENT_SHADER = null;
 	}
 }
