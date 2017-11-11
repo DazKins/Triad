@@ -82,7 +82,7 @@ public class Image
 		Image i = nameToImage.get(name);
 		if (i == null)
 			i = getImageFromName("missing_texture");
-		return nameToImage.get(name);
+		return i;
 	}
 
 	public void bindGLTexture()
@@ -165,14 +165,14 @@ public class Image
 //		if (b != 0)
 //			bo.getData().setRGB(b, b, b);
 		
-		bo.getData().setUV(tx1, ty1).setXY(x + w, y + h).pushVertex();
-		bo.getData().setUV(tx0, ty1).setXY(x, y + h).pushVertex();
-		bo.getData().setUV(tx0, ty0).setXY(x, y).pushVertex();
-		bo.getData().setUV(tx1, ty0).setXY(x + w, y).pushVertex();
+		bo.getData().setUV(tx1, ty0).setXY(x + w, y + h).pushVertex();
+		bo.getData().setUV(tx0, ty0).setXY(x, y + h).pushVertex();
+		bo.getData().setUV(tx0, ty1).setXY(x, y).pushVertex();
+		bo.getData().setUV(tx1, ty1).setXY(x + w, y).pushVertex();
 		
-//		bo.getData().setUV(tx0, ty1).setXY(x + w, y + h).pushVertex();
+//		bo.getData().setUV(tx0, ty0).setXY(x + w, y + h).pushVertex();
 //		bo.getData().setUV(tx0, ty1).setXY(x, y + h).pushVertex();
 //		bo.getData().setUV(tx1, ty0).setXY(x, y).pushVertex();
-//		bo.getData().setUV(tx0, ty0).setXY(x + w, y).pushVertex();
+//		bo.getData().setUV(tx1, ty1).setXY(x + w, y).pushVertex();
 	}
 }

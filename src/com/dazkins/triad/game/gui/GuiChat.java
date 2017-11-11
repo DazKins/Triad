@@ -2,7 +2,7 @@ package com.dazkins.triad.game.gui;
 
 import java.util.ArrayList;
 
-import org.lwjgl.system.glfw.GLFW;
+import com.dazkins.triad.gfx.RenderContext;
 
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.chat.Chat;
@@ -12,6 +12,7 @@ import com.dazkins.triad.game.gui.object.GuiObjectTextEntry;
 import com.dazkins.triad.game.gui.renderformat.RenderFormatManager;
 import com.dazkins.triad.gfx.TTF;
 import com.dazkins.triad.input.InputHandler;
+import org.lwjgl.glfw.GLFW;
 
 public class GuiChat extends Gui
 {
@@ -76,7 +77,7 @@ public class GuiChat extends Gui
 		RenderFormatManager.TEXT.reset();
 	}
 	
-	public void render()
+	public void render(RenderContext rc)
 	{
 		if (chat.getAndPurgeHasChatChanged())
 		{
@@ -86,11 +87,11 @@ public class GuiChat extends Gui
 		RenderFormatManager.TEXT.setSize(TEXT_SIZE);
 		
 		RenderFormatManager.BOX.setRenderStyle(3);
-		mainChat.render();
+		mainChat.render(rc);
 		
 		if (input.isTypedQueueOpen())
 			RenderFormatManager.BOX.setRenderStyle(4);
-		textEntry.render();
+		textEntry.render(rc);
 		
 		
 		RenderFormatManager.BOX.reset();

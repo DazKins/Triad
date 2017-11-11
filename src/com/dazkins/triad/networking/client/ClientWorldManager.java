@@ -8,6 +8,7 @@ import com.dazkins.triad.game.entity.shell.EntityShell;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.world.ChunkCoordinate;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.RenderContext;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.networking.UpdateList;
 import com.dazkins.triad.networking.client.update.ClientUpdateAbilityBar;
@@ -23,7 +24,7 @@ import com.dazkins.triad.networking.packet.Packet008CameraStateUpdate;
 
 public class ClientWorldManager
 {
-	private ClientChunkManager crm;
+	private ClientChunkManager ccm;
 	private ClientEntityManager cem;
 
 	private int myPlayerID;
@@ -37,7 +38,7 @@ public class ClientWorldManager
 
 	public ClientWorldManager(TriadClient cl, Camera c)
 	{
-		crm = new ClientChunkManager();
+		ccm = new ClientChunkManager();
 		cem = new ClientEntityManager(this);
 
 		requestedChunks = new ArrayList<ChunkCoordinate>();
@@ -51,7 +52,7 @@ public class ClientWorldManager
 
 	public ClientChunkManager getCCM()
 	{
-		return crm;
+		return ccm;
 	}
 
 	public void setPlayer(PlayerClientController e)
@@ -75,10 +76,10 @@ public class ClientWorldManager
 		cem.updatePlayerEntity(x, y, f);
 	}
 	
-	public void render()
+	public void render(RenderContext rc)
 	{
-		crm.render(cam);
-		cem.render(cam);
+		ccm.render(rc, cam);
+		cem.render(rc, cam);
 	}
 	
 	public void tick()
@@ -88,7 +89,7 @@ public class ClientWorldManager
 		
 		UpdateList update = client.getClientUpdate();
 
-		ArrayList<ChunkCoordinate> cs = crm.getRequestsForMissingChunks();
+		ArrayList<ChunkCoordinate> cs = ccm.getRequestsForMissingChunks();
 		for (ChunkCoordinate c : cs)
 		{
 			if (!requestedChunks.contains(c))
@@ -124,7 +125,7 @@ public class ClientWorldManager
 
 				if (!cem.hasAlreadyEntity(gID))
 				{
-					cem.initEntity(crm, gID, tID);
+					cem.initEntity(ccm, gID, tID);
 				}
 
 				cem.updateEntity(x, y, gID, tID, facing);
@@ -140,7 +141,7 @@ public class ClientWorldManager
 		ArrayList<ClientUpdateChunk> chunks = update.getAndPurgeUpdateListOfType(ClientUpdateChunk.class);
 		for (ClientUpdateChunk c : chunks)
 		{
-			crm.handleChunkUpdate(c);
+			ccm.handleChunkUpdate(c);
 		}
 		
 		ArrayList<ClientUpdateEntityName> playerNameUpdates = update.getAndPurgeUpdateListOfType(ClientUpdateEntityName.class);

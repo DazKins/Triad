@@ -41,37 +41,37 @@ public class GuiObjectTextBox extends GuiObjectBox
 	
 	public void render(RenderContext rc)
 	{
-//		if (RenderFormatManager.TEXT.getFont() != oldFont)
-//			setupGraphics();
+		if (RenderFormatManager.TEXT.getFont() != oldFont)
+			setupGraphics();
 		
 		super.render(rc);
 		
-//		for (int i = 0; i < msg.size(); i++)
-//		{
-//			String curMsg = msg.get(i);
-//			
-//			float strLen = RenderFormatManager.TEXT.getFont().getStringLength(curMsg);
-//			
-//			float move = 0;
-//			
-//			if (maxLineCount == 1)
-//			{
-//				if (strLen > super.width)
-//					move = super.width - strLen;
-//			}
-//			
-//			TextAlign a = RenderFormatManager.TEXT.getAlign();
-//			
-//			if (a == TextAlign.CENTRE)
-//				move = (super.width - strLen) / 2.0f;
-//			
-//			TTF.renderStringWithFormating(curMsg, x + move + 3, y + height + 3 - (i + 1) * TTF.getLetterHeight(), layer * 0.001f + 0.0001f);
-//
-//			if (i == msg.size() - 1 && showCursor)
-//				TTF.renderStringWithFormating("#ff006a |", x + move + 3 + strLen, y + height + 3 - (i + 1) * TTF.getLetterHeight(), layer * 0.001f + 0.0001f);
-//		}
-//		
-//		oldFont = RenderFormatManager.TEXT.getFont();
+		for (int i = 0; i < msg.size(); i++)
+		{
+			String curMsg = msg.get(i);
+
+			float strLen = RenderFormatManager.TEXT.getFont().getStringLength(curMsg);
+
+			float move = 0;
+
+			if (maxLineCount == 1)
+			{
+				if (strLen > super.width)
+					move = super.width - strLen;
+			}
+
+			TextAlign a = RenderFormatManager.TEXT.getAlign();
+
+			if (a == TextAlign.CENTRE)
+				move = (super.width - strLen) / 2.0f;
+
+			TTF.renderStringWithFormating(rc, curMsg, x + move + 3, y + height + 3 - (i + 1) * TTF.getLetterHeight(), layer * 0.001f + 0.0001f);
+
+			if (i == msg.size() - 1 && showCursor)
+				TTF.renderStringWithFormating(rc, "#ff006a |", x + move + 3 + strLen, y + height + 3 - (i + 1) * TTF.getLetterHeight(), layer * 0.001f + 0.0001f);
+		}
+
+		oldFont = RenderFormatManager.TEXT.getFont();
 		
 //		OpenGLHelper.renderReferencePoint(x, y);
 	}

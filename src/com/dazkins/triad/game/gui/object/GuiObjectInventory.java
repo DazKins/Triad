@@ -4,6 +4,7 @@ import com.dazkins.triad.game.gui.Gui;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.RenderContext;
 import com.dazkins.triad.gfx.TTF;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
@@ -132,14 +133,14 @@ public class GuiObjectInventory extends GuiObjectBox
 		return individualWidth;
 	}
 
-	public void render(Camera cam)
+	public void render(RenderContext rc, Camera cam)
 	{
-		super.render();
+		super.render(rc);
 		for (int x = 0; x < inv.width; x++)
 		{
 			for (int y = 0; y < inv.height; y++)
 			{
-				slotSheet[x + y * inv.width].render();
+				slotSheet[x + y * inv.width].render(rc);
 			}
 		}
 		
@@ -150,7 +151,7 @@ public class GuiObjectInventory extends GuiObjectBox
 				ItemStack i = inv.getItemStack(ix, iy);
 				if (i != null)
 				{
-					i.getItemType().renderIcon(this.x + ix * (getSlotSize() + getGridSpacingX()) + gridOffsetX, y + iy * (getSlotSize() + getGridSpacingY()) + gridOffsetY, 0.2f, getSlotSize() / 32.0f);
+					i.getItemType().renderIcon(rc, this.x + ix * (getSlotSize() + getGridSpacingX()) + gridOffsetX, y + iy * (getSlotSize() + getGridSpacingY()) + gridOffsetY, getSlotSize() / 32.0f);
 //					if (i.getStackSize() > 1)
 //						TTF.renderString(i.getStackSize() + "", windowPosX + ix * (slotSize + gridSpacingX) + gridOffsetX, windowPosY + iy * (slotSize + gridSpacingY) + gridOffsetY + 3, 5);
 				}

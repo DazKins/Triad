@@ -3,7 +3,6 @@ package com.dazkins.triad.math;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.util.vector.Matrix;
 
 public class Matrix3
 {

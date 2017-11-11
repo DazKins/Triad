@@ -4,6 +4,7 @@ import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.ability.AbilityBar;
 import com.dazkins.triad.game.gui.object.GuiObjectAbilityBar;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.RenderContext;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.util.TriadLogger;
 
@@ -33,11 +34,11 @@ public class GuiPlayerAbilityBar extends Gui
 		
 	}
 	
-	public void render()
+	public void render(RenderContext rc)
 	{
 		if (abilityBar != null)
 		{
-			abilityBar.render();
+			abilityBar.render(rc);
 		}
 	}
 }

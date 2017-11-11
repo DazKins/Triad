@@ -1,14 +1,11 @@
 package com.dazkins.triad.game.entity.renderer;
 
+import com.dazkins.triad.gfx.*;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.shell.EntityShell;
 import com.dazkins.triad.game.world.IWorldAccess;
 import com.dazkins.triad.game.world.tile.Tile;
-import com.dazkins.triad.gfx.Camera;
-import com.dazkins.triad.gfx.Color;
-import com.dazkins.triad.gfx.OpenGLHelper;
-import com.dazkins.triad.gfx.TTF;
 import com.dazkins.triad.gfx.model.Model;
 import com.dazkins.triad.gfx.model.animation.StorageAnimation;
 import com.dazkins.triad.util.TriadLogger;
@@ -108,28 +105,29 @@ public abstract class EntityRenderer
 		return y;
 	}
 
-	public void render(Camera cam)
+	public void render(RenderContext rc, Camera cam)
 	{
 		if (isModelReady)
 		{
 			model.setOffset(x, y);
-			model.setDepth(Tile.yPosToDepthRelativeToCamera(cam, y));
-			Color t = world.getTileColor((int) (x / Tile.TILESIZE), (int) (y / Tile.TILESIZE));
-			if (t != null)
-				GL11.glColor3f(t.getDR(), t.getDG(), t.getDB());
-			model.render(facing);
+			//TODO more colour sorting
+//			Color t = world.getTileColor((int) (x / Tile.TILESIZE), (int) (y / Tile.TILESIZE));
+//			if (t != null)
+//				GL11.glColor3f(t.getDR(), t.getDG(), t.getDB());/
+			model.render(rc, facing);
 			if (name != null && !name.equals(""))
-				TTF.renderString(name, x - name.length() * 8, y + 64, Tile.yPosToDepthRelativeToCamera(cam, y) + 1.0f);
+				TTF.renderString(rc, name, x - name.length() * 8, y + 64, Tile.yPosToDepthRelativeToCamera(cam, y) + 1.0f);
 		} else
 			initModel();
 		
 		float healthPercent = (float) shell.getHealth() / shell.getMaxHealth();
-		
-		GL11.glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-		OpenGLHelper.immDrawQuad(x - 32.0f, y - 10, x + healthPercent * 64.0f - 32.0f, y - 2, Tile.yPosToDepthRelativeToCamera(cam, y - 20.0f) + 0.001f);
-		GL11.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-		OpenGLHelper.immDrawQuad(x + healthPercent * 64.0f - 32.0f, y - 10, x + 32.0f, y - 2, Tile.yPosToDepthRelativeToCamera(cam, y - 20.0f) + 0.001f);
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+		//TODO sort out health bars
+//		GL11.glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+//		OpenGLHelper.immDrawQuad(x - 32.0f, y - 10, x + healthPercent * 64.0f - 32.0f, y - 2, Tile.yPosToDepthRelativeToCamera(cam, y - 20.0f) + 0.001f);
+//		GL11.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+//		OpenGLHelper.immDrawQuad(x + healthPercent * 64.0f - 32.0f, y - 10, x + 32.0f, y - 2, Tile.yPosToDepthRelativeToCamera(cam, y - 20.0f) + 0.001f);
+//		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	
 	public void tick()

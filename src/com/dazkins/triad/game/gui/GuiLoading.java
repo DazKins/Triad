@@ -1,5 +1,6 @@
 package com.dazkins.triad.game.gui;
 
+import com.dazkins.triad.gfx.RenderContext;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.Triad;
@@ -22,21 +23,23 @@ public class GuiLoading extends Gui
 		bScreen = new BufferObject(36);
 		bScreen.resetData();
 
-		bScreen.getData().setRGB(0.3f, 0.0f, 0.0f);
-		bScreen.getData().addVertex(0, 0);
-		bScreen.getData().addVertex(t.win.getW(), 0);
-		bScreen.getData().addVertex(t.win.getW(), t.win.getH());
-		bScreen.getData().addVertex(0, t.win.getH());
+//		bScreen.getData().setRGB(0.3f, 0.0f, 0.0f);
+//		bScreen.getData().addVertex(0, 0);
+//		bScreen.getData().addVertex(t.win.getW(), 0);
+//		bScreen.getData().addVertex(t.win.getW(), t.win.getH());
+//		bScreen.getData().addVertex(0, t.win.getH());
 
 		bScreen.compile();
 	}
 
+	@Override
 	public void tick()
 	{
 
 	}
 
-	public void render(Camera cam)
+	@Override
+	public void render(RenderContext rc, Camera cam)
 	{
 		// GL11.glDisable(GL11.GL_TEXTURE_2D);
 		bScreen.render();
@@ -44,14 +47,16 @@ public class GuiLoading extends Gui
 
 		String msg = "Loading...";
 
-		TTF.renderString(msg, ((float) triad.win.getW() / 2.0f) - ((float) msg.length() * 8), triad.win.getH() / 2 + 16, 1.0f);
+		TTF.renderString(rc, msg, ((float) triad.win.getW() / 2.0f) - ((float) msg.length() * 8), triad.win.getH() / 2 + 16, 1.0f);
 	}
 
+	@Override
 	public void onExit()
 	{
 
 	}
 
+	@Override
 	public void setupGraphics()
 	{
 

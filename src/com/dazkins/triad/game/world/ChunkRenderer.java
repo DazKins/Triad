@@ -1,5 +1,7 @@
 package com.dazkins.triad.game.world;
 
+import com.dazkins.triad.gfx.RenderContext;
+import com.sun.org.apache.regexp.internal.RE;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.world.tile.Tile;
@@ -62,7 +64,7 @@ public class ChunkRenderer implements Loadable
 		isLoading = b;
 	}
 
-	public void render(Camera cam)
+	public void render(RenderContext rc, Camera cam)
 	{
 		if (needsUpdating && !isLoading && !vboNeedsGenerating)
 		{
@@ -81,10 +83,9 @@ public class ChunkRenderer implements Loadable
 		}
 		if (tilePlane != null && !vboNeedsGenerating)
 		{
-			GL11.glPushMatrix();
-			GL11.glTranslatef(0, 0, Tile.yPosToDepthRelativeToCamera(cam, getChunkY() * Chunk.CHUNKS * Tile.TILESIZE));
-			tilePlane.render();
-			GL11.glPopMatrix();
+			rc.getMatrixStack().push();
+			rc.addToRender(tilePlane);
+			rc.getMatrixStack().pop();
 		}
 	}
 

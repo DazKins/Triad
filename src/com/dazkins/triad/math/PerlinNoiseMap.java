@@ -5,8 +5,6 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import org.lwjgl.system.linux.SysIOctl;
-
 public class PerlinNoiseMap
 {
 	private PerlinNoise perlin;

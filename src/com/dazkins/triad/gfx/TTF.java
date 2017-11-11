@@ -7,6 +7,8 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
+import com.dazkins.triad.math.Matrix3;
+import com.dazkins.triad.math.MatrixStack;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.gui.renderformat.RenderFormatManager;
@@ -96,17 +98,17 @@ public class TTF
 		}
 		return r;
 	}
-	
-	//TODO update text
-	private void renderTTFString(String s, float x, float y, float z)
+
+	private void renderTTFString(RenderContext rc, String s, float x, float y, float z)
 	{
 		TextRenderFormat format = RenderFormatManager.TEXT;
 		
 		float r = format.getColor().getDR();
 		float g = format.getColor().getDG();
 		float b = format.getColor().getDB();
-		
-		GL11.glColor4f(r, g, b, 1.0f);
+
+		//TODO rethink colouring on text
+//		GL11.glColor4f(r, g, b, 1.0f);
 		
 		float scale = format.getSize();
 		
@@ -121,11 +123,12 @@ public class TTF
 			BufferObject bo = charMap.get(c);
 			if (bo != null)
 			{
-				GL11.glPushMatrix();
-				GL11.glTranslatef(x + i, y, z + i * 0.0001f);
-				GL11.glScalef(scale, scale, 1.0f);
-				bo.render();
-				GL11.glPopMatrix();
+				MatrixStack m = rc.getMatrixStack();
+				m.push();
+				m.transform(Matrix3.translate(x + i, y));
+				m.transform(Matrix3.scale(scale));
+				rc.addToRender(bo);
+				m.pop();
 				i += (charWidth.get(c) + LETTER_SPACING) * scale;
 			} else 
 			{
@@ -179,7 +182,7 @@ public class TTF
 		}
 	}
 	
-	public static void renderStringWithFormating(String s, float x, float y, float z)
+	public static void renderStringWithFormating(RenderContext rc, String s, float x, float y, float z)
 	{
 		TTF font = RenderFormatManager.TEXT.getFont();
 		
@@ -215,7 +218,7 @@ public class TTF
 					RenderFormatManager.TEXT.setColour(new Color(ir, ig, ib));
 				} else 
 				{
-					renderString(cur, x + renderOffset, y, z + layerCount * 0.01f);
+					renderString(rc, cur, x + renderOffset, y, z + layerCount * 0.01f);
 					renderOffset += font.getStringLength(cur);
 					layerCount++;
 				}
@@ -223,12 +226,12 @@ public class TTF
 		}
 	}
 	
-	public static void renderString(String s, float x, float y, float z)
+	public static void renderString(RenderContext rc, String s, float x, float y, float z)
 	{
 		TTF font = RenderFormatManager.TEXT.getFont();
 		
 		if (font != null)
-			font.renderTTFString(s, x, y, z);
+			font.renderTTFString(rc, s, x, y, z);
 		else
 			TriadLogger.log("No font assigned!", true);
 	}

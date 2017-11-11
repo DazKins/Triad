@@ -106,19 +106,10 @@ public class Tile
 		Color c2 = Color.averageColors(new Color[]{ wo.getTileColor(xt + 1, yt - 1), wo.getTileColor(xt, yt - 1), wo.getTileColor(xt + 1, yt), c });
 		Color c3 = Color.averageColors(new Color[]{ wo.getTileColor(xt - 1, yt - 1), wo.getTileColor(xt, yt - 1), wo.getTileColor(xt - 1, yt), c });
 
-		bd.setDepth(Tile.yPosToDepth(MathHelper.betterMod(y, Chunk.CHUNKS * Tile.TILESIZE)) - 1.0f);
-		bd.setColor(c0);
-		bd.setUV(txmax, tymin);
-		bd.addVertex(x + TILESIZE, y + TILESIZE);
-		bd.setColor(c1);
-		bd.setUV(txmin, tymin);
-		bd.addVertex(x, y + TILESIZE);
-		bd.setColor(c3);
-		bd.setUV(txmin, tymax);
-		bd.addVertex(x, y);
-		bd.setColor(c2);
-		bd.setUV(txmax, tymax);
-		bd.addVertex(x + TILESIZE, y);
+		bd.setUV(txmax, tymin).setXY(x + TILESIZE, y + TILESIZE).pushVertex();
+		bd.setUV(txmin, tymin).setXY(x, y + TILESIZE).pushVertex();
+		bd.setUV(txmin, tymax).setXY(x, y).pushVertex();
+		bd.setUV(txmax, tymax).setXY(x + TILESIZE, y).pushVertex();
 	}
 
 	public byte getID()

@@ -2,7 +2,7 @@ package com.dazkins.triad.game.gui.renderformat;
 
 public class BoxRenderFormat extends RenderFormat 
 {
-	private int renderStyle = 1;
+	private int renderStyle = 0;
 	
 	public int getRenderStyle()
 	{

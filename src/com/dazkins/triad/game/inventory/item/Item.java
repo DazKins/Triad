@@ -1,5 +1,7 @@
 package com.dazkins.triad.game.inventory.item;
 
+import com.dazkins.triad.gfx.RenderContext;
+import com.dazkins.triad.math.Matrix3;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.EntityItemStack;
@@ -100,22 +102,22 @@ public class Item
 		return ID;
 	}
 
-	public void renderIcon(float x, float y, float z, float scale)
+	public void renderIcon(RenderContext rc, float x, float y, float scale)
 	{
 		if (!imageIconLoaded)
 			loadImageIconModel();
-		
-		GL11.glPushMatrix();
 
-		if (x != 0 || y != 0 || z != 0)
-			GL11.glTranslatef(x, y, z);
+		rc.getMatrixStack().push();
+
+		if (x != 0 || y != 0)
+			rc.getMatrixStack().transform(Matrix3.translate(x, y));
 
 		if (scale != 1)
-			GL11.glScalef(scale, scale, scale);
+			rc.getMatrixStack().transform(Matrix3.scale(scale));
 
 		icon.render();
 
-		GL11.glPopMatrix();
+		rc.getMatrixStack().pop();
 	}
 
 	public Image getImage()

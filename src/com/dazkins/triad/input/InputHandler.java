@@ -1,14 +1,14 @@
 package com.dazkins.triad.input;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.lwjgl.system.glfw.GLFW;
-import org.lwjgl.system.glfw.WindowCallback;
-
 import com.dazkins.triad.gfx.Window;
+import org.lwjgl.glfw.*;
 
-public class InputHandler extends WindowCallback
+public class InputHandler
 {
 	private Queue<Character> typedQueue;
 	private boolean typedQueueOpen;
@@ -32,8 +32,43 @@ public class InputHandler extends WindowCallback
 	public InputHandler(Window w)
 	{
 		window = w;
-		WindowCallback.set(window.getWindowReference(), this);
 		typedQueue = new LinkedList<Character>();
+
+		GLFW.glfwSetKeyCallback(window.getWindowReference(), new GLFWKeyCallback()
+		{
+			@Override
+			public void invoke (long window, int key, int scancode, int action, int mods)
+			{
+				key(window, key, scancode, action, mods);
+			}
+		});
+
+		GLFW.glfwSetCharCallback(window.getWindowReference(), new GLFWCharCallback()
+		{
+			@Override
+			public void invoke(long window, int codepoint)
+			{
+				character(window, codepoint);
+			}
+		});
+
+		GLFW.glfwSetCursorPosCallback(window.getWindowReference(), new GLFWCursorPosCallback()
+		{
+			@Override
+			public void invoke(long window, double xpos, double ypos)
+			{
+				cursorPos(window, xpos, ypos);
+			}
+		});
+
+		GLFW.glfwSetMouseButtonCallback(window.getWindowReference(), new GLFWMouseButtonCallback()
+		{
+			@Override
+			public void invoke(long window, int button, int action, int mods)
+			{
+				mouseButton(window, button, action ,mods);
+			}
+		});
 	}
 
 	public boolean isKeyDown(int k)
@@ -78,10 +113,6 @@ public class InputHandler extends WindowCallback
 		mWheel = 0;
 	}
 
-	public void charMods(long window, int codepoint, int mods)
-	{
-	}
-
 	private void pushToTypedQueue(char c)
 	{
 		typedQueue.add(c);
@@ -118,22 +149,10 @@ public class InputHandler extends WindowCallback
 			pushToTypedQueue((char) codepoint);
 	}
 
-	public void cursorEnter(long window, int entered)
-	{
-	}
-
 	public void cursorPos(long window, double xpos, double ypos)
 	{
 		mouseX = (int) xpos;
 		mouseY = (int) (this.window.getH() - ypos);
-	}
-
-	public void drop(long window, int count, long names)
-	{
-	}
-
-	public void framebufferSize(long window, int width, int height)
-	{
 	}
 	
 	public int getAndPurgeBackspaceCount()
@@ -176,34 +195,5 @@ public class InputHandler extends WindowCallback
 			else if (button == GLFW.GLFW_MOUSE_BUTTON_3)
 				mouse3JustDown = true;
 		}
-	}
-
-	public void scroll(long window, double xoffset, double yoffset)
-	{
-		mWheel = (int) yoffset;
-	}
-
-	public void windowClose(long window)
-	{
-	}
-
-	public void windowFocus(long window, int focused)
-	{
-	}
-
-	public void windowIconify(long window, int iconified)
-	{
-	}
-
-	public void windowPos(long window, int xpos, int ypos)
-	{
-	}
-
-	public void windowRefresh(long window)
-	{
-	}
-
-	public void windowSize(long window, int width, int height)
-	{
 	}
 }

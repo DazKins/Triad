@@ -45,8 +45,8 @@ public class GuiMainMenu extends Gui
 		super.render(rc, cam);
 		playButton.render(rc);
 		
-		//RenderFormatManager.TEXT.setColour(new Color(255, 255, 255));
-		//TTF.renderStringWithFormating("TEST SETS ET #ff00ff sdglhr 0823y 5luetguh #ff0000 083tg24pty-gdlsdg 23t ", 0, 0, 1.0f);
+		RenderFormatManager.TEXT.setColour(new Color(255, 255, 255));
+		TTF.renderStringWithFormating(rc, "TEST SETS ET #ff00ff sdglhr 0823y 5luetguh #ff0000 083tg24pty-gdlsdg 23t ", 0, 0, 1.0f);
 	}
 
 	public void onExit()

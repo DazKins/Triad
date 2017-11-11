@@ -2,6 +2,7 @@ package com.dazkins.triad.game;
 
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.gui.GuiLoading;
+import com.dazkins.triad.gfx.RenderContext;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.util.Loader;
 
@@ -14,6 +15,7 @@ public class GameStateLoading implements GameState
 
 	private boolean started;
 
+	@Override
 	public void init(Triad triad, InputHandler inp)
 	{
 		this.triad = triad;
@@ -23,11 +25,13 @@ public class GameStateLoading implements GameState
 		gui = new GuiLoading(triad, loader);
 	}
 
-	public void render()
+	@Override
+	public void render(RenderContext rc)
 	{
-		gui.render(null);
+		gui.render(rc, null);
 	}
 
+	@Override
 	public void tick()
 	{
 		if (!started)

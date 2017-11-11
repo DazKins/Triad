@@ -27,7 +27,6 @@ public class GuiObjectBox extends GuiObject
 	
 	public static void init()
 	{
-		System.out.println("generating boxes...");
 		for (int i = 0; i < STYLE_COUNT; i++)
 		{
 			int ind = i * 9;
@@ -45,7 +44,6 @@ public class GuiObjectBox extends GuiObject
 				}
 			}
 		}
-		System.out.println("done");
 	}
 
 	
@@ -65,34 +63,34 @@ public class GuiObjectBox extends GuiObject
 		sections[ind + 0].setOffset(x, y + height - 16);
 		sections[ind + 0].render(rc);
 		
-//		sections[ind + 1].setOffset(x + 16, y + height - 16);
-//		sections[ind + 1].stretch(width - 32, 16);
-//		sections[ind + 1].render(rc);
-//		
-//		sections[ind + 2].setOffset(x + width - 16, y + height - 16);
-//		sections[ind + 2].render(rc);
-//		
-//		sections[ind + 3].setOffset(x, y + 16);
-//		sections[ind + 3].stretch(16, height - 32);
-//		sections[ind + 3].render(rc);
-//		
+		sections[ind + 1].setOffset(x + 16, y + height - 16);
+		sections[ind + 1].stretch(width - 32, 16);
+		sections[ind + 1].render(rc);
+
+		sections[ind + 2].setOffset(x + width - 16, y + height - 16);
+		sections[ind + 2].render(rc);
+
+		sections[ind + 3].setOffset(x, y + 16);
+		sections[ind + 3].stretch(16, height - 32);
+		sections[ind + 3].render(rc);
+
 		sections[ind + 4].setOffset(x + 16, y + 16);
-//		sections[ind + 4].stretch(width - 32, height - 32);
+		sections[ind + 4].stretch(width - 32, height - 32);
 		sections[ind + 4].render(rc);
-//		
-//		sections[ind + 5].setOffset(x + width - 16, y + 16);
-//		sections[ind + 5].stretch(16, height - 32);
-//		sections[ind + 5].render(rc);
-//		
-//		sections[ind + 6].setOffset(x, y);
-//		sections[ind + 6].render(rc);
-//		
-//		sections[ind + 7].setOffset(x + 16, y);
-//		sections[ind + 7].stretch(width - 32, 16);
-//		sections[ind + 7].render(rc);
-//		
-//		sections[ind + 8].setOffset(x + width - 16, y);
-//		sections[ind + 8].render(rc);
+
+		sections[ind + 5].setOffset(x + width - 16, y + 16);
+		sections[ind + 5].stretch(16, height - 32);
+		sections[ind + 5].render(rc);
+
+		sections[ind + 6].setOffset(x, y);
+		sections[ind + 6].render(rc);
+
+		sections[ind + 7].setOffset(x + 16, y);
+		sections[ind + 7].stretch(width - 32, 16);
+		sections[ind + 7].render(rc);
+
+		sections[ind + 8].setOffset(x + width - 16, y);
+		sections[ind + 8].render(rc);
 	}
 
 	public void setupGraphics()

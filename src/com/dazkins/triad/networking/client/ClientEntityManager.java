@@ -15,6 +15,7 @@ import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.InventoryType;
 import com.dazkins.triad.game.world.IWorldAccess;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.RenderContext;
 import com.dazkins.triad.networking.client.update.ClientUpdateAnimation;
 import com.dazkins.triad.util.TriadLogger;
 
@@ -213,9 +214,9 @@ public class ClientEntityManager
 //		}
 	}
 
-	public void render(Camera cam)
+	public void render(RenderContext rc, Camera cam)
 	{
-		ArrayList<EntityRenderer> render = new ArrayList<EntityRenderer>();
+		ArrayList<EntityRenderer> render = new ArrayList<>();
 		for (int i : loadedEntities)
 		{
 			EntityShell s = entityShells.get(i);
@@ -229,7 +230,7 @@ public class ClientEntityManager
 		render.sort(ySorter);
 		for (EntityRenderer r : render)
 		{
-			r.render(cam);
+			r.render(rc, cam);
 		}
 	}
 

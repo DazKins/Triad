@@ -2,6 +2,7 @@ package com.dazkins.triad.gfx.model;
 
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.gfx.RenderContext;
 
 public class ModelDoor extends Model
 {
@@ -20,10 +21,10 @@ public class ModelDoor extends Model
 		addQuads(quads);
 	}
 	
-	public void render(int f)
+	public void render(RenderContext rc, int f)
 	{
 		addQuadToRenderQueue(quads[f]);
 
-		super.render();
+		super.render(rc);
 	}
 }

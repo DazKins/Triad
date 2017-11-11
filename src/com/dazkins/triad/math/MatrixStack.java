@@ -32,7 +32,7 @@ public class MatrixStack
 	public void transform(Matrix3 m)
 	{
 		Matrix3 cur = stack.pop();
-		Matrix3 n = Matrix3.mult(m, cur);
+		Matrix3 n = Matrix3.mult(cur, m);
 		stack.push(n);
 	}
 	

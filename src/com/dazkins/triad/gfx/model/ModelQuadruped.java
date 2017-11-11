@@ -5,6 +5,7 @@ import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.gfx.RenderContext;
 
 public class ModelQuadruped extends Model
 {
@@ -105,7 +106,7 @@ public class ModelQuadruped extends Model
 		return backRightLeg;
 	}
 
-	public void render(int f)
+	public void render(RenderContext rc, int f)
 	{
 		super.enableSelectiveRendering();
 
@@ -116,6 +117,6 @@ public class ModelQuadruped extends Model
 		addQuadToRenderQueue(backRightLeg[f]);
 		addQuadToRenderQueue(backLeftLeg[f]);
 
-		super.render();
+		super.render(rc);
 	}
 }

@@ -1,7 +1,8 @@
 package com.dazkins.triad.game;
 
+import com.dazkins.triad.gfx.RenderContext;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.system.glfw.GLFW;
 
 import com.dazkins.triad.Triad;
 import com.dazkins.triad.game.ability.AbilityBar;
@@ -40,6 +41,7 @@ public class GameStatePlaying implements GameState
 
 	private PlayerClientController player;
 
+	@Override
 	public void init(Triad triad, InputHandler inp)
 	{
 		win = triad.win;
@@ -63,6 +65,7 @@ public class GameStatePlaying implements GameState
 		cwm.setPlayer(player);
 	}
 
+	@Override
 	public void tick()
 	{
 		if (!client.isRunning())
@@ -151,20 +154,21 @@ public class GameStatePlaying implements GameState
 		client.resetCounters();
 	}
 
-	public void render()
+	@Override
+	public void render(RenderContext rc)
 	{
-		GL11.glPushMatrix();
-		cam.attachTranslation();
+		rc.getMatrixStack().push();
 
-		cwm.render();
+		cam.attachTranslation(rc);
+		cwm.render(rc);
 
-		GL11.glPopMatrix();
+		rc.getMatrixStack().pop();
 		
-		chatGui.render();
-		guiPlayerAbilityBar.render();
+		chatGui.render(rc);
+		guiPlayerAbilityBar.render(rc);
 
 		if (currentlyDisplayedGui != null)
-			currentlyDisplayedGui.render(cam);
+			currentlyDisplayedGui.render(rc, cam);
 	}
 
 	private void changeGui(Gui g)

@@ -1,8 +1,8 @@
 package com.dazkins.triad;
 
-import org.lwjgl.Sys;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLContext;
 
 import com.dazkins.triad.audio.SoundManager;
 import com.dazkins.triad.game.GameState;
@@ -16,7 +16,6 @@ import com.dazkins.triad.gfx.ShaderProgram;
 import com.dazkins.triad.gfx.TTF;
 import com.dazkins.triad.gfx.Window;
 import com.dazkins.triad.input.InputHandler;
-import com.dazkins.triad.math.Matrix3;
 import com.dazkins.triad.networking.client.TriadClient;
 import com.dazkins.triad.util.TriadLogger;
 import com.dazkins.triad.util.debugmonitor.DebugMonitor;
@@ -48,20 +47,16 @@ public class Triad implements Runnable
 	public Triad()
 	{
 		client = new TriadClient("Player" + (int) (Math.random() * 10000));
-
 		SoundManager.registerSound("/audio/music/triad_theme.wav", "theme");
-//		 SoundManager.getAudio("theme").play();
 
 //		win = new Window(1920, 1080, true);
 		win = new Window(1600, 900, false);
 
-		Sys.touch();
-
 		win.setup();
 
-		input = new InputHandler(win);
-
 		initOpenGL();
+
+		input = new InputHandler(win);
 
 		initProg();
 	}
@@ -107,10 +102,13 @@ public class Triad implements Runnable
 
 	private void initOpenGL()
 	{
-		GLContext.createFromCurrent();
-		
+		GLFW.glfwMakeContextCurrent(win.getWindowReference());
+		GL.createCapabilities();
+
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL11.glViewport(0, 0, win.getW(), win.getH());
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 		TriadLogger.log("OpenGL Context Succefully Created!", false);
 	}
@@ -186,7 +184,7 @@ public class Triad implements Runnable
 		currentState.render(renderContext);
 
 		//TODO put the debug monitor back
-		//		DebugMonitor.render();
+		DebugMonitor.render(renderContext);
 		
 		renderContext.render();
 		

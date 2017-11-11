@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import com.dazkins.triad.gfx.RenderContext;
+import com.dazkins.triad.math.Matrix3;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
@@ -23,7 +25,6 @@ public abstract class Model
 	private Image img;
 
 	protected float offsetX, offsetY;
-	private float depth;
 
 	private boolean selectiveRendering;
 
@@ -50,13 +51,8 @@ public abstract class Model
 		offsetX = x;
 		offsetY = y;
 	}
-
-	public void setDepth(float d)
-	{
-		depth = d;
-	}
 	
-	public abstract void render(int facing);
+	public abstract void render(RenderContext rc, int facing);
 
 	protected void addQuads(Quad[] q)
 	{
@@ -145,22 +141,30 @@ public abstract class Model
 		}
 	}
 
-	public void render()
+	public void render(RenderContext rc)
 	{
-		ArrayList<Quad> quadsToRender = new ArrayList<Quad>();
+		ArrayList<Quad> quadsToRender = new ArrayList<>();
 		if (selectiveRendering)
 		{
 			for (int i = 0; i < quadRenders.size(); i++)
 			{
 				int index = quadRenders.get(i);
 				if (index >= 0)
-					quadsToRender.add(quads.get(index));
+				{
+					Quad q = quads.get(index);
+					quadsToRender.add(q);
+					quadsToRender.addAll(q.getChildQuads());
+					quadsToRender.addAll(q.getTemporaryChildQuads());
+				}
 			}
 		} else
 		{
 			for (int i = 0; i < quads.size(); i++)
 			{
-				quadsToRender.add(quads.get(i));
+				Quad q = quads.get(i);
+				quadsToRender.add(q);
+				quadsToRender.addAll(q.getChildQuads());
+				quadsToRender.addAll(q.getTemporaryChildQuads());
 			}
 		}
 		for (Quad q : tempQuads)
@@ -172,13 +176,14 @@ public abstract class Model
 		resetRenderBounds();
 		loadRenderBounds(quadsToRender);
 
-		GL11.glPushMatrix();
-		GL11.glTranslatef(offsetX, offsetY, depth);
+		rc.getMatrixStack().push();
+
+		rc.getMatrixStack().transform(Matrix3.translate(offsetX, offsetY));
 		for (int i = 0; i < quadsToRender.size(); i++)
 		{
-			quadsToRender.get(i).render();
+			quadsToRender.get(i).render(rc);
 		}
-		GL11.glPopMatrix();
+		rc.getMatrixStack().pop();
 
 		quadRenders.clear();
 		tempQuads.clear();
@@ -243,9 +248,9 @@ public abstract class Model
 		}
 	}
 
-	private void renderQuad(Quad q)
+	private void renderQuad(RenderContext rc, Quad q)
 	{
-		q.render();
+		q.render(rc);
 	}
 
 	public void setImage(Image img)

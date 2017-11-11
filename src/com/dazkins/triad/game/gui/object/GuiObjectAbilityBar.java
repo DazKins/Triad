@@ -1,5 +1,6 @@
 package com.dazkins.triad.game.gui.object;
 
+import com.dazkins.triad.gfx.RenderContext;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.ability.Ability;
@@ -40,11 +41,11 @@ public class GuiObjectAbilityBar extends GuiObject
 		}
 	}
 	
-	public void render()
+	public void render(RenderContext rc)
 	{
 		for (int i = 0; i < boxes.length; i++)
 		{
-			boxes[i].render();
+			boxes[i].render(rc);
 			
 			Ability a = abilityBar.getAbility(i);
 			if (a != null)

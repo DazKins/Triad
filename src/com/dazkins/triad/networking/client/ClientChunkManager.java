@@ -11,6 +11,7 @@ import com.dazkins.triad.game.world.IWorldAccess;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Color;
+import com.dazkins.triad.gfx.RenderContext;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.networking.client.update.ClientUpdateChunk;
@@ -104,7 +105,7 @@ public class ClientChunkManager implements IWorldAccess
 		return requests;
 	}
 
-	public void render(Camera cam)
+	public void render(RenderContext rc, Camera cam)
 	{
 		AABB b = cam.getViewportBounds();
 		float x0 = b.getX0();
@@ -144,7 +145,7 @@ public class ClientChunkManager implements IWorldAccess
 				} else
 				{
 					ChunkRenderer r = renderers.get(c);
-					r.render(cam);
+					r.render(rc, cam);
 				}
 			}
 		}

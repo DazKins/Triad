@@ -4,13 +4,11 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
-import org.lwjgl.system.glfw.ErrorCallback;
-import org.lwjgl.system.glfw.GLFW;
-import org.lwjgl.system.glfw.GLFWvidmode;
-import org.lwjgl.system.glfw.WindowCallback;
-import org.lwjgl.system.glfw.WindowCallbackAdapter;
 
 import com.dazkins.triad.util.TriadLogger;
 
@@ -37,15 +35,17 @@ public class Window
 
 	public void setup()
 	{
-		GLFW.glfwSetErrorCallback(ErrorCallback.Util.getDefault());
+//		GLFW.glfwSetErrorCallback(ErrorCallback.Util.getDefault());
+		GLFWErrorCallback.createPrint(System.err).set();
 
-		if (GLFW.glfwInit() != GL11.GL_TRUE)
+		if (!GLFW.glfwInit())
 		{
 			TriadLogger.log("GLFW did not initialize!", true);
 			System.exit(-1);
 		}
 
 		GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 16);
+
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_TRUE);
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL11.GL_TRUE);
 
@@ -62,11 +62,13 @@ public class Window
 
 		if (!fullscreen)
 		{
-			ByteBuffer vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-			GLFW.glfwSetWindowPos(winRef, (GLFWvidmode.width(vidmode) - w) / 2, (GLFWvidmode.height(vidmode) - h) / 2);
+			GLFWVidMode vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+			GLFW.glfwSetWindowPos(winRef, (vidmode.width() - w) / 2, (vidmode.height() - h) / 2);
 		}
 
 		GLFW.glfwMakeContextCurrent(winRef);
+
+		GLFW.glfwSwapInterval(1);
 
 		GLFW.glfwShowWindow(winRef);
 	}
@@ -117,7 +119,7 @@ public class Window
 
 	public boolean wasCloseRequested()
 	{
-		return GLFW.glfwWindowShouldClose(winRef) == GL11.GL_TRUE;
+		return GLFW.glfwWindowShouldClose(winRef);
 	}
 
 	public void tickState()

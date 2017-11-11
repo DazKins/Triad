@@ -3,11 +3,7 @@ package com.dazkins.triad.gfx;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL31;
-import org.lwjgl.opengl.GLXARBVertexBufferObject;
+import org.lwjgl.opengl.*;
 
 import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.util.TriadLogger;
@@ -107,7 +103,6 @@ public class BufferObject
 	{
 		if (useVBO)
 		{
-			System.out.println(data.getRawData()[2] + " " + data.getRawData()[3]);
 			dataBuffer.clear();
 			dataBuffer.put(data.getRawData());
 			dataBuffer.flip();
@@ -117,50 +112,44 @@ public class BufferObject
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
 			
 			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dataBuffer, GL15.GL_STATIC_DRAW);
-			
-			GL20.glVertexAttribPointer(POSITION_LOCATION, 2, GL11.GL_FLOAT, false, BufferObjectData.VERTEX_ATTRIB_SIZE * MathHelper.SIZE_OF_FLOAT, 0);
-			GL20.glEnableVertexAttribArray(POSITION_LOCATION);
-			
-			GL20.glVertexAttribPointer(TEX_LOCATION, 2, GL11.GL_FLOAT, false, BufferObjectData.VERTEX_ATTRIB_SIZE * MathHelper.SIZE_OF_FLOAT, 2 * MathHelper.SIZE_OF_FLOAT);
-			GL20.glEnableVertexAttribArray(TEX_LOCATION);
 
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		} else 
 		{
-			ID = GL11.glGenLists(1);
-			float[] raw = data.getRawData();
-			BufferObjectRenderProperties prop = data.getRenderProperties();
-			int vCount = prop.getVertexCount();
-			
-			GL11.glNewList(ID, GL11.GL_COMPILE);
-			GL11.glBegin(GL11.GL_QUADS);
-			for (int i = 0; i < vCount; i++)
-			{
-				if (prop.isUseColours())
-				{
-					float r = raw[i * 9 + 3];
-					float g = raw[i * 9 + 4];
-					float b = raw[i * 9 + 5];
-					float a = raw[i * 9 + 6];
-					
-					GL11.glColor4f(r, g, b, a);
-				}
-				if (prop.isUseTextures())
-				{
-					float u = raw[i * 9 + 7];
-					float v = raw[i * 9 + 8];
-					
-					GL11.glTexCoord2f(u, v);
-				}
-				
-				float x = raw[i * 9 + 0];
-				float y = raw[i * 9 + 1];
-				float z = raw[i * 9 + 2];
-				
-				GL11.glVertex3f(x, y, z);
-			}
-			GL11.glEnd();
-			GL11.glEndList();
+//			ID = GL11.glGenLists(1);
+//			float[] raw = data.getRawData();
+//			BufferObjectRenderProperties prop = data.getRenderProperties();
+//			int vCount = prop.getVertexCount();
+//
+//			GL11.glNewList(ID, GL11.GL_COMPILE);
+//			GL11.glBegin(GL11.GL_QUADS);
+//			for (int i = 0; i < vCount; i++)
+//			{
+//				if (prop.isUseColours())
+//				{
+//					float r = raw[i * 9 + 3];
+//					float g = raw[i * 9 + 4];
+//					float b = raw[i * 9 + 5];
+//					float a = raw[i * 9 + 6];
+//
+//					GL11.glColor4f(r, g, b, a);
+//				}
+//				if (prop.isUseTextures())
+//				{
+//					float u = raw[i * 9 + 7];
+//					float v = raw[i * 9 + 8];
+//
+//					GL11.glTexCoord2f(u, v);
+//				}
+//
+//				float x = raw[i * 9 + 0];
+//				float y = raw[i * 9 + 1];
+//				float z = raw[i * 9 + 2];
+//
+//				GL11.glVertex3f(x, y, z);
+//			}
+//			GL11.glEnd();
+//			GL11.glEndList();
 		}
 		
 		renderProps = data.getRenderProperties().clone();
@@ -177,8 +166,16 @@ public class BufferObject
 		
 		if (useVBO)
 		{
+			GL20.glEnableVertexAttribArray(POSITION_LOCATION);
+			GL20.glEnableVertexAttribArray(TEX_LOCATION);
+
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ID);
+
+			GL20.glVertexAttribPointer(POSITION_LOCATION, 2, GL11.GL_FLOAT, false, BufferObjectData.VERTEX_ATTRIB_SIZE * MathHelper.SIZE_OF_FLOAT, 0);
+			GL20.glVertexAttribPointer(TEX_LOCATION, 2, GL11.GL_FLOAT, false, BufferObjectData.VERTEX_ATTRIB_SIZE * MathHelper.SIZE_OF_FLOAT, 2 * MathHelper.SIZE_OF_FLOAT);
+
 			GL11.glDrawArrays(GL11.GL_QUADS, 0, renderProps.getVertexCount());
+
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		} else
 		{

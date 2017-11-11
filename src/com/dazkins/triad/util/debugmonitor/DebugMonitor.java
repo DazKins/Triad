@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.dazkins.triad.game.gui.renderformat.RenderFormatManager;
 import com.dazkins.triad.gfx.Color;
+import com.dazkins.triad.gfx.RenderContext;
 import com.dazkins.triad.gfx.TTF;
 import com.dazkins.triad.gfx.Window;
 
@@ -68,7 +69,7 @@ public class DebugMonitor
 		}
 	}
 
-	public static void render()
+	public static void render(RenderContext rc)
 	{
 		if (enabled)
 		{
@@ -77,7 +78,7 @@ public class DebugMonitor
 			{
 				String msg = variables.get(i).toString() + ": " + variables.get(i + 1).toString();
 				float len = RenderFormatManager.TEXT.getFont().getStringLength(msg);
-				TTF.renderString(msg, win.getW() - len - 5, yInc * TTF.getLetterHeight(), 1.0f + i * 0.001f);
+				TTF.renderString(rc, msg, win.getW() - len - 5, yInc * TTF.getLetterHeight(), 1.0f + i * 0.001f);
 				yInc++;
 			}
 
@@ -91,7 +92,7 @@ public class DebugMonitor
 				}
 				RenderFormatManager.TEXT.reset().setColour(new Color(200, 0, 0)).setA(1.0f);
 				float len = RenderFormatManager.TEXT.getFont().getStringLength(s.getMsg());
-				TTF.renderString(s.getMsg(), win.getW() - len - 5, yInc * TTF.getLetterHeight(), 1.0f);
+				TTF.renderString(rc, s.getMsg(), win.getW() - len - 5, yInc * TTF.getLetterHeight(), 1.0f);
 				RenderFormatManager.TEXT.reset();
 				yInc++;
 			}

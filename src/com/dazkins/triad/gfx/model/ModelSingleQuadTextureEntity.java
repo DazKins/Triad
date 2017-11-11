@@ -1,6 +1,7 @@
 package com.dazkins.triad.gfx.model;
 
 import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.gfx.RenderContext;
 
 public class ModelSingleQuadTextureEntity extends Model
 {
@@ -20,10 +21,11 @@ public class ModelSingleQuadTextureEntity extends Model
 	{
 		return quads.get(0);
 	}
-	
+
 	//TODO maybe change this so it doesn't require a facing parameter
-	public void render(int facing)
+	@Override
+	public void render(RenderContext rc, int facing)
 	{
-		super.render();
+		super.render(rc);
 	}
 }

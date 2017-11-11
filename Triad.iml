@@ -18,49 +18,11 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
+    <orderEntry type="library" name="libs" level="project" />
     <orderEntry type="module-library">
-      <library name="res">
+      <library>
         <CLASSES>
           <root url="file://$MODULE_DIR$/res" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="lwjgl.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/lwjgl.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <NATIVE>
-          <root url="file://$MODULE_DIR$/libs/native/windows/x64" />
-        </NATIVE>
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="disruptor.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/disruptor.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="lwjgl_util.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/lwjgl_util.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="kryonet-2.21-all.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/kryonet-2.21-all.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

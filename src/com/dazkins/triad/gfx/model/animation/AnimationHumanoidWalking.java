@@ -4,6 +4,7 @@ import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.gfx.model.ModelHumanoid;
 import com.dazkins.triad.gfx.model.Quad;
+import com.dazkins.triad.math.MathHelper;
 
 public class AnimationHumanoidWalking extends Animation
 {
@@ -14,6 +15,7 @@ public class AnimationHumanoidWalking extends Animation
 
 	private float animSpeed = 1;
 
+	@Override
 	public void updateState()
 	{
 		super.updateState();
@@ -32,10 +34,10 @@ public class AnimationHumanoidWalking extends Animation
 			
 			if (f == Facing.LEFT || f == Facing.RIGHT)
 			{
-				cRightArm.setRotation((float) Math.cos(animationTicks * speedMod) * 50.0f);
-				cLeftArm.setRotation((float) -Math.cos(animationTicks * speedMod) * 50.0f);
-				cRightLeg.setRotation((float) Math.sin(animationTicks * speedMod) * 50.0f);
-				cLeftLeg.setRotation((float) -Math.sin(animationTicks * speedMod) * 50.0f);
+				cRightArm.setRotation((float) Math.cos(animationTicks * speedMod) * (5.0f * MathHelper.PI / 18.0f));
+				cLeftArm.setRotation((float) -Math.cos(animationTicks * speedMod) * (5.0f * MathHelper.PI / 18.0f));
+				cRightLeg.setRotation((float) Math.sin(animationTicks * speedMod) * (5.0f * MathHelper.PI / 18.0f));
+				cLeftLeg.setRotation((float) -Math.sin(animationTicks * speedMod) * (5.0f * MathHelper.PI / 18.0f));
 			} else
 			{
 				cRightArm.setRotation((float) Math.cos((float) animationTicks * speedMod) * 15.0f);

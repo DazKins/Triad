@@ -1,7 +1,5 @@
 package com.dazkins.triad.game.entity.mob;
 
-import org.lwjgl.system.glfw.GLFW;
-
 import com.dazkins.triad.game.entity.Entity;
 import com.dazkins.triad.game.entity.Facing;
 import com.dazkins.triad.game.entity.shell.EntityShell;
@@ -11,6 +9,7 @@ import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.math.AABB;
 import com.dazkins.triad.math.MathHelper;
 import com.dazkins.triad.networking.client.TriadClient;
+import org.lwjgl.glfw.GLFW;
 
 public class PlayerClientController
 {

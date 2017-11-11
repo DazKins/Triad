@@ -1,5 +1,6 @@
  package com.dazkins.triad.gfx;
 
+import com.dazkins.triad.math.Matrix3;
 import org.lwjgl.opengl.GL11;
 
 import com.dazkins.triad.game.entity.Entity;
@@ -31,10 +32,10 @@ public class Camera
 		this.y = y;
 	}
 
-	public void attachTranslation()
+	public void attachTranslation(RenderContext rc)
 	{
-		GL11.glTranslatef(-x, -y, 0);
-		GL11.glScalef(zoom, zoom, 1.0f);
+		rc.getMatrixStack().transform(Matrix3.translate(-x, -y));
+		rc.getMatrixStack().transform(Matrix3.scale(zoom));
 	}
 
 	public AABB getViewportBounds()

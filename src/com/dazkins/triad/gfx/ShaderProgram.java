@@ -19,7 +19,7 @@ public class ShaderProgram
 	
 	public static void setupShaders()
 	{
-		DEFAULT_SHADER = new ShaderProgram("/shaders/vertexShader.vs", "/shaders/fragmentShader.fs");
+		DEFAULT_SHADER = new ShaderProgram("/shaders/vertexShader.glsl", "/shaders/fragmentShader.glsl");
 	}
 	
 	public ShaderProgram(String v, String f)
@@ -78,7 +78,7 @@ public class ShaderProgram
 	{
 		FloatBuffer b = m.dropToBuffer();
 		int loc = GL20.glGetUniformLocation(shaderProgram, s);
-		GL20.glUniformMatrix3(loc, false, b);
+		GL20.glUniformMatrix3fv(loc, false, b);
 	}
 	
 	public static ShaderProgram getCurrentShader()

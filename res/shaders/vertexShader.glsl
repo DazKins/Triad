@@ -9,11 +9,11 @@ uniform mat3 mat;
 
 void main()
 {
-	pass_tex = tex;
-	
 	vec3 r = mat * vec3(position, 1.0);
 	
 	r = vec3((r.x / 800) - 1.0, (r.y / 450) - 1.0, 1.0);
 	
 	gl_Position = vec4(r, 1.0);
+
+	pass_tex = tex;
 }

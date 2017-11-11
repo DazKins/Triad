@@ -1,5 +1,9 @@
-[Triad Client   23:42:05]  Logger started!
-[Triad Client   23:42:06]  OpenGL Context Succefully Created!
-[Triad Client   23:42:06]  Succesfully compiled shader!
-[Triad Client   23:42:06]  OpenGL version: 4.6
-[Triad Client   23:42:06]  VBOs enabled
+[Triad Client   22:17:25]  Logger started!
+[Triad Client   22:17:26]  OpenGL Context Succefully Created!
+[Triad Client   22:17:26]  Succesfully compiled shader!
+[Triad Client   22:17:26]  OpenGL version: 4.6
+[Triad Client   22:17:26]  VBOs enabled
+[Triad Client   22:17:27]  Connected
+[Triad Client   22:17:27]  Login accepted
+[Triad Client   22:17:27]  Recieved raw message from server: Welcome to the server Player4527!
+[Triad Client   22:17:31]  Disconnected

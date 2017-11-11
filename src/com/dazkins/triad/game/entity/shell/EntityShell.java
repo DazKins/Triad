@@ -5,6 +5,7 @@ import com.dazkins.triad.game.entity.renderer.EntityRenderer;
 import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.RenderContext;
 import com.dazkins.triad.networking.client.ClientEntityManager;
 
 //Stores entity renderer with other info that may be needed by the client, such as inventory, equipment etc.
@@ -39,10 +40,10 @@ public class EntityShell
 		globalID = gID;
 	}
 	
-	public void render(Camera cam)
+	public void render(RenderContext rc, Camera cam)
 	{
 		if (entityRenderer != null)
-			entityRenderer.render(cam);
+			entityRenderer.render(rc, cam);
 	}
 	
 	public int getGlobalID()

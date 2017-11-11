@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class SoundManager
 {
-	private static Map<String, AudioFile> nameToAudio = new HashMap<String, AudioFile>();
+	private static Map<String, AudioFile> nameToAudio = new HashMap<>();
 
 	public static void registerSound(String file, String name)
 	{

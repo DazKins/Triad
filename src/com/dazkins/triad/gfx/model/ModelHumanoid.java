@@ -12,6 +12,7 @@ import com.dazkins.triad.game.inventory.item.equipable.weapon.ItemWeapon;
 import com.dazkins.triad.game.world.tile.Tile;
 import com.dazkins.triad.gfx.Camera;
 import com.dazkins.triad.gfx.Image;
+import com.dazkins.triad.gfx.RenderContext;
 
 public class ModelHumanoid extends Model
 {
@@ -64,69 +65,69 @@ public class ModelHumanoid extends Model
 		int right = Facing.RIGHT;
 
 		head[up] = new Quad(-9, 32, 18, 16, 27, 0, 9, 8);
-		head[up].setRenderLayer(3);
+		head[up].setRenderLayer(30);
 		head[down] = new Quad(-9, 32, 18, 16, 0, 0, 9, 8);
-		head[down].setRenderLayer(3);
+		head[down].setRenderLayer(30);
 		head[left] = new Quad(-9, 32, 18, 16, 18, 0, 9, 8);
-		head[left].setRenderLayer(4);
+		head[left].setRenderLayer(40);
 		head[right] = new Quad(-9, 32, 18, 16, 9, 0, 9, 8);
-		head[right].setRenderLayer(4);
+		head[right].setRenderLayer(40);
 		addQuads(head);
 
 		rightArm[up] = new Quad(4, 16, 10, 18, 0, 8, 5, 9);
 		rightArm[up].setCenterOfRotation(9, 30);
-		rightArm[up].setRenderLayer(2);
+		rightArm[up].setRenderLayer(20);
 		rightArm[down] = new Quad(-14, 16, 10, 18, 5, 8, 5, 9);
 		rightArm[down].setCenterOfRotation(-9, 30);
-		rightArm[down].setRenderLayer(-2);
+		rightArm[down].setRenderLayer(-20);
 		rightArm[left] = new Quad(-4, 16, 10, 18, 15, 8, 5, 9);
 		rightArm[left].setCenterOfRotation(1, 30);
-		rightArm[left].setRenderLayer(-3);
+		rightArm[left].setRenderLayer(-30);
 		rightArm[right] = new Quad(-4, 16, 10, 18, 10, 8, 5, 9);
 		rightArm[right].setCenterOfRotation(1, 30);
-		rightArm[right].setRenderLayer(6);
+		rightArm[right].setRenderLayer(60);
 		addQuads(rightArm);
 
 		rightLeg[up] = new Quad(-1, 0, 10, 18, 20, 8, 5, 9);
 		rightLeg[up].setCenterOfRotation(4, 18);
-		rightLeg[up].setRenderLayer(-4);
+		rightLeg[up].setRenderLayer(-40);
 		rightLeg[down] = new Quad(-9, 0, 10, 18, 25, 8, 5, 9);
 		rightLeg[down].setCenterOfRotation(-4, 18);
-		rightLeg[down].setRenderLayer(-3);
+		rightLeg[down].setRenderLayer(-30);
 		rightLeg[left] = new Quad(-4, 0, 10, 18, 30, 8, 5, 9);
 		rightLeg[left].setCenterOfRotation(1, 18);
-		rightLeg[left].setRenderLayer(-2);
+		rightLeg[left].setRenderLayer(-20);
 		rightLeg[right] = new Quad(-4, 0, 10, 18, 35, 8, 5, 9);
 		rightLeg[right].setCenterOfRotation(1, 18);
-		rightLeg[right].setRenderLayer(2);
+		rightLeg[right].setRenderLayer(20);
 		addQuads(rightLeg);
 
 		leftArm[up] = new Quad(-14, 16, 10, 18, 0, 17, 5, 9);
 		leftArm[up].setCenterOfRotation(-9, 30);
-		leftArm[up].setRenderLayer(-2);
+		leftArm[up].setRenderLayer(-20);
 		leftArm[down] = new Quad(4, 16, 10, 18, 5, 17, 5, 9);
 		leftArm[down].setCenterOfRotation(9, 30);
-		leftArm[down].setRenderLayer(2);
+		leftArm[down].setRenderLayer(20);
 		leftArm[left] = new Quad(-4, 16, 10, 18, 15, 17, 5, 9);
 		leftArm[left].setCenterOfRotation(1, 30);
-		leftArm[left].setRenderLayer(5);
+		leftArm[left].setRenderLayer(50);
 		leftArm[right] = new Quad(-4, 16, 10, 18, 10, 17, 5, 9);
 		leftArm[right].setCenterOfRotation(1, 30);
-		leftArm[right].setRenderLayer(-3);
+		leftArm[right].setRenderLayer(-30);
 		addQuads(leftArm);
 
 		leftLeg[up] = new Quad(-9, 0, 10, 18, 20, 17, 5, 9);
 		leftLeg[up].setCenterOfRotation(-4, 18);
-		leftLeg[up].setRenderLayer(-3);
+		leftLeg[up].setRenderLayer(-30);
 		leftLeg[down] = new Quad(-1, 0, 10, 18, 25, 17, 5, 9);
 		leftLeg[down].setCenterOfRotation(4, 18);
-		leftLeg[down].setRenderLayer(-4);
+		leftLeg[down].setRenderLayer(-40);
 		leftLeg[left] = new Quad(-4, 0, 10, 18, 30, 17, 5, 9);
 		leftLeg[left].setCenterOfRotation(1, 18);
-		leftLeg[left].setRenderLayer(2);
+		leftLeg[left].setRenderLayer(20);
 		leftLeg[right] = new Quad(-4, 0, 10, 18, 35, 17, 5, 9);
 		leftLeg[right].setCenterOfRotation(1, 18);
-		leftLeg[right].setRenderLayer(-2);
+		leftLeg[right].setRenderLayer(-20);
 		addQuads(leftLeg);
 
 		body[up] = new Quad(-9, 16, 18, 18, 0, 26, 9, 9);
@@ -145,7 +146,7 @@ public class ModelHumanoid extends Model
 		equipmentIventory = i;
 	}
 
-	public void render(int f)
+	public void render(RenderContext rc, int f)
 	{
 		enableSelectiveRendering();
 
@@ -164,7 +165,7 @@ public class ModelHumanoid extends Model
 			addWeapon(rightArm[f], f, equipmentIventory);
 		}
 
-		super.render();
+		super.render(rc);
 	}
 
 	public void addWeapon(Quad q, int f, EquipmentInventory einv)
@@ -177,7 +178,7 @@ public class ModelHumanoid extends Model
 			if (!item.hasEquipQuad(f))
 			{
 				q0 = new Quad(0, 0, 64, 64, (f + 1) * 32, 0, 32, 32);
-				q0.setRenderLayer(-0.1f);
+				q0.setRenderLayer(-1);
 				q0.init(item.getImage());
 				q0.generate();
 				item.assignEquipQuad(q0, f);
@@ -205,7 +206,7 @@ public class ModelHumanoid extends Model
 			if (!item.hasEquipQuad(f))
 			{
 				q0 = new Quad(0, 0, 64, 64, (f + 1) * 32, 0, 32, 32);
-				q0.setRenderLayer(0.1f);
+				q0.setRenderLayer(1);
 				q0.init(item.getImage());
 				q0.generate();
 				item.assignEquipQuad(q0, f);
@@ -228,7 +229,7 @@ public class ModelHumanoid extends Model
 			if (!item.hasEquipQuad(f))
 			{
 				q0 = new Quad(0, 0, 64, 64, (f + 1) * 32, 0, 32, 32);
-				q0.setRenderLayer(0.1f);
+				q0.setRenderLayer(1);
 				q0.init(item.getImage());
 				q0.generate();
 				item.assignEquipQuad(q0, f);
@@ -247,7 +248,7 @@ public class ModelHumanoid extends Model
 			if (!item.hasEquipQuad(f + 4))
 			{
 				q1 = new Quad(0, 0, 64, 64, (f + 1) * 32, 32, 32, 32);
-				q1.setRenderLayer(0.1f);
+				q1.setRenderLayer(1);
 				q1.init(item.getImage());
 				q1.generate();
 				item.assignEquipQuad(q1, f + 4);
@@ -275,7 +276,7 @@ public class ModelHumanoid extends Model
 			if (!item.hasEquipQuad(f))
 			{
 				q0 = new Quad(0, 0, 64, 64, (f + 1) * 32, 0, 32, 32);
-				q0.setRenderLayer(0.1f);
+				q0.setRenderLayer(1);
 				q0.init(item.getImage());
 				q0.generate();
 				item.assignEquipQuad(q0, f);
@@ -292,7 +293,7 @@ public class ModelHumanoid extends Model
 			if (!item.hasEquipQuad(f + 4))
 			{
 				q1 = new Quad(0, 0, 64, 64, (f + 1) * 32, 32, 32, 32);
-				q1.setRenderLayer(0.1f);
+				q1.setRenderLayer(1);
 				q1.init(item.getImage());
 				q1.generate();
 				item.assignEquipQuad(q1, f + 4);
@@ -311,7 +312,7 @@ public class ModelHumanoid extends Model
 			if (!item.hasEquipQuad(f + 8))
 			{
 				q2 = new Quad(0, 0, 64, 64, (f + 1) * 32, 64, 32, 32);
-				q2.setRenderLayer(0.1f);
+				q2.setRenderLayer(1);
 				q2.init(item.getImage());
 				q2.generate();
 				item.assignEquipQuad(q2, f + 8);

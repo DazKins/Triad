@@ -7,6 +7,7 @@ import com.dazkins.triad.game.inventory.EquipmentInventory;
 import com.dazkins.triad.game.inventory.Inventory;
 import com.dazkins.triad.game.inventory.item.ItemStack;
 import com.dazkins.triad.gfx.Camera;
+import com.dazkins.triad.gfx.RenderContext;
 import com.dazkins.triad.input.InputHandler;
 import com.dazkins.triad.networking.client.TriadClient;
 
@@ -89,14 +90,14 @@ public class GuiSingleInventory extends Gui
 		}
 	}
 
-	public void render(Camera cam)
+	public void render(RenderContext rc, Camera cam)
 	{
-		gInv.render(cam);
+		gInv.render(rc, cam);
 
 		float iScale = gInv.getItemScale();
 		if (selectedItem != null)
 		{
-			selectedItem.getItemType().renderIcon(input.mouseX - (16.0f * iScale), input.mouseY - (16.0f * iScale), 2f, iScale);
+			selectedItem.getItemType().renderIcon(rc, input.mouseX - (16.0f * iScale), input.mouseY - (16.0f * iScale), iScale);
 		}
 	}
 
