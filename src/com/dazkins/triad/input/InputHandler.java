@@ -1,7 +1,5 @@
 package com.dazkins.triad.input;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -69,6 +67,20 @@ public class InputHandler
 				mouseButton(window, button, action ,mods);
 			}
 		});
+		
+		GLFW.glfwSetScrollCallback(window.getWindowReference(), new GLFWScrollCallback()
+		{
+			@Override
+			public void invoke(long window, double xOffset, double yOffset)
+			{
+				scroll(window, xOffset, yOffset);
+			}
+		});
+	}
+	
+	public void scroll(long window, double xoffset, double yoffset)
+	{
+		mWheel = (int) yoffset;
 	}
 
 	public boolean isKeyDown(int k)

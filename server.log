@@ -1,11 +1,8 @@
-[Triad Server   22:15:50]  Logger started!
-[Triad Server   22:15:51]  Generating spawn...
-[Triad Server   22:15:53]  Spawn generated
-[Triad Server   22:15:53]  Started on port: 56355
-[Triad Server   22:15:54]  New connection from: 127.0.0.1 on Connection 1
-[Triad Server   22:15:54]  Registered new connection: Player2408 from: 127.0.0.1
-[Triad Server   22:17:23]  Connection 1 has disconnected
-[Triad Server   22:17:27]  New connection from: 127.0.0.1 on Connection 2
-[Triad Server   22:17:27]  Registered new connection: Player4527 from: 127.0.0.1
-[Triad Server   22:17:30]  Recieved raw message from: Connection 2 saying: HELLo
-[Triad Server   22:17:31]  Connection 2 has disconnected
+[Triad Server   22:08:57]  Logger started!
+[Triad Server   22:08:58]  Generating spawn...
+[Triad Server   22:09:00]  Spawn generated
+[Triad Server   22:09:00]  Started on port: 56355
+[Triad Server   22:09:02]  New connection from: 127.0.0.1 on Connection 1
+[Triad Server   22:09:02]  Registered new connection: Player2038 from: 127.0.0.1
+[Triad Server   22:09:13]  Recieved raw message from: Connection 1 saying: hello world
+[Triad Server   22:09:15]  Connection 1 has disconnected
